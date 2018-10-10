@@ -47,9 +47,11 @@ public:
     }
     syntax_node *nearest_incomplete_node() {
         syntax_node *current = parent;
-        if (parent == nullptr) return this;
+        if (parent == nullptr)
+            return this;
 
         while (true) {
+            printf("%s\n", typeid(*current).name());
             if (current->type == syntax_type::syn_root)
                 return current;
 
@@ -103,6 +105,7 @@ protected:
         while (current != nullptr) {
             if (current->type == type)
                 break;
+            current = current->parent;
         }
         return current;
     }

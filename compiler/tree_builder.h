@@ -14,24 +14,31 @@ public:
         for (auto &token : stokens) {
             printf("%s\n", token.raw.c_str());
             if (token.type == stoken_type::begin_block) {
-                append_and_set(block(token));
+                append_and_replace(block(token));
             }
             else if (token.type == stoken_type::end_block) {
                 current = current->nearest_incomplete_node();
+            }
+            else if (token.type == stoken_type::st_class) {
+                current_class = klass(token);
+                append_and_replace(current_class);
+            }
+            else if (token.type == stoken_type::st_defmethod) {
+                current_method = method(token);
+                append_and_replace(current_method);
+            }
+            else if (token.type == stoken_type::op) {
+                append_and_replace(op(token));
             }
             else {
                 syntax_node *node = nullptr;
 
                 if (token.type == stoken_type::op)
                     node = op(token);
-                else if (token.type == stoken_type::st_class) {
-                    current_class = klass(token);
-                    node = current_class;
-                }
-                else if (token.type == stoken_type::st_defmethod) {
-                    current_method = method(token);
-                    node = current_method;
-                }
+                else if (token.type == stoken_type::ident)
+                    node = ident(token);
+                else if (token.type == stoken_type::st_literal)
+                    node = literal(token);
 
                 if (node != nullptr)
                     append_and_set(node);
@@ -43,7 +50,12 @@ public:
 
 private:
     void append_and_set(syntax_node *node) {
-        current->children.push_back(node);
+        //printf("append %s / %s\n", typeid(*current).name(), typeid(*node).name());
+        current = current->append(node);
+    }
+    void append_and_replace(syntax_node *node) {
+        //printf("append %s / %s\n", typeid(*current).name(), typeid(*node).name());
+        current->append(node);
         current = node;
     }
 
@@ -57,6 +69,14 @@ private:
     }
     block_node *block(const stoken &token) {
         auto node = new block_node(current);
+        return node;
+    }
+    ident_node *ident(const stoken &token) {
+        auto node = new ident_node(current, token.raw);
+        return node;
+    }
+    literal_node *literal(const stoken &token) {
+        auto node = new literal_node(current);
         return node;
     }
     syntax_node *op(const stoken &token) {

@@ -167,7 +167,7 @@ public:
                 result.push_back(parse(token));
         }
 
-        flush_until_priority(-9999);
+        //flush_until_priority(-9999);
 
         std::reverse(result.begin(), result.end());
 
@@ -227,7 +227,7 @@ private:
             stoken.type = stoken_type::end_block;
         }
         else if (token.type == token_type::literal) {
-            stoken.type = stoken_type::literal;
+            stoken.type = stoken_type::st_literal;
         }
         else if (token.type == token_type::ident) {
             stoken.type = stoken_type::ident;

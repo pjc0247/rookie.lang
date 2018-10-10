@@ -28,7 +28,7 @@ enum class stoken_type {
     endl,
 
     ident,
-    literal,
+    st_literal,
 
     op,
 
