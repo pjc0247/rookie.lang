@@ -159,7 +159,7 @@ public:
             }
             else if (token.type == token_type::right_bracket) {
                 depth++;
-                stack.push_back(token);
+                //stack.push_back(token);
 
                 result.push_back(parse(token));
             }
