@@ -12,49 +12,49 @@
 
 class compiler {
 public:
-	static compiler default_compiler() {
-		return compiler()
-			.transformer(tco()); // tail-call optimizer
-	}
+    static compiler default_compiler() {
+        return compiler()
+            .transformer(tco()); // tail-call optimizer
+    }
 
-	root_node *ast_raw(const std::string &src, std::vector<compile_error> &errors) {
-		compile_context ctx;
+    root_node *ast_raw(const std::string &src, std::vector<compile_error> &errors) {
+        compile_context ctx;
 
-		auto tokens = lexer().lex(src, ctx);
-		auto stokens = sexper().sexp(tokens, ctx);
+        auto tokens = lexer().lex(src, ctx);
+        auto stokens = sexper().sexp(tokens, ctx);
 
-		auto root = tree_builder().build(stokens);
+        auto root = tree_builder().build(stokens);
 
-		return root;
-	}
-	root_node *ast_transformed(const std::string &src, std::vector<compile_error> &errors) {
-		auto root = ast_raw(src, errors);
-		
-		vnode_transformer().transform(root);
-		for (auto &t : transformers)
-			t.transform(root);
+        return root;
+    }
+    root_node *ast_transformed(const std::string &src, std::vector<compile_error> &errors) {
+        auto root = ast_raw(src, errors);
+        
+        vnode_transformer().transform(root);
+        for (auto &t : transformers)
+            t.transform(root);
 
-		return root;
-	}
+        return root;
+    }
 
-	bool compile(const std::string &src,
-		program &program,
-		std::vector<compile_error> &errors) {
+    bool compile(const std::string &src,
+        program &program,
+        std::vector<compile_error> &errors) {
 
-		auto root = ast_transformed(src, errors);
+        auto root = ast_transformed(src, errors);
 
-		root->dump();
+        root->dump();
 
-		delete root;
+        delete root;
 
-		return true;
-	}
+        return true;
+    }
 
-	compiler &transformer(const syntax_traveler &t) {
-		transformers.push_back(t);
-		return *this;
-	}
+    compiler &transformer(const syntax_traveler &t) {
+        transformers.push_back(t);
+        return *this;
+    }
 
 private:
-	std::vector<syntax_traveler> transformers;
+    std::vector<syntax_traveler> transformers;
 };
