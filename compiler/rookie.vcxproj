@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="binding.h" />
     <ClInclude Include="code_gen.h" />
+    <ClInclude Include="gc.h" />
     <ClInclude Include="p2wast.h" />
     <ClInclude Include="compilation.h" />
     <ClInclude Include="compiler.h" />
@@ -163,9 +164,11 @@
     <ClInclude Include="text_processor.h" />
     <ClInclude Include="token.h" />
     <ClInclude Include="tree_builder.h" />
+    <ClInclude Include="value_object.h" />
     <ClInclude Include="vnode_transformer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="gc.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

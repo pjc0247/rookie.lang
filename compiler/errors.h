@@ -8,3 +8,11 @@ public:
         compile_error(token, "Unexpected token: " + token.raw + ".") {
     }
 };
+
+
+class invalid_program_exception : public std::exception {
+public:
+	invalid_program_exception(const char *msg)
+		: std::exception(msg) {
+	}
+};

@@ -1,10 +1,15 @@
 #pragma once
 
 #include <string>
-#include <exception>
+#include <map>
 #include <deque>
+#include <exception>
 
 #include "program.h"
+#include "errors.h"
+
+#include "value_object.h"
+#include "gc.h"
 
 #define _invalid_stackitem \
     throw new invalid_program_exception("invalid stackitem, expected integer");
@@ -21,53 +26,6 @@
     autoa = pop(); _ensure_int(a);
 #define _pop2_int(a, b) \
     auto a = pop(); auto b = pop(); _ensure_int(a,b);
-
-class invalid_program_exception : public std::exception {
-public:
-    invalid_program_exception(const char *msg) 
-        : std::exception(msg) {
-    }
-};
-
-enum class value_type : char {
-    empty,
-    callframe,
-    integer, string, object
-};
-struct value {
-    value_type type;
-
-    union {
-        int integer;
-        const char *str;
-
-        short bp_pc[2];
-    };
-        
-    value() :
-        type(value_type::empty) {
-    }
-
-    static value mkcallframe(short pc, short bp) {
-        value v;
-        v.type = value_type::callframe;
-        v.bp_pc[0] = bp;
-        v.bp_pc[1] = pc;
-        return v;
-    }
-    static value mkinteger(int n) {
-        value v;
-        v.type = value_type::integer;
-        v.integer = n;
-        return v;
-    }
-    static value mkstring(const char *str) {
-        value v;
-        v.type = value_type::string;
-        v.str = str;
-        return v;
-    }
-};
 
 class runner {
 public:
@@ -113,6 +71,13 @@ public:
                 left.integer *= right.integer;
                 push(left);
             }
+
+			else if (inst.opcode == opcode::op_newobj) {
+				auto objref = new object();
+				push(value::mkobjref(objref));
+
+				gc.add_object(objref);
+			}
 
             else if (inst.opcode == opcode::op_call) {
                 auto entry = p.entries[inst.operand];
@@ -168,6 +133,8 @@ private:
     }
 
 private:
+	gc gc;
+
     short pc; // program counter
     short bp; // base stack pointer
     std::deque<value> stack;
