@@ -3,8 +3,10 @@
 #include <deque>
 #include <string>
 #include <vector>
+#include <list>
 
 #include "token.h"
+#include "compilation.h"
 
 enum class syntax_type {
     syn_none,
@@ -27,8 +29,10 @@ enum class syntax_type {
     syn_return
 };
 
+class root_node;
 class class_node;
 class method_node;
+class params_node;
 
 class syntax_node {
 public:
@@ -36,31 +40,12 @@ public:
         type(syntax_type::syn_none),
         parent(parent), capacity(-1),
         is_virtual(false) {
-    }
-    virtual ~syntax_node() {
-        for (auto child : children)
-            delete child;
+
+		root_ref = parent ? parent->root() : nullptr;
     }
 
-    bool is_complete() const {
-        return capacity > 0 ? children.size() >= capacity : false;
-    }
-    syntax_node *nearest_incomplete_node() {
-        syntax_node *current = parent;
-        if (parent == nullptr)
-            return this;
-
-        while (true) {
-            printf("%s\n", typeid(*current).name());
-            if (current->type == syntax_type::syn_root)
-                return current;
-
-            if (current->is_complete())
-                current = current->parent;
-            else
-                return current;
-        }
-    }
+	bool is_complete() const;
+	syntax_node *nearest_incomplete_node();
 
     syntax_node *append(syntax_node *node) {
         node->parent = this;
@@ -80,6 +65,10 @@ public:
         return last;
     }
 
+	root_node *root() const {
+		return root_ref;
+	}
+	
     class_node *declaring_class() const {
         return (class_node*)find_upward_until(syntax_type::syn_class);
     }
@@ -88,7 +77,7 @@ public:
     }
 
     void dump(int depth = 0) {
-        for (int i = 0; i < depth; i++)
+        for (int i = 0; i < depth * 2; i++)
             putchar(' ');
 
         printf("%s\n", typeid(*this).name());
@@ -97,8 +86,12 @@ public:
             child->dump(depth + 1);
     }
 
+	virtual void on_validate() { }
+
 protected:
     virtual void on_complete() { }
+
+	compile_context &ctx() const;
 
     syntax_node *find_upward_until(syntax_type type) const {
         syntax_node *current = parent;
@@ -113,6 +106,7 @@ protected:
 public:
     syntax_type type;
 
+	root_node *root_ref;
     syntax_node *parent;
     std::deque<syntax_node*> children;
     int capacity;
@@ -130,10 +124,27 @@ public:
 
 class root_node : public syntax_node {
 public:
-    root_node() :
+    root_node(compile_context &ctx) :
+		ctx(ctx),
         syntax_node(nullptr) {
+
+		root_ref = this;
         type = syntax_type::syn_root;
     }
+	virtual ~root_node() {
+		for (auto child : flatten_children)
+			delete child;
+	}
+
+	void add_reference(syntax_node *node) {
+		flatten_children.push_back(node);
+	}
+
+public:
+	compile_context & ctx;
+
+private:
+	std::list<syntax_node*> flatten_children;
 };
 
 class block_node : public syntax_node {
@@ -180,13 +191,12 @@ public:
 public:
     std::string ident;
 };
-
 class params_node : public syntax_node {
 public:
-    params_node(syntax_node *parent) :
-        syntax_node(parent) {
-        type = syntax_type::syn_params;
-    }
+	params_node(syntax_node *parent) :
+		syntax_node(parent) {
+		type = syntax_type::syn_params;
+	}
 };
 class method_node : public syntax_node {
 public:
@@ -210,14 +220,28 @@ public:
     }
 
     void push_local(const std::string &str) {
-        if (std::find(locals.begin(), locals.end(), str) == locals.end())
+        if (locals.empty() ||
+			std::find(locals.begin(), locals.end(), str) == locals.end())
             locals.push_back(str);
     }
+
+protected:
+	virtual void on_complete() {
+		auto prev_locals = locals;
+
+		locals.clear();
+		for (int i = 0; i < params()->children.size(); i++) {
+			if (params()->children[i]->type == syntax_type::syn_ident)
+				push_local(((ident_node*)params()->children[i])->ident);
+		}
+
+		for (auto &ident : prev_locals)
+			push_local(ident);
+	}
 
 public:
     std::vector<std::string> locals;
 };
-
 class field_node : public syntax_node {
 public:
     field_node(syntax_node *parent) :
@@ -239,6 +263,13 @@ public:
         syntax_node(parent) {
         type = syntax_type::syn_class;
     }
+
+	ident_node *ident() const {
+		return dynamic_cast<ident_node*>(children[0]);
+	}
+	std::string &ident_str() const {
+		return ident()->ident;
+	}
 
 public:
     std::vector<field_node*> fields;

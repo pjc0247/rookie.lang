@@ -20,10 +20,10 @@ public:
     root_node *ast_raw(const std::string &src, std::vector<compile_error> &errors) {
         compile_context ctx;
 
-        auto tokens = lexer().lex(src, ctx);
-        auto stokens = sexper().sexp(tokens, ctx);
+        auto tokens = lexer(ctx).lex(src);
+        auto stokens = sexper(ctx).sexp(tokens);
 
-        auto root = tree_builder().build(stokens);
+        auto root = tree_builder(ctx).build(stokens);
 
         return root;
     }
@@ -42,8 +42,10 @@ public:
         std::vector<compile_error> &errors) {
 
         auto root = ast_transformed(src, errors);
+		auto cg = code_gen();
 
         root->dump();
+		program = cg.generate(root);
 
         delete root;
 
