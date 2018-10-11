@@ -36,7 +36,7 @@ program p; // program you built
 p2wast().convert(p);
 ```
 
-working with binaries
+work with binaries
 ----
 ```cpp
 program_writer::write("a.rky", p);
