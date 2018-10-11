@@ -16,3 +16,30 @@ else {
         printf("%s\r\n", err.message.c_str());
 }
 ```
+
+built-in runner
+----
+```cpp
+program p; // program you built
+
+runner().execute(p);
+```
+
+WebAssembly backend
+----
+__WORK IN PROGRESS__
+```cpp
+program p; // program you built
+
+// This generates WAST expressions
+//   We need more works to do with it.
+p2wast().convert(p);
+```
+
+working with binaries
+----
+```cpp
+program_writer::write("a.rky", p);
+
+program_reader::read("a.rky", p);
+```
