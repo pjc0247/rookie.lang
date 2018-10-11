@@ -22,7 +22,7 @@ else {
 built-in runner
 ----
 ```cpp
-program p; // the program you built
+program p; // program you built
 
 runner().execute(p);
 ```
@@ -31,7 +31,7 @@ WebAssembly backend
 ----
 __WORK IN PROGRESS__
 ```cpp
-program p; // the program you built
+program p; // program you built
 
 // This generates WAST expressions
 //   We need more works to do with it.
