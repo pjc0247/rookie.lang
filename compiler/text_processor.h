@@ -113,6 +113,7 @@ private:
 
         rules.push_back(lexer_token("class", token_type::keyword));
         rules.push_back(lexer_token("def", token_type::keyword));
+		//rules.push_back(lexer_token("new", token_type::keyword));
 
         rules.push_back(lexer_token("+", token_type::op, 2));
         rules.push_back(lexer_token("-", token_type::op, 2));
@@ -129,6 +130,7 @@ private:
         rules.push_back(lexer_token("{", token_type::left_bracket));
         rules.push_back(lexer_token("}", token_type::right_bracket, -99999));
 
+		rules.push_back(lexer_token(".", token_type::dot, -10));
         rules.push_back(lexer_token(",", token_type::comma, -1000));
         rules.push_back(lexer_token(";", token_type::semicolon, -9999));
     }
@@ -222,6 +224,23 @@ private:
     std::vector<token> preprocess(const std::vector<token> &_tokens) {
         std::list<token> tokens(_tokens.begin(), _tokens.end());
 
+		// a.foo(1, 2, 3) -> foo(a, 1, 2, 3)
+		for (auto it = std::next(tokens.begin()); it != tokens.end(); ++it) {
+			if ((*it).type == token_type::ident &&
+				((*std::prev(it)).type != token_type::dot &&
+				((*std::next(it)).type == token_type::dot))) {
+
+				int depth = 0;
+				for (auto it2 = it; it2 != tokens.end(); ++it2) {
+					if ((*it2).type == token_type::left_paren) {
+						auto inserted = tokens.insert(std::next(it2), *it);
+						it = tokens.erase(it);
+						break;
+					}
+				}
+			}
+		}
+
         /*
         for (auto it = std::next(tokens.begin()); it != tokens.end(); ++it) {
             if ((*it).type == token_type::left_paren &&
@@ -293,7 +312,8 @@ private:
     void sexp_methodbody(const token &token) {
         stoken stoken(token);
 
-        if (token.type == token_type::semicolon ||
+        if (token.type == token_type::dot ||
+			token.type == token_type::semicolon ||
             token.type == token_type::comma) {
 
             flush_until_priority(token.priority);
@@ -325,15 +345,17 @@ private:
             result.push_back(parse(token));
         }
         else if (token.type == token_type::ident) {
-            if (prev_token().type == token_type::left_paren) {
-                ::stoken begin_call(prev_token());
-                begin_call.type = stoken_type::st_begin_call;
+			if (prev_token().type == token_type::left_paren) {
 
-                result.push_back(parse(token));
-                result.push_back(begin_call);
-            }
-            else
-                stoken.type = stoken_type::ident;
+				stack.push_back(prev_token().preparsed(stoken_type::st_begin_call));
+				stack.push_back(token);
+				
+				//result.push_back(parse(token));
+				//result.push_back(begin_call);
+			}
+			else
+				stack.push_back(token);
+                //stoken.type = stoken_type::ident;
         }
         else
             stoken = parse(token);
@@ -348,7 +370,10 @@ private:
         stoken stoken(token);
         stoken.raw = token.raw;
 
-        if (token.type == token_type::left_bracket) {
+		// preparsed
+		if (token.stype != stoken_type::none)
+			stoken.type = token.stype;
+        else if (token.type == token_type::left_bracket) {
             stoken.type = stoken_type::begin_block;
         }
         else if (token.type == token_type::right_bracket) {
@@ -386,7 +411,7 @@ private:
             if (parsed.type != stoken_type::none)
                 result.push_back(parsed);
 
-            if (token.priority >= priority)
+            if (token.priority <= priority)
                 break;
         }
     }
