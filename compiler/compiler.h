@@ -42,10 +42,10 @@ public:
         std::vector<compile_error> &errors) {
 
         auto root = ast_transformed(src, errors);
-		auto cg = code_gen();
+        auto cg = code_gen();
 
         root->dump();
-		program = cg.generate(root);
+        program = cg.generate(root);
 
         delete root;
 

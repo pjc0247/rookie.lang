@@ -1,10 +1,10 @@
 #pragma once
 
 typedef enum ptype : unsigned char {
-	t_none,
-	t_integer,
-	t_string,
-	t_object
+    t_none,
+    t_integer,
+    t_string,
+    t_object
 };
 typedef enum opcode : unsigned char {
     op_nop = 0,
@@ -15,7 +15,7 @@ typedef enum opcode : unsigned char {
     op_div,
     op_g, op_l, op_ge, op_le,
 
-	op_call, op_ret,
+    op_call, op_ret,
 
     op_pop,
     op_ldloc, op_stloc,
@@ -28,31 +28,31 @@ typedef enum opcode : unsigned char {
 } opcode_t;
 
 inline const char *to_string(opcode type) {
-	switch (type) {
-	case op_nop: return "op_nop";
-	case op_add: return "op_add";
-	case op_sub: return "op_sub";
-	case op_mul: return "op_mul";
-	case op_div: return "op_div";
-	case op_g: return "op_g";
-	case op_l: return "op_l";
-	case op_ge: return "op_ge";
-	case op_le: return "op_le";
-	case op_call: return "op_call";
-	case op_ret: return "op_ret";
-	case op_pop: return "op_pop";
-	case op_ldloc: return "op_ldloc";
-	case op_stloc: return "op_stloc";
-	case op_ldstate: return "op_ldstate";
-	case op_ststate: return "op_ststate";
-	case op_ldi: return "op_ldi";
-	case op_ldstr: return "op_ldstr";
-	case op_ldnull: return "op_ldnull";
-	case op_jmp_true: return "op_jmp_true";
-	case op_jmp_false: return "op_jmp_false";
+    switch (type) {
+    case op_nop: return "op_nop";
+    case op_add: return "op_add";
+    case op_sub: return "op_sub";
+    case op_mul: return "op_mul";
+    case op_div: return "op_div";
+    case op_g: return "op_g";
+    case op_l: return "op_l";
+    case op_ge: return "op_ge";
+    case op_le: return "op_le";
+    case op_call: return "op_call";
+    case op_ret: return "op_ret";
+    case op_pop: return "op_pop";
+    case op_ldloc: return "op_ldloc";
+    case op_stloc: return "op_stloc";
+    case op_ldstate: return "op_ldstate";
+    case op_ststate: return "op_ststate";
+    case op_ldi: return "op_ldi";
+    case op_ldstr: return "op_ldstr";
+    case op_ldnull: return "op_ldnull";
+    case op_jmp_true: return "op_jmp_true";
+    case op_jmp_false: return "op_jmp_false";
 
-	default: return "op_unknown";
-	}
+    default: return "op_unknown";
+    }
 }
 
 #pragma pack (push, 1)
@@ -74,71 +74,71 @@ struct instruction {
 struct program_header {
     unsigned int code_len;
     unsigned int rdata_len;
-	unsigned int entry_len;
+    unsigned int entry_len;
 };
 // program_entry: ?????bytes
 struct program_entry {
-	char signature[rooke_max_signature];
-	char params;
-	char ret;
-	short locals;
+    char signature[rooke_max_signature];
+    char params;
+    char ret;
+    short locals;
 
-	int entry;
-	int codesize;
+    int entry;
+    int codesize;
 };
 struct program {
     program_header header;
 
-	program_entry *entries;
+    program_entry *entries;
     instruction *code;
     const char *rdata;
 
-	program() :
-		entries(nullptr), code(nullptr), rdata(nullptr) {
-	}
-	program(const program &other) = default;
-	program(program &&other) {
-		header = other.header;
+    program() :
+        entries(nullptr), code(nullptr), rdata(nullptr) {
+    }
+    program(const program &other) = default;
+    program(program &&other) {
+        header = other.header;
 
-		entries = other.entries;
-		code = other.code;
-		rdata = other.rdata;
+        entries = other.entries;
+        code = other.code;
+        rdata = other.rdata;
 
-		other.entries = nullptr;
-		other.code = nullptr;
-		other.rdata = nullptr;
-	}
-	program& operator=(program &&other) {
-		if (this != &other) {
-			header = other.header;
+        other.entries = nullptr;
+        other.code = nullptr;
+        other.rdata = nullptr;
+    }
+    program& operator=(program &&other) {
+        if (this != &other) {
+            header = other.header;
 
-			entries = other.entries;
-			code = other.code;
-			rdata = other.rdata;
+            entries = other.entries;
+            code = other.code;
+            rdata = other.rdata;
 
-			other.entries = nullptr;
-			other.code = nullptr;
-			other.rdata = nullptr;
-		}
-		return *this;
-	}
-	virtual ~program() {
-		if (entries != nullptr)
-			free(entries);
-		entries = nullptr;
-	}
+            other.entries = nullptr;
+            other.code = nullptr;
+            other.rdata = nullptr;
+        }
+        return *this;
+    }
+    virtual ~program() {
+        if (entries != nullptr)
+            free(entries);
+        entries = nullptr;
+    }
 
-	void dump() {
-		printf("[rookie_program]\r\n");
+    void dump() {
+        printf("[rookie_program]\r\n");
 
-		for (int i = 0; i < header.entry_len; i++) {
-			printf("  [%s]\n", entries[i].signature);
-			printf("    * locals: %d\n", entries[i].locals);
-			printf("    * body\n");
-			for (int j = entries[i].entry; j < entries[i].entry + entries[i].codesize; j++) {
-				printf("      %s, %d\n", to_string((opcode)code[j].opcode), code[j].operand);
-			}
-		}
-	}
+        for (int i = 0; i < header.entry_len; i++) {
+            printf("  [%s]\n", entries[i].signature);
+            printf("    * locals: %d\n", entries[i].locals);
+            printf("    * body\n");
+            for (int j = entries[i].entry; j < entries[i].entry + entries[i].codesize; j++) {
+                printf("      %s, %d\n", to_string((opcode)code[j].opcode), code[j].operand);
+            }
+        }
+    }
 };
 #pragma pack (pop)

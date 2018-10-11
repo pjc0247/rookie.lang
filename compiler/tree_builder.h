@@ -8,10 +8,10 @@
 
 class tree_builder {
 public:
-	tree_builder(compile_context &ctx) :
-		ctx(ctx) {
+    tree_builder(compile_context &ctx) :
+        ctx(ctx) {
 
-	}
+    }
 
     root_node *build(const std::vector<stoken> &stokens) {
         auto root = new root_node(ctx);
@@ -34,16 +34,16 @@ public:
                 append_and_replace(current_method);
             }
 
-			else if (token.type == stoken_type::st_begin_param) {
-				append_and_replace(params(token));
-			}
-			else if (token.type == stoken_type::st_end_param) {
-				current = current->nearest_incomplete_node();
-			}
+            else if (token.type == stoken_type::st_begin_param) {
+                append_and_replace(params(token));
+            }
+            else if (token.type == stoken_type::st_end_param) {
+                current = current->nearest_incomplete_node();
+            }
 
-			else if (token.type == stoken_type::st_begin_call) {
-				append_and_replace(call(token));
-			}
+            else if (token.type == stoken_type::st_begin_call) {
+                append_and_replace(call(token));
+            }
 
             else if (token.type == stoken_type::op) {
                 append_and_replace(op(token));
@@ -81,10 +81,10 @@ private:
         auto node = new class_node(current);
         return node;
     }
-	params_node *params(const stoken &token) {
-		auto node = new params_node(current);
-		return node;
-	}
+    params_node *params(const stoken &token) {
+        auto node = new params_node(current);
+        return node;
+    }
     method_node *method(const stoken &token) {
         auto node = new method_node(current);
         return node;
@@ -93,10 +93,10 @@ private:
         auto node = new block_node(current);
         return node;
     }
-	call_node *call(const stoken &token) {
-		auto node = new call_node(current);
-		return node;
-	}
+    call_node *call(const stoken &token) {
+        auto node = new call_node(current);
+        return node;
+    }
     ident_node *ident(const stoken &token) {
         auto node = new ident_node(current, token.raw);
         return node;
@@ -122,7 +122,7 @@ private:
     }
 
 private:
-	compile_context &ctx;
+    compile_context &ctx;
 
     class_node *current_class;
     method_node *current_method;

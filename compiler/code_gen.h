@@ -62,8 +62,8 @@ public:
         return append(str);
     }
     const char *fin() const {
-		if (pool.empty())
-			return "";
+        if (pool.empty())
+            return "";
         return &(pool.front());
     }
     unsigned int size() const {
@@ -96,32 +96,32 @@ public:
         emit(opcode, spool.get_ptr(operand));
     }
     void emit(opcode_t opcode, int operand) {
-		printf("[emit] %d\n", opcode);
+        printf("[emit] %d\n", opcode);
         instructions.push_back(instruction(opcode, operand));
     }
     void emit(opcode_t opcode) {
-		printf("[emit] %d\n", opcode);
+        printf("[emit] %d\n", opcode);
         instructions.push_back(instruction(opcode, 0));
     }
 
-	void emit_class(const std::string &name) {
+    void emit_class(const std::string &name) {
 
-	}
-	void emit_method(const std::string &classname, method_node *method) {
-		program_entry entry;
+    }
+    void emit_method(const std::string &classname, method_node *method) {
+        program_entry entry;
 
-		printf(" emitmethod %s::%s\n", classname.c_str(), method->ident_str().c_str());
+        printf(" emitmethod %s::%s\n", classname.c_str(), method->ident_str().c_str());
 
-		memset(&entry, 0, sizeof(program_entry));
-		sprintf_s(entry.signature, "%s::%s", classname.c_str(), method->ident_str().c_str());
-		entry.entry = get_cursor();
-		entry.locals = method->locals.size();
-		entries.push_back(entry);
-	}
-	void fin_method() {
-		auto &last_entry = entries[entries.size() - 1];
-		last_entry.codesize = get_cursor() - last_entry.entry;
-	}
+        memset(&entry, 0, sizeof(program_entry));
+        sprintf_s(entry.signature, "%s::%s", classname.c_str(), method->ident_str().c_str());
+        entry.entry = get_cursor();
+        entry.locals = method->locals.size();
+        entries.push_back(entry);
+    }
+    void fin_method() {
+        auto &last_entry = entries[entries.size() - 1];
+        last_entry.codesize = get_cursor() - last_entry.entry;
+    }
 
     int get_cursor() const {
         return instructions.size();
@@ -129,23 +129,23 @@ public:
 
     program fin() {
         program p;
-		memset(&p, 0, sizeof(program));
+        memset(&p, 0, sizeof(program));
         p.header.code_len = instructions.size();
         p.header.rdata_len = spool.size();
-		p.header.entry_len = entries.size();
+        p.header.entry_len = entries.size();
         p.code = &instructions[0];
         p.rdata = spool.fin();
 
-		if (instructions.size() > 0) {
-			p.code = (instruction*)malloc(sizeof(instruction) * instructions.size());
-			memcpy(p.code, &instructions[0], sizeof(instruction) * instructions.size());
-		}
-		if (entries.size() > 0) {
-			p.entries = (program_entry*)malloc(sizeof(program_entry) * entries.size());
-			memcpy(p.entries, &entries[0], sizeof(program_entry) * entries.size());
-		}
+        if (instructions.size() > 0) {
+            p.code = (instruction*)malloc(sizeof(instruction) * instructions.size());
+            memcpy(p.code, &instructions[0], sizeof(instruction) * instructions.size());
+        }
+        if (entries.size() > 0) {
+            p.entries = (program_entry*)malloc(sizeof(program_entry) * entries.size());
+            memcpy(p.entries, &entries[0], sizeof(program_entry) * entries.size());
+        }
 
-		printf("ENTRY REN %d\n", p.header.entry_len);
+        printf("ENTRY REN %d\n", p.header.entry_len);
 
         return p;
     }
@@ -153,7 +153,7 @@ public:
 private:
     string_pool spool;
 
-	std::vector<program_entry> entries;
+    std::vector<program_entry> entries;
     std::vector<instruction> instructions;
 };
 
@@ -168,7 +168,7 @@ public:
 
         emit(root);
 
-		return emitter.fin();
+        return emitter.fin();
     }
 
 private:
@@ -183,9 +183,9 @@ private:
         if (node->is_virtual)
             ; // incomplete vnode transformation
 
-		printf("%s\n", typeid(*node).name());
+        printf("%s\n", typeid(*node).name());
         switch (node->type) {
-			_route(root);
+            _route(root);
             _route(class);
             _route(method);
             _route(return);
@@ -197,30 +197,30 @@ private:
         }
     }
 
-	void emit_root(root_node *node) {
-		for (int i = 0; i < node->children.size(); i++)
-			emit(node->children[i]);
-	}
+    void emit_root(root_node *node) {
+        for (int i = 0; i < node->children.size(); i++)
+            emit(node->children[i]);
+    }
     void emit_class(class_node *node) {
-		printf("QQ");
+        printf("QQ");
 
-		current_class = node;
+        current_class = node;
         scope.set_class(node);
-		emitter.emit_class(node->ident_str());
+        emitter.emit_class(node->ident_str());
 
-		printf("CLASS %d\n", node->children.size());
+        printf("CLASS %d\n", node->children.size());
         for (int i = 1; i < node->children.size(); i++)
             emit(node->children[i]);
     }
     void emit_method(method_node *node) {
-		current_method = node;
+        current_method = node;
         scope.set_method(node);
-		emitter.emit_method(current_class->ident_str(), node);
+        emitter.emit_method(current_class->ident_str(), node);
 
         emit(node->body());
 
-		emitter.emit(opcode::op_ret);
-		emitter.fin_method();
+        emitter.emit(opcode::op_ret);
+        emitter.fin_method();
     }
     void emit_return(return_node *node) {
         auto val = node->value();
@@ -290,6 +290,6 @@ private:
     scope scope;
     program_builder emitter;
 
-	class_node *current_class;
-	method_node *current_method;
+    class_node *current_class;
+    method_node *current_method;
 };

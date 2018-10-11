@@ -8,5 +8,5 @@ class binding {
 public:
 
 private:
-	std::map<std::string, std::function<void()>> bindings;
+    std::map<std::string, std::function<void()>> bindings;
 };

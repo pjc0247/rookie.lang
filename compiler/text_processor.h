@@ -23,39 +23,39 @@ struct lexer_token {
 class lexer {
 public:
     lexer(compile_context &ctx) :
-		ctx(ctx) {
+        ctx(ctx) {
         init_rules();
     }
 
     std::vector<token> lex(const std::string &_src) {
-		std::string src = " " + _src + " ";
+        std::string src = " " + _src + " ";
         std::vector<token> result;
 
         int head = 1, tail = 1;
-		int line = 0, cols = 0;
-		bool inside_quote = false;
-		bool inside_comment = false;
+        int line = 0, cols = 0;
+        bool inside_quote = false;
+        bool inside_comment = false;
 
         while (head < src.length() - 1) {
             bool found = false;
 
-			if (inside_quote) goto end_loop;
-			if (src[head] == '"' && src[head - 1] != '\\') {
-				inside_quote ^= true;
-				continue;
-			}
+            if (inside_quote) goto end_loop;
+            if (src[head] == '"' && src[head - 1] != '\\') {
+                inside_quote ^= true;
+                continue;
+            }
 
-			if (_str2cmp(src.c_str(), head, '/', '/')) {
-				while (head < src.length() - 1) {
-					head++;
-					if (src[head] == '\n') break;
-				}
-				continue;
-			}
+            if (_str2cmp(src.c_str(), head, '/', '/')) {
+                while (head < src.length() - 1) {
+                    head++;
+                    if (src[head] == '\n') break;
+                }
+                continue;
+            }
 
-			if (src[head] == '\n') {
-				line++; cols = 0;
-			}
+            if (src[head] == '\n') {
+                line++; cols = 0;
+            }
 
             for (auto &rule : rules) {
                 auto &candidate = rule.raw;
@@ -74,7 +74,7 @@ public:
                 t.raw = candidate;
                 t.type = rule.type;
                 t.priority = rule.priority;
-				t.line = line; t.cols = cols;
+                t.line = line; t.cols = cols;
                 result.push_back(t);
 
                 head += candidate.length();
@@ -83,15 +83,15 @@ public:
                 break;
             }
 
-			end_loop:
+            end_loop:
             if (!found)
                 head++;
         }
 
         if (head != tail) {
             auto t = parse(src.substr(tail, head - tail));
-			t.line = line;
-			t.cols = cols;
+            t.line = line;
+            t.cols = cols;
             result.push_back(t);
         }
 
@@ -109,7 +109,7 @@ private:
         rules.push_back(lexer_token(" ", token_type::none));
         rules.push_back(lexer_token("\t", token_type::none));
 
-		rules.push_back(lexer_token("//", token_type::none));
+        rules.push_back(lexer_token("//", token_type::none));
 
         rules.push_back(lexer_token("class", token_type::keyword));
         rules.push_back(lexer_token("def", token_type::keyword));
@@ -154,57 +154,57 @@ private:
     }
 
 private:
-	compile_context &ctx;
+    compile_context &ctx;
 
     std::vector<lexer_token> rules;
 };
 
 enum class semantic_position {
-	sp_root,
-	sp_class,
-	sp_methodbody
+    sp_root,
+    sp_class,
+    sp_methodbody
 };
 class sexper {
 public:
-	sexper(compile_context &ctx) :
-		ctx(ctx) {
-	}
+    sexper(compile_context &ctx) :
+        ctx(ctx) {
+    }
 
     std::vector<stoken> sexp(const std::vector<token> &_tokens) {
         result.clear();
         depth = 0;
 
-		for (auto &token : _tokens)
-			printf("%s ", token.raw.c_str());
-		printf("\n\n\r\n");
+        for (auto &token : _tokens)
+            printf("%s ", token.raw.c_str());
+        printf("\n\n\r\n");
 
         tokens = preprocess(_tokens);
 
-		for (auto &token : tokens)
-			printf("%s ", token.raw.c_str());
-		printf("\n\n");
+        for (auto &token : tokens)
+            printf("%s ", token.raw.c_str());
+        printf("\n\n");
 
-		for (cursor = 0; cursor < tokens.size(); cursor ++) {
-			auto token = tokens[cursor];
+        for (cursor = 0; cursor < tokens.size(); cursor ++) {
+            auto token = tokens[cursor];
 
             printf("%s / %d / %d\n", token.raw.c_str(), token.type, token.priority);
 
-			if (token.type == token_type::left_bracket)
-				depth--;
-			else if (token.type == token_type::right_bracket)
-				depth++;
+            if (token.type == token_type::left_bracket)
+                depth--;
+            else if (token.type == token_type::right_bracket)
+                depth++;
 
-			switch (s_pos()) {
-			case semantic_position::sp_root:
-				sexp_root(token);
-				break;
-			case semantic_position::sp_class:
-				sexp_class(token);
-				break;
-			case semantic_position::sp_methodbody:
-				sexp_methodbody(token);
-				break;
-			}
+            switch (s_pos()) {
+            case semantic_position::sp_root:
+                sexp_root(token);
+                break;
+            case semantic_position::sp_class:
+                sexp_class(token);
+                break;
+            case semantic_position::sp_methodbody:
+                sexp_methodbody(token);
+                break;
+            }
         }
 
         //flush_until_priority(-9999);
@@ -222,7 +222,7 @@ private:
     std::vector<token> preprocess(const std::vector<token> &_tokens) {
         std::list<token> tokens(_tokens.begin(), _tokens.end());
 
-		/*
+        /*
         for (auto it = std::next(tokens.begin()); it != tokens.end(); ++it) {
             if ((*it).type == token_type::left_paren &&
                 ((*std::prev(it)).type == token_type::ident ||
@@ -236,10 +236,10 @@ private:
                         depth -= 1;
 
                         if (depth == 0) {
-							auto inserted = tokens.insert(std::next(it2), *std::prev(it));
-							tokens.erase(std::prev(it));
+                            auto inserted = tokens.insert(std::next(it2), *std::prev(it));
+                            tokens.erase(std::prev(it));
 
-							(*inserted).priority = -10000;
+                            (*inserted).priority = -10000;
 
                             break;
                         }
@@ -247,102 +247,102 @@ private:
                 }
             }
         }
-		*/
+        */
 
         return std::vector<token>(tokens.rbegin(), tokens.rend());
     }
 
-	void sexp_root(const token &token) {
-		stoken stoken(token);
+    void sexp_root(const token &token) {
+        stoken stoken(token);
 
-		if (token.type == token_type::keyword) {
-			if (token.raw == "class")
-				stoken.type = stoken_type::st_class;
-		}
-		else if (token.type == token_type::ident)
-			stoken.type = stoken_type::ident;
-		
-		if (stoken.type == stoken_type::none)
-			ctx.push_error(unexpected_token_error(token));
-		else
-			result.push_back(stoken);
-	}
-	void sexp_class(const token &token) {
-		stoken stoken(token);
+        if (token.type == token_type::keyword) {
+            if (token.raw == "class")
+                stoken.type = stoken_type::st_class;
+        }
+        else if (token.type == token_type::ident)
+            stoken.type = stoken_type::ident;
+        
+        if (stoken.type == stoken_type::none)
+            ctx.push_error(unexpected_token_error(token));
+        else
+            result.push_back(stoken);
+    }
+    void sexp_class(const token &token) {
+        stoken stoken(token);
 
-		if (token.type == token_type::keyword) {
-			if (token.raw == "def")
-				stoken.type = stoken_type::st_defmethod;
-		}
-		else if (token.type == token_type::left_paren)
-			stoken.type = stoken_type::st_begin_param;
-		else if (token.type == token_type::right_paren)
-			stoken.type = stoken_type::st_end_param;
-		else if (token.type == token_type::ident)
-			stoken.type = stoken_type::ident;
-		else if (token.type == token_type::comma) {
-			flush_until_priority(token.priority);
-			stoken.type = stoken_type::endl;
-		}
-		
-		if (stoken.type == stoken_type::none)
-			ctx.push_error(unexpected_token_error(token));
-		else
-			result.push_back(stoken);
-	}
-	void sexp_methodbody(const token &token) {
-		stoken stoken(token);
+        if (token.type == token_type::keyword) {
+            if (token.raw == "def")
+                stoken.type = stoken_type::st_defmethod;
+        }
+        else if (token.type == token_type::left_paren)
+            stoken.type = stoken_type::st_begin_param;
+        else if (token.type == token_type::right_paren)
+            stoken.type = stoken_type::st_end_param;
+        else if (token.type == token_type::ident)
+            stoken.type = stoken_type::ident;
+        else if (token.type == token_type::comma) {
+            flush_until_priority(token.priority);
+            stoken.type = stoken_type::endl;
+        }
+        
+        if (stoken.type == stoken_type::none)
+            ctx.push_error(unexpected_token_error(token));
+        else
+            result.push_back(stoken);
+    }
+    void sexp_methodbody(const token &token) {
+        stoken stoken(token);
 
-		if (token.type == token_type::semicolon ||
-			token.type == token_type::comma) {
+        if (token.type == token_type::semicolon ||
+            token.type == token_type::comma) {
 
-			flush_until_priority(token.priority);
-		}
-		else if (token.type == token_type::op) {
-			flush_until_priority(token.priority);
-			stack.push_back(token);
-		}
-		else if (token.type == token_type::left_paren) {
-			flush_until_type(token_type::right_paren);
+            flush_until_priority(token.priority);
+        }
+        else if (token.type == token_type::op) {
+            flush_until_priority(token.priority);
+            stack.push_back(token);
+        }
+        else if (token.type == token_type::left_paren) {
+            flush_until_type(token_type::right_paren);
 
-			//stoken.type = stoken_type::st_begin_call;
-		}
-		else if (token.type == token_type::right_paren) {
-			stack.push_back(token);
+            //stoken.type = stoken_type::st_begin_call;
+        }
+        else if (token.type == token_type::right_paren) {
+            stack.push_back(token);
 
-			//stoken.type = stoken_type::st_end_call;
-		}
-		else if (token.type == token_type::left_bracket) {
-			depth--;
-			flush_until_type(token_type::right_bracket);
+            //stoken.type = stoken_type::st_end_call;
+        }
+        else if (token.type == token_type::left_bracket) {
+            depth--;
+            flush_until_type(token_type::right_bracket);
 
-			result.push_back(parse(token));
-		}
-		else if (token.type == token_type::right_bracket) {
-			depth++;
-			//stack.push_back(token);
+            result.push_back(parse(token));
+        }
+        else if (token.type == token_type::right_bracket) {
+            depth++;
+            //stack.push_back(token);
 
-			result.push_back(parse(token));
-		}
-		else if (token.type == token_type::ident) {
-			if (prev_token().type == token_type::left_paren) {
-				::stoken begin_call(prev_token());
-				begin_call.type = stoken_type::st_begin_call;
+            result.push_back(parse(token));
+        }
+        else if (token.type == token_type::ident) {
+            if (prev_token().type == token_type::left_paren) {
+                ::stoken begin_call(prev_token());
+                begin_call.type = stoken_type::st_begin_call;
 
-				result.push_back(parse(token));
-				result.push_back(begin_call);
-			}
-			else
-				stoken.type = stoken_type::ident;
-		}
-		else
-			stoken = parse(token);
+                result.push_back(parse(token));
+                result.push_back(begin_call);
+            }
+            else
+                stoken.type = stoken_type::ident;
+        }
+        else
+            stoken = parse(token);
 
-		if (stoken.type == stoken_type::none)
-			ctx.push_error(unexpected_token_error(token));
-		else
-			result.push_back(stoken);
-	}
+        if (stoken.type == stoken_type::none)
+            ctx.push_error(unexpected_token_error(token));
+        else
+            result.push_back(stoken);
+    }
 
     stoken parse(const token &token) {
         stoken stoken(token);
@@ -381,10 +381,10 @@ private:
             auto token = stack.back();
             stack.pop_back();
 
-			printf("flushed : %s \n", token.raw.c_str());
-			auto parsed = parse(token);
-			if (parsed.type != stoken_type::none)
-				result.push_back(parsed);
+            printf("flushed : %s \n", token.raw.c_str());
+            auto parsed = parse(token);
+            if (parsed.type != stoken_type::none)
+                result.push_back(parsed);
 
             if (token.priority >= priority)
                 break;
@@ -395,39 +395,39 @@ private:
             auto token = stack.back();
             stack.pop_back();
 
-			if (token.type == type)
-				break;
+            if (token.type == type)
+                break;
 
-			printf("flushed : %s \n", token.raw.c_str());
-			auto parsed = parse(token);
-			if (parsed.type != stoken_type::none)
-				result.push_back(parsed);
+            printf("flushed : %s \n", token.raw.c_str());
+            auto parsed = parse(token);
+            if (parsed.type != stoken_type::none)
+                result.push_back(parsed);
         }
     }
 
-	token prev_token() const {
-		if (cursor == 0) 
-			return token::padding();
-		return tokens[cursor - 1];
-	}
-	token next_token() const {
-		if (cursor == tokens.size() - 1)
-			return token::padding();
-		return tokens[cursor + 1];
-	}
-	semantic_position s_pos() const {
-		if (depth == 0) return semantic_position::sp_root;
-		if (depth == 1) return semantic_position::sp_class;
-		return semantic_position::sp_methodbody;
-	}
+    token prev_token() const {
+        if (cursor == 0) 
+            return token::padding();
+        return tokens[cursor - 1];
+    }
+    token next_token() const {
+        if (cursor == tokens.size() - 1)
+            return token::padding();
+        return tokens[cursor + 1];
+    }
+    semantic_position s_pos() const {
+        if (depth == 0) return semantic_position::sp_root;
+        if (depth == 1) return semantic_position::sp_class;
+        return semantic_position::sp_methodbody;
+    }
 
 private:
-	compile_context &ctx;
+    compile_context &ctx;
 
-	int cursor;
+    int cursor;
     int depth;
 
-	std::vector<token> tokens;
+    std::vector<token> tokens;
     std::vector<stoken> result;
     std::vector<token> stack;
 };
