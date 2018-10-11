@@ -1,6 +1,8 @@
 rookie
 ====
 
+__rookie__ is a asfdlnsagklnsdafklnsdanfkwelg language that lnsdaflngnfanskefwoelinf for lskdnflsdngflf use.
+
 ```cpp
 program p;
 std::vector<compile_error> errors;
@@ -20,7 +22,7 @@ else {
 built-in runner
 ----
 ```cpp
-program p; // program you built
+program p; // the program you built
 
 runner().execute(p);
 ```
@@ -29,7 +31,7 @@ WebAssembly backend
 ----
 __WORK IN PROGRESS__
 ```cpp
-program p; // program you built
+program p; // the program you built
 
 // This generates WAST expressions
 //   We need more works to do with it.
