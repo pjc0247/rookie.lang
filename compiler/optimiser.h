@@ -54,7 +54,29 @@ protected:
 
 				auto _node = new literal_node(node->parent);
 				_node->literal_type = literal_type::integer;
-				_node->integer = left->integer + right->integer;
+
+				auto op = ((op_node*)node)->op;
+
+				if (op == "+")
+					_node->integer = left->integer + right->integer;
+				else if (op == "-")
+					_node->integer = left->integer - right->integer;
+				else if (op == "*")
+					_node->integer = left->integer * right->integer;
+				else if (op == "/")
+					_node->integer = left->integer / right->integer;
+				else if (op == ">")
+					_node->integer = left->integer > right->integer;
+				else if (op == "<")
+					_node->integer = left->integer < right->integer;
+				else if (op == ">=")
+					_node->integer = left->integer >= right->integer;
+				else if (op == "<=")
+					_node->integer = left->integer <= right->integer;
+				// unimplemented op, stash current works
+				else
+					return node;
+
 				node = _node;
 			}
 		}
