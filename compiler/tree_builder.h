@@ -42,6 +42,9 @@ public:
                 current_class->methods.push_back(current_method);
                 append_and_replace(current_method);
             }
+            else if (token.type == stoken_type::st_annotation) {
+                append_and_replace(annotation(token));
+            }
 
             else if (token.type == stoken_type::st_begin_param) {
                 append_and_replace(params(token));
@@ -94,6 +97,10 @@ private:
     }
     params_node *params(const stoken &token) {
         auto node = new params_node(current);
+        return node;
+    }
+    annotation_node *annotation(const stoken &token) {
+        auto node = new annotation_node(current);
         return node;
     }
     method_node *method(const stoken &token) {

@@ -111,6 +111,7 @@ private:
 
         rules.push_back(lexer_token("//", token_type::none));
 
+		rules.push_back(lexer_token("@", token_type::keyword));
         rules.push_back(lexer_token("class", token_type::keyword));
         rules.push_back(lexer_token("def", token_type::keyword));
         rules.push_back(lexer_token("if", token_type::keyword));
@@ -299,8 +300,11 @@ private:
 
         if (token.type == token_type::keyword) {
             result.push_back(pop_and_parse());
-            if (token.raw == "def")
-                stoken.type = stoken_type::st_defmethod;
+
+			if (token.raw == "def")
+				stoken.type = stoken_type::st_defmethod;
+			else if (token.raw == "@")
+				stoken.type = stoken_type::st_annotation;
         }
         else if (token.type == token_type::left_paren) {
             flush_until_type(token_type::right_paren);
