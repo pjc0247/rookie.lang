@@ -14,7 +14,8 @@ class compiler {
 public:
     static compiler default_compiler() {
         return compiler()
-            .transformer(tco()); // tail-call optimizer
+			.transformer<precalc>()
+            .transformer<tco>(); // tail-call optimizer
     }
 
     root_node *ast_raw(const std::string &src, std::vector<compile_error> &errors) {
@@ -31,8 +32,10 @@ public:
         auto root = ast_raw(src, errors);
         
         vnode_transformer().transform(root);
-        for (auto &t : transformers)
-            t.transform(root);
+		for (auto &t : transformers) {
+			printf("[transform] %s\n", typeid(*t).name());
+			t->transform(root);
+		}
 
         return root;
     }
@@ -52,11 +55,12 @@ public:
         return true;
     }
 
-    compiler &transformer(const syntax_traveler &t) {
-        transformers.push_back(t);
+	template <typename T>
+    compiler &transformer() {
+        transformers.push_back(std::make_shared<T>());
         return *this;
     }
 
 private:
-    std::vector<syntax_traveler> transformers;
+    std::vector<std::shared_ptr<syntax_traveler>> transformers;
 };
