@@ -32,10 +32,19 @@ public:
         auto root = ast_raw(src, errors);
         
         vnode_transformer().transform(root);
-		for (auto &t : transformers) {
-			printf("[transform] %s\n", typeid(*t).name());
-			t->transform(root);
-		}
+
+		int round = 0;
+		int total_changes = 0;
+		do {
+			total_changes = 0;
+			printf("[optimise] round %d\n", round++);
+			for (auto &t : transformers) {
+				t->prepare();
+				printf("   [transform] %s\n", typeid(*t).name());
+				total_changes += t->transform(root);
+			}
+			printf("%d node(s) optimised in this round!\n", total_changes);
+		} while (total_changes > 0);
 
         return root;
     }

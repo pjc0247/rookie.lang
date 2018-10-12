@@ -6,9 +6,14 @@
 
 class syntax_traveler {
 public:
-    void transform(root_node *root) {
+    int transform(root_node *root) {
         _visit(root);
+
+		return changes;
     }
+	void prepare() {
+		changes = 0;
+	}
 
 protected:
     virtual syntax_node *visit(syntax_node *node) {
@@ -17,11 +22,19 @@ protected:
     syntax_node *_visit(syntax_node *node) {
         auto ret = visit(node);
 
-        for (int i = 0; i < node->children.size(); i++)
-            node->children[i] = _visit(node->children[i]);
+		for (int i = 0; i < node->children.size(); i++) {
+			auto child = node->children[i];
+			node->children[i] = _visit(child);
+
+			if (child != node->children[i])
+				changes++;
+		}
 
         return ret;
     }
+
+private:
+	int changes;
 };
 
 class precalc : public syntax_traveler {
