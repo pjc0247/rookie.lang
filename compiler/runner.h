@@ -30,6 +30,8 @@
 class runner {
 public:
     void execute(const program &p) {
+		printf("===execute===\n");
+
         if (p.header.entry_len == 0)
             throw new std::invalid_argument("program does not have any entries.");
 
@@ -37,40 +39,61 @@ public:
         pc = main.entry; // program counter
         bp = 1;
 
-        program_entry *current_entry = &main;
+        current_entry = &main;
         push_callframe(main);
 
         while (true) {
             if (pc >= p.header.code_len)
                 throw new invalid_program_exception("unexpected end of program.");
 
-            auto inst = p.code[pc];
+            auto inst = p.code[pc++];
 
-            if (inst.opcode == opcode::op_nop);
-            else if (inst.opcode == opcode::op_ldi)
-                stack.push_back(value::mkinteger(inst.operand));
+			printf("%s\n", to_string((opcode_t)inst.opcode));
 
-            else if (inst.opcode == opcode::op_add) {
-                _pop2_int(left, right);
-                left.integer += right.integer;
-                push(left);
-            }
-            else if (inst.opcode == opcode::op_sub) {
-                _pop2_int(left, right);
-                left.integer -= right.integer;
-                push(left);
-            }
-            else if (inst.opcode == opcode::op_div) {
-                _pop2_int(left, right);
-                // TODO: check right is zero
-                left.integer /= right.integer;
-                push(left);
-            }
-            else if (inst.opcode == opcode::op_mul) {
-                _pop2_int(left, right);
-                left.integer *= right.integer;
-                push(left);
-            }
+			if (inst.opcode == opcode::op_nop);
+			else if (inst.opcode == opcode::op_ldi)
+				stack.push_back(value::mkinteger(inst.operand));
+			else if (inst.opcode == opcode::op_ldstate)
+				stack.push_back(value::mkstring(p.rdata + inst.operand));
+
+			else if (inst.opcode == opcode::op_l) {
+				_pop2_int(left, right);
+				push(value::mkinteger(left.integer > right.integer));
+			}
+			else if (inst.opcode == opcode::op_g) {
+				_pop2_int(left, right);
+				push(value::mkinteger(left.integer < right.integer));
+			}
+			else if (inst.opcode == opcode::op_le) {
+				_pop2_int(left, right);
+				push(value::mkinteger(left.integer >= right.integer));
+			}
+			else if (inst.opcode == opcode::op_ge) {
+				_pop2_int(left, right);
+				push(value::mkinteger(left.integer <= right.integer));
+			}
+
+			else if (inst.opcode == opcode::op_add) {
+				_pop2_int(left, right);
+				left.integer += right.integer;
+				push(left);
+			}
+			else if (inst.opcode == opcode::op_sub) {
+				_pop2_int(left, right);
+				left.integer -= right.integer;
+				push(left);
+			}
+			else if (inst.opcode == opcode::op_div) {
+				_pop2_int(left, right);
+				// TODO: check right is zero
+				left.integer /= right.integer;
+				push(left);
+			}
+			else if (inst.opcode == opcode::op_mul) {
+				_pop2_int(left, right);
+				left.integer *= right.integer;
+				push(left);
+			}
 
 			else if (inst.opcode == opcode::op_newobj) {
 				auto objref = new object();
@@ -79,27 +102,41 @@ public:
 				gc.add_object(objref);
 			}
 
-            else if (inst.opcode == opcode::op_call) {
-                auto entry = p.entries[inst.operand];
-                push_callframe(entry);
-                pc = entry.entry;
-                bp = stack.size() - entry.params;
-            }
-            else if (inst.opcode == opcode::op_ret) {
-                auto callframe = pop_callframe(*current_entry);
-                bp = callframe.bp_pc[0];
-                pc = callframe.bp_pc[1];
-                if (stack.empty()) break;
-            }
+			else if (inst.opcode == opcode::op_call) {
+				auto entry = p.entries[inst.cs.index];
+				push_callframe(entry);
+				pc = entry.entry;
+				bp = stack.size() - entry.params;
+				current_entry = &entry;
+			}
+			else if (inst.opcode == opcode::op_ret) {
+				auto callframe = pop_callframe(*current_entry);
+				pc = callframe->pc;
+				bp = callframe->bp;
+				current_entry = callframe->entry;
+				delete callframe;
 
-            else if (inst.opcode == opcode::op_ldloc)
-                stack.push_back(stack[bp + inst.operand]);
-            else if (inst.opcode == opcode::op_stloc) {
-                stack[bp + inst.operand] = stack.back();
-                stack.pop_back();
-            }
+				if (stack.empty()) break;
+			}
 
-            pc++;
+			else if (inst.opcode == opcode::op_ldloc)
+				stack.push_back(stack[bp + inst.operand]);
+			else if (inst.opcode == opcode::op_stloc) {
+				stack[bp + inst.operand] = stack.back();
+				stack.pop_back();
+			}
+
+			else if (inst.opcode == opcode::op_jmp_true) {
+				if (pop().integer != 0)
+					pc = inst.operand;
+			}
+			else if (inst.opcode == opcode::op_jmp_false) {
+				if (pop().integer == 0)
+					pc = inst.operand;
+			}
+
+			else
+				throw new invalid_program_exception("unknown instruction.");
         }
     }
 
@@ -116,11 +153,11 @@ private:
     }
 
     void push_callframe(program_entry &entry) {
-        stack.push_back(value::mkcallframe(pc, bp));
+        stack.push_back(value::mkcallframe(pc, bp, current_entry));
         for (int i = 0; i < entry.locals - entry.params; i++)
             stack.push_back(value());
     }
-    value pop_callframe(program_entry &entry) {
+    callframe *pop_callframe(program_entry &entry) {
         for (int i = 0; i < entry.locals; i++)
             stack.pop_back();
 
@@ -129,13 +166,15 @@ private:
             throw new invalid_program_exception("unexpected stack item.");
         stack.pop_back();
 
-        return callframe;
+        return callframe.cframe;
     }
 
 private:
 	gc gc;
 
+	program_entry *current_entry;
     short pc; // program counter
     short bp; // base stack pointer
+
     std::deque<value> stack;
 };

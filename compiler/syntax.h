@@ -76,15 +76,7 @@ public:
         return (method_node*)find_upward_until(syntax_type::syn_method);
     }
 
-    void dump(int depth = 0) {
-        for (int i = 0; i < depth * 2; i++)
-            putchar(' ');
-
-        printf("%s\n", typeid(*this).name());
-
-        for (auto child : children)
-            child->dump(depth + 1);
-    }
+	void dump(int depth = 0);
 
     virtual void on_validate() { }
 
@@ -280,8 +272,12 @@ class call_node : public syntax_node {
 public:
     call_node(syntax_node *parent) :
         syntax_node(parent) {
-        syntax_type::syn_call;
+        type = syntax_type::syn_call;
     }
+
+	syntax_node *calltarget() const {
+		return children[0];
+	}
 
     ident_node *ident() {
         return (ident_node*)children[0];
@@ -371,7 +367,6 @@ class assignment_node : public op_node {
 public:
     assignment_node(syntax_node *parent) :
         op_node(parent) {
-
         capacity = 2;
         type = syntax_type::syn_assignment;
     }
@@ -383,6 +378,22 @@ protected:
     }
 };
 
+class if_node : public syntax_node {
+public:
+	if_node(syntax_node *parent) :
+		syntax_node(parent) {
+
+		capacity = 2;
+		type = syntax_type::syn_if;
+	}
+
+	syntax_node *cond() const {
+		return children[0];
+	}
+	syntax_node *then() const {
+		return children[1];
+	}
+};
 class for_node : public syntax_node {
 public:
     for_node(syntax_node *parent) :
@@ -391,16 +402,16 @@ public:
         type = syntax_type::syn_for;
     }
 
-    syntax_node *init() {
+    syntax_node *init() const {
         return children[0];
     }
-    syntax_node *cond() {
+    syntax_node *cond() const {
         return children[1];
     }
-    syntax_node *increment() {
+    syntax_node *increment() const {
         return children[2];
     }
-    syntax_node *body() {
+    syntax_node *body() const {
         return children[3];
     }
 };

@@ -4,8 +4,10 @@
 #include <string>
 
 enum class call_type {
-	ct_internal,
-	ct_external
+	ct_programcall_direct,
+	ct_programcall_name,
+	ct_syscall_direct,
+	et_syscall_name
 };
 struct callinfo {
 	call_type type;
@@ -23,6 +25,17 @@ enum class value_type : char {
 };
 
 typedef struct object;
+typedef struct program_entry;
+
+struct callframe {
+	program_entry *entry;
+	short pc;
+	short bp;
+
+	callframe(short pc, short bp, program_entry *entry) :
+		pc(pc), bp(bp), entry(entry) {
+	}
+};
 
 struct value {
 	value_type type;
@@ -33,7 +46,7 @@ struct value {
 		int integer;
 		const char *str;
 
-		short bp_pc[2];
+		callframe *cframe;
 	};
 
 	value() :
@@ -46,11 +59,10 @@ struct value {
 		v.objref = objref;
 		return v;
 	}
-	static value mkcallframe(short pc, short bp) {
+	static value mkcallframe(short pc, short bp, program_entry *entry) {
 		value v;
 		v.type = value_type::callframe;
-		v.bp_pc[0] = bp;
-		v.bp_pc[1] = pc;
+		v.cframe = new callframe(pc, bp, entry);
 		return v;
 	}
 	static value mkinteger(int n) {

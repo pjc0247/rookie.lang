@@ -113,24 +113,31 @@ private:
 
         rules.push_back(lexer_token("class", token_type::keyword));
         rules.push_back(lexer_token("def", token_type::keyword));
+		rules.push_back(lexer_token("if", token_type::keyword));
+		rules.push_back(lexer_token("for", token_type::keyword));
 		//rules.push_back(lexer_token("new", token_type::keyword));
+
+		rules.push_back(lexer_token("++", token_type::op));
+		rules.push_back(lexer_token("--", token_type::op));
 
         rules.push_back(lexer_token("+", token_type::op, 2));
         rules.push_back(lexer_token("-", token_type::op, 2));
         rules.push_back(lexer_token("*", token_type::op, 4));
         rules.push_back(lexer_token("/", token_type::op, 4));
 
-        rules.push_back(lexer_token("++", token_type::op));
-        rules.push_back(lexer_token("--", token_type::op));
+		rules.push_back(lexer_token("<=", token_type::op, 1));
+		rules.push_back(lexer_token(">=", token_type::op, 1));
+		rules.push_back(lexer_token("<", token_type::op, 1));
+		rules.push_back(lexer_token(">", token_type::op, 1));
 
-        rules.push_back(lexer_token("=", token_type::op, 4));
+        rules.push_back(lexer_token("=", token_type::op));
 
-        rules.push_back(lexer_token("(", token_type::left_paren));
+        rules.push_back(lexer_token("(", token_type::left_paren, -2000));
         rules.push_back(lexer_token(")", token_type::right_paren, -2000));
         rules.push_back(lexer_token("{", token_type::left_bracket));
         rules.push_back(lexer_token("}", token_type::right_bracket, -99999));
 
-		rules.push_back(lexer_token(".", token_type::dot, -10));
+		rules.push_back(lexer_token(".", token_type::dot, -3000));
         rules.push_back(lexer_token(",", token_type::comma, -1000));
         rules.push_back(lexer_token(";", token_type::semicolon, -9999));
     }
@@ -144,12 +151,14 @@ private:
 
         if (raw[0] == '"' && raw[raw.length() - 1] == '"') {
             t.type = token_type::literal;
+			t.literal_type = literal_type::string;
         }
+		else if (std::regex_match(raw, std::regex("-?[0-9]+"))) {
+			t.type = token_type::literal;
+			t.literal_type = literal_type::integer;
+		}
         else if (std::regex_match(raw, std::regex("[a-zA-Z_]+[a-zA-Z0-9_]*"))) {
             t.type = token_type::ident;
-        }
-        else if (std::regex_match(raw, std::regex("-?[0-9]+"))) {
-            t.type = token_type::literal;
         }
 
         return t;
@@ -189,7 +198,7 @@ public:
         for (cursor = 0; cursor < tokens.size(); cursor ++) {
             auto token = tokens[cursor];
 
-            printf("%s / %d / %d\n", token.raw.c_str(), token.type, token.priority);
+            printf("%s / %d / %d / %d\n", token.raw.c_str(), token.type, token.priority, depth);
 
             if (token.type == token_type::left_bracket)
                 depth--;
@@ -241,7 +250,7 @@ private:
 			}
 		}
 
-        /*
+		// foo(1, 2, 3) -> (1, 2, 3)foo
         for (auto it = std::next(tokens.begin()); it != tokens.end(); ++it) {
             if ((*it).type == token_type::left_paren &&
                 ((*std::prev(it)).type == token_type::ident ||
@@ -266,7 +275,6 @@ private:
                 }
             }
         }
-        */
 
         return std::vector<token>(tokens.rbegin(), tokens.rend());
     }
@@ -286,22 +294,26 @@ private:
         else
             result.push_back(stoken);
     }
-    void sexp_class(const token &token) {
+    void sexp_class(token &token) {
         stoken stoken(token);
 
-        if (token.type == token_type::keyword) {
-            if (token.raw == "def")
-                stoken.type = stoken_type::st_defmethod;
-        }
-        else if (token.type == token_type::left_paren)
-            stoken.type = stoken_type::st_begin_param;
-        else if (token.type == token_type::right_paren)
-            stoken.type = stoken_type::st_end_param;
-        else if (token.type == token_type::ident)
-            stoken.type = stoken_type::ident;
+		if (token.type == token_type::keyword) {
+			result.push_back(pop_and_parse());
+			if (token.raw == "def")
+				stoken.type = stoken_type::st_defmethod;
+		}
+		else if (token.type == token_type::left_paren) {
+			flush_until_type(token_type::right_paren);
+		}
+		else if (token.type == token_type::right_paren) {
+			stack.push_back(token.preparsed(stoken_type::st_begin_param));
+			stoken.type = stoken_type::st_end_param;
+		}
+		else if (token.type == token_type::ident)
+			stack.push_back(token);
         else if (token.type == token_type::comma) {
             flush_until_priority(token.priority);
-            stoken.type = stoken_type::endl;
+            stoken.type = stoken_type::comma;
         }
         
         if (stoken.type == stoken_type::none)
@@ -316,7 +328,8 @@ private:
 			token.type == token_type::semicolon ||
             token.type == token_type::comma) {
 
-            flush_until_priority(token.priority);
+			flush_until_priority(token.priority);
+			stoken = parse(token);
         }
         else if (token.type == token_type::op) {
             flush_until_priority(token.priority);
@@ -324,46 +337,43 @@ private:
         }
         else if (token.type == token_type::left_paren) {
             flush_until_type(token_type::right_paren);
-
-            //stoken.type = stoken_type::st_begin_call;
         }
         else if (token.type == token_type::right_paren) {
-            stack.push_back(token);
-
-            //stoken.type = stoken_type::st_end_call;
         }
         else if (token.type == token_type::left_bracket) {
-            depth--;
             flush_until_type(token_type::right_bracket);
 
             result.push_back(parse(token));
+
+			depth--;
         }
         else if (token.type == token_type::right_bracket) {
-            depth++;
-            //stack.push_back(token);
-
             result.push_back(parse(token));
+
+			depth++;
         }
         else if (token.type == token_type::ident) {
-			if (prev_token().type == token_type::left_paren) {
-
-				stack.push_back(prev_token().preparsed(stoken_type::st_begin_call));
+			if (next_token().type == token_type::right_paren) {
+				stack.push_back(next_token().preparsed(stoken_type::st_begin_call));
 				stack.push_back(token);
 				
-				//result.push_back(parse(token));
-				//result.push_back(begin_call);
+				::stoken endcall(next_token());
+				endcall.type = stoken_type::st_end_call;
+				result.push_back(endcall);
 			}
 			else
 				stack.push_back(token);
-                //stoken.type = stoken_type::ident;
         }
+		else if (token.type == token_type::keyword) {
+			stack.push_back(token);
+		}
         else
             stoken = parse(token);
 
         if (stoken.type == stoken_type::none)
             ctx.push_error(unexpected_token_error(token));
-        else
-            result.push_back(stoken);
+		else 
+			result.push_back(stoken);
     }
 
     stoken parse(const token &token) {
@@ -373,24 +383,28 @@ private:
 		// preparsed
 		if (token.stype != stoken_type::none)
 			stoken.type = token.stype;
-        else if (token.type == token_type::left_bracket) {
-            stoken.type = stoken_type::begin_block;
-        }
-        else if (token.type == token_type::right_bracket) {
-            stoken.type = stoken_type::end_block;
-        }
-        else if (token.type == token_type::literal) {
-            stoken.type = stoken_type::st_literal;
-        }
-        else if (token.type == token_type::ident) {
-            stoken.type = stoken_type::ident;
-        }
-        else if (token.type == token_type::op) {
-            stoken.type = stoken_type::op;
-        }
-        else if (token.type == token_type::keyword) {
-            parse_keyword(token, stoken);
-        }
+		else if (token.type == token_type::left_bracket) {
+			stoken.type = stoken_type::begin_block;
+		}
+		else if (token.type == token_type::right_bracket) {
+			stoken.type = stoken_type::end_block;
+		}
+		else if (token.type == token_type::literal) {
+			stoken.type = stoken_type::st_literal;
+		}
+		else if (token.type == token_type::ident) {
+			stoken.type = stoken_type::ident;
+		}
+		else if (token.type == token_type::op) {
+			stoken.type = stoken_type::op;
+		}
+		else if (token.type == token_type::semicolon)
+			stoken.type = stoken_type::endl;
+		else if (token.type == token_type::comma)
+			stoken.type = stoken_type::comma;
+		else if (token.type == token_type::keyword) {
+			parse_keyword(token, stoken);
+		}
 
         return stoken;
     }
@@ -399,20 +413,27 @@ private:
             stoken.type = stoken_type::st_class;
         else if (token.raw == "def")
             stoken.type = stoken_type::st_defmethod;
+		else if (token.raw == "if")
+			stoken.type = stoken_type::st_if;
+		else if (token.raw == "for")
+			stoken.type = stoken_type::st_for;
     }
 
     void flush_until_priority(int priority) {
         while (!stack.empty()) {
             auto token = stack.back();
+
+			if (token.priority <= priority) {
+				printf("   stopped : %s\n", token.raw.c_str());
+				break;
+			}
+
             stack.pop_back();
 
-            printf("flushed : %s \n", token.raw.c_str());
+            printf("   flushed : %s \n", token.raw.c_str());
             auto parsed = parse(token);
             if (parsed.type != stoken_type::none)
                 result.push_back(parsed);
-
-            if (token.priority <= priority)
-                break;
         }
     }
     void flush_until_type(token_type type) {
@@ -420,15 +441,25 @@ private:
             auto token = stack.back();
             stack.pop_back();
 
-            if (token.type == type)
-                break;
-
-            printf("flushed : %s \n", token.raw.c_str());
+            printf("   flushed : %s \n", token.raw.c_str());
             auto parsed = parse(token);
             if (parsed.type != stoken_type::none)
                 result.push_back(parsed);
+
+			if (token.type == type) {
+				printf("   stop flushing at %s\n", token.raw.c_str());
+				break;
+			}
         }
     }
+
+	stoken pop_and_parse() {
+		auto token = stack.back();
+		stack.pop_back();
+		auto p = parse(token);
+		printf(" pop_and_parse %s %d\n", to_string(p.type), stack.size());
+		return p;
+	}
 
     token prev_token() const {
         if (cursor == 0) 

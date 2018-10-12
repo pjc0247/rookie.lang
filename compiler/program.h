@@ -26,6 +26,8 @@ typedef enum opcode : unsigned char {
     op_ldstr, op_ldnull,
 
     op_jmp_true, op_jmp_false,
+
+	op_endenum // not a real opcode, indicates last num
 } opcode_t;
 
 inline const char *to_string(opcode type) {
@@ -57,14 +59,37 @@ inline const char *to_string(opcode type) {
     }
 }
 
+typedef enum callsite_lookup {
+	cs_method,
+	cs_syscall
+};
+
 #pragma pack (push, 1)
+struct callsite {
+	unsigned char lookup_type;
+	unsigned char reserved1;
+	short index;
+
+	callsite(unsigned char lookup_type, short index) :
+		lookup_type(lookup_type), index(index), reserved1(0) {
+	}
+};
 struct instruction {
     unsigned char opcode;
-    int operand;
+
+	union {
+		// full operand with 4 bytes.
+		int operand;
+
+		callsite cs;
+	};
 
     instruction(opcode_t _o, int operand) :
         opcode((unsigned char)_o), operand(operand) {
     }
+	instruction(opcode_t _o, const callsite &cs) :
+		opcode((unsigned char)_o), cs(cs) {
+	}
 };
 #pragma pack (pop)
 

@@ -25,7 +25,7 @@ enum class token_type {
 enum class stoken_type {
     none,
 
-    endl,
+    comma, endl,
 
     ident,
     st_literal,
@@ -34,7 +34,7 @@ enum class stoken_type {
 
 	st_newobj,
     st_class, st_defmethod,
-    st_if,
+    st_if, st_for,
 
     st_begin_call, st_end_call,
     st_begin_param, st_end_param,
@@ -44,7 +44,8 @@ enum class stoken_type {
 inline const char *to_string(stoken_type type) {
     switch (type) {
     case stoken_type::none: return "none";
-    case stoken_type::endl: return "endl";
+    case stoken_type::comma: return "comma";
+	case stoken_type::endl: return "endl";
     case stoken_type::ident: return "ident";
     case stoken_type::st_literal: return "st_literal";
     case stoken_type::op: return "op";
@@ -52,6 +53,7 @@ inline const char *to_string(stoken_type type) {
     case stoken_type::st_newobj: return "st_newobj";
     case stoken_type::st_defmethod: return "st_defmethod";
     case stoken_type::st_if: return "st_if";
+	case stoken_type::st_for: return "st_for";
     case stoken_type::st_begin_call: return "st_begin_call";
     case stoken_type::st_end_call: return "st_end_call";
     case stoken_type::st_begin_param: return "st_begin_param";
@@ -65,6 +67,7 @@ inline const char *to_string(stoken_type type) {
 struct token {
     std::string raw;
     token_type type;
+	literal_type literal_type;
     int priority;
 
     int line, cols;
