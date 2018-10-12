@@ -25,16 +25,16 @@ compile_context &syntax_node::ctx() const {
 }
 
 void syntax_node::dump(int depth) {
-	for (int i = 0; i < depth * 2; i++)
-		putchar(' ');
+    for (int i = 0; i < depth * 2; i++)
+        putchar(' ');
 
-	if (type == syntax_type::syn_ident)
-		printf("ident (%s)\n", ((ident_node*)this)->ident.c_str());
-	else if (type == syntax_type::syn_literal)
-		printf("literal (%d)\n", ((literal_node*)this)->integer);
-	else
-		printf("%s\n", typeid(*this).name());
+    if (type == syntax_type::syn_ident)
+        printf("ident (%s)\n", ((ident_node*)this)->ident.c_str());
+    else if (type == syntax_type::syn_literal)
+        printf("literal (%d)\n", ((literal_node*)this)->integer);
+    else
+        printf("%s\n", typeid(*this).name());
 
-	for (auto child : children)
-		child->dump(depth + 1);
+    for (auto child : children)
+        child->dump(depth + 1);
 }

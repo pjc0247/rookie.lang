@@ -32,7 +32,7 @@ enum class stoken_type {
 
     op,
 
-	st_newobj,
+    st_newobj,
     st_class, st_defmethod,
     st_if, st_for,
 
@@ -45,15 +45,15 @@ inline const char *to_string(stoken_type type) {
     switch (type) {
     case stoken_type::none: return "none";
     case stoken_type::comma: return "comma";
-	case stoken_type::endl: return "endl";
+    case stoken_type::endl: return "endl";
     case stoken_type::ident: return "ident";
     case stoken_type::st_literal: return "st_literal";
     case stoken_type::op: return "op";
-	case stoken_type::st_class: return "st_class";
+    case stoken_type::st_class: return "st_class";
     case stoken_type::st_newobj: return "st_newobj";
     case stoken_type::st_defmethod: return "st_defmethod";
     case stoken_type::st_if: return "st_if";
-	case stoken_type::st_for: return "st_for";
+    case stoken_type::st_for: return "st_for";
     case stoken_type::st_begin_call: return "st_begin_call";
     case stoken_type::st_end_call: return "st_end_call";
     case stoken_type::st_begin_param: return "st_begin_param";
@@ -67,25 +67,25 @@ inline const char *to_string(stoken_type type) {
 struct token {
     std::string raw;
     token_type type;
-	literal_type literal_type;
+    literal_type literal_type;
     int priority;
 
     int line, cols;
 
-	stoken_type stype;
-	
+    stoken_type stype;
+    
     static token padding() {
         return token();
     }
     token() :
         raw(""), type(token_type::none), priority(0),
         line(0), cols(0),
-		stype(stoken_type::none) {
+        stype(stoken_type::none) {
     }
-	token &preparsed(stoken_type type) {
-		stype = type;
-		return *this;
-	}
+    token &preparsed(stoken_type type) {
+        stype = type;
+        return *this;
+    }
 };
 struct stoken {
     std::string raw;

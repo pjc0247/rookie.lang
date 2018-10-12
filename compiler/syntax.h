@@ -76,7 +76,7 @@ public:
         return (method_node*)find_upward_until(syntax_type::syn_method);
     }
 
-	void dump(int depth = 0);
+    void dump(int depth = 0);
 
     virtual void on_validate() { }
 
@@ -275,9 +275,9 @@ public:
         type = syntax_type::syn_call;
     }
 
-	syntax_node *calltarget() const {
-		return children[0];
-	}
+    syntax_node *calltarget() const {
+        return children[0];
+    }
 
     ident_node *ident() {
         return (ident_node*)children[0];
@@ -380,19 +380,19 @@ protected:
 
 class if_node : public syntax_node {
 public:
-	if_node(syntax_node *parent) :
-		syntax_node(parent) {
+    if_node(syntax_node *parent) :
+        syntax_node(parent) {
 
-		capacity = 2;
-		type = syntax_type::syn_if;
-	}
+        capacity = 2;
+        type = syntax_type::syn_if;
+    }
 
-	syntax_node *cond() const {
-		return children[0];
-	}
-	syntax_node *then() const {
-		return children[1];
-	}
+    syntax_node *cond() const {
+        return children[0];
+    }
+    syntax_node *then() const {
+        return children[1];
+    }
 };
 class for_node : public syntax_node {
 public:

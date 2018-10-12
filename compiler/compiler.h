@@ -14,7 +14,7 @@ class compiler {
 public:
     static compiler default_compiler() {
         return compiler()
-			.transformer<precalc>()
+            .transformer<precalc>()
             .transformer<tco>(); // tail-call optimizer
     }
 
@@ -33,18 +33,21 @@ public:
         
         vnode_transformer().transform(root);
 
-		int round = 0;
-		int total_changes = 0;
-		do {
-			total_changes = 0;
-			printf("[optimise] round %d\n", round++);
-			for (auto &t : transformers) {
-				t->prepare();
-				printf("   [transform] %s\n", typeid(*t).name());
-				total_changes += t->transform(root);
-			}
-			printf("%d node(s) optimised in this round!\n", total_changes);
-		} while (total_changes > 0);
+        int round = 0;
+        int round_changes = 0;
+        int total_changes = 0;
+        do {
+            round_changes = 0;
+            printf("[optimise] round %d\n", round++);
+            for (auto &t : transformers) {
+                t->prepare();
+                printf("   [transform] %s\n", typeid(*t).name());
+                round_changes += t->transform(root);
+            }
+            total_changes += round_changes;
+            printf("%d node(s) optimised in this round.\n", round_changes);
+            printf("%d changes so far!\n\n", total_changes);
+        } while (round_changes > 0);
 
         return root;
     }
@@ -64,7 +67,7 @@ public:
         return true;
     }
 
-	template <typename T>
+    template <typename T>
     compiler &transformer() {
         transformers.push_back(std::make_shared<T>());
         return *this;

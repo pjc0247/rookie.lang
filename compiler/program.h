@@ -15,7 +15,7 @@ typedef enum opcode : unsigned char {
     op_div,
     op_g, op_l, op_ge, op_le,
 
-	op_newobj,
+    op_newobj,
     op_call, op_ret,
 
     op_pop,
@@ -27,7 +27,7 @@ typedef enum opcode : unsigned char {
 
     op_jmp_true, op_jmp_false,
 
-	op_endenum // not a real opcode, indicates last num
+    op_endenum // not a real opcode, indicates last num
 } opcode_t;
 
 inline const char *to_string(opcode type) {
@@ -41,7 +41,7 @@ inline const char *to_string(opcode type) {
     case op_l: return "op_l";
     case op_ge: return "op_ge";
     case op_le: return "op_le";
-	case op_newobj: return "op_newobj";
+    case op_newobj: return "op_newobj";
     case op_call: return "op_call";
     case op_ret: return "op_ret";
     case op_pop: return "op_pop";
@@ -60,36 +60,36 @@ inline const char *to_string(opcode type) {
 }
 
 typedef enum callsite_lookup {
-	cs_method,
-	cs_syscall
+    cs_method,
+    cs_syscall
 };
 
 #pragma pack (push, 1)
 struct callsite {
-	unsigned char lookup_type;
-	unsigned char reserved1;
-	short index;
+    unsigned char lookup_type;
+    unsigned char reserved1;
+    short index;
 
-	callsite(unsigned char lookup_type, short index) :
-		lookup_type(lookup_type), index(index), reserved1(0) {
-	}
+    callsite(unsigned char lookup_type, short index) :
+        lookup_type(lookup_type), index(index), reserved1(0) {
+    }
 };
 struct instruction {
     unsigned char opcode;
 
-	union {
-		// full operand with 4 bytes.
-		int operand;
+    union {
+        // full operand with 4 bytes.
+        int operand;
 
-		callsite cs;
-	};
+        callsite cs;
+    };
 
     instruction(opcode_t _o, int operand) :
         opcode((unsigned char)_o), operand(operand) {
     }
-	instruction(opcode_t _o, const callsite &cs) :
-		opcode((unsigned char)_o), cs(cs) {
-	}
+    instruction(opcode_t _o, const callsite &cs) :
+        opcode((unsigned char)_o), cs(cs) {
+    }
 };
 #pragma pack (pop)
 

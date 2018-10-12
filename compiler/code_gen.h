@@ -13,8 +13,8 @@ enum class lookup_type {
     var_local,
     var_field,
 
-	mtd_method,
-	mtd_syscall
+    mtd_method,
+    mtd_syscall
 };
 struct lookup_result {
     lookup_type type;
@@ -29,21 +29,21 @@ public:
     void set_method(method_node *node) {
         current_method = node;
     }
-	
-	lookup_result lookup_method(const std::string &ident) {
-		lookup_result result;
+    
+    lookup_result lookup_method(const std::string &ident) {
+        lookup_result result;
 
-		for (int i = 0; i<current_class->methods.size(); i++) {
-			if (current_class->methods[i]->ident_str() == ident) {
-				result.type = lookup_type::mtd_method;
-				result.index = i;
-				return result;
-			}
-		}
+        for (int i = 0; i<current_class->methods.size(); i++) {
+            if (current_class->methods[i]->ident_str() == ident) {
+                result.type = lookup_type::mtd_method;
+                result.index = i;
+                return result;
+            }
+        }
 
-		result.type = lookup_type::not_exist;
-		return result;
-	}
+        result.type = lookup_type::not_exist;
+        return result;
+    }
     lookup_result lookup_variable(const std::string &ident) {
         lookup_result result;
         
@@ -113,10 +113,10 @@ public:
     void emit(opcode_t opcode, const std::string &operand) {
         emit(opcode, spool.get_ptr(operand));
     }
-	void emit(opcode_t opcode, const callsite &cs) {
-		printf("[emit] %d\n", opcode);
-		instructions.push_back(instruction(opcode, cs));
-	}
+    void emit(opcode_t opcode, const callsite &cs) {
+        printf("[emit] %d\n", opcode);
+        instructions.push_back(instruction(opcode, cs));
+    }
     void emit(opcode_t opcode, int operand) {
         printf("[emit] %d\n", opcode);
         instructions.push_back(instruction(opcode, operand));
@@ -124,12 +124,12 @@ public:
     int emit(opcode_t opcode) {
         printf("[emit] %d\n", opcode);
         instructions.push_back(instruction(opcode, 0));
-		return instructions.size() - 1;
+        return instructions.size() - 1;
     }
 
-	void modify_operand(int i, int operand) {
-		instructions[i].operand = operand;
-	}
+    void modify_operand(int i, int operand) {
+        instructions[i].operand = operand;
+    }
 
     void emit_class(const std::string &name) {
 
@@ -215,14 +215,14 @@ private:
             _route(root);
             _route(class);
             _route(method);
-			_route(call);
+            _route(call);
             _route(return);
             _route(block);
-			_route(ident);
+            _route(ident);
             _route(literal);
             _route(op);
             _route(assignment);
-			_route(if);
+            _route(if);
             _route(for);
         }
     }
@@ -249,19 +249,19 @@ private:
         emitter.emit(opcode::op_ret);
         emitter.fin_method();
     }
-	void emit_call(call_node *node) {
-		auto target = node->calltarget();
-		if (target->type == syntax_type::syn_ident) {
-			auto lookup = scope.lookup_method(node->ident_str());
+    void emit_call(call_node *node) {
+        auto target = node->calltarget();
+        if (target->type == syntax_type::syn_ident) {
+            auto lookup = scope.lookup_method(node->ident_str());
 
-			if (lookup.type == lookup_type::not_exist) 
-				return;
-			else if (lookup.type == lookup_type::mtd_method)
-				emitter.emit(opcode::op_call, callsite(callsite_lookup::cs_method, lookup.index));
-			else if (lookup.type == lookup_type::mtd_syscall)
-				emitter.emit(opcode::op_call, callsite(callsite_lookup::cs_syscall, lookup.index));
-		}
-	}
+            if (lookup.type == lookup_type::not_exist) 
+                return;
+            else if (lookup.type == lookup_type::mtd_method)
+                emitter.emit(opcode::op_call, callsite(callsite_lookup::cs_method, lookup.index));
+            else if (lookup.type == lookup_type::mtd_syscall)
+                emitter.emit(opcode::op_call, callsite(callsite_lookup::cs_syscall, lookup.index));
+        }
+    }
     void emit_return(return_node *node) {
         auto val = node->value();
         if (val != nullptr)
@@ -272,17 +272,17 @@ private:
         for (auto child : node->children)
             emit(child);
     }
-	void emit_ident(ident_node *node) {
-		auto lookup = scope.lookup_variable(node->ident);
-		if (lookup.type == lookup_type::not_exist) {
-			return;
-		}
+    void emit_ident(ident_node *node) {
+        auto lookup = scope.lookup_variable(node->ident);
+        if (lookup.type == lookup_type::not_exist) {
+            return;
+        }
 
-		if (lookup.type == lookup_type::var_local)
-			emitter.emit(opcode::op_ldloc, lookup.index);
-		else if (lookup.type == lookup_type::var_field)
-			emitter.emit(opcode::op_ldstate, lookup.index);
-	}
+        if (lookup.type == lookup_type::var_local)
+            emitter.emit(opcode::op_ldloc, lookup.index);
+        else if (lookup.type == lookup_type::var_field)
+            emitter.emit(opcode::op_ldstate, lookup.index);
+    }
     void emit_literal(literal_node *node) {
         if (node->literal_type == literal_type::integer)
             emitter.emit(opcode::op_ldi, node->integer);
@@ -328,12 +328,12 @@ private:
         else if (lookup.type == lookup_type::var_field)
             emitter.emit(opcode::op_ststate, lookup.index);
     }
-	void emit_if(if_node *node) {
-		emit(node->cond());
-		int jmp = emitter.emit(opcode::op_jmp_false);
-		emit(node->then());
-		emitter.modify_operand(jmp, emitter.get_cursor());
-	}
+    void emit_if(if_node *node) {
+        emit(node->cond());
+        int jmp = emitter.emit(opcode::op_jmp_false);
+        emit(node->then());
+        emitter.modify_operand(jmp, emitter.get_cursor());
+    }
     void emit_for(for_node *node) {
         emit(node->init());
         auto cursor = emitter.get_cursor();

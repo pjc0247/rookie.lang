@@ -12,7 +12,7 @@ public:
 
 class invalid_program_exception : public std::exception {
 public:
-	invalid_program_exception(const char *msg)
-		: std::exception(msg) {
-	}
+    invalid_program_exception(const char *msg)
+        : std::exception(msg) {
+    }
 };
