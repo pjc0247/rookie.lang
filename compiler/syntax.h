@@ -12,7 +12,7 @@ enum class syntax_type {
     syn_none,
     syn_root,
 
-	syn_annotation,
+    syn_annotation,
     syn_class, syn_field, syn_method, syn_params,
 
     syn_block,
@@ -193,18 +193,18 @@ public:
 };
 class annotation_node : public syntax_node {
 public:
-	annotation_node(syntax_node *parent) :
-		syntax_node(parent) {
-		capacity = 1;
-		type = syntax_type::syn_annotation;
-	}
+    annotation_node(syntax_node *parent) :
+        syntax_node(parent) {
+        capacity = 1;
+        type = syntax_type::syn_annotation;
+    }
 
-	ident_node *ident() {
-		return (ident_node*)children[0];
-	}
-	const std::string &ident_str() {
-		return ident()->ident;
-	}
+    ident_node *ident() {
+        return (ident_node*)children[0];
+    }
+    const std::string &ident_str() {
+        return ident()->ident;
+    }
 };
 class method_node : public syntax_node {
 public:

@@ -29,20 +29,20 @@
 
 class runner {
 public:
-	void execute(const program &p) {
-		if (p.header.entry_len == 0)
-			throw new std::invalid_argument("program does not have any entries.");
+    void execute(const program &p) {
+        if (p.header.entry_len == 0)
+            throw new std::invalid_argument("program does not have any entries.");
 
-		execute(p, &p.entries[0]);
-	}
+        execute(p, &p.entries[0]);
+    }
     void execute(const program &p, program_entry *_entry) {
         printf("===execute===\n");
 
-		current_entry = _entry;
-		pc = _entry->entry;
+        current_entry = _entry;
+        pc = _entry->entry;
         bp = 1;
 
-		push_callframe(*_entry);
+        push_callframe(*_entry);
 
         while (true) {
             if (pc >= p.header.code_len)
@@ -174,9 +174,9 @@ private:
 private:
     gc gc;
 
-	program_entry *current_entry;
-	short pc; // program counter
-	short bp; // base stack pointer
+    program_entry *current_entry;
+    short pc; // program counter
+    short bp; // base stack pointer
 
-	std::deque<value> stack;
+    std::deque<value> stack;
 };
