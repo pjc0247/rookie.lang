@@ -140,6 +140,8 @@ private:
         rules.push_back(lexer_token(")", token_type::right_paren, -2000));
         rules.push_back(lexer_token("{", token_type::left_bracket));
         rules.push_back(lexer_token("}", token_type::right_bracket, -99999));
+		rules.push_back(lexer_token("[", token_type::left_sq_bracket));
+		rules.push_back(lexer_token("]", token_type::right_sq_bracket, -900));
 
         rules.push_back(lexer_token(".", token_type::dot, -3000));
         rules.push_back(lexer_token(",", token_type::comma, -1000));
@@ -239,6 +241,7 @@ private:
         std::list<token> tokens(_tokens.begin(), _tokens.end());
 
         // a.foo(1, 2, 3) -> foo(a, 1, 2, 3)
+		/*
         for (auto it = std::next(tokens.begin()); it != tokens.end(); ++it) {
             if ((*it).type == token_type::ident &&
                 ((*std::prev(it)).type != token_type::dot &&
@@ -254,6 +257,7 @@ private:
                 }
             }
         }
+		*/
 
         // foo(1, 2, 3) -> (1, 2, 3)foo
         for (auto it = std::next(tokens.begin()); it != tokens.end(); ++it) {
@@ -360,8 +364,20 @@ private:
 
             depth++;
         }
+		else if (token.type == token_type::left_sq_bracket) {
+			flush_until_type(token_type::right_sq_bracket);
+			stoken.type = stoken_type::st_begin_arr;
+		}
+		else if (token.type == token_type::right_sq_bracket) {
+			stack.push_back(::token(token).for_stackdelim());
+			stoken.type = stoken_type::st_end_arr;
+		}
         else if (token.type == token_type::ident) {
-            if (next_token().type == token_type::right_paren) {
+			if (prev_token().type == token_type::dot) {
+				stack.push_back(prev_token().preparsed(stoken_type::st_memberaccess));
+				stack.push_back(token);
+			}
+            else if (next_token().type == token_type::right_paren) {
                 stack.push_back(next_token().preparsed(stoken_type::st_begin_call));
                 stack.push_back(token);
                 
@@ -440,7 +456,8 @@ private:
 
             printf("   flushed : %s \n", token.raw.c_str());
             auto parsed = parse(token);
-            if (parsed.type != stoken_type::none)
+            if (parsed.type != stoken_type::none ||
+				parsed.type != stoken_type::nothing)
                 result.push_back(parsed);
         }
     }
@@ -451,7 +468,8 @@ private:
 
             printf("   flushed : %s \n", token.raw.c_str());
             auto parsed = parse(token);
-            if (parsed.type != stoken_type::none)
+            if (parsed.type != stoken_type::none ||
+				parsed.type != stoken_type::nothing)
                 result.push_back(parsed);
 
             if (token.type == type) {

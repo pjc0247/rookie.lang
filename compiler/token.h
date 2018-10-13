@@ -23,7 +23,9 @@ enum class token_type {
     left_sq_bracket, right_sq_bracket
 };
 enum class stoken_type {
-    none,
+	// none: not specified yet
+	// nothing: specified as `nothing`
+    none, nothing,
 
     comma, endl,
 
@@ -32,11 +34,14 @@ enum class stoken_type {
 
     op,
 
+	st_memberaccess,
+
     st_newobj,
     st_annotation,
     st_class, st_defmethod,
     st_if, st_for,
 
+	st_begin_arr, st_end_arr,
     st_begin_call, st_end_call,
     st_begin_param, st_end_param,
     begin_block, end_block
@@ -45,17 +50,21 @@ enum class stoken_type {
 inline const char *to_string(stoken_type type) {
     switch (type) {
     case stoken_type::none: return "none";
+	case stoken_type::nothing: return "nothing";
     case stoken_type::comma: return "comma";
     case stoken_type::endl: return "endl";
     case stoken_type::ident: return "ident";
     case stoken_type::st_literal: return "st_literal";
     case stoken_type::op: return "op";
+	case stoken_type::st_memberaccess: return "st_memberaccess";
     case stoken_type::st_class: return "st_class";
     case stoken_type::st_newobj: return "st_newobj";
     case stoken_type::st_defmethod: return "st_defmethod";
     case stoken_type::st_annotation: return "st_annotation";
     case stoken_type::st_if: return "st_if";
     case stoken_type::st_for: return "st_for";
+	case stoken_type::st_begin_arr: return "st_begin_arr";
+	case stoken_type::st_end_arr: return "st_end_arr";
     case stoken_type::st_begin_call: return "st_begin_call";
     case stoken_type::st_end_call: return "st_end_call";
     case stoken_type::st_begin_param: return "st_begin_param";
@@ -75,7 +84,7 @@ struct token {
     int line, cols;
 
     stoken_type stype;
-    
+
     static token padding() {
         return token();
     }
@@ -88,6 +97,10 @@ struct token {
         stype = type;
         return *this;
     }
+	token &for_stackdelim() {
+		stype = stoken_type::nothing;
+		return *this;
+	}
 };
 struct stoken {
     std::string raw;

@@ -76,7 +76,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -152,6 +152,8 @@
     <ClInclude Include="..\backends\p2wast.h" />
     <ClInclude Include="..\libs\stdlib.h" />
     <ClInclude Include="..\thirdparty\argagg.hpp" />
+    <ClInclude Include="ast\callmember.h" />
+    <ClInclude Include="ast\syntax_travler.h" />
     <ClInclude Include="binding.h" />
     <ClInclude Include="code_gen.h" />
     <ClInclude Include="gc.h" />

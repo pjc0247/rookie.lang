@@ -135,8 +135,8 @@ public:
                 if (callstack.empty()) break;
             }
 
-            else if (inst.opcode == opcode::op_ldloc)
-                stack.push_back(stack[bp + inst.operand]);
+            else if (inst.opcode == opcode::op_ldloc) 
+                stack.push_back(get_local(inst.operand));
             else if (inst.opcode == opcode::op_stloc) {
                 stack[bp + inst.operand] = stack.back();
                 stack.pop_back();

@@ -57,7 +57,7 @@ struct syscalltable {
 
 enum class value_type : char {
     empty,
-    integer, string, object
+    integer, string, object, array
 };
 
 typedef struct object;
@@ -81,8 +81,6 @@ struct value {
 
         int integer;
         const char *str;
-
-        callframe *cframe;
     };
 
     value() :

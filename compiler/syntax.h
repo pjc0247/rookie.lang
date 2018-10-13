@@ -19,7 +19,8 @@ enum class syntax_type {
     syn_literal,
     syn_ident,
 
-    syn_call,
+	syn_memberaccess,
+    syn_call, syn_callmember,
     syn_label, syn_goto,
      
     syn_assignment,
@@ -194,6 +195,20 @@ public:
 public:
     std::string ident;
 };
+class newarr_node : public syntax_node {
+public:
+	newarr_node(const stoken &token, syntax_node *parent) :
+		syntax_node(token, parent) {
+	}
+};
+class memberaccess_node : public syntax_node {
+public:
+	memberaccess_node(const stoken &token, syntax_node *parent) :
+		syntax_node(token, parent) {
+		type = syntax_type::syn_memberaccess;
+		capacity = 2;
+	}
+};
 class params_node : public syntax_node {
 public:
     params_node(const stoken &token, syntax_node *parent) :
@@ -318,6 +333,13 @@ public:
     std::deque<syntax_node*>::iterator end_args() {
         return children.end();
     }
+};
+class callmember_node : public call_node {
+public:
+	callmember_node(const stoken &token, syntax_node *parent) :
+		call_node(token, parent) {
+		type = syntax_type::syn_callmember;
+	}
 };
 
 class return_node : public syntax_node {
