@@ -41,7 +41,7 @@ public:
 
             if (src[head] == '"' && src[head - 1] != '\\')
                 inside_quote ^= true;
-			if (inside_quote) goto end_loop;
+            if (inside_quote) goto end_loop;
 
             if (_str2cmp(src.c_str(), head, '/', '/')) {
                 while (head < src.length() - 1) {
@@ -61,11 +61,11 @@ public:
 
                 if (head != tail) {
                     auto t = parse(src.substr(tail, head - tail));
-					t.line = line;
-					t.cols = cols;
+                    t.line = line;
+                    t.cols = cols;
                     result.push_back(t);
 
-					cols += head - tail;
+                    cols += head - tail;
                 }
 
                 auto t = token();
@@ -76,19 +76,19 @@ public:
                 result.push_back(t);
 
                 head += candidate.length();
-				cols += candidate.length();
+                cols += candidate.length();
                 tail = head;
                 found = true;
 
-				if (t.raw == "\r\n") {
-					line++; cols = 1;
-				}
+                if (t.raw == "\r\n") {
+                    line++; cols = 1;
+                }
                 break;
             }
 
             end_loop:
-			if (!found)
-				head++;
+            if (!found)
+                head++;
         }
 
         if (head != tail) {
@@ -140,8 +140,8 @@ private:
         rules.push_back(lexer_token(")", token_type::right_paren, -2000));
         rules.push_back(lexer_token("{", token_type::left_bracket));
         rules.push_back(lexer_token("}", token_type::right_bracket, -99999));
-		rules.push_back(lexer_token("[", token_type::left_sq_bracket));
-		rules.push_back(lexer_token("]", token_type::right_sq_bracket, -900));
+        rules.push_back(lexer_token("[", token_type::left_sq_bracket));
+        rules.push_back(lexer_token("]", token_type::right_sq_bracket, -900));
 
         rules.push_back(lexer_token(".", token_type::dot, -3000));
         rules.push_back(lexer_token(",", token_type::comma, -1000));
@@ -158,7 +158,7 @@ private:
         if (raw[0] == '"' && raw[raw.length() - 1] == '"') {
             t.type = token_type::literal;
             t.literal_type = literal_type::string;
-			t.raw = t.raw.substr(1, t.raw.size() - 2);
+            t.raw = t.raw.substr(1, t.raw.size() - 2);
         }
         else if (std::regex_match(raw, std::regex("-?[0-9]+"))) {
             t.type = token_type::literal;
@@ -241,7 +241,7 @@ private:
         std::list<token> tokens(_tokens.begin(), _tokens.end());
 
         // a.foo(1, 2, 3) -> foo(a, 1, 2, 3)
-		/*
+        /*
         for (auto it = std::next(tokens.begin()); it != tokens.end(); ++it) {
             if ((*it).type == token_type::ident &&
                 ((*std::prev(it)).type != token_type::dot &&
@@ -257,7 +257,7 @@ private:
                 }
             }
         }
-		*/
+        */
 
         // foo(1, 2, 3) -> (1, 2, 3)foo
         for (auto it = std::next(tokens.begin()); it != tokens.end(); ++it) {
@@ -364,19 +364,19 @@ private:
 
             depth++;
         }
-		else if (token.type == token_type::left_sq_bracket) {
-			flush_until_type(token_type::right_sq_bracket);
-			stoken.type = stoken_type::st_begin_arr;
-		}
-		else if (token.type == token_type::right_sq_bracket) {
-			stack.push_back(::token(token).for_stackdelim());
-			stoken.type = stoken_type::st_end_arr;
-		}
+        else if (token.type == token_type::left_sq_bracket) {
+            flush_until_type(token_type::right_sq_bracket);
+            stoken.type = stoken_type::st_begin_arr;
+        }
+        else if (token.type == token_type::right_sq_bracket) {
+            stack.push_back(::token(token).for_stackdelim());
+            stoken.type = stoken_type::st_end_arr;
+        }
         else if (token.type == token_type::ident) {
-			if (prev_token().type == token_type::dot) {
-				stack.push_back(prev_token().preparsed(stoken_type::st_memberaccess));
-				stack.push_back(token);
-			}
+            if (prev_token().type == token_type::dot) {
+                stack.push_back(prev_token().preparsed(stoken_type::st_memberaccess));
+                stack.push_back(token);
+            }
             else if (next_token().type == token_type::right_paren) {
                 stack.push_back(next_token().preparsed(stoken_type::st_begin_call));
                 stack.push_back(token);
@@ -457,7 +457,7 @@ private:
             printf("   flushed : %s \n", token.raw.c_str());
             auto parsed = parse(token);
             if (parsed.type != stoken_type::none ||
-				parsed.type != stoken_type::nothing)
+                parsed.type != stoken_type::nothing)
                 result.push_back(parsed);
         }
     }
@@ -469,7 +469,7 @@ private:
             printf("   flushed : %s \n", token.raw.c_str());
             auto parsed = parse(token);
             if (parsed.type != stoken_type::none ||
-				parsed.type != stoken_type::nothing)
+                parsed.type != stoken_type::nothing)
                 result.push_back(parsed);
 
             if (token.type == type) {

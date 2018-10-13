@@ -42,7 +42,7 @@ inline const char *to_string(opcode type) {
     case op_ge: return "op_ge";
     case op_le: return "op_le";
     case op_newobj: return "op_newobj";
-	case op_syscall: return "op_syscall";
+    case op_syscall: return "op_syscall";
     case op_call: return "op_call";
     case op_ret: return "op_ret";
     case op_pop: return "op_pop";
@@ -161,7 +161,7 @@ struct program {
 
         for (int i = 0; i < header.entry_len; i++) {
             printf("  [%s]\n", entries[i].signature);
-			printf("    * params: %d\n", entries[i].params);
+            printf("    * params: %d\n", entries[i].params);
             printf("    * locals: %d\n", entries[i].locals);
             printf("    * body\n");
             for (int j = entries[i].entry; j < entries[i].entry + entries[i].codesize; j++) {

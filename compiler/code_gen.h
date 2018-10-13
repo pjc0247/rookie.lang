@@ -25,9 +25,9 @@ struct lookup_result {
 
 class scope {
 public:
-	scope(calltable_builder &syscalls) :
-		syscalls(syscalls) {
-	}
+    scope(calltable_builder &syscalls) :
+        syscalls(syscalls) {
+    }
 
     void set_class(class_node *node) {
         current_class = node;
@@ -47,12 +47,12 @@ public:
             }
         }
 
-		callinfo ci;
-		if (syscalls.try_get(ident, ci)) {
-			result.type = lookup_type::mtd_syscall;
-			result.index = ci.entry;
-			return result;
-		}
+        callinfo ci;
+        if (syscalls.try_get(ident, ci)) {
+            result.type = lookup_type::mtd_syscall;
+            result.index = ci.entry;
+            return result;
+        }
 
         result.type = lookup_type::not_exist;
         return result;
@@ -81,7 +81,7 @@ public:
     }
 
 private:
-	calltable_builder &syscalls;
+    calltable_builder &syscalls;
 
     class_node *current_class;
     method_node *current_method;
@@ -156,9 +156,9 @@ public:
 
         memset(&entry, 0, sizeof(program_entry));
         //sprintf_s(entry.signature, "%s::%s", classname.c_str(), method->ident_str().c_str());
-		sprintf_s(entry.signature, "%s", method->ident_str().c_str());
+        sprintf_s(entry.signature, "%s", method->ident_str().c_str());
         entry.entry = get_cursor();
-		entry.params = method->params()->children.size();
+        entry.params = method->params()->children.size();
         entry.locals = method->locals.size();
         entries.push_back(entry);
     }
@@ -179,12 +179,12 @@ public:
         p.header.entry_len = entries.size();
         p.code = &instructions[0];
 
-		auto rdata = spool.fin();
+        auto rdata = spool.fin();
 
-		if (spool.size() > 0) {
-			p.rdata = (char*)malloc(sizeof(char) * spool.size());
-			memcpy((char*)p.rdata, rdata, sizeof(char) * spool.size());
-		}
+        if (spool.size() > 0) {
+            p.rdata = (char*)malloc(sizeof(char) * spool.size());
+            memcpy((char*)p.rdata, rdata, sizeof(char) * spool.size());
+        }
         if (instructions.size() > 0) {
             p.code = (instruction*)malloc(sizeof(instruction) * instructions.size());
             memcpy(p.code, &instructions[0], sizeof(instruction) * instructions.size());
@@ -207,8 +207,8 @@ private:
 class code_gen {
 public:
     code_gen(compile_context &ctx, calltable_builder &syscalls) :
-		scope(syscalls),
-		ctx(ctx) {
+        scope(syscalls),
+        ctx(ctx) {
     }
 
     program generate(root_node *root) {
@@ -271,17 +271,17 @@ private:
         emitter.fin_method();
     }
     void emit_call(call_node *node) {
-		for (auto it = node->begin_args(); it != node->end_args(); ++it)
-			emit(*it);
+        for (auto it = node->begin_args(); it != node->end_args(); ++it)
+            emit(*it);
 
         auto target = node->calltarget();
         if (target->type == syntax_type::syn_ident) {
             auto lookup = scope.lookup_method(node->ident_str());
 
-			if (lookup.type == lookup_type::not_exist) {
-				ctx.push_error(undeclared_method_error(node->token(), node->ident_str()));
-				return;
-			}
+            if (lookup.type == lookup_type::not_exist) {
+                ctx.push_error(undeclared_method_error(node->token(), node->ident_str()));
+                return;
+            }
             else if (lookup.type == lookup_type::mtd_method)
                 emitter.emit(opcode::op_call, callsite(callsite_lookup::cs_method, lookup.index));
             else if (lookup.type == lookup_type::mtd_syscall)
@@ -301,7 +301,7 @@ private:
     void emit_ident(ident_node *node) {
         auto lookup = scope.lookup_variable(node->ident);
         if (lookup.type == lookup_type::not_exist) {
-			ctx.push_error(undefined_variable_error(node->token()));
+            ctx.push_error(undefined_variable_error(node->token()));
             return;
         }
 
@@ -342,7 +342,7 @@ private:
 
         auto ident = dynamic_cast<ident_node*>(node->left());
         if (ident == nullptr) {
-			ctx.push_error(syntax_error(node->left()->token(), "Wrong l-value type."));
+            ctx.push_error(syntax_error(node->left()->token(), "Wrong l-value type."));
             return;
         }
 
@@ -372,7 +372,7 @@ private:
     }
 
 private:
-	compile_context &ctx;
+    compile_context &ctx;
 
     scope scope;
     program_builder emitter;

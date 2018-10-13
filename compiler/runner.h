@@ -30,13 +30,13 @@
 
 class runner {
 public:
-	runner(binding &binding) :
-		binding(binding) {
+    runner(binding &binding) :
+        binding(binding) {
 
-		for (auto &b : binding.bindings()) {
-			syscalls.table.push_back(b.second);
-		}
-	}
+        for (auto &b : binding.bindings()) {
+            syscalls.table.push_back(b.second);
+        }
+    }
 
     void execute(const program &p) {
         if (p.header.entry_len == 0)
@@ -61,11 +61,11 @@ public:
 
             printf("%s\n", to_string((opcode_t)inst.opcode));
 
-			if (inst.opcode == opcode::op_nop);
-			else if (inst.opcode == opcode::op_ldi)
-				stack.push_back(value::mkinteger(inst.operand));
-			else if (inst.opcode == opcode::op_ldstr)
-				stack.push_back(value::mkstring(p.rdata + inst.operand));
+            if (inst.opcode == opcode::op_nop);
+            else if (inst.opcode == opcode::op_ldi)
+                stack.push_back(value::mkinteger(inst.operand));
+            else if (inst.opcode == opcode::op_ldstr)
+                stack.push_back(value::mkstring(p.rdata + inst.operand));
             else if (inst.opcode == opcode::op_ldstate)
                 stack.push_back(value::mkstring(p.rdata + inst.operand));
 
@@ -116,16 +116,16 @@ public:
             }
 
             else if (inst.opcode == opcode::op_call) {
-				auto entry = p.entries[inst.cs.index];
-				push_callframe(entry);
-				pc = entry.entry;
-				bp = stack.size() - entry.params;
-				current_entry = &entry;
+                auto entry = p.entries[inst.cs.index];
+                push_callframe(entry);
+                pc = entry.entry;
+                bp = stack.size() - entry.params;
+                current_entry = &entry;
             }
-			else if (inst.opcode == opcode::op_syscall) {
-				auto sp = stack_provider(stack);
-				syscalls.table[inst.cs.index](sp);
-			}
+            else if (inst.opcode == opcode::op_syscall) {
+                auto sp = stack_provider(stack);
+                syscalls.table[inst.cs.index](sp);
+            }
             else if (inst.opcode == opcode::op_ret) {
                 auto callframe = pop_callframe(*current_entry);
                 pc = callframe.pc;
@@ -157,12 +157,12 @@ public:
     }
 
 private:
-	__forceinline value get_local(int n) {
-		auto v = stack[bp + n];
-		if (v.type == value_type::empty)
-			throw invalid_access_exception("Accessed to the unassigned slot.");
-		return v;
-	}
+    __forceinline value get_local(int n) {
+        auto v = stack[bp + n];
+        if (v.type == value_type::empty)
+            throw invalid_access_exception("Accessed to the unassigned slot.");
+        return v;
+    }
 
     value pop() {
         if (stack.empty())
@@ -185,14 +185,14 @@ private:
             stack.pop_back();
 
         auto callframe = callstack.back();
-		callstack.pop_back();
+        callstack.pop_back();
 
         return callframe;
     }
 
 private:
-	binding &binding;
-	syscalltable syscalls;
+    binding &binding;
+    syscalltable syscalls;
 
     gc gc;
 
@@ -200,6 +200,6 @@ private:
     short pc; // program counter
     short bp; // base stack pointer
 
-	std::deque<callframe> callstack;
+    std::deque<callframe> callstack;
     std::deque<value> stack;
 };

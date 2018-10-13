@@ -11,24 +11,24 @@ public:
 
 class syntax_error : public compile_error {
 public:
-	syntax_error(const token &token, const std::string &message) :
-		compile_error(token, message) {
+    syntax_error(const token &token, const std::string &message) :
+        compile_error(token, message) {
 
-	}
+    }
 };
 class undeclared_method_error : public compile_error {
 public:
-	undeclared_method_error(const token &token, const std::string &name) :
-		compile_error(token, "Undeclared method: `" + name + "`.") {
+    undeclared_method_error(const token &token, const std::string &name) :
+        compile_error(token, "Undeclared method: `" + name + "`.") {
 
-	}
+    }
 };
 class undefined_variable_error : public compile_error {
 public:
-	undefined_variable_error(const token &token) :
-		compile_error(token, "Undefined variable: `" + token.raw + "`."){
+    undefined_variable_error(const token &token) :
+        compile_error(token, "Undefined variable: `" + token.raw + "`."){
 
-	}
+    }
 };
 
 class invalid_program_exception : public std::exception {
@@ -39,7 +39,7 @@ public:
 };
 class invalid_access_exception : public std::exception {
 public:
-	invalid_access_exception(const char *msg)
-		: std::exception(msg) {
-	}
+    invalid_access_exception(const char *msg)
+        : std::exception(msg) {
+    }
 };

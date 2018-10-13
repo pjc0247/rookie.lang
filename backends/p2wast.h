@@ -116,8 +116,8 @@ private:
         out.append("\r\n");
         emit_body(p, entry);
         out.append(")\r\n");
-		out.append_fmt("(export \"%s\" (func $%s)\n",
-			entry.signature, entry.signature);
+        out.append_fmt("(export \"%s\" (func $%s)\n",
+            entry.signature, entry.signature);
     }
 
     void emit_body(const program &p, const program_entry &entry) {
@@ -136,7 +136,7 @@ private:
             case opcode::op_ldstate:
                 stackdepth++;
                 break;
-			case opcode::op_ret:
+            case opcode::op_ret:
             case opcode::op_stloc:
             case opcode::op_ststate:
                 stackdepth--;
@@ -174,53 +174,53 @@ private:
 #define _emit_front() do { emit_instruction(p, istack.top(), depth + 1); istack.pop(); } while(0)
 
     void emit_instruction(const program &p, const instruction &inst, int depth = 0) {
-		for (int i = 0; i < depth * 2; i++)
-			out.append(' ');
+        for (int i = 0; i < depth * 2; i++)
+            out.append(' ');
         out.append("\n (");
 
-		if (inst.opcode == opcode::op_ldi)
-			out.append_fmt("i32.const %d", inst.operand);
-		else if (inst.opcode == opcode::op_ldloc)
-			out.append_fmt("get_local %d", inst.operand);
+        if (inst.opcode == opcode::op_ldi)
+            out.append_fmt("i32.const %d", inst.operand);
+        else if (inst.opcode == opcode::op_ldloc)
+            out.append_fmt("get_local %d", inst.operand);
 
-		// uses 1 stackitem
-		else if (inst.opcode == opcode::op_ret)
-			_emit_front();
-		else if (inst.opcode == opcode::op_stloc) {
-			out.append_fmt("set_local %d", inst.operand);
-			_emit_front();
-		}
+        // uses 1 stackitem
+        else if (inst.opcode == opcode::op_ret)
+            _emit_front();
+        else if (inst.opcode == opcode::op_stloc) {
+            out.append_fmt("set_local %d", inst.operand);
+            _emit_front();
+        }
 
-		// uses 2 stackitems
-		else if (inst.opcode == opcode::op_g) {
-			out.append("i32.gt_s ");
-			_emit_front(); _emit_front();
-		}
+        // uses 2 stackitems
+        else if (inst.opcode == opcode::op_g) {
+            out.append("i32.gt_s ");
+            _emit_front(); _emit_front();
+        }
 
-		else if (inst.opcode == opcode::op_add) {
-			out.append("i32.add ");
-			_emit_front(); _emit_front();
-		}
-		else if (inst.opcode == opcode::op_sub) {
-			out.append("i32.sub ");
-			_emit_front(); _emit_front();
-		}
-		else if (inst.opcode == opcode::op_div) {
-			out.append("i32.div ");
-			_emit_front(); _emit_front();
-		}
-		else if (inst.opcode == opcode::op_mul) {
-			out.append("i32.mul ");
-			_emit_front(); _emit_front();
-		}
+        else if (inst.opcode == opcode::op_add) {
+            out.append("i32.add ");
+            _emit_front(); _emit_front();
+        }
+        else if (inst.opcode == opcode::op_sub) {
+            out.append("i32.sub ");
+            _emit_front(); _emit_front();
+        }
+        else if (inst.opcode == opcode::op_div) {
+            out.append("i32.div ");
+            _emit_front(); _emit_front();
+        }
+        else if (inst.opcode == opcode::op_mul) {
+            out.append("i32.mul ");
+            _emit_front(); _emit_front();
+        }
 
-		else if (inst.opcode == opcode::op_call) {
-			out.append_fmt("call ");
-		}
+        else if (inst.opcode == opcode::op_call) {
+            out.append_fmt("call ");
+        }
 
-		else {
-			out.append_fmt(";; missing instruction, %s \n", to_string((opcode_t)inst.opcode));
-		}
+        else {
+            out.append_fmt(";; missing instruction, %s \n", to_string((opcode_t)inst.opcode));
+        }
 
         out.append(")");
     }

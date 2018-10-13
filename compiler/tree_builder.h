@@ -27,40 +27,40 @@ public:
             _ending_expression(end_block);
             _ending_expression(st_end_param);
             _ending_expression(st_end_call);
-			_ending_expression(st_end_arr);
+            _ending_expression(st_end_arr);
 
             //if (token.type == stoken_type::endl)
             //    current = current->parent;
-			if (token.type == stoken_type::begin_block) {
-				append_and_replace(block(token));
-			}
-			else if (token.type == stoken_type::st_class) {
-				current_class = klass(token);
-				append_and_replace(current_class);
-			}
-			else if (token.type == stoken_type::st_defmethod) {
-				current_method = method(token);
-				current_class->methods.push_back(current_method);
-				append_and_replace(current_method);
-			}
-			else if (token.type == stoken_type::st_annotation) {
-				append_and_replace(annotation(token));
-			}
+            if (token.type == stoken_type::begin_block) {
+                append_and_replace(block(token));
+            }
+            else if (token.type == stoken_type::st_class) {
+                current_class = klass(token);
+                append_and_replace(current_class);
+            }
+            else if (token.type == stoken_type::st_defmethod) {
+                current_method = method(token);
+                current_class->methods.push_back(current_method);
+                append_and_replace(current_method);
+            }
+            else if (token.type == stoken_type::st_annotation) {
+                append_and_replace(annotation(token));
+            }
 
-			else if (token.type == stoken_type::st_begin_param) {
-				append_and_replace(params(token));
-			}
+            else if (token.type == stoken_type::st_begin_param) {
+                append_and_replace(params(token));
+            }
 
-			else if (token.type == stoken_type::st_begin_call) {
-				append_and_replace(call(token));
-			}
+            else if (token.type == stoken_type::st_begin_call) {
+                append_and_replace(call(token));
+            }
 
-			else if (token.type == stoken_type::st_begin_arr) {
-				append_and_replace(arr(token));
-			}
+            else if (token.type == stoken_type::st_begin_arr) {
+                append_and_replace(arr(token));
+            }
 
-			else if (token.type == stoken_type::st_memberaccess)
-				append_and_replace(memberaccess(token));
+            else if (token.type == stoken_type::st_memberaccess)
+                append_and_replace(memberaccess(token));
 
             else if (token.type == stoken_type::st_if)
                 append_and_replace(_if(token));
@@ -119,18 +119,18 @@ private:
         auto node = new block_node(token, current);
         return node;
     }
-	newarr_node *arr(const stoken &token) {
-		auto node = new newarr_node(token, current);
-		return node;
-	}
+    newarr_node *arr(const stoken &token) {
+        auto node = new newarr_node(token, current);
+        return node;
+    }
     call_node *call(const stoken &token) {
         auto node = new call_node(token, current);
         return node;
     }
-	memberaccess_node *memberaccess(const stoken &token) {
-		auto node = new memberaccess_node(token, current);
-		return node;
-	}
+    memberaccess_node *memberaccess(const stoken &token) {
+        auto node = new memberaccess_node(token, current);
+        return node;
+    }
     if_node *_if(const stoken &token) {
         auto node = new if_node(token, current);
         return node;

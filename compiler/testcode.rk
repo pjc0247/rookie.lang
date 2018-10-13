@@ -1,15 +1,15 @@
 class foo {
-	def _ctor() {
-		b = [1,2,3];
+    def _ctor() {
+        b = [1,2,3];
 
-		b.push(1);
-		
-		a = 51 + 11;
-		
-		hello(a);
-	}
+        b.push(1);
+        
+        a = 51 + 11;
+        
+        hello(a);
+    }
 
-	def hello(a) {
-		print(a);
-	}
+    def hello(a) {
+        print(a);
+    }
 }

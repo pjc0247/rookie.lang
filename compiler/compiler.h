@@ -16,15 +16,15 @@ class compiler {
 public:
     static compiler default_compiler(binding &binding) {
         return compiler(binding)
-			.transformer<callmember_transformer>()
+            .transformer<callmember_transformer>()
             .transformer<precalc>()
             .transformer<tco>(); // tail-call optimizer
     }
 
-	compiler(binding &binding) :
-		binding(binding) {
+    compiler(binding &binding) :
+        binding(binding) {
 
-	}
+    }
 
     root_node *ast_raw(const std::string &src, std::vector<compile_error> &errors) {
         compile_context ctx;
@@ -64,13 +64,13 @@ public:
         program &program,
         std::vector<compile_error> &errors) {
 
-		compile_context ctx;
+        compile_context ctx;
 
-		calltable_builder syscalls;
+        calltable_builder syscalls;
 
-		for (auto &b : binding.bindings()) {
-			syscalls.add_syscall(b.first);
-		}
+        for (auto &b : binding.bindings()) {
+            syscalls.add_syscall(b.first);
+        }
 
         auto root = ast_transformed(src, errors);
         auto cg = code_gen(ctx, syscalls);
@@ -80,10 +80,10 @@ public:
 
         delete root;
 
-		if (ctx.errors.empty())
-			return true;
+        if (ctx.errors.empty())
+            return true;
 
-		errors = ctx.errors;
+        errors = ctx.errors;
         return false;
     }
 
@@ -92,12 +92,12 @@ public:
         transformers.push_back(std::make_shared<T>());
         return *this;
     }
-	compiler &bindings(binding &bindings) {
-		binding = bindings;
-		return *this;
-	}
+    compiler &bindings(binding &bindings) {
+        binding = bindings;
+        return *this;
+    }
 
 private:
-	binding &binding;
+    binding &binding;
     std::vector<std::shared_ptr<syntax_traveler>> transformers;
 };

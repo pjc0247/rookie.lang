@@ -73,7 +73,7 @@ protected:
                 auto assign = new assignment_node(node->source, new_node);
 
                 auto left = new ident_node(
-					param_ident->source, assign, param_ident->ident);
+                    param_ident->source, assign, param_ident->ident);
                 auto right = *it;
                 assign->append(left);
                 assign->append(right);

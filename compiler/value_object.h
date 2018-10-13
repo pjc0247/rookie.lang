@@ -11,48 +11,48 @@ enum class call_type {
     et_syscall_name
 };
 struct callinfo {
-	int sighash;
+    int sighash;
 
     call_type type;
     int entry;
 };
 class calltable_builder {
 public:
-	void add_programcall(const std::string &signature, int entry) {
+    void add_programcall(const std::string &signature, int entry) {
 
-	}
-	int add_syscall(const std::string &signature) {
-		int entry = table.size();
+    }
+    int add_syscall(const std::string &signature) {
+        int entry = table.size();
 
-		callinfo ci;
-		ci.entry = entry;
-		ci.type = call_type::ct_syscall_direct;
-		table.push_back(ci);
+        callinfo ci;
+        ci.entry = entry;
+        ci.type = call_type::ct_syscall_direct;
+        table.push_back(ci);
 
-		lookup[signature] = entry;
-		return entry;
-	}
+        lookup[signature] = entry;
+        return entry;
+    }
 
-	bool try_get(const std::string &signature, callinfo &callinfo) {
-		auto it = lookup.find(signature);
-		if (it == lookup.end()) return false;
-		callinfo = table[(*it).second];
-		return true;
-	}
-	callinfo &get(int index) {
-		return table[index];
-	}
+    bool try_get(const std::string &signature, callinfo &callinfo) {
+        auto it = lookup.find(signature);
+        if (it == lookup.end()) return false;
+        callinfo = table[(*it).second];
+        return true;
+    }
+    callinfo &get(int index) {
+        return table[index];
+    }
 
 private:
-	std::map<std::string, int> lookup;
+    std::map<std::string, int> lookup;
     std::vector<callinfo> table;
 };
 struct calltable {
-	callinfo *table;
+    callinfo *table;
 };
 class stack_provider;
 struct syscalltable {
-	std::vector<std::function<void(stack_provider&)>> table;
+    std::vector<std::function<void(stack_provider&)>> table;
 };
 
 enum class value_type : char {
