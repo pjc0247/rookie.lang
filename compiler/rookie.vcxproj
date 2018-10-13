@@ -149,12 +149,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\backends\p2wast.h" />
     <ClInclude Include="..\libs\stdlib.h" />
     <ClInclude Include="..\thirdparty\argagg.hpp" />
     <ClInclude Include="binding.h" />
     <ClInclude Include="code_gen.h" />
     <ClInclude Include="gc.h" />
-    <ClInclude Include="p2wast.h" />
     <ClInclude Include="compilation.h" />
     <ClInclude Include="compiler.h" />
     <ClInclude Include="errors.h" />

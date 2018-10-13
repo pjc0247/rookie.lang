@@ -10,7 +10,6 @@
     <ClInclude Include="binding.h" />
     <ClInclude Include="code_gen.h" />
     <ClInclude Include="gc.h" />
-    <ClInclude Include="p2wast.h" />
     <ClInclude Include="compilation.h" />
     <ClInclude Include="compiler.h" />
     <ClInclude Include="errors.h" />
@@ -31,6 +30,9 @@
     <ClInclude Include="..\libs\stdlib.h">
       <Filter>libs</Filter>
     </ClInclude>
+    <ClInclude Include="..\backends\p2wast.h">
+      <Filter>backends</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">
@@ -38,6 +40,9 @@
     </Filter>
     <Filter Include="libs">
       <UniqueIdentifier>{a810ad6f-3955-420b-8947-dc896237cfea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backends">
+      <UniqueIdentifier>{d06a7c6e-29d8-404f-ab1c-5642280a2cd6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
