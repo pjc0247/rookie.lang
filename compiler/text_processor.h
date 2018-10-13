@@ -32,7 +32,7 @@ public:
         std::vector<token> result;
 
         int head = 1, tail = 1;
-        int line = 0, cols = 0;
+        int line = 1, cols = 1;
         bool inside_quote = false;
         bool inside_comment = false;
 
@@ -53,10 +53,6 @@ public:
                 continue;
             }
 
-            if (src[head] == '\n') {
-                line++; cols = 0;
-            }
-
             for (auto &rule : rules) {
                 auto &candidate = rule.raw;
 
@@ -67,7 +63,11 @@ public:
 
                 if (head != tail) {
                     auto t = parse(src.substr(tail, head - tail));
+					t.line = line;
+					t.cols = cols;
                     result.push_back(t);
+
+					cols += head - tail;
                 }
 
                 auto t = token();
@@ -78,8 +78,13 @@ public:
                 result.push_back(t);
 
                 head += candidate.length();
+				cols += candidate.length();
                 tail = head;
                 found = true;
+
+				if (t.raw == "\r\n") {
+					line++; cols = 1;
+				}
                 break;
             }
 
@@ -199,7 +204,7 @@ public:
         for (cursor = 0; cursor < tokens.size(); cursor ++) {
             auto token = tokens[cursor];
 
-            printf("%s / %d / %d / %d\n", token.raw.c_str(), token.type, token.priority, depth);
+            printf("%s / %d / %d / %d\n", token.raw.c_str(), token.type, token.line, depth);
 
             if (token.type == token_type::left_bracket)
                 depth--;

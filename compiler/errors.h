@@ -9,6 +9,13 @@ public:
     }
 };
 
+class syntax_error : public compile_error {
+public:
+	syntax_error(const token &token, const std::string &message) :
+		compile_error(token, message) {
+
+	}
+};
 class undeclared_method_error : public compile_error {
 public:
 	undeclared_method_error(const token &token, const std::string &name) :

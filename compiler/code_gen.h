@@ -212,7 +212,7 @@ private:
         if (node->is_virtual)
             ; // incomplete vnode transformation
 
-        printf("%s %d\n", typeid(*node).name(), node->type);
+        printf("%s %d, %d\n", typeid(*node).name(), node->type, node->token().line);
         switch (node->type) {
             _route(root);
             _route(class);
@@ -323,6 +323,7 @@ private:
 
         auto ident = dynamic_cast<ident_node*>(node->left());
         if (ident == nullptr) {
+			ctx.push_error(syntax_error(node->left()->token(), "Wrong l-value type."));
             return;
         }
 

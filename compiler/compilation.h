@@ -14,7 +14,7 @@ struct compile_error {
         message(message) {
 
         // TODO
-        line = 0, cols = 0;
+        line = token.line, cols = token.cols;
     }
 };
 
