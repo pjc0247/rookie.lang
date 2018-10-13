@@ -9,6 +9,8 @@
 #include "binding.h"
 #include "errors.h"
 
+#include "sig2hash.h"
+
 enum class lookup_type {
     not_exist,
 
@@ -236,11 +238,13 @@ private:
             _route(root);
             _route(class);
             _route(method);
+			_route(callmember);
             _route(call);
             _route(return);
             _route(block);
             _route(ident);
             _route(literal);
+			_route(newarr);
             _route(op);
             _route(assignment);
             _route(if);
@@ -288,6 +292,28 @@ private:
                 emitter.emit(opcode::op_syscall, callsite(callsite_lookup::cs_syscall, lookup.index));
         }
     }
+	void emit_callmember(callmember_node *node) {
+		for (auto it = node->begin_args(); it != node->end_args(); ++it)
+			emit(*it);
+
+		/*
+		auto target = node->calltarget();
+		if (target->type == syntax_type::syn_ident) {
+			auto lookup = scope.lookup_method(node->ident_str());
+
+			if (lookup.type == lookup_type::not_exist ||
+				lookup.type == lookup_type::mtd_syscall) {
+				ctx.push_error(undeclared_method_error(node->token(), node->ident_str()));
+				return;
+			}
+			else if (lookup.type == lookup_type::mtd_method)
+				
+		}*/
+		emitter.emit(opcode::op_vcall, callsite(
+			callsite_lookup::cs_syscall,
+			(unsigned char)(node->children.size()-1),
+			0));
+	}
     void emit_return(return_node *node) {
         auto val = node->value();
         if (val != nullptr)
@@ -316,6 +342,11 @@ private:
         else if (node->literal_type == literal_type::string)
             emitter.emit(opcode::op_ldstr, node->str);
     }
+	void emit_newarr(newarr_node *node) {
+		for (auto child : node->children)
+			emit(child);
+		emitter.emit(opcode::op_newarr, node->children.size());
+	}
     void emit_op(op_node *node) {
         emit(node->left());
         emit(node->right());

@@ -18,6 +18,7 @@ enum class syntax_type {
     syn_block,
     syn_literal,
     syn_ident,
+	syn_newarr,
 
     syn_memberaccess,
     syn_call, syn_callmember,
@@ -199,6 +200,7 @@ class newarr_node : public syntax_node {
 public:
     newarr_node(const stoken &token, syntax_node *parent) :
         syntax_node(token, parent) {
+		type = syntax_type::syn_newarr;
     }
 };
 class memberaccess_node : public syntax_node {

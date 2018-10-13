@@ -39,6 +39,7 @@
     <ClInclude Include="ast\callmember.h">
       <Filter>ast</Filter>
     </ClInclude>
+    <ClInclude Include="sig2hash.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

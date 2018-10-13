@@ -15,8 +15,9 @@ typedef enum opcode : unsigned char {
     op_div,
     op_g, op_l, op_ge, op_le,
 
-    op_newobj,
-    op_call, op_syscall, op_ret,
+    op_newobj, op_newarr,
+    op_call, op_syscall, op_vcall,
+	op_ret,
 
     op_pop,
     op_ldloc, op_stloc,
@@ -42,8 +43,10 @@ inline const char *to_string(opcode type) {
     case op_ge: return "op_ge";
     case op_le: return "op_le";
     case op_newobj: return "op_newobj";
+	case op_newarr: return "op_newarr";
     case op_syscall: return "op_syscall";
     case op_call: return "op_call";
+	case op_vcall: return "op_vcall";
     case op_ret: return "op_ret";
     case op_pop: return "op_pop";
     case op_ldloc: return "op_ldloc";
@@ -68,12 +71,15 @@ typedef enum callsite_lookup {
 #pragma pack (push, 1)
 struct callsite {
     unsigned char lookup_type;
-    unsigned char reserved1;
+    unsigned char pushed;
     short index;
 
     callsite(unsigned char lookup_type, short index) :
-        lookup_type(lookup_type), index(index), reserved1(0) {
+        lookup_type(lookup_type), index(index), pushed(0) {
     }
+	callsite(unsigned char lookup_type, unsigned char pushed, short index) :
+		lookup_type(lookup_type), index(index), pushed(pushed) {
+	}
 };
 struct instruction {
     unsigned char opcode;

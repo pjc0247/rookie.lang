@@ -106,8 +106,20 @@ struct value {
         return v;
     }
 };
-struct object {
-    calltable_builder *ctable;
+class object {
+public:
+	callinfo *vtable;
 
     std::map<std::string, value> properties;
+};
+class rkarray : public object {
+public:
+	rkarray() {
+		vtable = new callinfo[1];
+		vtable[0].type = call_type::ct_syscall_direct;
+		//vtable[0].sighash = sig2hash("push");
+		vtable[0].entry = 0;
+	}
+
+	std::vector<value> ary;
 };

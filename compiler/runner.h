@@ -53,6 +53,8 @@ public:
 
         push_callframe(*_entry);
 
+		stack_provider sp(stack);
+
         while (true) {
             if (pc >= p.header.code_len)
                 throw invalid_program_exception("unexpected end of program.");
@@ -114,6 +116,15 @@ public:
 
                 gc.add_object(objref);
             }
+			else if (inst.opcode == opcode::op_newarr) {
+				for (int i = 0; i < inst.operand; i++)
+					pop();
+
+				auto aryref = new rkarray();
+				push(value::mkobjref(aryref));
+
+				gc.add_object(aryref);
+			}
 
             else if (inst.opcode == opcode::op_call) {
                 auto entry = p.entries[inst.cs.index];
@@ -123,9 +134,12 @@ public:
                 current_entry = &entry;
             }
             else if (inst.opcode == opcode::op_syscall) {
-                auto sp = stack_provider(stack);
                 syscalls.table[inst.cs.index](sp);
             }
+			else if (inst.opcode == opcode::op_vcall) {
+				auto callee = stack[stack.size() - inst.cs.pushed];
+				syscalls.table[callee.objref->vtable[inst.cs.index].entry](sp);
+			}
             else if (inst.opcode == opcode::op_ret) {
                 auto callframe = pop_callframe(*current_entry);
                 pc = callframe.pc;
