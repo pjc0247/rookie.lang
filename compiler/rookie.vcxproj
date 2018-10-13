@@ -150,6 +150,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\backends\p2wast.h" />
+    <ClInclude Include="..\libs\array.h" />
     <ClInclude Include="..\libs\stdlib.h" />
     <ClInclude Include="..\thirdparty\argagg.hpp" />
     <ClInclude Include="ast\callmember.h" />

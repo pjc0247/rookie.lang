@@ -40,6 +40,9 @@
       <Filter>ast</Filter>
     </ClInclude>
     <ClInclude Include="sig2hash.h" />
+    <ClInclude Include="..\libs\array.h">
+      <Filter>libs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">
