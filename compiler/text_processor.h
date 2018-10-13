@@ -156,6 +156,7 @@ private:
         if (raw[0] == '"' && raw[raw.length() - 1] == '"') {
             t.type = token_type::literal;
             t.literal_type = literal_type::string;
+			t.raw = t.raw.substr(1, t.raw.size() - 2);
         }
         else if (std::regex_match(raw, std::regex("-?[0-9]+"))) {
             t.type = token_type::literal;
