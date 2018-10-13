@@ -6,6 +6,7 @@
 #include "syntax.h"
 #include "program.h"
 #include "compilation.h"
+#include "errors.h"
 
 enum class lookup_type {
     not_exist,
@@ -186,7 +187,8 @@ private:
 
 class code_gen {
 public:
-    code_gen() {
+    code_gen(compile_context &ctx) :
+		ctx(ctx) {
     }
 
     program generate(root_node *root) {
@@ -250,12 +252,17 @@ private:
         emitter.fin_method();
     }
     void emit_call(call_node *node) {
+		for (auto it = node->begin_args(); it != node->end_args(); ++it)
+			emit(*it);
+
         auto target = node->calltarget();
         if (target->type == syntax_type::syn_ident) {
             auto lookup = scope.lookup_method(node->ident_str());
 
-            if (lookup.type == lookup_type::not_exist) 
-                return;
+			if (lookup.type == lookup_type::not_exist) {
+				ctx.push_error(undeclared_method_error(node->token(), node->ident_str()));
+				return;
+			}
             else if (lookup.type == lookup_type::mtd_method)
                 emitter.emit(opcode::op_call, callsite(callsite_lookup::cs_method, lookup.index));
             else if (lookup.type == lookup_type::mtd_syscall)
@@ -275,6 +282,7 @@ private:
     void emit_ident(ident_node *node) {
         auto lookup = scope.lookup_variable(node->ident);
         if (lookup.type == lookup_type::not_exist) {
+			ctx.push_error(undefined_variable_error(node->token()));
             return;
         }
 
@@ -344,6 +352,8 @@ private:
     }
 
 private:
+	compile_context &ctx;
+
     scope scope;
     program_builder emitter;
 

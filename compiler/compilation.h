@@ -25,6 +25,6 @@ public:
         errors.push_back(err);
     }
 
-private:
+public:
     std::vector<compile_error> errors;
 };

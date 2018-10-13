@@ -52,7 +52,7 @@ protected:
             if (left->literal_type == literal_type::integer &&
                 right->literal_type == left->literal_type) {
 
-                auto _node = new literal_node(node->parent);
+                auto _node = new literal_node(node->source, node->parent);
                 _node->literal_type = literal_type::integer;
 
                 auto op = ((op_node*)node)->op;
@@ -95,17 +95,18 @@ protected:
         if (is_transformable(node)) {
             auto method = node->declaring_method();
             auto call = (call_node*)node->children[0];
-            auto head = new label_node(method->body());
+            auto head = new label_node(stoken::empty(), method->body());
             method->body()->push_front(head);
 
-            auto new_node = new block_node(node->parent);
+            auto new_node = new block_node(stoken::empty(), node->parent);
 
             int cnt = 0;
             for (auto it = call->begin_args(); it != call->end_args(); ++it) {
                 auto param_ident = (ident_node*)method->params()->children[cnt];
-                auto assign = new assignment_node(new_node);
+                auto assign = new assignment_node(node->source, new_node);
 
-                auto left = new ident_node(assign, param_ident->ident);
+                auto left = new ident_node(
+					param_ident->source, assign, param_ident->ident);
                 auto right = *it;
                 assign->append(left);
                 assign->append(right);
@@ -114,7 +115,7 @@ protected:
                 ++cnt;
             }
 
-            new_node->append(new goto_node(new_node, head));
+            new_node->append(new goto_node(stoken::empty(), new_node, head));
             return new_node;
         }
         else 

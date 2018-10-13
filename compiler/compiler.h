@@ -56,15 +56,21 @@ public:
         program &program,
         std::vector<compile_error> &errors) {
 
+		compile_context ctx;
+
         auto root = ast_transformed(src, errors);
-        auto cg = code_gen();
+        auto cg = code_gen(ctx);
 
         root->dump();
         program = cg.generate(root);
 
         delete root;
 
-        return true;
+		if (ctx.errors.empty())
+			return true;
+
+		errors = ctx.errors;
+        return false;
     }
 
     template <typename T>

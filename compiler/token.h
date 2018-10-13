@@ -95,6 +95,10 @@ struct stoken {
 
     token source;
 
+	static stoken empty() {
+		return stoken(token());
+	}
+
     stoken(const token &token) :
         source(token),
         raw(token.raw),

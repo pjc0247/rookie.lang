@@ -92,43 +92,43 @@ private:
     }
 
     class_node *klass(const stoken &token) {
-        auto node = new class_node(current);
+        auto node = new class_node(token, current);
         return node;
     }
     params_node *params(const stoken &token) {
-        auto node = new params_node(current);
+        auto node = new params_node(token, current);
         return node;
     }
     annotation_node *annotation(const stoken &token) {
-        auto node = new annotation_node(current);
+        auto node = new annotation_node(token, current);
         return node;
     }
     method_node *method(const stoken &token) {
-        auto node = new method_node(current);
+        auto node = new method_node(token, current);
         return node;
     }
     block_node *block(const stoken &token) {
-        auto node = new block_node(current);
+        auto node = new block_node(token, current);
         return node;
     }
     call_node *call(const stoken &token) {
-        auto node = new call_node(current);
+        auto node = new call_node(token, current);
         return node;
     }
     if_node *_if(const stoken &token) {
-        auto node = new if_node(current);
+        auto node = new if_node(token, current);
         return node;
     }
     for_node *_for(const stoken &token) {
-        auto node = new for_node(current);
+        auto node = new for_node(token, current);
         return node;
     }
     ident_node *ident(const stoken &token) {
-        auto node = new ident_node(current, token.raw);
+        auto node = new ident_node(token, current, token.raw);
         return node;
     }
     literal_node *literal(const stoken &token) {
-        auto node = new literal_node(current);
+        auto node = new literal_node(token, current);
 
         node->literal_type = token.source.literal_type;
         switch (token.source.literal_type) {
@@ -144,15 +144,15 @@ private:
     }
     syntax_node *op(const stoken &token) {
         if (token.raw == "=") {
-            return new assignment_node(current);
+            return new assignment_node(token, current);
         }
         else if (token.raw == "++" || token.raw == "--") {
-            auto node = new standalone_op_node(current);
+            auto node = new standalone_op_node(token, current);
             node->op = token.raw;
             return node;
         }
         else {
-            auto node = new op_node(current);
+            auto node = new op_node(token, current);
             node->op = token.raw;
             return node;
         }

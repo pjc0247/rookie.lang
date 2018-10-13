@@ -22,11 +22,11 @@ private:
     // BEFORE: a ++
     // AFTER:  a = a + 1
     syntax_node *standalone_op(standalone_op_node *node) {
-        syntax_node *new_node = new assignment_node(node->parent);
+        syntax_node *new_node = new assignment_node(node->source, node->parent);
         new_node->append(node->left());
-        auto plus = new op_node(new_node);
+        auto plus = new op_node(node->source, new_node);
         plus->append(node->left());
-        plus->append(new literal_node(plus, 1));
+        plus->append(new literal_node(node->source, plus, 1));
         if (node->op == "++") plus->op = "+";
         else if (node->op == "--") plus->op = "-";
         new_node->append(plus);

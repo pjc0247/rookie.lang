@@ -37,7 +37,8 @@ class params_node;
 
 class syntax_node {
 public:
-    syntax_node(syntax_node *parent) :
+    syntax_node(const stoken &token, syntax_node *parent) :
+		source(token),
         type(syntax_type::syn_none),
         parent(parent), capacity(-1),
         is_virtual(false) {
@@ -65,6 +66,13 @@ public:
         children.pop_back();
         return last;
     }
+
+	token &token() {
+		return source.source;
+	}
+	stoken &s_token() {
+		return source;
+	}
 
     root_node *root() const {
         return root_ref;
@@ -97,6 +105,8 @@ protected:
     }
 
 public:
+	stoken source;
+
     syntax_type type;
 
     root_node *root_ref;
@@ -109,8 +119,8 @@ public:
 
 class virtual_node : public syntax_node {
 public:
-    virtual_node(syntax_node *parent)
-        : syntax_node(parent) {
+    virtual_node(const stoken &token, syntax_node *parent)
+        : syntax_node(token, parent) {
         is_virtual = true;
     }
 };
@@ -119,7 +129,7 @@ class root_node : public syntax_node {
 public:
     root_node(compile_context &ctx) :
         ctx(ctx),
-        syntax_node(nullptr) {
+        syntax_node(stoken(::token()), nullptr) {
 
         root_ref = this;
         type = syntax_type::syn_root;
@@ -142,8 +152,8 @@ private:
 
 class block_node : public syntax_node {
 public:
-    block_node(syntax_node *parent) :
-        syntax_node(parent) {
+    block_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
         type = syntax_type::syn_block;
     }
 
@@ -154,17 +164,17 @@ public:
 
 class literal_node : public syntax_node {
 public:
-    literal_node(syntax_node *parent) :
-        syntax_node(parent) {
+    literal_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
         type = syntax_type::syn_literal;
     }
-    literal_node(syntax_node *parent, int n) :
-        literal_node(parent) {
+    literal_node(const stoken &token, syntax_node *parent, int n) :
+        literal_node(token, parent) {
         literal_type = literal_type::integer;
         integer = n;
     }
-    literal_node(syntax_node *parent, const std::string &_str) :
-        literal_node(parent) {
+    literal_node(const stoken &token, syntax_node *parent, const std::string &_str) :
+        literal_node(token, parent) {
         literal_type = literal_type::string;
         str = _str;
     }
@@ -177,8 +187,8 @@ public:
 };
 class ident_node : public syntax_node {
 public:
-    ident_node(syntax_node *parent, const std::string &ident) :
-        syntax_node(parent), ident(ident) {
+    ident_node(const stoken &token, syntax_node *parent, const std::string &ident) :
+        syntax_node(token, parent), ident(ident) {
         type = syntax_type::syn_ident;
     }
 public:
@@ -186,15 +196,15 @@ public:
 };
 class params_node : public syntax_node {
 public:
-    params_node(syntax_node *parent) :
-        syntax_node(parent) {
+    params_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
         type = syntax_type::syn_params;
     }
 };
 class annotation_node : public syntax_node {
 public:
-    annotation_node(syntax_node *parent) :
-        syntax_node(parent) {
+    annotation_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
         capacity = 1;
         type = syntax_type::syn_annotation;
     }
@@ -208,8 +218,8 @@ public:
 };
 class method_node : public syntax_node {
 public:
-    method_node(syntax_node *parent) :
-        syntax_node(parent) {
+    method_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
         capacity = 3;
         type = syntax_type::syn_method;
     }
@@ -252,8 +262,8 @@ public:
 };
 class field_node : public syntax_node {
 public:
-    field_node(syntax_node *parent) :
-        syntax_node(parent) {
+    field_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
         capacity = 1;
         type = syntax_type::syn_field;
     }
@@ -267,8 +277,8 @@ public:
 };
 class class_node : public syntax_node {
 public:
-    class_node(syntax_node *parent) :
-        syntax_node(parent) {
+    class_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
         type = syntax_type::syn_class;
     }
 
@@ -286,8 +296,8 @@ public:
 
 class call_node : public syntax_node {
 public:
-    call_node(syntax_node *parent) :
-        syntax_node(parent) {
+    call_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
         type = syntax_type::syn_call;
     }
 
@@ -312,8 +322,8 @@ public:
 
 class return_node : public syntax_node {
 public:
-    return_node(syntax_node *parent) :
-        syntax_node(parent) {
+    return_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
         capacity = 1;
         type = syntax_type::syn_return;
     }
@@ -327,15 +337,15 @@ public:
 
 class label_node : public syntax_node {
 public:
-    label_node(syntax_node *parent) :
-        syntax_node(parent) {
+    label_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
         type = syntax_type::syn_label;
     }
 };
 class goto_node : public syntax_node {
 public:
-    goto_node(syntax_node *parent, label_node *dst) :
-        syntax_node(parent), dst(dst) {
+    goto_node(const stoken &token, syntax_node *parent, label_node *dst) :
+        syntax_node(token, parent), dst(dst) {
         type = syntax_type::syn_goto;
     }
 
@@ -345,8 +355,8 @@ public:
 
 class standalone_op_node : public syntax_node {
 public:
-    standalone_op_node(syntax_node *parent) :
-        syntax_node(parent) {
+    standalone_op_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
 
         capacity = 1;
         type = syntax_type::syn_standalone_op;
@@ -361,8 +371,8 @@ public:
 
 class op_node : public syntax_node {
 public:
-    op_node(syntax_node *parent) :
-        syntax_node(parent) {
+    op_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
 
         capacity = 2;
         type = syntax_type::syn_op;
@@ -381,8 +391,8 @@ public:
 
 class assignment_node : public op_node {
 public:
-    assignment_node(syntax_node *parent) :
-        op_node(parent) {
+    assignment_node(const stoken &token, syntax_node *parent) :
+        op_node(token, parent) {
         capacity = 2;
         type = syntax_type::syn_assignment;
     }
@@ -396,8 +406,8 @@ protected:
 
 class if_node : public syntax_node {
 public:
-    if_node(syntax_node *parent) :
-        syntax_node(parent) {
+    if_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
 
         capacity = 2;
         type = syntax_type::syn_if;
@@ -412,8 +422,8 @@ public:
 };
 class for_node : public syntax_node {
 public:
-    for_node(syntax_node *parent) :
-        syntax_node(parent) {
+    for_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
         capacity = 4;
         type = syntax_type::syn_for;
     }

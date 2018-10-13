@@ -1,4 +1,6 @@
 class foo {
 	def _ctor() {
+
+		foo(a);
 	}
 }
