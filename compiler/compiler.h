@@ -63,13 +63,6 @@ public:
 
 		compile_context ctx;
 
-		binding.add("print", [](value p) {
-			if (p.type == value_type::integer)
-				printf("%d\n", p.integer);
-			else if (p.type == value_type::string)
-				printf("%s\n", p.str);
-		});
-
 		calltable_builder syscalls;
 
 		for (auto &b : binding.bindings()) {

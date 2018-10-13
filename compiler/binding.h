@@ -9,6 +9,20 @@
 #define _bind(signature, lambda) \
 	map[signature] = lambda
 
+#define _rookie_library(name) \
+	class name { \
+	public: \
+		void import(binding &b) {
+#define _end_rookie_library \
+	} };
+#define _rookie_function(name, body) \
+	b.add(name, [] body );
+
+#define is_rkint(v) v.type == value_type::integer
+#define is_rkstr(v) v.type == value_type::string
+#define rkint(v) v.integer
+#define rkcstr(v) v.str
+
 class stack_provider {
 public:
 	stack_provider(std::deque<value> &stack) :
