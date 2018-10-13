@@ -12,11 +12,16 @@
 
 class compiler {
 public:
-    static compiler default_compiler() {
-        return compiler()
+    static compiler default_compiler(binding &binding) {
+        return compiler(binding)
             .transformer<precalc>()
             .transformer<tco>(); // tail-call optimizer
     }
+
+	compiler(binding &binding) :
+		binding(binding) {
+
+	}
 
     root_node *ast_raw(const std::string &src, std::vector<compile_error> &errors) {
         compile_context ctx;
@@ -56,11 +61,23 @@ public:
         program &program,
         std::vector<compile_error> &errors) {
 
-		binding binding;
 		compile_context ctx;
 
+		binding.add("print", [](value p) {
+			if (p.type == value_type::integer)
+				printf("%d\n", p.integer);
+			else if (p.type == value_type::string)
+				printf("%s\n", p.str);
+		});
+
+		calltable_builder syscalls;
+
+		for (auto &b : binding.bindings()) {
+			syscalls.add_syscall(b.first);
+		}
+
         auto root = ast_transformed(src, errors);
-        auto cg = code_gen(ctx, binding);
+        auto cg = code_gen(ctx, syscalls);
 
         root->dump();
         program = cg.generate(root);
@@ -79,7 +96,12 @@ public:
         transformers.push_back(std::make_shared<T>());
         return *this;
     }
+	compiler &bindings(binding &bindings) {
+		binding = bindings;
+		return *this;
+	}
 
 private:
+	binding &binding;
     std::vector<std::shared_ptr<syntax_traveler>> transformers;
 };

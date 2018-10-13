@@ -10,6 +10,7 @@
 
 #include "value_object.h"
 #include "gc.h"
+#include "binding.h"
 
 #define _invalid_stackitem \
     throw new invalid_program_exception("invalid stackitem, expected integer");
@@ -27,27 +28,16 @@
 #define _pop2_int(a, b) \
     auto a = pop(); auto b = pop(); _ensure_int(a,b);
 
-class stack_provider {
-public:
-	stack_provider(std::deque<value> &stack) :
-		stackref(stack) {
-	}
-
-	void push(const value &v) {
-		stackref.push_back(v);
-	}
-	value pop() {
-		auto item = stackref.back();
-		stackref.pop_back();
-		return item;
-	}
-
-private:
-	std::deque<value> &stackref;
-};
-
 class runner {
 public:
+	runner(binding &binding) :
+		binding(binding) {
+
+		for (auto &b : binding.bindings()) {
+			syscalls.table.push_back(b.second);
+		}
+	}
+
     void execute(const program &p) {
         if (p.header.entry_len == 0)
             throw new std::invalid_argument("program does not have any entries.");
@@ -71,9 +61,11 @@ public:
 
             printf("%s\n", to_string((opcode_t)inst.opcode));
 
-            if (inst.opcode == opcode::op_nop);
-            else if (inst.opcode == opcode::op_ldi)
-                stack.push_back(value::mkinteger(inst.operand));
+			if (inst.opcode == opcode::op_nop);
+			else if (inst.opcode == opcode::op_ldi)
+				stack.push_back(value::mkinteger(inst.operand));
+			else if (inst.opcode == opcode::op_ldstr)
+				stack.push_back(value::mkstring(p.rdata + inst.operand));
             else if (inst.opcode == opcode::op_ldstate)
                 stack.push_back(value::mkstring(p.rdata + inst.operand));
 
@@ -124,11 +116,18 @@ public:
             }
 
             else if (inst.opcode == opcode::op_call) {
-                auto entry = p.entries[inst.cs.index];
-                push_callframe(entry);
-                pc = entry.entry;
-                bp = stack.size() - entry.params;
-                current_entry = &entry;
+				if (inst.cs.lookup_type == callsite_lookup::cs_method) {
+					auto entry = p.entries[inst.cs.index];
+					push_callframe(entry);
+					pc = entry.entry;
+					bp = stack.size() - entry.params;
+					current_entry = &entry;
+				}
+				else if (inst.cs.lookup_type == callsite_lookup::cs_syscall) {
+					printf("SYSCALL %d\n", inst.cs.index);
+					auto sp = stack_provider(stack);
+					syscalls.table[inst.cs.index](sp);
+				}
             }
             else if (inst.opcode == opcode::op_ret) {
                 auto callframe = pop_callframe(*current_entry);
@@ -191,6 +190,9 @@ private:
     }
 
 private:
+	binding &binding;
+	syscalltable syscalls;
+
     gc gc;
 
     program_entry *current_entry;

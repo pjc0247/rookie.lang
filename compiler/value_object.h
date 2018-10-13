@@ -2,6 +2,7 @@
 
 #include <map>
 #include <string>
+#include <functional>
 
 enum class call_type {
     ct_programcall_direct,
@@ -10,12 +11,48 @@ enum class call_type {
     et_syscall_name
 };
 struct callinfo {
+	int sighash;
+
     call_type type;
     int entry;
 };
-class calltable {
+class calltable_builder {
+public:
+	void add_programcall(const std::string &signature, int entry) {
+
+	}
+	int add_syscall(const std::string &signature) {
+		int entry = table.size();
+
+		callinfo ci;
+		ci.entry = entry;
+		ci.type = call_type::ct_syscall_direct;
+		table.push_back(ci);
+
+		lookup[signature] = entry;
+		return entry;
+	}
+
+	bool try_get(const std::string &signature, callinfo &callinfo) {
+		auto it = lookup.find(signature);
+		if (it == lookup.end()) return false;
+		callinfo = table[(*it).second];
+		return true;
+	}
+	callinfo &get(int index) {
+		return table[index];
+	}
+
 private:
-    std::map<std::string, callinfo> mapping;
+	std::map<std::string, int> lookup;
+    std::vector<callinfo> table;
+};
+struct calltable {
+	callinfo *table;
+};
+class stack_provider;
+struct syscalltable {
+	std::vector<std::function<void(stack_provider&)>> table;
 };
 
 enum class value_type : char {
@@ -79,7 +116,7 @@ struct value {
     }
 };
 struct object {
-    calltable *ctable;
+    calltable_builder *ctable;
 
     std::map<std::string, value> properties;
 };

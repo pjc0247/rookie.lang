@@ -162,6 +162,7 @@
     <ClInclude Include="program_io.h" />
     <ClInclude Include="runner.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="stdlib.h" />
     <ClInclude Include="syntax.h" />
     <ClInclude Include="text_processor.h" />
     <ClInclude Include="token.h" />

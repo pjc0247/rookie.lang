@@ -25,8 +25,8 @@ struct lookup_result {
 
 class scope {
 public:
-	scope(binding &binding) :
-		binding(binding) {
+	scope(calltable_builder &syscalls) :
+		syscalls(syscalls) {
 	}
 
     void set_class(class_node *node) {
@@ -46,6 +46,13 @@ public:
                 return result;
             }
         }
+
+		callinfo ci;
+		if (syscalls.try_get(ident, ci)) {
+			result.type = lookup_type::mtd_syscall;
+			result.index = ci.entry;
+			return result;
+		}
 
         result.type = lookup_type::not_exist;
         return result;
@@ -74,7 +81,7 @@ public:
     }
 
 private:
-	binding &binding;
+	calltable_builder &syscalls;
 
     class_node *current_class;
     method_node *current_method;
@@ -170,8 +177,13 @@ public:
         p.header.rdata_len = spool.size();
         p.header.entry_len = entries.size();
         p.code = &instructions[0];
-        p.rdata = spool.fin();
 
+		auto rdata = spool.fin();
+
+		if (spool.size() > 0) {
+			p.rdata = (char*)malloc(sizeof(char) * spool.size());
+			memcpy((char*)p.rdata, rdata, sizeof(char) * spool.size());
+		}
         if (instructions.size() > 0) {
             p.code = (instruction*)malloc(sizeof(instruction) * instructions.size());
             memcpy(p.code, &instructions[0], sizeof(instruction) * instructions.size());
@@ -180,8 +192,6 @@ public:
             p.entries = (program_entry*)malloc(sizeof(program_entry) * entries.size());
             memcpy(p.entries, &entries[0], sizeof(program_entry) * entries.size());
         }
-
-        printf("ENTRY REN %d\n", p.header.entry_len);
 
         return p;
     }
@@ -195,8 +205,8 @@ private:
 
 class code_gen {
 public:
-    code_gen(compile_context &ctx, binding &binding) :
-		scope(binding),
+    code_gen(compile_context &ctx, calltable_builder &syscalls) :
+		scope(syscalls),
 		ctx(ctx) {
     }
 

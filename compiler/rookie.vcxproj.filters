@@ -28,6 +28,7 @@
     <ClInclude Include="..\thirdparty\argagg.hpp">
       <Filter>thirdparty</Filter>
     </ClInclude>
+    <ClInclude Include="stdlib.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">
