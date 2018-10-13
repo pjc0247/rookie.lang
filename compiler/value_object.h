@@ -57,7 +57,6 @@ struct syscalltable {
 
 enum class value_type : char {
     empty,
-    callframe,
     integer, string, object
 };
 
@@ -94,12 +93,6 @@ struct value {
         value v;
         v.type = value_type::object;
         v.objref = objref;
-        return v;
-    }
-    static value mkcallframe(short pc, short bp, program_entry *entry) {
-        value v;
-        v.type = value_type::callframe;
-        v.cframe = new callframe(pc, bp, entry);
         return v;
     }
     static value mkinteger(int n) {

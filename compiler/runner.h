@@ -55,7 +55,7 @@ public:
 
         while (true) {
             if (pc >= p.header.code_len)
-                throw new invalid_program_exception("unexpected end of program.");
+                throw invalid_program_exception("unexpected end of program.");
 
             auto inst = p.code[pc++];
 
@@ -152,14 +152,21 @@ public:
             }
 
             else
-                throw new invalid_program_exception("unknown instruction.");
+                throw invalid_program_exception("unknown instruction.");
         }
     }
 
 private:
+	__forceinline value get_local(int n) {
+		auto v = stack[bp + n];
+		if (v.type == value_type::empty)
+			throw invalid_access_exception("Accessed to the unassigned slot.");
+		return v;
+	}
+
     value pop() {
         if (stack.empty())
-            throw new invalid_program_exception("stack underflow");
+            throw invalid_program_exception("stack underflow");
         auto item = stack.back();
         stack.pop_back();
         return item;

@@ -37,3 +37,9 @@ public:
         : std::exception(msg) {
     }
 };
+class invalid_access_exception : public std::exception {
+public:
+	invalid_access_exception(const char *msg)
+		: std::exception(msg) {
+	}
+};
