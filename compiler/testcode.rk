@@ -1,6 +1,9 @@
 class foo {
 	def _ctor() {
+		print("hello world");
+	}
 
-		foo(a);
+	def hello() {
+		1 + 5;
 	}
 }

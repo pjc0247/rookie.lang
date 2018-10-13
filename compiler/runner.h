@@ -27,6 +27,25 @@
 #define _pop2_int(a, b) \
     auto a = pop(); auto b = pop(); _ensure_int(a,b);
 
+class stack_provider {
+public:
+	stack_provider(std::deque<value> &stack) :
+		stackref(stack) {
+	}
+
+	void push(const value &v) {
+		stackref.push_back(v);
+	}
+	value pop() {
+		auto item = stackref.back();
+		stackref.pop_back();
+		return item;
+	}
+
+private:
+	std::deque<value> &stackref;
+};
+
 class runner {
 public:
     void execute(const program &p) {

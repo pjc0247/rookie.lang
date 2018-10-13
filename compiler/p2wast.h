@@ -102,7 +102,7 @@ private:
         out.append(")");
     }
     void emit_entry(const program &p, const program_entry &entry) {
-        out.append("(func ");
+        out.append_fmt("(func $%s ", entry.signature);
 
         for (int i = 0; i < entry.params; i++)
             out.append(" (param i32) ");
@@ -116,6 +116,8 @@ private:
         out.append("\r\n");
         emit_body(p, entry);
         out.append(")\r\n");
+		out.append_fmt("(export \"%s\" (func $%s)\n",
+			entry.signature, entry.signature);
     }
 
     void emit_body(const program &p, const program_entry &entry) {
@@ -134,6 +136,7 @@ private:
             case opcode::op_ldstate:
                 stackdepth++;
                 break;
+			case opcode::op_ret:
             case opcode::op_stloc:
             case opcode::op_ststate:
                 stackdepth--;
@@ -181,6 +184,8 @@ private:
 			out.append_fmt("get_local %d", inst.operand);
 
 		// uses 1 stackitem
+		else if (inst.opcode == opcode::op_ret)
+			_emit_front();
 		else if (inst.opcode == opcode::op_stloc) {
 			out.append_fmt("set_local %d", inst.operand);
 			_emit_front();

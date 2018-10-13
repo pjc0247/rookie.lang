@@ -6,6 +6,7 @@
 #include "syntax.h"
 #include "program.h"
 #include "compilation.h"
+#include "binding.h"
 #include "errors.h"
 
 enum class lookup_type {
@@ -24,6 +25,10 @@ struct lookup_result {
 
 class scope {
 public:
+	scope(binding &binding) :
+		binding(binding) {
+	}
+
     void set_class(class_node *node) {
         current_class = node;
     }
@@ -69,6 +74,8 @@ public:
     }
 
 private:
+	binding &binding;
+
     class_node *current_class;
     method_node *current_method;
 };
@@ -141,7 +148,8 @@ public:
         printf(" emitmethod %s::%s\n", classname.c_str(), method->ident_str().c_str());
 
         memset(&entry, 0, sizeof(program_entry));
-        sprintf_s(entry.signature, "%s::%s", classname.c_str(), method->ident_str().c_str());
+        //sprintf_s(entry.signature, "%s::%s", classname.c_str(), method->ident_str().c_str());
+		sprintf_s(entry.signature, "%s", method->ident_str().c_str());
         entry.entry = get_cursor();
         entry.locals = method->locals.size();
         entries.push_back(entry);
@@ -187,12 +195,12 @@ private:
 
 class code_gen {
 public:
-    code_gen(compile_context &ctx) :
+    code_gen(compile_context &ctx, binding &binding) :
+		scope(binding),
 		ctx(ctx) {
     }
 
     program generate(root_node *root) {
-        scope = ::scope();
         emitter = program_builder();
 
         emit(root);
