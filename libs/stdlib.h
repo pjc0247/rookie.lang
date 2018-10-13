@@ -5,6 +5,6 @@
 class rookie_stdlib {
 public:
 	void import(binding &b) {
-
+		
 	}
 };

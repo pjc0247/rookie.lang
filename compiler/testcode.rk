@@ -1,9 +1,11 @@
 class foo {
 	def _ctor() {
-		print("hello world");
+		a = 51 + 11;
+		
+		hello(a);
 	}
 
-	def hello() {
-		1 + 5;
+	def hello(a) {
+		print(a);
 	}
 }
