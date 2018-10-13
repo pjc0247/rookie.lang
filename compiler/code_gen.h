@@ -158,6 +158,7 @@ public:
         //sprintf_s(entry.signature, "%s::%s", classname.c_str(), method->ident_str().c_str());
 		sprintf_s(entry.signature, "%s", method->ident_str().c_str());
         entry.entry = get_cursor();
+		entry.params = method->params()->children.size();
         entry.locals = method->locals.size();
         entries.push_back(entry);
     }
@@ -284,7 +285,7 @@ private:
             else if (lookup.type == lookup_type::mtd_method)
                 emitter.emit(opcode::op_call, callsite(callsite_lookup::cs_method, lookup.index));
             else if (lookup.type == lookup_type::mtd_syscall)
-                emitter.emit(opcode::op_call, callsite(callsite_lookup::cs_syscall, lookup.index));
+                emitter.emit(opcode::op_syscall, callsite(callsite_lookup::cs_syscall, lookup.index));
         }
     }
     void emit_return(return_node *node) {

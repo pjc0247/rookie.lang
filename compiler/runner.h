@@ -49,7 +49,7 @@ public:
 
         current_entry = _entry;
         pc = _entry->entry;
-        bp = 1;
+        bp = 0;
 
         push_callframe(*_entry);
 
@@ -116,27 +116,23 @@ public:
             }
 
             else if (inst.opcode == opcode::op_call) {
-				if (inst.cs.lookup_type == callsite_lookup::cs_method) {
-					auto entry = p.entries[inst.cs.index];
-					push_callframe(entry);
-					pc = entry.entry;
-					bp = stack.size() - entry.params;
-					current_entry = &entry;
-				}
-				else if (inst.cs.lookup_type == callsite_lookup::cs_syscall) {
-					printf("SYSCALL %d\n", inst.cs.index);
-					auto sp = stack_provider(stack);
-					syscalls.table[inst.cs.index](sp);
-				}
+				auto entry = p.entries[inst.cs.index];
+				push_callframe(entry);
+				pc = entry.entry;
+				bp = stack.size() - entry.params;
+				current_entry = &entry;
             }
+			else if (inst.opcode == opcode::op_syscall) {
+				auto sp = stack_provider(stack);
+				syscalls.table[inst.cs.index](sp);
+			}
             else if (inst.opcode == opcode::op_ret) {
                 auto callframe = pop_callframe(*current_entry);
-                pc = callframe->pc;
-                bp = callframe->bp;
-                current_entry = callframe->entry;
-                delete callframe;
+                pc = callframe.pc;
+                bp = callframe.bp;
+                current_entry = callframe.entry;
 
-                if (stack.empty()) break;
+                if (callstack.empty()) break;
             }
 
             else if (inst.opcode == opcode::op_ldloc)
@@ -173,20 +169,18 @@ private:
     }
 
     void push_callframe(program_entry &entry) {
-        stack.push_back(value::mkcallframe(pc, bp, current_entry));
+        callstack.push_back(callframe(pc, bp, current_entry));
         for (int i = 0; i < entry.locals - entry.params; i++)
             stack.push_back(value());
     }
-    callframe *pop_callframe(program_entry &entry) {
+    callframe pop_callframe(program_entry &entry) {
         for (int i = 0; i < entry.locals; i++)
             stack.pop_back();
 
-        auto callframe = stack.back();
-        if (callframe.type != value_type::callframe)
-            throw new invalid_program_exception("unexpected stack item.");
-        stack.pop_back();
+        auto callframe = callstack.back();
+		callstack.pop_back();
 
-        return callframe.cframe;
+        return callframe;
     }
 
 private:
@@ -199,5 +193,6 @@ private:
     short pc; // program counter
     short bp; // base stack pointer
 
+	std::deque<callframe> callstack;
     std::deque<value> stack;
 };
