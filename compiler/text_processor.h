@@ -39,11 +39,9 @@ public:
         while (head < src.length() - 1) {
             bool found = false;
 
-            if (inside_quote) goto end_loop;
-            if (src[head] == '"' && src[head - 1] != '\\') {
+            if (src[head] == '"' && src[head - 1] != '\\')
                 inside_quote ^= true;
-                continue;
-            }
+			if (inside_quote) goto end_loop;
 
             if (_str2cmp(src.c_str(), head, '/', '/')) {
                 while (head < src.length() - 1) {
@@ -89,8 +87,8 @@ public:
             }
 
             end_loop:
-            if (!found)
-                head++;
+			if (!found)
+				head++;
         }
 
         if (head != tail) {
