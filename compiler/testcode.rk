@@ -1,0 +1,4 @@
+class foo {
+	def _ctor() {
+	}
+}

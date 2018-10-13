@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="gc.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="syntax.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="binding.h" />
+    <ClInclude Include="code_gen.h" />
+    <ClInclude Include="gc.h" />
+    <ClInclude Include="p2wast.h" />
+    <ClInclude Include="compilation.h" />
+    <ClInclude Include="compiler.h" />
+    <ClInclude Include="errors.h" />
+    <ClInclude Include="optimiser.h" />
+    <ClInclude Include="program.h" />
+    <ClInclude Include="program_io.h" />
+    <ClInclude Include="runner.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="syntax.h" />
+    <ClInclude Include="text_processor.h" />
+    <ClInclude Include="token.h" />
+    <ClInclude Include="tree_builder.h" />
+    <ClInclude Include="value_object.h" />
+    <ClInclude Include="vnode_transformer.h" />
+    <ClInclude Include="..\thirdparty\argagg.hpp">
+      <Filter>thirdparty</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="thirdparty">
+      <UniqueIdentifier>{652c4f88-01f9-4cd2-abdb-66c5290402ef}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
