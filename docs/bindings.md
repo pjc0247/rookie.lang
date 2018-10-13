@@ -1,6 +1,7 @@
 bindings
 ====
 
+You can export your C++ function into __rookie__.<br>
 ```cpp
 _rookie_library(rookie_stdlib)
 _rookie_function("print", (value v) {
