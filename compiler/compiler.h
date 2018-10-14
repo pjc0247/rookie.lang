@@ -31,8 +31,9 @@ public:
 
     }
 
-    root_node *ast_raw(const std::string &src, std::vector<compile_error> &errors) {
-        compile_context ctx;
+    root_node *ast_raw(
+		compile_context &ctx,
+		const std::string &src, std::vector<compile_error> &errors) {
 
         auto tokens = lexer(ctx).lex(src);
         auto stokens = sexper(ctx).sexp(tokens);
@@ -41,8 +42,11 @@ public:
 
         return root;
     }
-    root_node *ast_transformed(const std::string &src, std::vector<compile_error> &errors) {
-        auto root = ast_raw(src, errors);
+    root_node *ast_transformed(
+		compile_context &ctx,
+		const std::string &src, std::vector<compile_error> &errors) {
+
+        auto root = ast_raw(ctx, src, errors);
         
         vnode_transformer().transform(root);
 
@@ -77,7 +81,7 @@ public:
             syscalls.add_syscall(b.first);
         }
 
-        auto root = ast_transformed(src, errors);
+        auto root = ast_transformed(ctx, src, errors);
         auto cg = code_gen(ctx, syscalls);
 
         root->dump();

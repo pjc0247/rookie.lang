@@ -168,6 +168,9 @@ private:
         }
         else if (std::regex_match(raw, std::regex("[a-zA-Z_]+[a-zA-Z0-9_]*"))) {
             t.type = token_type::ident;
+
+			if (t.raw.length() >= rooke_max_signature - 1)
+				ctx.push_error(name_too_long_error(t));
         }
 
         return t;
@@ -316,23 +319,29 @@ private:
         return std::vector<token>(tokens.rbegin(), tokens.rend());
     }
 
+#define _mark_as_parsed(stoken) stoken.type = stoken_type::nothing
     void sexp_root(const token &token) {
         stoken stoken(token);
 
-        if (token.type == token_type::keyword) {
-            if (token.raw == "class")
-                stoken.type = stoken_type::st_class;
-            else if (token.raw == "include")
-                stoken.type = stoken_type::st_include;
-        }
-        else if (token.type == token_type::ident)
-            stoken.type = stoken_type::ident;
-        else if (token.type == token_type::literal)
-            stoken.type = stoken_type::st_literal;
+		if (token.type == token_type::keyword) {
+			if (token.raw == "class")
+				stoken.type = stoken_type::st_class;
+			else if (token.raw == "include")
+				stoken.type = stoken_type::st_include;
+		}
+		else if (token.type == token_type::ident)
+			stoken.type = stoken_type::ident;
+		else if (token.type == token_type::literal)
+			stoken.type = stoken_type::st_literal;
 
-        if (stoken.type == stoken_type::none)
-            ctx.push_error(unexpected_token_error(token));
-        else
+		else if (token.type == token_type::left_bracket ||
+			token.type == token_type::right_bracket ||
+			token.type == token_type::semicolon)
+			_mark_as_parsed(stoken);
+
+		if (stoken.type == stoken_type::none)
+			ctx.push_error(unexpected_token_error(token));
+        else if (stoken.type != stoken_type::nothing)
             result.push_back(stoken);
     }
     void sexp_class(token &token) {
@@ -348,21 +357,27 @@ private:
         }
         else if (token.type == token_type::left_paren) {
             flush_until_type(token_type::right_paren);
+			_mark_as_parsed(stoken);
         }
         else if (token.type == token_type::right_paren) {
             stack.push_back(token.preparsed(stoken_type::st_begin_param));
             stoken.type = stoken_type::st_end_param;
         }
-        else if (token.type == token_type::ident)
-            stack.push_back(token);
+		else if (token.type == token_type::ident) {
+			stack.push_back(token);
+			_mark_as_parsed(stoken);
+		}
         else if (token.type == token_type::comma) {
             flush_until_priority(token.priority);
             stoken.type = stoken_type::comma;
         }
-        
+		else if (token.type == token_type::left_bracket ||
+			token.type == token_type::right_bracket)
+			_mark_as_parsed(stoken);
+
         if (stoken.type == stoken_type::none)
             ctx.push_error(unexpected_token_error(token));
-        else
+		else if (stoken.type != stoken_type::nothing)
             result.push_back(stoken);
     }
     void sexp_methodbody(const token &token) {
@@ -372,31 +387,38 @@ private:
             token.type == token_type::semicolon ||
             token.type == token_type::comma) {
 
+			_mark_as_parsed(stoken);
             flush_until_priority(token.priority);
             stoken = parse(token);
         }
         else if (token.type == token_type::op) {
             flush_until_priority(token.priority);
             stack.push_back(token);
+			_mark_as_parsed(stoken);
         }
         else if (token.type == token_type::left_paren) {
             flush_until_type(token_type::right_paren);
+			_mark_as_parsed(stoken);
         }
         else if (token.type == token_type::right_paren) {
+			_mark_as_parsed(stoken);
         }
         else if (token.type == token_type::left_bracket) {
             flush_until_type(token_type::right_bracket);
-
             result.push_back(parse(token));
-
             depth--;
+
+			_mark_as_parsed(stoken);
         }
         else if (token.type == token_type::right_bracket) {
             result.push_back(parse(token));
-
             depth++;
+
+			_mark_as_parsed(stoken);
         }
         else if (token.type == token_type::left_sq_bracket) {
+			_mark_as_parsed(stoken);
+
             auto right_sq_bracket = 
                 flush_until_type(token_type::right_sq_bracket);
 
@@ -404,6 +426,8 @@ private:
                 stoken.type = stoken_type::st_begin_arr;
         }
         else if (token.type == token_type::right_sq_bracket) {
+			_mark_as_parsed(stoken);
+
             if (prev_token().type == token_type::ident ||
                 prev_token().type == token_type::right_paren) {
 
@@ -438,16 +462,19 @@ private:
             }
             else
                 stack.push_back(token);
+
+			_mark_as_parsed(stoken);
         }
         else if (token.type == token_type::keyword) {
             stack.push_back(token);
+			_mark_as_parsed(stoken);
         }
         else
             stoken = parse(token);
 
         if (stoken.type == stoken_type::none)
             ctx.push_error(unexpected_token_error(token));
-        else 
+		else if (stoken.type != stoken_type::nothing)
             result.push_back(stoken);
     }
 
@@ -456,30 +483,33 @@ private:
         stoken.raw = token.raw;
 
         // preparsed
-        if (token.stype != stoken_type::none)
-            stoken.type = token.stype;
-        else if (token.type == token_type::left_bracket) {
-            stoken.type = stoken_type::begin_block;
-        }
-        else if (token.type == token_type::right_bracket) {
-            stoken.type = stoken_type::end_block;
-        }
-        else if (token.type == token_type::literal) {
-            stoken.type = stoken_type::st_literal;
-        }
-        else if (token.type == token_type::ident) {
-            stoken.type = stoken_type::ident;
-        }
-        else if (token.type == token_type::op) {
-            stoken.type = stoken_type::op;
-        }
-        else if (token.type == token_type::semicolon)
-            stoken.type = stoken_type::endl;
-        else if (token.type == token_type::comma)
-            stoken.type = stoken_type::comma;
-        else if (token.type == token_type::keyword) {
-            parse_keyword(token, stoken);
-        }
+		if (token.stype != stoken_type::none)
+			stoken.type = token.stype;
+		else if (token.type == token_type::left_bracket) {
+			stoken.type = stoken_type::begin_block;
+		}
+		else if (token.type == token_type::right_bracket) {
+			stoken.type = stoken_type::end_block;
+		}
+		else if (token.type == token_type::literal) {
+			stoken.type = stoken_type::st_literal;
+		}
+		else if (token.type == token_type::ident) {
+			stoken.type = stoken_type::ident;
+		}
+		else if (token.type == token_type::op) {
+			stoken.type = stoken_type::op;
+		}
+		else if (token.type == token_type::semicolon)
+			stoken.type = stoken_type::endl;
+		else if (token.type == token_type::comma)
+			stoken.type = stoken_type::comma;
+		else if (token.type == token_type::dot)
+			stoken.type = stoken_type::nothing;
+		else if (token.type == token_type::keyword) {
+			parse_keyword(token, stoken);
+		}
+		
 
         return stoken;
     }

@@ -9,6 +9,13 @@ public:
     }
 };
 
+class name_too_long_error : public compile_error {
+public:
+	name_too_long_error(const token &token) :
+		compile_error(token, "Name too long: `" + token.raw + "`") {
+
+	}
+};
 class syntax_error : public compile_error {
 public:
     syntax_error(const token &token, const std::string &message) :
