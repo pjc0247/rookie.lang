@@ -37,7 +37,7 @@ public:
     void set_method(method_node *node) {
         current_method = node;
     }
-    
+
     lookup_result lookup_method(const std::string &ident) {
         lookup_result result;
 
@@ -293,8 +293,12 @@ private:
         }
     }
 	void emit_callmember(callmember_node *node) {
-		for (auto it = node->begin_args(); it != node->end_args(); ++it)
+		for (auto it = node->begin_args(); it != node->end_args(); ++it) {
 			emit(*it);
+
+			if (node->begin_args() == it)
+				emitter.emit(opcode::op_setcallee);
+		}
 
 		/*
 		auto target = node->calltarget();
@@ -309,10 +313,7 @@ private:
 			else if (lookup.type == lookup_type::mtd_method)
 				
 		}*/
-		emitter.emit(opcode::op_vcall, callsite(
-			callsite_lookup::cs_syscall,
-			(unsigned char)(node->children.size()-1),
-			0));
+		emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()));
 	}
     void emit_return(return_node *node) {
         auto val = node->value();

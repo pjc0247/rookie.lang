@@ -4,6 +4,8 @@
 #include <string>
 #include <functional>
 
+#include "sig2hash.h"
+
 enum class call_type {
     ct_programcall_direct,
     ct_programcall_name,
@@ -48,7 +50,7 @@ private:
     std::vector<callinfo> table;
 };
 struct calltable {
-    callinfo *table;
+    std::map<int, callinfo> table;
 };
 class stack_provider;
 struct syscalltable {
@@ -108,17 +110,14 @@ struct value {
 };
 class object {
 public:
-	callinfo *vtable;
+	int vtable_len;
+	std::map<int, callinfo> *vtable;
 
     std::map<std::string, value> properties;
 };
 class rkarray : public object {
 public:
 	rkarray() {
-		vtable = new callinfo[1];
-		vtable[0].type = call_type::ct_syscall_direct;
-		//vtable[0].sighash = sig2hash("push");
-		vtable[0].entry = 0;
 	}
 
 	std::vector<value> ary;

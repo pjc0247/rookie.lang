@@ -22,6 +22,7 @@ typedef enum opcode : unsigned char {
     op_pop,
     op_ldloc, op_stloc,
     op_ldstate, op_ststate,
+	op_setcallee,
 
     op_ldi,
     op_ldstr, op_ldnull,
@@ -53,6 +54,7 @@ inline const char *to_string(opcode type) {
     case op_stloc: return "op_stloc";
     case op_ldstate: return "op_ldstate";
     case op_ststate: return "op_ststate";
+	case op_setcallee: return "op_setcallee";
     case op_ldi: return "op_ldi";
     case op_ldstr: return "op_ldstr";
     case op_ldnull: return "op_ldnull";
@@ -97,6 +99,14 @@ struct instruction {
     instruction(opcode_t _o, const callsite &cs) :
         opcode((unsigned char)_o), cs(cs) {
     }
+};
+
+struct methoddata {
+	int entry;
+};
+struct typedata {
+	int methods_len;
+	methoddata *methods;
 };
 #pragma pack (pop)
 

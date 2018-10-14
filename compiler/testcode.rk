@@ -3,6 +3,7 @@ class foo {
         b = [1,2,3];
 
         b.push(1);
+		b.remove(2);
         
         a = 51 + 11;
         

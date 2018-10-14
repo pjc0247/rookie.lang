@@ -68,7 +68,7 @@ public:
 
         calltable_builder syscalls;
 
-        for (auto &b : binding.bindings()) {
+        for (auto &b : binding.get_methods()) {
             syscalls.add_syscall(b.first);
         }
 

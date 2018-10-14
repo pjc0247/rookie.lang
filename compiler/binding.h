@@ -7,7 +7,7 @@
 #include "value_object.h"
 
 #define _bind(signature, lambda) \
-    map[signature] = lambda
+    methods[signature] = lambda
 
 #define _rookie_library(name) \
     class name { \
@@ -42,9 +42,49 @@ private:
     std::deque<value> &stackref;
 };
 
+typedef std::map<std::string, std::function<void(stack_provider&)>> bindmap;
+
+class type_builder {
+public:
+	type_builder(const std::string &name) :
+		name(name) {
+
+	}
+
+	type_builder &method(const std::string &signature,
+		const std::function<void()> &function) {
+
+		_bind(signature, [function](stack_provider &sp) {
+			function();
+		});
+		return *this;
+	}
+	type_builder & method(const std::string &signature,
+		const std::function<void(value)> &function) {
+
+		_bind(signature, [function](stack_provider &sp) {
+			function(sp.pop());
+		});
+		return *this;
+	}
+	
+	const std::string &get_name() const {
+		return name;
+	}
+	const bindmap &get_methods() const {
+		return methods;
+	}
+
+private:
+	std::string name;
+	bindmap methods;
+};
+
 class binding {
 public:
-    typedef std::map<std::string, std::function<void(stack_provider&)>> bindmap;
+	void add_type(type_builder &type) {
+		types.push_back(type);
+	}
 
     void add(const std::string &signature,
         const std::function<void()> &function) {
@@ -68,10 +108,15 @@ public:
         return *this;
     }
 
-    const bindmap &bindings() const {
-        return map;
+	const std::vector<type_builder> &get_types() const {
+		return types;
+	}
+    const bindmap &get_methods() const {
+        return methods;
     }
 
 private:
-    bindmap map;
+	std::vector<type_builder> types;
+
+    bindmap methods;
 };
