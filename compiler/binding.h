@@ -130,3 +130,20 @@ private:
 
     bindmap methods;
 };
+
+template <typename T>
+class rkobject : public object {
+public:
+	static value create_instance() {
+		return value::mkobjref(new T());
+	}
+
+	static void bind(type_builder &type,
+		const char *name, value(T::*function)(value)) {
+
+		type.method(name, [function](value _this, value idx) {
+			auto obj = ((T*)_this.objref);
+			return std::invoke(function, obj, idx);
+		});
+	}
+};

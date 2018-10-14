@@ -122,11 +122,3 @@ public:
 
     std::map<std::string, value> properties;
 };
-
-template <typename T>
-class rkobject : public object {
-public:
-    static value create_instance() {
-        return value::mkobjref(new T());
-    }
-};

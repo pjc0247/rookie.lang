@@ -147,7 +147,7 @@ public:
                 for (int i = 0; i < inst.operand; i++)
                     pop();
 
-                auto aryref = new rookie_array();
+                auto aryref = new rkarray();
                 // FIXME
                 aryref->vtable = &types[sig2hash("array")].vtable.table;
                 push(value::mkobjref(aryref));
