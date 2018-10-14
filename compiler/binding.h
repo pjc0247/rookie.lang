@@ -16,7 +16,7 @@
 #define _end_rookie_library \
     } };
 #define _rookie_function(name, body) \
-    b.add(name, [] body );
+    b.function(name, [] body );
 
 #define is_rkint(v) v.type == value_type::integer
 #define is_rkstr(v) v.type == value_type::string
@@ -114,14 +114,14 @@ public:
         types.push_back(type);
     }
 
-    void add(const std::string &signature,
+    void function(const std::string &signature,
         const std::function<value()> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
             sp.push(function());
         });
     }
-    void add(const std::string &signature,
+    void function(const std::string &signature,
         const std::function<value(value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
