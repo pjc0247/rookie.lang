@@ -1,3 +1,4 @@
+// fibo.rky
 class example_fibo {
     def main() {
         print(fib(10));
