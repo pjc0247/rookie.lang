@@ -194,7 +194,8 @@ public:
         p.header.rdata_len = spool.size();
         p.header.entry_len = entries.size();
         p.header.types_len = types.size();
-        p.code = &instructions[0];
+
+		p.header.main_entry = 0;
 
         auto rdata = spool.fin();
 

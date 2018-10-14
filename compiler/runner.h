@@ -44,54 +44,14 @@ public:
 		p(p), binding(binding),
         callee_ptr(nullptr) {
 
-        for (auto &b : binding.get_methods()) {
-            syscalls.table.push_back(b.second);
-        }
-        for (auto &type : binding.get_types()) {
-            auto typesighash = sig2hash(type.get_name());
-
-            auto methods = type.get_methods();
-			calltable vtable;
-
-            for (auto &method : methods) {
-                auto sighash = sig2hash(method.first);
-                syscalls.table.push_back(method.second);
-
-                vtable.table[sighash].type = call_type::ct_syscall_direct;
-                vtable.table[sighash].entry = syscalls.table.size() - 1;
-            }
-
-            runtime_typedata tdata;
-            tdata.typekind = runtime_typekind::tk_systype;
-            tdata.vtable = vtable;
-            types[typesighash] = tdata;
-        }
-
-        for (int i = 0; i < p.header.types_len; i++) {
-            auto type = p.types[i];
-			
-            runtime_typedata tdata;
-            tdata.typekind = runtime_typekind::tk_programtype;
-
-			calltable vtable;
-			for (int j = 0; j < type.methods_len; j++) {
-				auto method = type.methods[j];
-				auto methodhash = sig2hash(method.name);
-
-				vtable.table[methodhash].type = call_type::ct_programcall_direct;
-				vtable.table[methodhash].entry = method.entry;
-			}
-			tdata.vtable = vtable;
-
-            types[sig2hash(type.name)] = tdata;
-        }
+		build_runtime_data();
     }
 
     void execute() {
         if (p.header.entry_len == 0)
             throw new std::invalid_argument("program does not have any entries.");
 
-        execute(&p.entries[0]);
+        execute(&p.entries[p.header.main_entry]);
     }
     void execute(program_entry *_entry) {
         printf("===execute===\n");
@@ -241,15 +201,57 @@ public:
     }
 
 private:
+	void build_runtime_data() {
+		for (auto &b : binding.get_methods()) {
+			syscalls.table.push_back(b.second);
+		}
+		for (auto &type : binding.get_types()) {
+			auto typesighash = sig2hash(type.get_name());
+
+			auto methods = type.get_methods();
+			calltable vtable;
+
+			for (auto &method : methods) {
+				auto sighash = sig2hash(method.first);
+				syscalls.table.push_back(method.second);
+
+				vtable.table[sighash].type = call_type::ct_syscall_direct;
+				vtable.table[sighash].entry = syscalls.table.size() - 1;
+			}
+
+			runtime_typedata tdata;
+			tdata.typekind = runtime_typekind::tk_systype;
+			tdata.vtable = vtable;
+			types[typesighash] = tdata;
+		}
+
+		for (int i = 0; i < p.header.types_len; i++) {
+			auto type = p.types[i];
+
+			runtime_typedata tdata;
+			tdata.typekind = runtime_typekind::tk_programtype;
+
+			calltable vtable;
+			for (int j = 0; j < type.methods_len; j++) {
+				auto method = type.methods[j];
+				auto methodhash = sig2hash(method.name);
+
+				vtable.table[methodhash].type = call_type::ct_programcall_direct;
+				vtable.table[methodhash].entry = method.entry;
+			}
+			tdata.vtable = vtable;
+
+			types[sig2hash(type.name)] = tdata;
+		}
+	}
+
     __forceinline value get_local(int n) {
         auto v = stack[bp + n];
         if (v.type == value_type::empty)
             throw invalid_access_exception("Accessed to the unassigned slot.");
         return v;
     }
-
     __forceinline value syscall(int index, stack_provider &sp) {
-        printf("* syscall %d\n", index);
         syscalls.table[index](sp);
         return sp.pop();
     }

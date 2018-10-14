@@ -122,6 +122,8 @@ struct program_header {
     unsigned int rdata_len;
     unsigned int entry_len;
     unsigned int types_len;
+
+	unsigned int main_entry;
 };
 // program_entry: ?????bytes
 struct program_entry {
