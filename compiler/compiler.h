@@ -14,6 +14,8 @@
 #include "ast/callnewobj.h"
 #include "ast/arraccess.h"
 
+#define rky_no_optimization (1 << 0)
+
 class compiler {
 public:
     static compiler default_compiler(binding &binding) {
@@ -26,6 +28,17 @@ public:
 			//.transformer<tco>(); // tail-call optimizer
 			;
     }
+	static compiler build_compiler(binding &binding, int options = 0) {
+		auto c = compiler(binding)
+			.transformer<callmember_transformer>()
+			.transformer<callnewobj_transformer>()
+			.transformer<arraccess_transformer>();
+
+		if (!(options & rky_no_optimization))
+			c.transformer<precalc>();
+
+		return c;
+	}
 
     compiler(binding &binding) :
         binding(binding) {
@@ -86,6 +99,7 @@ public:
 
         auto root = ast_transformed(ctx, src, errors);
         auto cg = code_gen(ctx, syscalls);
+		ctx.fin();
 
         root->dump();
         program = cg.generate(root);
@@ -101,6 +115,11 @@ public:
 
     template <typename T>
     compiler &transformer() {
+		for (auto &t : transformers) {
+			if (strcmp(typeid(*t).name(), (typeid(T).name())) == 0)
+				throw std::invalid_argument("Duplicated transformer");
+		}
+
         transformers.push_back(std::make_shared<T>());
         return *this;
     }
