@@ -227,6 +227,7 @@ public:
         delete exectx;
     }
 
+	// Performs vcall, internal use only.
     void _vcall(int sighash, stack_provider &sp) {
         auto calleeobj = callee_ptr->objref;
 
