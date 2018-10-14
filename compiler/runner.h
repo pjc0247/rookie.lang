@@ -149,7 +149,7 @@ public:
 
                 auto aryref = new rkarray();
                 // FIXME
-                aryref->vtable = &types[sig2hash("array")].vtable.table;
+                aryref->vtable = &types[sighash_array].vtable.table;
                 push(value::mkobjref(aryref));
 
                 gc.add_object(aryref);
