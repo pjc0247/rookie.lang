@@ -167,11 +167,7 @@ public:
         types[classname].methods.push_back(mdata);
 
         program_entry entry;
-
-        //printf(" emitmethod %s::%s\n", classname.c_str(), method->ident_str().c_str());
-
         memset(&entry, 0, sizeof(program_entry));
-        //sprintf_s(entry.signature, "%s::%s", classname.c_str(), method->ident_str().c_str());
         sprintf_s(entry.signature, "%s", method->ident_str().c_str());
         entry.entry = get_cursor();
         entry.params = method->params()->children.size();
@@ -424,6 +420,7 @@ private:
 
         auto lookup = scope.lookup_variable(ident->ident);
         if (lookup.type == lookup_type::not_exist) {
+			ctx.push_error(undefined_variable_error(ident->token()));
             return;
         }
 
