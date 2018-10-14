@@ -114,6 +114,8 @@ private:
 
         rules.push_back(lexer_token("//", token_type::none));
 
+		rules.push_back(lexer_token("include", token_type::keyword));
+
         rules.push_back(lexer_token("@", token_type::keyword));
         rules.push_back(lexer_token("class", token_type::keyword));
         rules.push_back(lexer_token("def", token_type::keyword));
@@ -292,12 +294,16 @@ private:
         stoken stoken(token);
 
         if (token.type == token_type::keyword) {
-            if (token.raw == "class")
-                stoken.type = stoken_type::st_class;
+			if (token.raw == "class")
+				stoken.type = stoken_type::st_class;
+			else if (token.raw == "include")
+				stoken.type = stoken_type::st_include;
         }
         else if (token.type == token_type::ident)
             stoken.type = stoken_type::ident;
-        
+		else if (token.type == token_type::literal)
+			stoken.type = stoken_type::st_literal;
+
         if (stoken.type == stoken_type::none)
             ctx.push_error(unexpected_token_error(token));
         else

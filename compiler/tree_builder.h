@@ -31,7 +31,9 @@ public:
 
             //if (token.type == stoken_type::endl)
             //    current = current->parent;
-            if (token.type == stoken_type::begin_block) {
+			if (token.type == stoken_type::st_include)
+				append_and_replace(include(token));
+            else if (token.type == stoken_type::begin_block) {
                 append_and_replace(block(token));
             }
             else if (token.type == stoken_type::st_class) {
@@ -99,6 +101,10 @@ private:
         current = node;
     }
 
+	include_node *include(const stoken &token) {
+		auto node = new include_node(token, current);
+		return node;
+	}
     class_node *klass(const stoken &token) {
         auto node = new class_node(token, current);
         return node;

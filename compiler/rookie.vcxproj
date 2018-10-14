@@ -158,6 +158,7 @@
     <ClInclude Include="ast\syntax_travler.h" />
     <ClInclude Include="binding.h" />
     <ClInclude Include="code_gen.h" />
+    <ClInclude Include="fileio.h" />
     <ClInclude Include="gc.h" />
     <ClInclude Include="compilation.h" />
     <ClInclude Include="compiler.h" />

@@ -30,8 +30,13 @@ void syntax_node::dump(int depth) {
 
     if (type == syntax_type::syn_ident)
         printf("ident (%s)\n", ((ident_node*)this)->ident.c_str());
-    else if (type == syntax_type::syn_literal)
-        printf("literal (%d)\n", ((literal_node*)this)->integer);
+	else if (type == syntax_type::syn_literal) {
+		auto ln = (literal_node*)this;
+		if (ln->literal_type == literal_type::integer)
+			printf("literal (%d)\n", ((literal_node*)this)->integer);
+		else
+			printf("literal (%s)\n", ((literal_node*)this)->str.c_str());
+	}
     else
         printf("%s\n", typeid(*this).name());
 

@@ -27,6 +27,8 @@ enum class stoken_type {
     // nothing: specified as `nothing`
     none, nothing,
 
+	st_include,
+
     comma, endl,
 
     ident,
@@ -51,6 +53,7 @@ inline const char *to_string(stoken_type type) {
     switch (type) {
     case stoken_type::none: return "none";
     case stoken_type::nothing: return "nothing";
+	case stoken_type::st_include: return "st_include";
     case stoken_type::comma: return "comma";
     case stoken_type::endl: return "endl";
     case stoken_type::ident: return "ident";

@@ -12,6 +12,8 @@ enum class syntax_type {
     syn_none,
     syn_root,
 
+	syn_include,
+
     syn_annotation,
     syn_class, syn_field, syn_method, syn_params,
 
@@ -196,6 +198,19 @@ public:
     }
 public:
     std::string ident;
+};
+
+class include_node : public syntax_node {
+public:
+	include_node(const stoken &token, syntax_node *parent) :
+		syntax_node(token, parent) {
+		capacity = 1;
+		type = syntax_type::syn_include;
+	}
+
+	std::string &path() const {
+		return ((literal_node*)children[0])->str;
+	}
 };
 
 class memberaccess_node : public syntax_node {
