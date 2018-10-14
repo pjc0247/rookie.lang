@@ -78,7 +78,7 @@ public:
         });
         return *this;
     }
-    type_builder & method(const std::string &signature,
+    type_builder &method(const std::string &signature,
         const std::function<value(value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
@@ -86,12 +86,57 @@ public:
         });
         return *this;
     }
-	type_builder & method(const std::string &signature,
+	type_builder &method(const std::string &signature,
 		const std::function<value(value&, value&)> &function) {
 
 		_bind(signature, [function](stack_provider &sp) {
 			sp.replace<1>(function(sp.get(1), sp.get(0)));
 			sp.drop<1>();
+		});
+		return *this;
+	}
+	type_builder &method(const std::string &signature,
+		const std::function<value(value&, value&, value&)> &function) {
+
+		_bind(signature, [function](stack_provider &sp) {
+			sp.replace<2>(function(sp.get(2), sp.get(1), sp.get(0)));
+			sp.drop<2>();
+		});
+		return *this;
+	}
+	type_builder &method(const std::string &signature,
+		const std::function<value(value&, value&, value&, value&)> &function) {
+
+		_bind(signature, [function](stack_provider &sp) {
+			sp.replace<3>(function(sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
+			sp.drop<3>();
+		});
+		return *this;
+	}
+	type_builder &method(const std::string &signature,
+		const std::function<value(value&, value&, value&, value&, value&)> &function) {
+
+		_bind(signature, [function](stack_provider &sp) {
+			sp.replace<4>(function(sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
+			sp.drop<4>();
+		});
+		return *this;
+	}
+	type_builder &method(const std::string &signature,
+		const std::function<value(value&, value&, value&, value&, value&, value&)> &function) {
+
+		_bind(signature, [function](stack_provider &sp) {
+			sp.replace<5>(function(sp.get(5), sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
+			sp.drop<5>();
+		});
+		return *this;
+	}
+	type_builder &method(const std::string &signature,
+		const std::function<value(value&, value&, value&, value&, value&, value&, value&)> &function) {
+
+		_bind(signature, [function](stack_provider &sp) {
+			sp.replace<6>(function(sp.get(6), sp.get(5), sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
+			sp.drop<6>();
 		});
 		return *this;
 	}
@@ -128,6 +173,54 @@ public:
 			sp.replace<0>(function(sp.get(0)));
         });
     }
+	void function(const std::string &signature,
+		const std::function<value(value&,value&)> &function) {
+
+		_bind(signature, [function](stack_provider &sp) {
+			sp.replace<1>(function(sp.get(1), sp.get(0)));
+			sp.drop<1>();
+		});
+	}
+	void function(const std::string &signature,
+		const std::function<value(value&, value&, value&)> &function) {
+
+		_bind(signature, [function](stack_provider &sp) {
+			sp.replace<2>(function(sp.get(2), sp.get(1), sp.get(0)));
+			sp.drop<2>();
+		});
+	}
+	void function(const std::string &signature,
+		const std::function<value(value&, value&, value&, value&)> &function) {
+
+		_bind(signature, [function](stack_provider &sp) {
+			sp.replace<3>(function(sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
+			sp.drop<3>();
+		});
+	}
+	void function(const std::string &signature,
+		const std::function<value(value&, value&, value&, value&, value&)> &function) {
+
+		_bind(signature, [function](stack_provider &sp) {
+			sp.replace<4>(function(sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
+			sp.drop<4>();
+		});
+	}
+	void function(const std::string &signature,
+		const std::function<value(value&, value&, value&, value&, value&, value&)> &function) {
+
+		_bind(signature, [function](stack_provider &sp) {
+			sp.replace<5>(function(sp.get(5), sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
+			sp.drop<5>();
+		});
+	}
+	void function(const std::string &signature,
+		const std::function<value(value&, value&, value&, value&, value&, value&, value&)> &function) {
+
+		_bind(signature, [function](stack_provider &sp) {
+			sp.replace<6>(function(sp.get(6), sp.get(5), sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
+			sp.drop<6>();
+		});
+	}
 
     template <typename T>
     binding &import() {
@@ -170,6 +263,46 @@ public:
 		type.method(name, [function](value &_this, value &a) {
 			auto obj = ((T*)_this.objref);
 			return std::invoke(function, obj, a);
+		});
+	}
+	static void method(type_builder &type,
+		const char *name, value(T::*function)(value&, value&)) {
+
+		type.method(name, [function](value &_this, value &a, value &b) {
+			auto obj = ((T*)_this.objref);
+			return std::invoke(function, obj, a, b);
+		});
+	}
+	static void method(type_builder &type,
+		const char *name, value(T::*function)(value&, value&, value&)) {
+
+		type.method(name, [function](value &_this, value &a, value &b, value &c) {
+			auto obj = ((T*)_this.objref);
+			return std::invoke(function, obj, a, b, c);
+		});
+	}
+	static void method(type_builder &type,
+		const char *name, value(T::*function)(value&, value&, value&, value&)) {
+
+		type.method(name, [function](value &_this, value &a, value &b, value &c, value &d) {
+			auto obj = ((T*)_this.objref);
+			return std::invoke(function, obj, a, b, c, d);
+		});
+	}
+	static void method(type_builder &type,
+		const char *name, value(T::*function)(value&, value&, value&, value&, value&)) {
+
+		type.method(name, [function](value &_this, value &a, value &b, value &c, value &d, value &e) {
+			auto obj = ((T*)_this.objref);
+			return std::invoke(function, obj, a, b, c, d, e);
+		});
+	}
+	static void method(type_builder &type,
+		const char *name, value(T::*function)(value&, value&, value&, value&, value&, value&)) {
+
+		type.method(name, [function](value &_this, value &a, value &b, value &c, value &d, value &e, value &f) {
+			auto obj = ((T*)_this.objref);
+			return std::invoke(function, obj, a, b, c, d, e, f);
 		});
 	}
 };
