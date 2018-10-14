@@ -189,7 +189,7 @@ struct program {
 
             for (int j = 0; j < types[i].methods_len; j++) {
                 printf("      * %s\n", types[i].methods[j].name);
-            }
+            } 
         }
 
         for (int i = 0; i < header.entry_len; i++) {

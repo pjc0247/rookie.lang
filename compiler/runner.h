@@ -41,7 +41,7 @@ struct runtime_typedata {
 class runner {
 public:
     runner(const program &p, binding &binding) :
-        binding(binding),
+		p(p), binding(binding),
         callee_ptr(nullptr) {
 
         for (auto &b : binding.get_methods()) {
@@ -51,7 +51,7 @@ public:
             auto typesighash = sig2hash(type.get_name());
 
             auto methods = type.get_methods();
-            auto vtable = calltable();
+			calltable vtable;
 
             for (auto &method : methods) {
                 auto sighash = sig2hash(method.first);
@@ -69,19 +69,31 @@ public:
 
         for (int i = 0; i < p.header.types_len; i++) {
             auto type = p.types[i];
+			
             runtime_typedata tdata;
             tdata.typekind = runtime_typekind::tk_programtype;
+
+			calltable vtable;
+			for (int j = 0; j < type.methods_len; j++) {
+				auto method = type.methods[j];
+				auto methodhash = sig2hash(method.name);
+
+				vtable.table[methodhash].type = call_type::ct_programcall_direct;
+				vtable.table[methodhash].entry = method.entry;
+			}
+			tdata.vtable = vtable;
+
             types[sig2hash(type.name)] = tdata;
         }
     }
 
-    void execute(const program &p) {
+    void execute() {
         if (p.header.entry_len == 0)
             throw new std::invalid_argument("program does not have any entries.");
 
-        execute(p, &p.entries[0]);
+        execute(&p.entries[0]);
     }
-    void execute(const program &p, program_entry *_entry) {
+    void execute(program_entry *_entry) {
         printf("===execute===\n");
 
         current_entry = _entry;
@@ -152,6 +164,8 @@ public:
                     auto objref = new object();
                     push(value::mkobjref(objref));
 
+					objref->vtable = &types[inst.operand].vtable.table;
+
                     gc.add_object(objref);
                 }
                 else {
@@ -182,13 +196,8 @@ public:
             else if (inst.opcode == opcode::op_setcallee)
                 callee_ptr = &stack.back();
 
-            else if (inst.opcode == opcode::op_call) {
-                auto entry = p.entries[inst.cs.index];
-                push_callframe(entry);
-                pc = entry.entry;
-                bp = stack.size() - entry.params;
-                current_entry = &entry;
-            }
+            else if (inst.opcode == opcode::op_call)
+				programcall(inst.cs.index);
             else if (inst.opcode == opcode::op_syscall)
                 syscall(inst.cs.index, sp);
             else if (inst.opcode == opcode::op_vcall) {
@@ -196,8 +205,10 @@ public:
                 auto sighash = inst.operand;
 
                 auto callinfo = calleeobj->vtable->at(sighash);
-                if (callinfo.type == call_type::ct_syscall_direct)
-                    syscall(callinfo.entry, sp);
+				if (callinfo.type == call_type::ct_syscall_direct)
+					syscall(callinfo.entry, sp);
+				else if (callinfo.type == call_type::ct_programcall_direct)
+					programcall(callinfo.entry);
             }
             else if (inst.opcode == opcode::op_ret) {
                 auto callframe = pop_callframe(*current_entry);
@@ -242,6 +253,13 @@ private:
         syscalls.table[index](sp);
         return sp.pop();
     }
+	__forceinline void programcall(int index) {
+		auto entry = p.entries[index];
+		push_callframe(entry);
+		pc = entry.entry;
+		bp = stack.size() - entry.params;
+		current_entry = &entry;
+	}
 
     value pop() {
         if (stack.empty())
@@ -270,7 +288,8 @@ private:
     }
 
 private:
-    binding &binding;
+	const program &p;
+    const binding &binding;
 
     syscalltable syscalls;
     std::map<int, runtime_typedata> types;

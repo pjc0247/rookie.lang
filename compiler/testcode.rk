@@ -1,5 +1,13 @@
 class foo {
     def _ctor() {
-        a = foo.new();
+        a = bar.new();
+        a.hello();
     }
 }
+
+class bar {
+    def hello() {
+        print("hello");
+    }
+}
+

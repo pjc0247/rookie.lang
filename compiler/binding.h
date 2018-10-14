@@ -87,17 +87,17 @@ public:
     }
 
     void add(const std::string &signature,
-        const std::function<void()> &function) {
+        const std::function<value()> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
-            function();
+            sp.push(function());
         });
     }
     void add(const std::string &signature,
-        const std::function<void(value)> &function) {
+        const std::function<value(value)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
-            function(sp.pop());
+            sp.push(function(sp.pop()));
         });
     }
 

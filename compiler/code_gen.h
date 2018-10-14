@@ -163,7 +163,7 @@ public:
     void emit_method(const std::string &classname, method_node *method) {
         methoddata mdata;
         strcpy(mdata.name, method->ident_str().c_str());
-        mdata.entry = get_cursor();
+        mdata.entry = entries.size();
         types[classname].methods.push_back(mdata);
 
         program_entry entry;
