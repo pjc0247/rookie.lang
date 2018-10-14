@@ -12,6 +12,8 @@
 #include "gc.h"
 #include "binding.h"
 
+#include "exe_context.h"
+
 #include "libs/array.h"
 
 #define _invalid_stackitem \
@@ -66,6 +68,7 @@ public:
 
         stack_provider sp(stack);
 
+        exectx = new exe_context(*this, sp);
         while (true) {
             if (pc >= p.header.code_len)
                 throw invalid_program_exception("unexpected end of program.");
@@ -127,6 +130,11 @@ public:
             }
 
             else if (inst.opcode == opcode::op_newobj) {
+#if _RK_STRICT_CHECK
+                if (types.find(inst.operand) == types.end())
+                    throw invalid_program_exception("No such type");
+#endif
+
                 if (types[inst.operand].typekind == runtime_typekind::tk_programtype) {
                     auto objref = new object();
                     push(value::mkobjref(objref));
@@ -142,6 +150,7 @@ public:
                     if (newcall.type == call_type::ct_syscall_direct) {
                         syscall(newcall.entry, sp);
                         auto obj = stack[stack.size() - 1];
+                        obj.objref->vtable = &types[inst.operand].vtable.table;
                         gc.add_object(obj.objref);
                     }
                     else
@@ -205,6 +214,18 @@ public:
             else
                 throw invalid_program_exception("unknown instruction.");
         }
+
+        delete exectx;
+    }
+
+    void _vcall(int sighash, stack_provider &sp) {
+        auto calleeobj = callee_ptr->objref;
+
+        auto callinfo = calleeobj->vtable->at(sighash);
+        if (callinfo.type == call_type::ct_syscall_direct)
+            syscall(callinfo.entry, sp);
+        else if (callinfo.type == call_type::ct_programcall_direct)
+            programcall(callinfo.entry);
     }
 
 private:
@@ -259,6 +280,7 @@ private:
         return v;
     }
     __forceinline void syscall(int index, stack_provider &sp) {
+        rkctx = exectx;
         syscalls.table[index](sp);
     }
     __forceinline void programcall(int index) {
@@ -298,6 +320,8 @@ private:
 private:
     const program &p;
     const binding &binding;
+
+    exe_context *exectx;
 
     syscalltable syscalls;
     std::map<int, runtime_typedata> types;

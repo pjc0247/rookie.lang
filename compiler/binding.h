@@ -2,9 +2,11 @@
 
 #include <map>
 #include <string>
+#include <deque>
 #include <functional>
 
 #include "value_object.h"
+#include "exe_context.h"
 
 #define _bind(signature, lambda) \
     methods[signature] = lambda
@@ -20,8 +22,10 @@
 
 #define is_rkint(v) v.type == value_type::integer
 #define is_rkstr(v) v.type == value_type::string
+#define is_rkchar(v) v.type == value_type::character
 #define rkint(v) v.integer
 #define rkcstr(v) v.str
+#define rkchar(v) v.character
 
 class stack_provider {
 public:
@@ -68,6 +72,9 @@ public:
     type_builder(const std::string &name) :
         name(name) {
 
+        method("to_string", [name]() {
+            return value::mkstring(name.c_str());
+        });
     }
 
     type_builder &method(const std::string &signature,

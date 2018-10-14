@@ -6,6 +6,7 @@
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="syntax.cpp" />
     <ClCompile Include="sig2hash.cpp" />
+    <ClCompile Include="exe_context.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binding.h" />
@@ -52,6 +53,10 @@
       <Filter>ast</Filter>
     </ClInclude>
     <ClInclude Include="ir_optimiser.h" />
+    <ClInclude Include="..\libs\string.h">
+      <Filter>libs</Filter>
+    </ClInclude>
+    <ClInclude Include="exe_context.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

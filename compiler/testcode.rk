@@ -2,15 +2,12 @@ include "a.rky";
 
 class foo {
     def _ctor() {
-        a = [];
-        a.push(1);
-        a.push(2);
-        a.push(3);
+        a = string.new("ASDF");
+        b = string.new("WORLD");
 
+        a.append(b);
         print(a[1]);
-
-        c = a.length();
-        print(c);
+        print(a.to_string());
     }
 }
 
@@ -18,5 +15,5 @@ class bar {
     def hello() {
         print("hello");
     }
-}
+} 
 

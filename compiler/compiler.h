@@ -32,8 +32,8 @@ public:
     }
 
     root_node *ast_raw(
-		compile_context &ctx,
-		const std::string &src, std::vector<compile_error> &errors) {
+        compile_context &ctx,
+        const std::string &src, std::vector<compile_error> &errors) {
 
         auto tokens = lexer(ctx).lex(src);
         auto stokens = sexper(ctx).sexp(tokens);
@@ -43,8 +43,8 @@ public:
         return root;
     }
     root_node *ast_transformed(
-		compile_context &ctx,
-		const std::string &src, std::vector<compile_error> &errors) {
+        compile_context &ctx,
+        const std::string &src, std::vector<compile_error> &errors) {
 
         auto root = ast_raw(ctx, src, errors);
         

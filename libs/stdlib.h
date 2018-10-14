@@ -9,6 +9,8 @@ _rookie_function("print", (value v) {
         printf("%d\n", rkint(v));
     else if (is_rkstr(v))
         printf("%s\n", rkcstr(v));
+    else if (is_rkchar(v))
+        printf("%c\n", rkchar(v));
 
     return rknull;
 });

@@ -2,6 +2,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 #include <functional>
 
 #include "sig2hash.h"
@@ -60,7 +61,7 @@ struct syscalltable {
 enum class value_type : char {
     empty,
     null,
-    integer, string, object, array
+    integer, character, string, object, array
 };
 
 typedef struct object;
@@ -83,6 +84,7 @@ struct value {
         object *objref;
 
         int integer;
+        char character;
         const char *str;
     };
 
@@ -103,6 +105,12 @@ struct value {
         value v;
         v.type = value_type::integer;
         v.integer = n;
+        return v;
+    }
+    static value mkchar(char c) {
+        value v;
+        v.type = value_type::character;
+        v.character = c;
         return v;
     }
     static value mkstring(const char *str) {
@@ -128,7 +136,6 @@ const value rknull = value(value_type::null);
 
 class object {
 public:
-    int vtable_len;
     std::map<int, callinfo> *vtable;
 
     std::map<std::string, value> properties;
