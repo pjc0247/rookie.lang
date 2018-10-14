@@ -278,7 +278,7 @@ private:
                             auto inserted = tokens.insert(std::next(it2), *std::prev(it));
                             tokens.erase(std::prev(it));
 
-                            //(*inserted).priority = -10000;
+                            (*inserted).priority = -10000;
 
                             break;
                         }

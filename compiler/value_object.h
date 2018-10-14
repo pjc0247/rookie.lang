@@ -112,6 +112,17 @@ struct value {
         return v;
     }
 };
+inline bool operator==(const value& lhs, const value& rhs) {
+	if (lhs.type != rhs.type)
+		return false;
+
+	if (lhs.type == value_type::integer)
+		return lhs.integer == rhs.integer;
+	if (lhs.type == value_type::string)
+		return lhs.str == rhs.str;
+	if (lhs.type == value_type::object)
+		return lhs.objref == rhs.objref;
+}
 
 const value rknull = value(value_type::null);
 

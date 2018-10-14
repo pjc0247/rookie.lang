@@ -8,6 +8,9 @@ class foo {
         a.push(3);
 
         print(a[1]);
+
+        c = a.length();
+        print(c);
     }
 }
 

@@ -139,11 +139,19 @@ public:
 	}
 
 	static void bind(type_builder &type,
+		const char *name, value(T::*function)()) {
+
+		type.method(name, [function](value _this) {
+			auto obj = ((T*)_this.objref);
+			return std::invoke(function, obj);
+		});
+	}
+	static void bind(type_builder &type,
 		const char *name, value(T::*function)(value)) {
 
-		type.method(name, [function](value _this, value idx) {
+		type.method(name, [function](value _this, value a) {
 			auto obj = ((T*)_this.objref);
-			return std::invoke(function, obj, idx);
+			return std::invoke(function, obj, a);
 		});
 	}
 };
