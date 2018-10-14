@@ -74,13 +74,18 @@ public:
 
             printf("%s\n", to_string((opcode_t)inst.opcode));
 
-            if (inst.opcode == opcode::op_nop);
-            else if (inst.opcode == opcode::op_ldi)
-                stack.push_back(value::mkinteger(inst.operand));
-            else if (inst.opcode == opcode::op_ldstr)
-                stack.push_back(value::mkstring(p.rdata + inst.operand));
-            else if (inst.opcode == opcode::op_ldstate)
-                stack.push_back(value::mkstring(p.rdata + inst.operand));
+			if (inst.opcode == opcode::op_nop);
+			else if (inst.opcode == opcode::op_ldi)
+				stack.push_back(value::mkinteger(inst.operand));
+			else if (inst.opcode == opcode::op_ldstr)
+				stack.push_back(value::mkstring(p.rdata + inst.operand));
+			else if (inst.opcode == opcode::op_ldstate)
+				stack.push_back(value::mkstring(p.rdata + inst.operand));
+
+			else if (inst.opcode == opcode::op_pop)
+				stack.pop_back();
+			else if (inst.opcode == opcode::op_dup)
+				stack.push_back(stack.back());
 
             else if (inst.opcode == opcode::op_l) {
                 _pop2_int(left, right);
