@@ -12,7 +12,7 @@ enum class syntax_type {
     syn_none,
     syn_root,
 
-	syn_pop,
+    syn_pop,
 
     syn_include,
 
@@ -134,10 +134,10 @@ public:
 };
 class pop_node : public syntax_node {
 public:
-	pop_node(const stoken &token, syntax_node *parent)
-		: syntax_node(token, parent) {
-		type = syntax_type::syn_pop;
-	}
+    pop_node(const stoken &token, syntax_node *parent)
+        : syntax_node(token, parent) {
+        type = syntax_type::syn_pop;
+    }
 };
 
 class root_node : public syntax_node {
@@ -453,8 +453,8 @@ public:
 protected:
     virtual void on_complete() {
         auto ident = dynamic_cast<ident_node*>(left());
-		if (ident != nullptr)
-			declaring_method()->push_local(ident->ident);
+        if (ident != nullptr)
+            declaring_method()->push_local(ident->ident);
     }
 };
 

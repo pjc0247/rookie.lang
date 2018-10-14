@@ -13,8 +13,8 @@ public:
         errors.push_back(err);
     }
 
-	void fin() {
-	}
+    void fin() {
+    }
 
 public:
     std::vector<compile_error> errors;

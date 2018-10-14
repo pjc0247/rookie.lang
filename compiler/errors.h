@@ -6,13 +6,13 @@
 #include "token.h"
 
 struct compile_error {
-	std::string message;
-	int line, cols;
+    std::string message;
+    int line, cols;
 
-	compile_error(const token &token, const std::string &message) :
-		message(message) {
-		line = token.line, cols = token.cols;
-	}
+    compile_error(const token &token, const std::string &message) :
+        message(message) {
+        line = token.line, cols = token.cols;
+    }
 };
 
 class unexpected_token_error : public compile_error {

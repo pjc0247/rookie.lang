@@ -21,7 +21,7 @@ public:
         auto root = new root_node(ctx);
         current = root;
 
-		depth++;
+        depth++;
         for (auto &token : stokens) {
             printf("%s\n", token.raw.c_str());
 
@@ -30,57 +30,57 @@ public:
             _ending_expression(st_end_call);
             _ending_expression(st_end_arr);
 
-			if (token.type == stoken_type::endl) {
-				//current = current->parent;
-				if (depth >= 1)
-					append_and_set(pop(token));
+            if (token.type == stoken_type::endl) {
+                //current = current->parent;
+                if (depth >= 1)
+                    append_and_set(pop(token));
 
-				depth = 0;
-			}
-			if (token.type == stoken_type::st_include)
-				append_and_replace(include(token));
-			else if (token.type == stoken_type::begin_block) {
-				append_and_replace(block(token));
-			}
-			else if (token.type == stoken_type::st_class) {
-				current_class = klass(token);
-				append_and_replace(current_class);
-			}
-			else if (token.type == stoken_type::st_defmethod) {
-				current_method = method(token);
-				current_class->methods.push_back(current_method);
-				append_and_replace(current_method);
-			}
-			else if (token.type == stoken_type::st_annotation) {
-				append_and_replace(annotation(token));
-			}
+                depth = 0;
+            }
+            if (token.type == stoken_type::st_include)
+                append_and_replace(include(token));
+            else if (token.type == stoken_type::begin_block) {
+                append_and_replace(block(token));
+            }
+            else if (token.type == stoken_type::st_class) {
+                current_class = klass(token);
+                append_and_replace(current_class);
+            }
+            else if (token.type == stoken_type::st_defmethod) {
+                current_method = method(token);
+                current_class->methods.push_back(current_method);
+                append_and_replace(current_method);
+            }
+            else if (token.type == stoken_type::st_annotation) {
+                append_and_replace(annotation(token));
+            }
 
-			else if (token.type == stoken_type::st_begin_param) {
-				append_and_replace(params(token));
-			}
+            else if (token.type == stoken_type::st_begin_param) {
+                append_and_replace(params(token));
+            }
 
-			else if (token.type == stoken_type::st_begin_call) {
-				append_and_replace(call(token));
-			}
-			else if (token.type == stoken_type::st_end_call) {
-				depth -= current->children.size() - 1;
-			}
+            else if (token.type == stoken_type::st_begin_call) {
+                append_and_replace(call(token));
+            }
+            else if (token.type == stoken_type::st_end_call) {
+                depth -= current->children.size() - 1;
+            }
 
-			else if (token.type == stoken_type::st_begin_arr) {
-				append_and_replace(arr(token));
-			}
+            else if (token.type == stoken_type::st_begin_arr) {
+                append_and_replace(arr(token));
+            }
 
-			else if (token.type == stoken_type::st_memberaccess)
-				append_and_replace(memberaccess(token));
-			else if (token.type == stoken_type::st_arraccess)
-				append_and_replace(arraccess(token));
+            else if (token.type == stoken_type::st_memberaccess)
+                append_and_replace(memberaccess(token));
+            else if (token.type == stoken_type::st_arraccess)
+                append_and_replace(arraccess(token));
 
-			else if (token.type == stoken_type::st_if)
-				append_and_replace(_if(token));
-			else if (token.type == stoken_type::st_for)
-				append_and_replace(_for(token));
-			else if (token.type == stoken_type::st_return)
-				append_and_replace(_return(token));
+            else if (token.type == stoken_type::st_if)
+                append_and_replace(_if(token));
+            else if (token.type == stoken_type::st_for)
+                append_and_replace(_for(token));
+            else if (token.type == stoken_type::st_return)
+                append_and_replace(_return(token));
 
             else if (token.type == stoken_type::op) {
                 append_and_replace(op(token));
@@ -134,10 +134,10 @@ private:
         auto node = new method_node(token, current);
         return node;
     }
-	pop_node *pop(const stoken &token) {
-		auto node = new pop_node(token, current);
-		return node;
-	}
+    pop_node *pop(const stoken &token) {
+        auto node = new pop_node(token, current);
+        return node;
+    }
     block_node *block(const stoken &token) {
         auto node = new block_node(token, current);
         return node;
@@ -147,7 +147,7 @@ private:
         return node;
     }
     call_node *call(const stoken &token) {
-		depth++;
+        depth++;
         auto node = new call_node(token, current);
         return node;
     }
@@ -159,11 +159,11 @@ private:
         auto node = new memberaccess_node(token, current);
         return node;
     }
-	return_node *_return(const stoken &token) {
-		depth--;
-		auto node = new return_node(token, current);
-		return node;
-	}
+    return_node *_return(const stoken &token) {
+        depth--;
+        auto node = new return_node(token, current);
+        return node;
+    }
     if_node *_if(const stoken &token) {
         auto node = new if_node(token, current);
         return node;
@@ -173,12 +173,12 @@ private:
         return node;
     }
     ident_node *ident(const stoken &token) {
-		depth++;
+        depth++;
         auto node = new ident_node(token, current, token.raw);
         return node;
     }
     literal_node *literal(const stoken &token) {
-		depth++;
+        depth++;
         auto node = new literal_node(token, current);
 
         node->literal_type = token.source.literal_type;
@@ -195,17 +195,17 @@ private:
     }
     syntax_node *op(const stoken &token) {
         if (token.raw == "=") {
-			depth--;
+            depth--;
             return new assignment_node(token, current);
         }
         else if (token.raw == "++" || token.raw == "--") {
-			depth--;
+            depth--;
             auto node = new standalone_op_node(token, current);
             node->op = token.raw;
             return node;
         }
         else {
-			depth -= 2;
+            depth -= 2;
             auto node = new op_node(token, current);
             node->op = token.raw;
             return node;
@@ -215,7 +215,7 @@ private:
 private:
     compile_context &ctx;
 
-	int depth;
+    int depth;
 
     class_node *current_class;
     method_node *current_method;

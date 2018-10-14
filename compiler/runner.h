@@ -90,10 +90,10 @@ public:
             else if (inst.opcode == opcode::op_dup)
                 stack.push_back(stack.back());
 
-			else if (inst.opcode == opcode::op_eq) {
-				_pop2_int(left, right);
-				push(value::mkinteger(left.integer == right.integer));
-			}
+            else if (inst.opcode == opcode::op_eq) {
+                _pop2_int(left, right);
+                push(value::mkinteger(left.integer == right.integer));
+            }
             else if (inst.opcode == opcode::op_l) {
                 _pop2_int(left, right);
                 push(value::mkinteger(left.integer > right.integer));
@@ -113,7 +113,7 @@ public:
 
             else if (inst.opcode == opcode::op_add) {
                 _pop2_int(left, right);
-				right.integer += left.integer;
+                right.integer += left.integer;
                 push(right);
             }
             else if (inst.opcode == opcode::op_sub) {
@@ -124,12 +124,12 @@ public:
             else if (inst.opcode == opcode::op_div) {
                 _pop2_int(left, right);
                 // TODO: check left is zero
-				right.integer /= left.integer;
+                right.integer /= left.integer;
                 push(right);
             }
             else if (inst.opcode == opcode::op_mul) {
                 _pop2_int(left, right);
-				right.integer *= left.integer;
+                right.integer *= left.integer;
                 push(right);
             }
 
@@ -191,13 +191,13 @@ public:
                     programcall(callinfo.entry);
             }
             else if (inst.opcode == opcode::op_ret) {
-				auto ret = pop();
+                auto ret = pop();
                 auto callframe = pop_callframe(*current_entry);
                 pc = callframe.pc;
                 bp = callframe.bp;
                 current_entry = callframe.entry;
 
-				push(ret);
+                push(ret);
 
                 if (callstack.empty()) break;
             }
@@ -221,7 +221,7 @@ public:
             else
                 throw invalid_program_exception("unknown instruction.");
 
-//				printf("STACK %d\n", stack.size());
+//                printf("STACK %d\n", stack.size());
         }
 
         delete exectx;
@@ -284,8 +284,10 @@ private:
 
     __forceinline value get_local(int n) {
         auto v = stack[bp + n];
+#if _RK_STRICT_CHECK
         if (v.type == value_type::empty)
             throw invalid_access_exception("Accessed to the unassigned slot.");
+#endif
         return v;
     }
     __forceinline void syscall(int index, stack_provider &sp) {
@@ -294,10 +296,10 @@ private:
     }
     __forceinline void programcall(int index) {
         auto &entry = p.entries[index];
-		auto stacksize = stack.size();
+        auto stacksize = stack.size();
         push_callframe(entry);
-		pc = entry.entry;
-		bp = stacksize - entry.params;
+        pc = entry.entry;
+        bp = stacksize - entry.params;
         current_entry = &entry;
     }
 
@@ -318,8 +320,8 @@ private:
             stack.push_back(value());
     }
     callframe pop_callframe(program_entry &entry) {
-		for (int i = 0; i < entry.locals; i++)
-			stack.pop_back();
+        for (int i = 0; i < entry.locals; i++)
+            stack.pop_back();
 
         auto callframe = callstack.back();
         callstack.pop_back();

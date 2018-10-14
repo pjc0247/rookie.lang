@@ -266,7 +266,7 @@ private:
             _route(root);
             _route(class);
             _route(method);
-			_route(pop);
+            _route(pop);
             _route(callmember);
             _route(call);
             _route(return);
@@ -286,9 +286,9 @@ private:
         for (int i = 0; i < node->children.size(); i++)
             emit(node->children[i]);
     }
-	void emit_pop(pop_node *pop) {
-		emitter.emit(opcode::op_pop);
-	}
+    void emit_pop(pop_node *pop) {
+        emitter.emit(opcode::op_pop);
+    }
     void emit_class(class_node *node) {
         current_class = node;
         scope.set_class(node);
@@ -406,8 +406,8 @@ private:
             emitter.emit(opcode::op_ge);
         else if (node->op == "<=")
             emitter.emit(opcode::op_le);
-		else if (node->op == "==")
-			emitter.emit(opcode::op_eq);
+        else if (node->op == "==")
+            emitter.emit(opcode::op_eq);
     }
     void emit_assignment(assignment_node *node) {
         emit(node->right());
@@ -420,7 +420,7 @@ private:
 
         auto lookup = scope.lookup_variable(ident->ident);
         if (lookup.type == lookup_type::not_exist) {
-			ctx.push_error(undefined_variable_error(ident->token()));
+            ctx.push_error(undefined_variable_error(ident->token()));
             return;
         }
 

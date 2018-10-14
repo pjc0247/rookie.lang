@@ -121,7 +121,7 @@ private:
         rules.push_back(lexer_token("def", token_type::keyword));
         rules.push_back(lexer_token("if", token_type::keyword));
         rules.push_back(lexer_token("for", token_type::keyword));
-		rules.push_back(lexer_token("return", token_type::keyword));
+        rules.push_back(lexer_token("return", token_type::keyword));
         //rules.push_back(lexer_token("new", token_type::keyword));
 
         rules.push_back(lexer_token("++", token_type::op));
@@ -132,7 +132,7 @@ private:
         rules.push_back(lexer_token("*", token_type::op, 4));
         rules.push_back(lexer_token("/", token_type::op, 4));
 
-		rules.push_back(lexer_token("==", token_type::op, 1));
+        rules.push_back(lexer_token("==", token_type::op, 1));
         rules.push_back(lexer_token("<=", token_type::op, 1));
         rules.push_back(lexer_token(">=", token_type::op, 1));
         rules.push_back(lexer_token("<", token_type::op, 1));
@@ -468,14 +468,14 @@ private:
             _mark_as_parsed(stoken);
         }
         else if (token.type == token_type::keyword) {
-			_mark_as_parsed(stoken);
-			if (token.raw == "return") {
-				flush_until_priority(-3000);
-				stoken.type = stoken_type::st_return;
-			}
-			else {
-				stack.push_back(token);
-			}
+            _mark_as_parsed(stoken);
+            if (token.raw == "return") {
+                flush_until_priority(-3000);
+                stoken.type = stoken_type::st_return;
+            }
+            else {
+                stack.push_back(token);
+            }
         } 
         else
             stoken = parse(token);
@@ -530,8 +530,8 @@ private:
             stoken.type = stoken_type::st_if;
         else if (token.raw == "for")
             stoken.type = stoken_type::st_for;
-		else if (token.raw == "return")
-			stoken.type = stoken_type::st_return;
+        else if (token.raw == "return")
+            stoken.type = stoken_type::st_return;
     }
 
     void flush_until_priority(int priority) {

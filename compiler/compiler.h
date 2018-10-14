@@ -18,33 +18,37 @@
 
 class compiler {
 public:
+    // Builds a new compiler with default options.
     static compiler default_compiler(binding &binding) {
-		return compiler(binding)
-			.transformer<callmember_transformer>()
-			.transformer<callnewobj_transformer>()
-			.transformer<arraccess_transformer>()
+        return compiler(binding)
+            .transformer<callmember_transformer>()
+            .transformer<callnewobj_transformer>()
+            .transformer<arraccess_transformer>()
 
-			.transformer<precalc>()
-			//.transformer<tco>(); // tail-call optimizer
-			;
+            .transformer<precalc>()
+            //.transformer<tco>(); // tail-call optimizer
+            ;
     }
-	static compiler build_compiler(binding &binding, int options = 0) {
-		auto c = compiler(binding)
-			.transformer<callmember_transformer>()
-			.transformer<callnewobj_transformer>()
-			.transformer<arraccess_transformer>();
 
-		if (!(options & rky_no_optimization))
-			c.transformer<precalc>();
+    // Builds a new compiler with given options.
+    static compiler build_compiler(binding &binding, int options = 0) {
+        auto c = compiler(binding)
+            .transformer<callmember_transformer>()
+            .transformer<callnewobj_transformer>()
+            .transformer<arraccess_transformer>();
 
-		return c;
-	}
+        if (!(options & rky_no_optimization))
+            c.transformer<precalc>();
+
+        return c;
+    }
 
     compiler(binding &binding) :
         binding(binding) {
 
     }
 
+    // Builds a AST-tree which may contain v-nodes.
     root_node *ast_raw(
         compile_context &ctx,
         const std::string &src, std::vector<compile_error> &errors) {
@@ -56,13 +60,14 @@ public:
 
         return root;
     }
+    // Builds a AST-tree, fully transformed
     root_node *ast_transformed(
         compile_context &ctx,
         const std::string &src, std::vector<compile_error> &errors) {
 
         auto root = ast_raw(ctx, src, errors);
         
-		root->dump();
+        root->dump();
 
         vnode_transformer().transform(root);
 
@@ -85,6 +90,7 @@ public:
         return root;
     }
 
+    // Compiles given codes into a program.
     bool compile(const std::string &src,
         program &program,
         std::vector<compile_error> &errors) {
@@ -99,7 +105,7 @@ public:
 
         auto root = ast_transformed(ctx, src, errors);
         auto cg = code_gen(ctx, syscalls);
-		ctx.fin();
+        ctx.fin();
 
         root->dump();
         program = cg.generate(root);
@@ -115,10 +121,10 @@ public:
 
     template <typename T>
     compiler &transformer() {
-		for (auto &t : transformers) {
-			if (strcmp(typeid(*t).name(), (typeid(T).name())) == 0)
-				throw std::invalid_argument("Duplicated transformer");
-		}
+        for (auto &t : transformers) {
+            if (strcmp(typeid(*t).name(), (typeid(T).name())) == 0)
+                throw std::invalid_argument("Duplicated transformer");
+        }
 
         transformers.push_back(std::make_shared<T>());
         return *this;
