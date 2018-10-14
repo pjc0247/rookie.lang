@@ -164,6 +164,7 @@
     <ClInclude Include="compilation.h" />
     <ClInclude Include="compiler.h" />
     <ClInclude Include="errors.h" />
+    <ClInclude Include="ir_optimiser.h" />
     <ClInclude Include="optimiser.h" />
     <ClInclude Include="program.h" />
     <ClInclude Include="program_io.h" />

@@ -51,6 +51,7 @@
     <ClInclude Include="ast\arraccess.h">
       <Filter>ast</Filter>
     </ClInclude>
+    <ClInclude Include="ir_optimiser.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">
