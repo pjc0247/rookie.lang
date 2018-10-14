@@ -75,7 +75,7 @@ public:
 
             auto inst = p.code[pc++];
 
-            printf("%s\n", to_string((opcode_t)inst.opcode));
+            printf("%s,   %d\n", to_string((opcode_t)inst.opcode), inst.operand);
 
             if (inst.opcode == opcode::op_nop);
             else if (inst.opcode == opcode::op_ldi)
@@ -90,6 +90,10 @@ public:
             else if (inst.opcode == opcode::op_dup)
                 stack.push_back(stack.back());
 
+			else if (inst.opcode == opcode::op_eq) {
+				_pop2_int(left, right);
+				push(value::mkinteger(left.integer == right.integer));
+			}
             else if (inst.opcode == opcode::op_l) {
                 _pop2_int(left, right);
                 push(value::mkinteger(left.integer > right.integer));
@@ -109,24 +113,24 @@ public:
 
             else if (inst.opcode == opcode::op_add) {
                 _pop2_int(left, right);
-                left.integer += right.integer;
-                push(left);
+				right.integer += left.integer;
+                push(right);
             }
             else if (inst.opcode == opcode::op_sub) {
                 _pop2_int(left, right);
-                left.integer -= right.integer;
-                push(left);
+                right.integer -= left.integer;
+                push(right);
             }
             else if (inst.opcode == opcode::op_div) {
                 _pop2_int(left, right);
-                // TODO: check right is zero
-                left.integer /= right.integer;
-                push(left);
+                // TODO: check left is zero
+				right.integer /= left.integer;
+                push(right);
             }
             else if (inst.opcode == opcode::op_mul) {
                 _pop2_int(left, right);
-                left.integer *= right.integer;
-                push(left);
+				right.integer *= left.integer;
+                push(right);
             }
 
             else if (inst.opcode == opcode::op_newobj) {
@@ -187,10 +191,13 @@ public:
                     programcall(callinfo.entry);
             }
             else if (inst.opcode == opcode::op_ret) {
+				auto ret = pop();
                 auto callframe = pop_callframe(*current_entry);
                 pc = callframe.pc;
                 bp = callframe.bp;
                 current_entry = callframe.entry;
+
+				push(ret);
 
                 if (callstack.empty()) break;
             }
@@ -213,6 +220,8 @@ public:
 
             else
                 throw invalid_program_exception("unknown instruction.");
+
+//				printf("STACK %d\n", stack.size());
         }
 
         delete exectx;
@@ -284,10 +293,11 @@ private:
         syscalls.table[index](sp);
     }
     __forceinline void programcall(int index) {
-        auto entry = p.entries[index];
+        auto &entry = p.entries[index];
+		auto stacksize = stack.size();
         push_callframe(entry);
-        pc = entry.entry;
-        bp = stack.size() - entry.params;
+		pc = entry.entry;
+		bp = stacksize - entry.params;
         current_entry = &entry;
     }
 
@@ -308,8 +318,8 @@ private:
             stack.push_back(value());
     }
     callframe pop_callframe(program_entry &entry) {
-        for (int i = 0; i < entry.locals; i++)
-            stack.pop_back();
+		for (int i = 0; i < entry.locals; i++)
+			stack.pop_back();
 
         auto callframe = callstack.back();
         callstack.pop_back();

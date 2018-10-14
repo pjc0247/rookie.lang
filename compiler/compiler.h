@@ -17,13 +17,14 @@
 class compiler {
 public:
     static compiler default_compiler(binding &binding) {
-        return compiler(binding)
-            .transformer<callmember_transformer>()
-            .transformer<callnewobj_transformer>()
-            .transformer<arraccess_transformer>()
+		return compiler(binding)
+			.transformer<callmember_transformer>()
+			.transformer<callnewobj_transformer>()
+			.transformer<arraccess_transformer>()
 
-            .transformer<precalc>()
-            .transformer<tco>(); // tail-call optimizer
+			.transformer<precalc>()
+			//.transformer<tco>(); // tail-call optimizer
+			;
     }
 
     compiler(binding &binding) :
@@ -48,6 +49,8 @@ public:
 
         auto root = ast_raw(ctx, src, errors);
         
+		root->dump();
+
         vnode_transformer().transform(root);
 
         int round = 0;

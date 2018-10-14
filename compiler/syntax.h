@@ -12,6 +12,8 @@ enum class syntax_type {
     syn_none,
     syn_root,
 
+	syn_pop,
+
     syn_include,
 
     syn_annotation,
@@ -129,6 +131,13 @@ public:
         : syntax_node(token, parent) {
         is_virtual = true;
     }
+};
+class pop_node : public syntax_node {
+public:
+	pop_node(const stoken &token, syntax_node *parent)
+		: syntax_node(token, parent) {
+		type = syntax_type::syn_pop;
+	}
 };
 
 class root_node : public syntax_node {

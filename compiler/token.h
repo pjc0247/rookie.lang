@@ -42,6 +42,7 @@ enum class stoken_type {
     st_annotation,
     st_class, st_defmethod,
     st_if, st_for,
+	st_return,
 
     st_arraccess,
 
@@ -66,6 +67,7 @@ inline const char *to_string(stoken_type type) {
     case stoken_type::st_newobj: return "st_newobj";
     case stoken_type::st_defmethod: return "st_defmethod";
     case stoken_type::st_annotation: return "st_annotation";
+	case stoken_type::st_return: return "st_return";
     case stoken_type::st_if: return "st_if";
     case stoken_type::st_for: return "st_for";
     case stoken_type::st_arraccess: return "st_arraccess";
