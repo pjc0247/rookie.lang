@@ -28,9 +28,19 @@
 #define _pop2_int(a, b) \
     auto a = pop(); auto b = pop(); _ensure_int(a,b);
 
+enum class runtime_typekind {
+	tk_systype,
+	tk_programtype
+};
+struct runtime_typedata {
+	runtime_typekind typekind;
+
+	calltable vtable;
+};
+
 class runner {
 public:
-    runner(binding &binding) :
+    runner(const program &p, binding &binding) :
         binding(binding),
 		callee_ptr(nullptr) {
 
@@ -49,9 +59,19 @@ public:
 
 				vtable.table[sighash].type = call_type::ct_syscall_direct;
 				vtable.table[sighash].entry = syscalls.table.size() - 1;
-
-				vtables[typesighash] = vtable;
 			}
+
+			runtime_typedata tdata;
+			tdata.typekind = runtime_typekind::tk_systype;
+			tdata.vtable = vtable;
+			types[typesighash] = tdata;
+		}
+
+		for (int i = 0; i < p.header.types_len; i++) {
+			auto type = p.types[i];
+			runtime_typedata tdata;
+			tdata.typekind = runtime_typekind::tk_programtype;
+			types[sig2hash(type.name)] = tdata;
 		}
     }
 
@@ -128,10 +148,24 @@ public:
 			}
 
 			else if (inst.opcode == opcode::op_newobj) {
-				auto objref = new object();
-				push(value::mkobjref(objref));
+				if (types[inst.operand].typekind == runtime_typekind::tk_programtype) {
+					auto objref = new object();
+					push(value::mkobjref(objref));
 
-				gc.add_object(objref);
+					gc.add_object(objref);
+				}
+				else {
+					// FIXME
+					auto newcall = types[inst.operand].vtable.table[sighash_new];
+
+					if (newcall.type == call_type::ct_syscall_direct) {
+						auto obj = syscall(newcall.entry, sp);
+						push(obj);
+						gc.add_object(obj.objref);
+					}
+					else
+						throw invalid_access_exception("invalid calltype for .new");
+				}
 			}
 			else if (inst.opcode == opcode::op_newarr) {
 				for (int i = 0; i < inst.operand; i++)
@@ -139,7 +173,7 @@ public:
 
 				auto aryref = new rkarray();
 				// FIXME
-				aryref->vtable = &vtables[sig2hash("array")].table;
+				aryref->vtable = &types[sig2hash("array")].vtable.table;
 				push(value::mkobjref(aryref));
 
 				gc.add_object(aryref);
@@ -203,9 +237,10 @@ private:
         return v;
     }
 
-	__forceinline void syscall(int index, stack_provider &sp) {
+	__forceinline value syscall(int index, stack_provider &sp) {
 		printf("* syscall %d\n", index);
 		syscalls.table[index](sp);
+		return sp.pop();
 	}
 
     value pop() {
@@ -238,7 +273,7 @@ private:
     binding &binding;
 
     syscalltable syscalls;
-	std::map<int, calltable> vtables;
+	std::map<int, runtime_typedata> types;
 
     gc gc;
 

@@ -1,16 +1,5 @@
 class foo {
     def _ctor() {
-        b = [1,2,3];
-
-        b.push(1);
-		b.remove(2);
-        
-        a = 51 + 11;
-        
-        hello(a);
-    }
-
-    def hello(a) {
-        print(a);
+        a = foo.new();
     }
 }

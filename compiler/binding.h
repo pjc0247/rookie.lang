@@ -12,7 +12,7 @@
 #define _rookie_library(name) \
     class name { \
     public: \
-        void import(binding &b) {
+        static void import(binding &b) {
 #define _end_rookie_library \
     } };
 #define _rookie_function(name, body) \
@@ -52,18 +52,18 @@ public:
 	}
 
 	type_builder &method(const std::string &signature,
-		const std::function<void()> &function) {
+		const std::function<value()> &function) {
 
 		_bind(signature, [function](stack_provider &sp) {
-			function();
+			sp.push(function());
 		});
 		return *this;
 	}
 	type_builder & method(const std::string &signature,
-		const std::function<void(value)> &function) {
+		const std::function<value(value)> &function) {
 
 		_bind(signature, [function](stack_provider &sp) {
-			function(sp.pop());
+			sp.push(function(sp.pop()));
 		});
 		return *this;
 	}
@@ -104,7 +104,7 @@ public:
     template <typename T>
     binding &import() {
         printf("[import] %s\n", typeid(T).name());
-        T().import(*this);
+        T::import(*this);
         return *this;
     }
 

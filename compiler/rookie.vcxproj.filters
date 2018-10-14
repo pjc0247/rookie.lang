@@ -44,6 +44,9 @@
     <ClInclude Include="..\libs\array.h">
       <Filter>libs</Filter>
     </ClInclude>
+    <ClInclude Include="ast\callnewobj.h">
+      <Filter>ast</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

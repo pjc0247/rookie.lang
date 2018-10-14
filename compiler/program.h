@@ -1,5 +1,8 @@
 #pragma once
 
+#define rooke_max_signature 24
+#define rookie_max_params 7
+
 typedef enum ptype : unsigned char {
     t_none,
     t_integer,
@@ -102,16 +105,15 @@ struct instruction {
 };
 
 struct methoddata {
+	char name[rooke_max_signature];
 	int entry;
 };
 struct typedata {
+	char name[rooke_max_signature];
 	int methods_len;
 	methoddata *methods;
 };
 #pragma pack (pop)
-
-#define rooke_max_signature 24
-#define rookie_max_params 7
 
 #pragma pack (push, 1)
 // program_header: 12bytes
@@ -119,6 +121,7 @@ struct program_header {
     unsigned int code_len;
     unsigned int rdata_len;
     unsigned int entry_len;
+	unsigned int types_len;
 };
 // program_entry: ?????bytes
 struct program_entry {
@@ -136,6 +139,7 @@ struct program {
     program_entry *entries;
     instruction *code;
     const char *rdata;
+	typedata *types;
 
     program() :
         entries(nullptr), code(nullptr), rdata(nullptr) {
@@ -147,10 +151,12 @@ struct program {
         entries = other.entries;
         code = other.code;
         rdata = other.rdata;
+		types = other.types;
 
         other.entries = nullptr;
         other.code = nullptr;
         other.rdata = nullptr;
+		other.types = nullptr;
     }
     program& operator=(program &&other) {
         if (this != &other) {
@@ -159,10 +165,12 @@ struct program {
             entries = other.entries;
             code = other.code;
             rdata = other.rdata;
+			types = other.types;
 
             other.entries = nullptr;
             other.code = nullptr;
             other.rdata = nullptr;
+			other.types = nullptr;
         }
         return *this;
     }

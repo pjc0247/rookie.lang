@@ -154,6 +154,7 @@
     <ClInclude Include="..\libs\stdlib.h" />
     <ClInclude Include="..\thirdparty\argagg.hpp" />
     <ClInclude Include="ast\callmember.h" />
+    <ClInclude Include="ast\callnewobj.h" />
     <ClInclude Include="ast\syntax_travler.h" />
     <ClInclude Include="binding.h" />
     <ClInclude Include="code_gen.h" />

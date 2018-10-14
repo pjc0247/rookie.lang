@@ -19,6 +19,7 @@ enum class syntax_type {
     syn_literal,
     syn_ident,
 	syn_newarr,
+	syn_newobj,
 
     syn_memberaccess,
     syn_call, syn_callmember,
@@ -196,13 +197,7 @@ public:
 public:
     std::string ident;
 };
-class newarr_node : public syntax_node {
-public:
-    newarr_node(const stoken &token, syntax_node *parent) :
-        syntax_node(token, parent) {
-		type = syntax_type::syn_newarr;
-    }
-};
+
 class memberaccess_node : public syntax_node {
 public:
     memberaccess_node(const stoken &token, syntax_node *parent) :
@@ -426,6 +421,21 @@ protected:
         auto ident = dynamic_cast<ident_node*>(left());
         declaring_method()->push_local(ident->ident);
     }
+};
+
+class newarr_node : public syntax_node {
+public:
+	newarr_node(const stoken &token, syntax_node *parent) :
+		syntax_node(token, parent) {
+		type = syntax_type::syn_newarr;
+	}
+};
+class newobj_node : public callmember_node {
+public:
+	newobj_node(const stoken &token, syntax_node *parent) :
+		callmember_node(token, parent) {
+		type = syntax_type::syn_newobj;
+	}
 };
 
 class if_node : public syntax_node {

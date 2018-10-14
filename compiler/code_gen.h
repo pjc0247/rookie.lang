@@ -202,6 +202,7 @@ public:
 private:
     string_pool spool;
 
+	std::vector<typedata> types;
     std::vector<program_entry> entries;
     std::vector<instruction> instructions;
 };
@@ -244,6 +245,7 @@ private:
             _route(block);
             _route(ident);
             _route(literal);
+			_route(newobj);
 			_route(newarr);
             _route(op);
             _route(assignment);
@@ -343,6 +345,11 @@ private:
         else if (node->literal_type == literal_type::string)
             emitter.emit(opcode::op_ldstr, node->str);
     }
+	void emit_newobj(newobj_node *node) {
+		for (auto it = node->begin_args(); it != node->end_args(); ++it)
+			emit(*it);
+		emitter.emit(opcode::op_newobj, sig2hash(node->ident_str()));
+	}
 	void emit_newarr(newarr_node *node) {
 		for (auto child : node->children)
 			emit(child);

@@ -59,6 +59,7 @@ struct syscalltable {
 
 enum class value_type : char {
     empty,
+	null,
     integer, string, object, array
 };
 
@@ -88,6 +89,9 @@ struct value {
     value() :
         type(value_type::empty) {
     }
+	value(value_type type) :
+		type(type) {
+	}
 
     static value mkobjref(object *objref) {
         value v;
@@ -108,6 +112,9 @@ struct value {
         return v;
     }
 };
+
+const value rknull = value(value_type::null);
+
 class object {
 public:
 	int vtable_len;
@@ -121,4 +128,12 @@ public:
 	}
 
 	std::vector<value> ary;
+};
+
+template <typename T>
+class rkobject : public object {
+public:
+	static value create_instance() {
+		return value::mkobjref(new T());
+	}
 };

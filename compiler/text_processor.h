@@ -134,7 +134,7 @@ private:
         rules.push_back(lexer_token("<", token_type::op, 1));
         rules.push_back(lexer_token(">", token_type::op, 1));
 
-        rules.push_back(lexer_token("=", token_type::op));
+        rules.push_back(lexer_token("=", token_type::op, -5000));
 
         rules.push_back(lexer_token("(", token_type::left_paren, -2000));
         rules.push_back(lexer_token(")", token_type::right_paren, -2000));
@@ -276,7 +276,7 @@ private:
                             auto inserted = tokens.insert(std::next(it2), *std::prev(it));
                             tokens.erase(std::prev(it));
 
-                            (*inserted).priority = -10000;
+                            //(*inserted).priority = -10000;
 
                             break;
                         }
