@@ -1,6 +1,10 @@
 bindings
 ====
 
+There are 2 kinds of exportations in __rookie__.<br>
+First, you can export a __function__. It's a simply works as global functions. No callees required.<br>
+Second one is __class__. You can create a type and fill out some methods.
+
 functions
 ----
 You can export your C++ functions into __rookie__.<br>
