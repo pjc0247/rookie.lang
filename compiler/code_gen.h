@@ -125,6 +125,11 @@ private:
     std::vector<char> pool;
 };
 
+struct codegen_typedata {
+    std::string name;
+    std::vector<methoddata> methods;
+};
+
 class program_builder {
 public:
     void emit(opcode_t opcode, const std::string &operand) {
@@ -149,12 +154,21 @@ public:
     }
 
     void emit_class(const std::string &name) {
-
+        if (types.find(name) == types.end()) {
+            codegen_typedata tdata;
+            tdata.name = name;
+            types[name] = tdata;
+        }
     }
     void emit_method(const std::string &classname, method_node *method) {
+        methoddata mdata;
+        strcpy(mdata.name, method->ident_str().c_str());
+        mdata.entry = get_cursor();
+        types[classname].methods.push_back(mdata);
+
         program_entry entry;
 
-        printf(" emitmethod %s::%s\n", classname.c_str(), method->ident_str().c_str());
+        //printf(" emitmethod %s::%s\n", classname.c_str(), method->ident_str().c_str());
 
         memset(&entry, 0, sizeof(program_entry));
         //sprintf_s(entry.signature, "%s::%s", classname.c_str(), method->ident_str().c_str());
@@ -179,10 +193,25 @@ public:
         p.header.code_len = instructions.size();
         p.header.rdata_len = spool.size();
         p.header.entry_len = entries.size();
+        p.header.types_len = types.size();
         p.code = &instructions[0];
 
         auto rdata = spool.fin();
 
+        if (types.size() > 0) {
+            p.types = (typedata*)malloc(sizeof(typedata) * types.size());
+            int i = 0;
+            for (auto &type_pair : types) {
+                auto type = type_pair.second;
+
+                strcpy(p.types[i].name, type.name.c_str());
+                p.types[i].methods_len = type.methods.size();
+                p.types[i].methods = (methoddata*)malloc(sizeof(methoddata) * type.methods.size());
+                memcpy(p.types[i].methods, &type.methods[0], sizeof(methoddata) * type.methods.size());
+
+                i++;
+            }
+        }
         if (spool.size() > 0) {
             p.rdata = (char*)malloc(sizeof(char) * spool.size());
             memcpy((char*)p.rdata, rdata, sizeof(char) * spool.size());
@@ -202,7 +231,8 @@ public:
 private:
     string_pool spool;
 
-	std::vector<typedata> types;
+    std::map<std::string, codegen_typedata> types;
+
     std::vector<program_entry> entries;
     std::vector<instruction> instructions;
 };
@@ -239,14 +269,14 @@ private:
             _route(root);
             _route(class);
             _route(method);
-			_route(callmember);
+            _route(callmember);
             _route(call);
             _route(return);
             _route(block);
             _route(ident);
             _route(literal);
-			_route(newobj);
-			_route(newarr);
+            _route(newobj);
+            _route(newarr);
             _route(op);
             _route(assignment);
             _route(if);
@@ -294,29 +324,29 @@ private:
                 emitter.emit(opcode::op_syscall, callsite(callsite_lookup::cs_syscall, lookup.index));
         }
     }
-	void emit_callmember(callmember_node *node) {
-		for (auto it = node->begin_args(); it != node->end_args(); ++it) {
-			emit(*it);
+    void emit_callmember(callmember_node *node) {
+        for (auto it = node->begin_args(); it != node->end_args(); ++it) {
+            emit(*it);
 
-			if (node->begin_args() == it)
-				emitter.emit(opcode::op_setcallee);
-		}
+            if (node->begin_args() == it)
+                emitter.emit(opcode::op_setcallee);
+        }
 
-		/*
-		auto target = node->calltarget();
-		if (target->type == syntax_type::syn_ident) {
-			auto lookup = scope.lookup_method(node->ident_str());
+        /*
+        auto target = node->calltarget();
+        if (target->type == syntax_type::syn_ident) {
+            auto lookup = scope.lookup_method(node->ident_str());
 
-			if (lookup.type == lookup_type::not_exist ||
-				lookup.type == lookup_type::mtd_syscall) {
-				ctx.push_error(undeclared_method_error(node->token(), node->ident_str()));
-				return;
-			}
-			else if (lookup.type == lookup_type::mtd_method)
-				
-		}*/
-		emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()));
-	}
+            if (lookup.type == lookup_type::not_exist ||
+                lookup.type == lookup_type::mtd_syscall) {
+                ctx.push_error(undeclared_method_error(node->token(), node->ident_str()));
+                return;
+            }
+            else if (lookup.type == lookup_type::mtd_method)
+                
+        }*/
+        emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()));
+    }
     void emit_return(return_node *node) {
         auto val = node->value();
         if (val != nullptr)
@@ -345,16 +375,16 @@ private:
         else if (node->literal_type == literal_type::string)
             emitter.emit(opcode::op_ldstr, node->str);
     }
-	void emit_newobj(newobj_node *node) {
-		for (auto it = node->begin_args(); it != node->end_args(); ++it)
-			emit(*it);
-		emitter.emit(opcode::op_newobj, sig2hash(node->ident_str()));
-	}
-	void emit_newarr(newarr_node *node) {
-		for (auto child : node->children)
-			emit(child);
-		emitter.emit(opcode::op_newarr, node->children.size());
-	}
+    void emit_newobj(newobj_node *node) {
+        for (auto it = node->begin_args(); it != node->end_args(); ++it)
+            emit(*it);
+        emitter.emit(opcode::op_newobj, sig2hash(node->ident_str()));
+    }
+    void emit_newarr(newarr_node *node) {
+        for (auto child : node->children)
+            emit(child);
+        emitter.emit(opcode::op_newarr, node->children.size());
+    }
     void emit_op(op_node *node) {
         emit(node->left());
         emit(node->right());

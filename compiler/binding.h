@@ -46,45 +46,45 @@ typedef std::map<std::string, std::function<void(stack_provider&)>> bindmap;
 
 class type_builder {
 public:
-	type_builder(const std::string &name) :
-		name(name) {
+    type_builder(const std::string &name) :
+        name(name) {
 
-	}
+    }
 
-	type_builder &method(const std::string &signature,
-		const std::function<value()> &function) {
+    type_builder &method(const std::string &signature,
+        const std::function<value()> &function) {
 
-		_bind(signature, [function](stack_provider &sp) {
-			sp.push(function());
-		});
-		return *this;
-	}
-	type_builder & method(const std::string &signature,
-		const std::function<value(value)> &function) {
+        _bind(signature, [function](stack_provider &sp) {
+            sp.push(function());
+        });
+        return *this;
+    }
+    type_builder & method(const std::string &signature,
+        const std::function<value(value)> &function) {
 
-		_bind(signature, [function](stack_provider &sp) {
-			sp.push(function(sp.pop()));
-		});
-		return *this;
-	}
-	
-	const std::string &get_name() const {
-		return name;
-	}
-	const bindmap &get_methods() const {
-		return methods;
-	}
+        _bind(signature, [function](stack_provider &sp) {
+            sp.push(function(sp.pop()));
+        });
+        return *this;
+    }
+    
+    const std::string &get_name() const {
+        return name;
+    }
+    const bindmap &get_methods() const {
+        return methods;
+    }
 
 private:
-	std::string name;
-	bindmap methods;
+    std::string name;
+    bindmap methods;
 };
 
 class binding {
 public:
-	void add_type(type_builder &type) {
-		types.push_back(type);
-	}
+    void add_type(type_builder &type) {
+        types.push_back(type);
+    }
 
     void add(const std::string &signature,
         const std::function<void()> &function) {
@@ -108,15 +108,15 @@ public:
         return *this;
     }
 
-	const std::vector<type_builder> &get_types() const {
-		return types;
-	}
+    const std::vector<type_builder> &get_types() const {
+        return types;
+    }
     const bindmap &get_methods() const {
         return methods;
     }
 
 private:
-	std::vector<type_builder> types;
+    std::vector<type_builder> types;
 
     bindmap methods;
 };

@@ -18,7 +18,7 @@ public:
     static compiler default_compiler(binding &binding) {
         return compiler(binding)
             .transformer<callmember_transformer>()
-			.transformer<callnewobj_transformer>()
+            .transformer<callnewobj_transformer>()
 
             .transformer<precalc>()
             .transformer<tco>(); // tail-call optimizer

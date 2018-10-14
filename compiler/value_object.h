@@ -59,7 +59,7 @@ struct syscalltable {
 
 enum class value_type : char {
     empty,
-	null,
+    null,
     integer, string, object, array
 };
 
@@ -89,9 +89,9 @@ struct value {
     value() :
         type(value_type::empty) {
     }
-	value(value_type type) :
-		type(type) {
-	}
+    value(value_type type) :
+        type(type) {
+    }
 
     static value mkobjref(object *objref) {
         value v;
@@ -117,23 +117,23 @@ const value rknull = value(value_type::null);
 
 class object {
 public:
-	int vtable_len;
-	std::map<int, callinfo> *vtable;
+    int vtable_len;
+    std::map<int, callinfo> *vtable;
 
     std::map<std::string, value> properties;
 };
 class rkarray : public object {
 public:
-	rkarray() {
-	}
+    rkarray() {
+    }
 
-	std::vector<value> ary;
+    std::vector<value> ary;
 };
 
 template <typename T>
 class rkobject : public object {
 public:
-	static value create_instance() {
-		return value::mkobjref(new T());
-	}
+    static value create_instance() {
+        return value::mkobjref(new T());
+    }
 };

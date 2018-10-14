@@ -20,12 +20,12 @@ typedef enum opcode : unsigned char {
 
     op_newobj, op_newarr,
     op_call, op_syscall, op_vcall,
-	op_ret,
+    op_ret,
 
     op_pop,
     op_ldloc, op_stloc,
     op_ldstate, op_ststate,
-	op_setcallee,
+    op_setcallee,
 
     op_ldi,
     op_ldstr, op_ldnull,
@@ -47,17 +47,17 @@ inline const char *to_string(opcode type) {
     case op_ge: return "op_ge";
     case op_le: return "op_le";
     case op_newobj: return "op_newobj";
-	case op_newarr: return "op_newarr";
+    case op_newarr: return "op_newarr";
     case op_syscall: return "op_syscall";
     case op_call: return "op_call";
-	case op_vcall: return "op_vcall";
+    case op_vcall: return "op_vcall";
     case op_ret: return "op_ret";
     case op_pop: return "op_pop";
     case op_ldloc: return "op_ldloc";
     case op_stloc: return "op_stloc";
     case op_ldstate: return "op_ldstate";
     case op_ststate: return "op_ststate";
-	case op_setcallee: return "op_setcallee";
+    case op_setcallee: return "op_setcallee";
     case op_ldi: return "op_ldi";
     case op_ldstr: return "op_ldstr";
     case op_ldnull: return "op_ldnull";
@@ -82,9 +82,9 @@ struct callsite {
     callsite(unsigned char lookup_type, short index) :
         lookup_type(lookup_type), index(index), pushed(0) {
     }
-	callsite(unsigned char lookup_type, unsigned char pushed, short index) :
-		lookup_type(lookup_type), index(index), pushed(pushed) {
-	}
+    callsite(unsigned char lookup_type, unsigned char pushed, short index) :
+        lookup_type(lookup_type), index(index), pushed(pushed) {
+    }
 };
 struct instruction {
     unsigned char opcode;
@@ -105,13 +105,13 @@ struct instruction {
 };
 
 struct methoddata {
-	char name[rooke_max_signature];
-	int entry;
+    char name[rooke_max_signature];
+    int entry;
 };
 struct typedata {
-	char name[rooke_max_signature];
-	int methods_len;
-	methoddata *methods;
+    char name[rooke_max_signature];
+    int methods_len;
+    methoddata *methods;
 };
 #pragma pack (pop)
 
@@ -121,7 +121,7 @@ struct program_header {
     unsigned int code_len;
     unsigned int rdata_len;
     unsigned int entry_len;
-	unsigned int types_len;
+    unsigned int types_len;
 };
 // program_entry: ?????bytes
 struct program_entry {
@@ -139,7 +139,7 @@ struct program {
     program_entry *entries;
     instruction *code;
     const char *rdata;
-	typedata *types;
+    typedata *types;
 
     program() :
         entries(nullptr), code(nullptr), rdata(nullptr) {
@@ -151,12 +151,12 @@ struct program {
         entries = other.entries;
         code = other.code;
         rdata = other.rdata;
-		types = other.types;
+        types = other.types;
 
         other.entries = nullptr;
         other.code = nullptr;
         other.rdata = nullptr;
-		other.types = nullptr;
+        other.types = nullptr;
     }
     program& operator=(program &&other) {
         if (this != &other) {
@@ -165,12 +165,12 @@ struct program {
             entries = other.entries;
             code = other.code;
             rdata = other.rdata;
-			types = other.types;
+            types = other.types;
 
             other.entries = nullptr;
             other.code = nullptr;
             other.rdata = nullptr;
-			other.types = nullptr;
+            other.types = nullptr;
         }
         return *this;
     }
@@ -182,6 +182,15 @@ struct program {
 
     void dump() {
         printf("[rookie_program]\r\n");
+
+        printf("  [types]\n");
+        for (int i = 0; i < header.types_len; i++) {
+            printf("    [%s]\n", types[i].name);
+
+            for (int j = 0; j < types[i].methods_len; j++) {
+                printf("      * %s\n", types[i].methods[j].name);
+            }
+        }
 
         for (int i = 0; i < header.entry_len; i++) {
             printf("  [%s]\n", entries[i].signature);
