@@ -38,6 +38,25 @@ public:
         return item;
     }
 
+	__forceinline value &get(int n) {
+		return stackref[stackref.size() - 1 - n];
+	}
+	
+	template <int N>
+	__forceinline void drop() {
+		stackref.pop_back();
+		drop<N - 1>();
+	}
+	template <>
+	__forceinline void drop<1>() {
+		stackref.pop_back();
+	}
+
+	template <int N>
+	__forceinline void replace(const value &v) {
+		stackref[stackref.size() - 1 - N] = v;
+	}
+
 private:
     std::deque<value> &stackref;
 };
@@ -60,20 +79,19 @@ public:
         return *this;
     }
     type_builder & method(const std::string &signature,
-        const std::function<value(value)> &function) {
+        const std::function<value(value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
-            sp.push(function(sp.pop()));
+			sp.replace<0>(function(sp.get(0)));
         });
         return *this;
     }
 	type_builder & method(const std::string &signature,
-		const std::function<value(value, value)> &function) {
+		const std::function<value(value&, value&)> &function) {
 
 		_bind(signature, [function](stack_provider &sp) {
-			auto a = sp.pop();
-			auto b = sp.pop();
-			sp.push(function(b, a));
+			sp.replace<1>(function(sp.get(1), sp.get(0)));
+			sp.drop<1>();
 		});
 		return *this;
 	}
@@ -104,10 +122,10 @@ public:
         });
     }
     void add(const std::string &signature,
-        const std::function<value(value)> &function) {
+        const std::function<value(value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
-            sp.push(function(sp.pop()));
+			sp.replace<0>(function(sp.get(0)));
         });
     }
 
@@ -138,18 +156,18 @@ public:
 		return value::mkobjref(new T());
 	}
 
-	static void bind(type_builder &type,
+	static void method(type_builder &type,
 		const char *name, value(T::*function)()) {
 
-		type.method(name, [function](value _this) {
+		type.method(name, [function](value &_this) {
 			auto obj = ((T*)_this.objref);
 			return std::invoke(function, obj);
 		});
 	}
-	static void bind(type_builder &type,
-		const char *name, value(T::*function)(value)) {
+	static void method(type_builder &type,
+		const char *name, value(T::*function)(value&)) {
 
-		type.method(name, [function](value _this, value a) {
+		type.method(name, [function](value &_this, value &a) {
 			auto obj = ((T*)_this.objref);
 			return std::invoke(function, obj, a);
 		});

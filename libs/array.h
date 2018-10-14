@@ -12,22 +12,22 @@ public:
 
         type.method("new", create_instance);
 
-		bind(type, "at", &rkarray::at);
-		bind(type, "push", &rkarray::push);
-		bind(type, "remove", &rkarray::remove);
-		bind(type, "length", &rkarray::length);
+		method(type, "at", &rkarray::at);
+		method(type, "push", &rkarray::push);
+		method(type, "remove", &rkarray::remove);
+		method(type, "length", &rkarray::length);
 
         b.add_type(type);
     }
 
-	value at(value idx) {
+	value at(value &idx) {
 		return ary[rkint(idx)];
 	}
-    value push(value v) {
+    value push(value &v) {
 		ary.push_back(v);
 		return rknull;
     }
-	value remove(value v) {
+	value remove(value &v) {
 		ary.erase(std::remove(
 			ary.begin(), ary.end(), v),
 			ary.end());
