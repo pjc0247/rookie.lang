@@ -48,6 +48,9 @@
       <Filter>ast</Filter>
     </ClInclude>
     <ClInclude Include="fileio.h" />
+    <ClInclude Include="ast\arraccess.h">
+      <Filter>ast</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

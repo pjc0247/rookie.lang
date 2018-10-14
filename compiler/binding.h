@@ -67,6 +67,16 @@ public:
         });
         return *this;
     }
+	type_builder & method(const std::string &signature,
+		const std::function<value(value, value)> &function) {
+
+		_bind(signature, [function](stack_provider &sp) {
+			auto a = sp.pop();
+			auto b = sp.pop();
+			sp.push(function(b, a));
+		});
+		return *this;
+	}
     
     const std::string &get_name() const {
         return name;

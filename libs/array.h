@@ -10,11 +10,13 @@ public:
 
         type.method("new", create_instance);
 
-        type.method("push", [](value v) {
-            printf("PUSH %d\n", v.integer);
-
-            return rknull;
-        });
+		type.method("at", [](value _this, value idx) {
+			printf("%s\n", typeid(*_this.objref).name());
+			auto obj = ((rookie_array*)_this.objref);
+			printf("at %d, %d\n", idx.integer, obj->ary[idx.integer].integer);
+			return obj->ary[idx.integer];
+		});
+        type.method("push", push);
         type.method("remove", [](value v) {
             printf("REMOVE %d\n", v.integer);
 
@@ -24,9 +26,11 @@ public:
         b.add_type(type);
     }
 
-    void push(value v) {
-        printf("PUSH \n");
-        ary.push_back(v);
+    static value push(value _this, value v) {
+		auto obj = ((rookie_array*)_this.objref);
+		obj->ary.push_back(v);
+		printf("push %d\n", v.integer);
+		return rknull;
     }
 
 private:

@@ -23,6 +23,7 @@ enum class syntax_type {
     syn_newarr,
     syn_newobj,
 
+	syn_arraccess,
     syn_memberaccess,
     syn_call, syn_callmember,
     syn_label, syn_goto,
@@ -221,6 +222,15 @@ public:
         capacity = 2;
     }
 };
+class arraccess_node : public syntax_node {
+public:
+	arraccess_node(const stoken &token, syntax_node *parent) :
+		syntax_node(token, parent) {
+		type = syntax_type::syn_arraccess;
+		capacity = 2;
+	}
+};
+
 class params_node : public syntax_node {
 public:
     params_node(const stoken &token, syntax_node *parent) :

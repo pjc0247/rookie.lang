@@ -122,13 +122,6 @@ public:
 
     std::map<std::string, value> properties;
 };
-class rkarray : public object {
-public:
-    rkarray() {
-    }
-
-    std::vector<value> ary;
-};
 
 template <typename T>
 class rkobject : public object {

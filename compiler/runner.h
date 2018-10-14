@@ -12,6 +12,8 @@
 #include "gc.h"
 #include "binding.h"
 
+#include "libs/array.h"
+
 #define _invalid_stackitem \
     throw new invalid_program_exception("invalid stackitem, expected integer");
 
@@ -133,8 +135,8 @@ public:
                     auto newcall = types[inst.operand].vtable.table[sighash_new];
 
                     if (newcall.type == call_type::ct_syscall_direct) {
-                        auto obj = syscall(newcall.entry, sp);
-                        push(obj);
+                        syscall(newcall.entry, sp);
+						auto obj = stack[stack.size() - 1];
                         gc.add_object(obj.objref);
                     }
                     else
@@ -145,7 +147,7 @@ public:
                 for (int i = 0; i < inst.operand; i++)
                     pop();
 
-                auto aryref = new rkarray();
+                auto aryref = new rookie_array();
                 // FIXME
                 aryref->vtable = &types[sig2hash("array")].vtable.table;
                 push(value::mkobjref(aryref));
@@ -251,9 +253,8 @@ private:
             throw invalid_access_exception("Accessed to the unassigned slot.");
         return v;
     }
-    __forceinline value syscall(int index, stack_provider &sp) {
+    __forceinline void syscall(int index, stack_provider &sp) {
         syscalls.table[index](sp);
-        return sp.pop();
     }
 	__forceinline void programcall(int index) {
 		auto entry = p.entries[index];

@@ -153,6 +153,7 @@
     <ClInclude Include="..\libs\array.h" />
     <ClInclude Include="..\libs\stdlib.h" />
     <ClInclude Include="..\thirdparty\argagg.hpp" />
+    <ClInclude Include="ast\arraccess.h" />
     <ClInclude Include="ast\callmember.h" />
     <ClInclude Include="ast\callnewobj.h" />
     <ClInclude Include="ast\syntax_travler.h" />

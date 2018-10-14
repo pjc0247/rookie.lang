@@ -12,6 +12,7 @@
 
 #include "ast/callmember.h"
 #include "ast/callnewobj.h"
+#include "ast/arraccess.h"
 
 class compiler {
 public:
@@ -19,6 +20,7 @@ public:
         return compiler(binding)
             .transformer<callmember_transformer>()
             .transformer<callnewobj_transformer>()
+			.transformer<arraccess_transformer>()
 
             .transformer<precalc>()
             .transformer<tco>(); // tail-call optimizer
