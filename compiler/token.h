@@ -27,7 +27,7 @@ enum class stoken_type {
     // nothing: specified as `nothing`
     none, nothing,
 
-	st_include,
+    st_include,
 
     comma, endl,
 
@@ -43,7 +43,7 @@ enum class stoken_type {
     st_class, st_defmethod,
     st_if, st_for,
 
-	st_arraccess,
+    st_arraccess,
 
     st_begin_arr, st_end_arr,
     st_begin_call, st_end_call,
@@ -55,7 +55,7 @@ inline const char *to_string(stoken_type type) {
     switch (type) {
     case stoken_type::none: return "none";
     case stoken_type::nothing: return "nothing";
-	case stoken_type::st_include: return "st_include";
+    case stoken_type::st_include: return "st_include";
     case stoken_type::comma: return "comma";
     case stoken_type::endl: return "endl";
     case stoken_type::ident: return "ident";
@@ -68,7 +68,7 @@ inline const char *to_string(stoken_type type) {
     case stoken_type::st_annotation: return "st_annotation";
     case stoken_type::st_if: return "st_if";
     case stoken_type::st_for: return "st_for";
-	case stoken_type::st_arraccess: return "st_arraccess";
+    case stoken_type::st_arraccess: return "st_arraccess";
     case stoken_type::st_begin_arr: return "st_begin_arr";
     case stoken_type::st_end_arr: return "st_end_arr";
     case stoken_type::st_begin_call: return "st_begin_call";
@@ -90,7 +90,7 @@ struct token {
     int line, cols;
 
     stoken_type stype;
-	stoken_type hint_stype;
+    stoken_type hint_stype;
 
     static token padding() {
         return token();
@@ -99,7 +99,7 @@ struct token {
         raw(""), type(token_type::none), priority(0),
         line(0), cols(0),
         stype(stoken_type::none), 
-		hint_stype(stoken_type::none) {
+        hint_stype(stoken_type::none) {
     }
     token &preparsed(stoken_type type) {
         stype = type;
@@ -109,14 +109,14 @@ struct token {
         stype = stoken_type::nothing;
         return *this;
     }
-	token &with_hint(stoken_type type) {
-		hint_stype = type;
-		return *this;
-	}
-	token &with_priority(int _priority) {
-		priority = _priority;
-		return *this;
-	}
+    token &with_hint(stoken_type type) {
+        hint_stype = type;
+        return *this;
+    }
+    token &with_priority(int _priority) {
+        priority = _priority;
+        return *this;
+    }
 };
 struct stoken {
     std::string raw;

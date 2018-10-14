@@ -10,7 +10,7 @@ _rookie_function("print", (value v) {
     else if (is_rkstr(v))
         printf("%s\n", rkcstr(v));
 
-	return rknull;
+    return rknull;
 });
 
 _end_rookie_library

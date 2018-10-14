@@ -12,7 +12,7 @@ enum class syntax_type {
     syn_none,
     syn_root,
 
-	syn_include,
+    syn_include,
 
     syn_annotation,
     syn_class, syn_field, syn_method, syn_params,
@@ -23,7 +23,7 @@ enum class syntax_type {
     syn_newarr,
     syn_newobj,
 
-	syn_arraccess,
+    syn_arraccess,
     syn_memberaccess,
     syn_call, syn_callmember,
     syn_label, syn_goto,
@@ -203,15 +203,15 @@ public:
 
 class include_node : public syntax_node {
 public:
-	include_node(const stoken &token, syntax_node *parent) :
-		syntax_node(token, parent) {
-		capacity = 1;
-		type = syntax_type::syn_include;
-	}
+    include_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
+        capacity = 1;
+        type = syntax_type::syn_include;
+    }
 
-	std::string &path() const {
-		return ((literal_node*)children[0])->str;
-	}
+    std::string &path() const {
+        return ((literal_node*)children[0])->str;
+    }
 };
 
 class memberaccess_node : public syntax_node {
@@ -224,11 +224,11 @@ public:
 };
 class arraccess_node : public syntax_node {
 public:
-	arraccess_node(const stoken &token, syntax_node *parent) :
-		syntax_node(token, parent) {
-		type = syntax_type::syn_arraccess;
-		capacity = 2;
-	}
+    arraccess_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
+        type = syntax_type::syn_arraccess;
+        capacity = 2;
+    }
 };
 
 class params_node : public syntax_node {

@@ -43,10 +43,10 @@ struct runtime_typedata {
 class runner {
 public:
     runner(const program &p, binding &binding) :
-		p(p), binding(binding),
+        p(p), binding(binding),
         callee_ptr(nullptr) {
 
-		build_runtime_data();
+        build_runtime_data();
     }
 
     void execute() {
@@ -74,18 +74,18 @@ public:
 
             printf("%s\n", to_string((opcode_t)inst.opcode));
 
-			if (inst.opcode == opcode::op_nop);
-			else if (inst.opcode == opcode::op_ldi)
-				stack.push_back(value::mkinteger(inst.operand));
-			else if (inst.opcode == opcode::op_ldstr)
-				stack.push_back(value::mkstring(p.rdata + inst.operand));
-			else if (inst.opcode == opcode::op_ldstate)
-				stack.push_back(value::mkstring(p.rdata + inst.operand));
+            if (inst.opcode == opcode::op_nop);
+            else if (inst.opcode == opcode::op_ldi)
+                stack.push_back(value::mkinteger(inst.operand));
+            else if (inst.opcode == opcode::op_ldstr)
+                stack.push_back(value::mkstring(p.rdata + inst.operand));
+            else if (inst.opcode == opcode::op_ldstate)
+                stack.push_back(value::mkstring(p.rdata + inst.operand));
 
-			else if (inst.opcode == opcode::op_pop)
-				stack.pop_back();
-			else if (inst.opcode == opcode::op_dup)
-				stack.push_back(stack.back());
+            else if (inst.opcode == opcode::op_pop)
+                stack.pop_back();
+            else if (inst.opcode == opcode::op_dup)
+                stack.push_back(stack.back());
 
             else if (inst.opcode == opcode::op_l) {
                 _pop2_int(left, right);
@@ -131,7 +131,7 @@ public:
                     auto objref = new object();
                     push(value::mkobjref(objref));
 
-					objref->vtable = &types[inst.operand].vtable.table;
+                    objref->vtable = &types[inst.operand].vtable.table;
 
                     gc.add_object(objref);
                 }
@@ -141,7 +141,7 @@ public:
 
                     if (newcall.type == call_type::ct_syscall_direct) {
                         syscall(newcall.entry, sp);
-						auto obj = stack[stack.size() - 1];
+                        auto obj = stack[stack.size() - 1];
                         gc.add_object(obj.objref);
                     }
                     else
@@ -164,7 +164,7 @@ public:
                 callee_ptr = &stack.back();
 
             else if (inst.opcode == opcode::op_call)
-				programcall(inst.cs.index);
+                programcall(inst.cs.index);
             else if (inst.opcode == opcode::op_syscall)
                 syscall(inst.cs.index, sp);
             else if (inst.opcode == opcode::op_vcall) {
@@ -172,10 +172,10 @@ public:
                 auto sighash = inst.operand;
 
                 auto callinfo = calleeobj->vtable->at(sighash);
-				if (callinfo.type == call_type::ct_syscall_direct)
-					syscall(callinfo.entry, sp);
-				else if (callinfo.type == call_type::ct_programcall_direct)
-					programcall(callinfo.entry);
+                if (callinfo.type == call_type::ct_syscall_direct)
+                    syscall(callinfo.entry, sp);
+                else if (callinfo.type == call_type::ct_programcall_direct)
+                    programcall(callinfo.entry);
             }
             else if (inst.opcode == opcode::op_ret) {
                 auto callframe = pop_callframe(*current_entry);
@@ -208,49 +208,49 @@ public:
     }
 
 private:
-	void build_runtime_data() {
-		for (auto &b : binding.get_methods()) {
-			syscalls.table.push_back(b.second);
-		}
-		for (auto &type : binding.get_types()) {
-			auto typesighash = sig2hash(type.get_name());
+    void build_runtime_data() {
+        for (auto &b : binding.get_methods()) {
+            syscalls.table.push_back(b.second);
+        }
+        for (auto &type : binding.get_types()) {
+            auto typesighash = sig2hash(type.get_name());
 
-			auto methods = type.get_methods();
-			calltable vtable;
+            auto methods = type.get_methods();
+            calltable vtable;
 
-			for (auto &method : methods) {
-				auto sighash = sig2hash(method.first);
-				syscalls.table.push_back(method.second);
+            for (auto &method : methods) {
+                auto sighash = sig2hash(method.first);
+                syscalls.table.push_back(method.second);
 
-				vtable.table[sighash].type = call_type::ct_syscall_direct;
-				vtable.table[sighash].entry = syscalls.table.size() - 1;
-			}
+                vtable.table[sighash].type = call_type::ct_syscall_direct;
+                vtable.table[sighash].entry = syscalls.table.size() - 1;
+            }
 
-			runtime_typedata tdata;
-			tdata.typekind = runtime_typekind::tk_systype;
-			tdata.vtable = vtable;
-			types[typesighash] = tdata;
-		}
+            runtime_typedata tdata;
+            tdata.typekind = runtime_typekind::tk_systype;
+            tdata.vtable = vtable;
+            types[typesighash] = tdata;
+        }
 
-		for (int i = 0; i < p.header.types_len; i++) {
-			auto type = p.types[i];
+        for (int i = 0; i < p.header.types_len; i++) {
+            auto type = p.types[i];
 
-			runtime_typedata tdata;
-			tdata.typekind = runtime_typekind::tk_programtype;
+            runtime_typedata tdata;
+            tdata.typekind = runtime_typekind::tk_programtype;
 
-			calltable vtable;
-			for (int j = 0; j < type.methods_len; j++) {
-				auto method = type.methods[j];
-				auto methodhash = sig2hash(method.name);
+            calltable vtable;
+            for (int j = 0; j < type.methods_len; j++) {
+                auto method = type.methods[j];
+                auto methodhash = sig2hash(method.name);
 
-				vtable.table[methodhash].type = call_type::ct_programcall_direct;
-				vtable.table[methodhash].entry = method.entry;
-			}
-			tdata.vtable = vtable;
+                vtable.table[methodhash].type = call_type::ct_programcall_direct;
+                vtable.table[methodhash].entry = method.entry;
+            }
+            tdata.vtable = vtable;
 
-			types[sig2hash(type.name)] = tdata;
-		}
-	}
+            types[sig2hash(type.name)] = tdata;
+        }
+    }
 
     __forceinline value get_local(int n) {
         auto v = stack[bp + n];
@@ -261,13 +261,13 @@ private:
     __forceinline void syscall(int index, stack_provider &sp) {
         syscalls.table[index](sp);
     }
-	__forceinline void programcall(int index) {
-		auto entry = p.entries[index];
-		push_callframe(entry);
-		pc = entry.entry;
-		bp = stack.size() - entry.params;
-		current_entry = &entry;
-	}
+    __forceinline void programcall(int index) {
+        auto entry = p.entries[index];
+        push_callframe(entry);
+        pc = entry.entry;
+        bp = stack.size() - entry.params;
+        current_entry = &entry;
+    }
 
     value pop() {
         if (stack.empty())
@@ -296,7 +296,7 @@ private:
     }
 
 private:
-	const program &p;
+    const program &p;
     const binding &binding;
 
     syscalltable syscalls;

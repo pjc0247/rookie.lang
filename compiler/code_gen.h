@@ -195,7 +195,7 @@ public:
         p.header.entry_len = entries.size();
         p.header.types_len = types.size();
 
-		p.header.main_entry = 0;
+        p.header.main_entry = 0;
 
         auto rdata = spool.fin();
 

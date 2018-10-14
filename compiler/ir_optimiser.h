@@ -7,18 +7,18 @@
 class ir_optimiser {
 public:
 
-	bool is_transformable() {
-		if ((*it).opcode == opcode::op_stloc &&
-			(*std::next(it)).opcode == opcode::op_ldloc &&
-			(*it).operand == (*std::next(it)).operand) {
-			return true;
-		}
-		return false;
-	}
+    bool is_transformable() {
+        if ((*it).opcode == opcode::op_stloc &&
+            (*std::next(it)).opcode == opcode::op_ldloc &&
+            (*it).operand == (*std::next(it)).operand) {
+            return true;
+        }
+        return false;
+    }
 
 private:
-	int cursor;
+    int cursor;
 
-	std::list<instruction>::iterator it;
-	std::list<instruction> instructions;
+    std::list<instruction>::iterator it;
+    std::list<instruction> instructions;
 };
