@@ -24,21 +24,21 @@ protected:
 
                 auto op = ((op_node*)node)->op;
 
-                if (op == "+")
+                if (op == L"+")
                     _node->integer = left->integer + right->integer;
-                else if (op == "-")
+                else if (op == L"-")
                     _node->integer = left->integer - right->integer;
-                else if (op == "*")
+                else if (op == L"*")
                     _node->integer = left->integer * right->integer;
-                else if (op == "/")
+                else if (op == L"/")
                     _node->integer = left->integer / right->integer;
-                else if (op == ">")
+                else if (op == L">")
                     _node->integer = left->integer > right->integer;
-                else if (op == "<")
+                else if (op == L"<")
                     _node->integer = left->integer < right->integer;
-                else if (op == ">=")
+                else if (op == L">=")
                     _node->integer = left->integer >= right->integer;
-                else if (op == "<=")
+                else if (op == L"<=")
                     _node->integer = left->integer <= right->integer;
                 // unimplemented op, stash current works
                 else

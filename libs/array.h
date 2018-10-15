@@ -8,17 +8,28 @@
 class rkarray : public rkobject<rkarray> {
 public:
     static void import(binding &b) {
-        auto type = type_builder("array");
+        auto type = type_builder(L"array");
 
-        type.method("new", create_instance);
+        type.method(L"new", create_array);
 
-        method(type, "at", &rkarray::at);
-        method(type, "push", &rkarray::push);
-        method(type, "remove", &rkarray::remove);
-        method(type, "length", &rkarray::length);
+        method(type, L"at", &rkarray::at);
+        method(type, L"push", &rkarray::push);
+        method(type, L"remove", &rkarray::remove);
+        method(type, L"length", &rkarray::length);
 
         b.add_type(type);
     }
+
+	rkarray(int n) {
+		for (int i = 0; i < n; i++) {
+			value v = rkctx->next_param();
+			push(v);
+		}
+	}
+
+	value static create_array(value &idx) {
+		return value::mkobjref(new rkarray(0));
+	}
 
     value at(value &idx) {
         return ary[rkint(idx)];

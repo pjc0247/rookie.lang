@@ -9,15 +9,15 @@
 class rkstring : public rkobject<rkstring> {
 public:
     static void import(binding &b) {
-        auto type = type_builder("string");
+        auto type = type_builder(L"string");
 
-        type.method("new", create_instance2);
+        type.method(L"new", create_instance2);
 
-        method(type, "at", &rkstring::at);
-        method(type, "length", &rkstring::length);
+        method(type, L"at", &rkstring::at);
+        method(type, L"length", &rkstring::length);
 
-        method(type, "append", &rkstring::append);
-        method(type, "to_string", &rkstring::to_string);
+        method(type, L"append", &rkstring::append);
+        method(type, L"to_string", &rkstring::to_string);
 
         b.add_type(type);
     }
@@ -42,6 +42,10 @@ public:
         return value::mkstring(str.c_str());
     }
 
+	const wchar_t *c_str() const {
+		return str.c_str();
+	}
+
 private:
-    std::string str;
+    std::wstring str;
 };

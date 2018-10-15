@@ -27,8 +27,8 @@ private:
         auto plus = new op_node(node->source, new_node);
         plus->append(node->left());
         plus->append(new literal_node(node->source, plus, 1));
-        if (node->op == "++") plus->op = "+";
-        else if (node->op == "--") plus->op = "-";
+        if (node->op == L"++") plus->op = L"+";
+        else if (node->op == L"--") plus->op = L"-";
         new_node->append(plus);
 
         return new_node;

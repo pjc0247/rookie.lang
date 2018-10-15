@@ -23,21 +23,16 @@ public:
 
         depth++;
         for (auto &token : stokens) {
-            printf("%s\n", token.raw.c_str());
+            rklog("%s\n", token.raw.c_str());
 
             _ending_expression(end_block);
             _ending_expression(st_end_param);
             _ending_expression(st_end_call);
             _ending_expression(st_end_arr);
 
-            if (token.type == stoken_type::endl) {
-                //current = current->parent;
-                if (depth >= 1)
-                    append_and_set(pop(token));
-
-                depth = 0;
-            }
-            if (token.type == stoken_type::st_include)
+            if (token.type == stoken_type::endl)
+				append_and_set(new endl_node(token, current));
+            else if (token.type == stoken_type::st_include)
                 append_and_replace(include(token));
             else if (token.type == stoken_type::begin_block) {
                 append_and_replace(block(token));
@@ -139,6 +134,7 @@ private:
         return node;
     }
     block_node *block(const stoken &token) {
+		depth = 0;
         auto node = new block_node(token, current);
         return node;
     }
@@ -165,6 +161,7 @@ private:
         return node;
     }
     if_node *_if(const stoken &token) {
+		depth--;
         auto node = new if_node(token, current);
         return node;
     }
@@ -194,11 +191,11 @@ private:
         return node;
     }
     syntax_node *op(const stoken &token) {
-        if (token.raw == "=") {
-            depth--;
+        if (token.raw == L"=") {
+            depth -= 2;
             return new assignment_node(token, current);
         }
-        else if (token.raw == "++" || token.raw == "--") {
+        else if (token.raw == L"++" || token.raw == L"--") {
             depth--;
             auto node = new standalone_op_node(token, current);
             node->op = token.raw;

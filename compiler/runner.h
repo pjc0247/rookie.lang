@@ -32,6 +32,8 @@
 #define _pop2_int(a, b) \
     auto a = pop(); auto b = pop(); _ensure_int(a,b);
 
+#define _stacktop() stack[stack.size() - 1]
+
 enum class runtime_typekind {
     tk_systype,
     tk_programtype
@@ -58,7 +60,7 @@ public:
         execute(&p.entries[p.header.main_entry]);
     }
     void execute(program_entry *_entry) {
-        printf("===execute===\n");
+        rklog("===execute===\n");
 
         current_entry = _entry;
         pc = _entry->entry;
@@ -75,13 +77,16 @@ public:
 
             auto inst = p.code[pc++];
 
-            printf("%s,   %d\n", to_string((opcode_t)inst.opcode), inst.operand);
+            rklog("%S,   %d\n", to_string((opcode_t)inst.opcode), inst.operand);
 
             if (inst.opcode == opcode::op_nop);
             else if (inst.opcode == opcode::op_ldi)
                 stack.push_back(value::mkinteger(inst.operand));
-            else if (inst.opcode == opcode::op_ldstr)
-                stack.push_back(value::mkstring(p.rdata + inst.operand));
+			else if (inst.opcode == opcode::op_ldstr) {
+				// [TODO] Performance consideration:
+				stack.push_back(value::mkstring(p.rdata + inst.operand));
+				_newobj_systype(sighash_string, sp);
+			}
             else if (inst.opcode == opcode::op_ldstate)
                 stack.push_back(value::mkstring(p.rdata + inst.operand));
 
@@ -144,6 +149,7 @@ public:
                     push(value::mkobjref(objref));
 
                     objref->vtable = &types[inst.operand].vtable.table;
+					objref->sighash = inst.operand;
 
                     gc.add_object(objref);
                 }
@@ -155,6 +161,7 @@ public:
                         syscall(newcall.entry, sp);
                         auto obj = stack[stack.size() - 1];
                         obj.objref->vtable = &types[inst.operand].vtable.table;
+						obj.objref->sighash = inst.operand;
                         gc.add_object(obj.objref);
                     }
                     else
@@ -162,10 +169,8 @@ public:
                 }
             }
             else if (inst.opcode == opcode::op_newarr) {
-                for (int i = 0; i < inst.operand; i++)
-                    pop();
-
-                auto aryref = new rkarray();
+				rkctx = exectx;
+                auto aryref = new rkarray(inst.operand);
                 // FIXME
                 aryref->vtable = &types[sighash_array].vtable.table;
                 push(value::mkobjref(aryref));
@@ -228,7 +233,7 @@ public:
     }
 
 	// Performs vcall, internal use only.
-    void _vcall(int sighash, stack_provider &sp) {
+	__forceinline void _vcall(int sighash, stack_provider &sp) {
         auto calleeobj = callee_ptr->objref;
 
         auto callinfo = calleeobj->vtable->at(sighash);
@@ -237,6 +242,22 @@ public:
         else if (callinfo.type == call_type::ct_programcall_direct)
             programcall(callinfo.entry);
     }
+	// internal use only.
+	__forceinline void _newobj_systype(int sighash, stack_provider &sp) {
+		auto newcall = types[sighash].vtable.table[sighash_new];
+
+#if _RK_STRICT_CHECK
+		if (newcall.type != call_type::ct_syscall_direct)
+			throw invalid_access_exception("invalid calltype for .new");
+#endif
+
+		syscall(newcall.entry, sp);
+		auto obj = _stacktop();
+		obj.objref->vtable = &types[sighash].vtable.table;
+		obj.objref->sighash = sighash;
+
+		gc.add_object(obj.objref);
+	}
 
 private:
     void build_runtime_data() {

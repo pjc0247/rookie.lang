@@ -38,7 +38,7 @@ public:
         current_method = node;
     }
 
-    lookup_result lookup_method(const std::string &ident) {
+    lookup_result lookup_method(const std::wstring &ident) {
         lookup_result result;
 
         for (int i = 0; i<current_class->methods.size(); i++) {
@@ -59,7 +59,7 @@ public:
         result.type = lookup_type::not_exist;
         return result;
     }
-    lookup_result lookup_variable(const std::string &ident) {
+    lookup_result lookup_variable(const std::wstring &ident) {
         lookup_result result;
         
         for (int i = 0; i<current_method->locals.size(); i++) {
@@ -91,14 +91,14 @@ private:
 
 class string_pool {
 public:
-    int get_ptr(const std::string &str) {
+    int get_ptr(const std::wstring &str) {
         if (indexes.find(str) != indexes.end())
             return indexes[str];
         return append(str);
     }
-    const char *fin() const {
+    const wchar_t *fin() const {
         if (pool.empty())
-            return "";
+            return L"";
         return &(pool.front());
     }
     unsigned int size() const {
@@ -112,7 +112,7 @@ public:
         printf("\r\n===end_string_pool====\r\n");
     }
 private:
-    int append(const std::string &str) {
+    int append(const std::wstring &str) {
         auto ptr = pool.size();
         pool.insert(pool.end(), str.begin(), str.end());
         pool.insert(pool.end(), 0);
@@ -121,30 +121,27 @@ private:
     }
 
 private:
-    std::map<std::string, int> indexes;
-    std::vector<char> pool;
+    std::map<std::wstring, int> indexes;
+    std::vector<wchar_t> pool;
 };
 
 struct codegen_typedata {
-    std::string name;
+    std::wstring name;
     std::vector<methoddata> methods;
 };
 
 class program_builder {
 public:
-    void emit(opcode_t opcode, const std::string &operand) {
+    void emit(opcode_t opcode, const std::wstring &operand) {
         emit(opcode, spool.get_ptr(operand));
     }
     void emit(opcode_t opcode, const callsite &cs) {
-        printf("[emit] %d\n", opcode);
         instructions.push_back(instruction(opcode, cs));
     }
     void emit(opcode_t opcode, int operand) {
-        printf("[emit] %d\n", opcode);
         instructions.push_back(instruction(opcode, operand));
     }
     int emit(opcode_t opcode) {
-        printf("[emit] %d\n", opcode);
         instructions.push_back(instruction(opcode, 0));
         return instructions.size() - 1;
     }
@@ -153,22 +150,22 @@ public:
         instructions[i].operand = operand;
     }
 
-    void emit_class(const std::string &name) {
+    void emit_class(const std::wstring &name) {
         if (types.find(name) == types.end()) {
             codegen_typedata tdata;
             tdata.name = name;
             types[name] = tdata;
         }
     }
-    void emit_method(const std::string &classname, method_node *method) {
+    void emit_method(const std::wstring &classname, method_node *method) {
         methoddata mdata;
-        strcpy(mdata.name, method->ident_str().c_str());
+        wcscpy(mdata.name, method->ident_str().c_str());
         mdata.entry = entries.size();
         types[classname].methods.push_back(mdata);
 
         program_entry entry;
         memset(&entry, 0, sizeof(program_entry));
-        sprintf_s(entry.signature, "%s", method->ident_str().c_str());
+        swprintf(entry.signature, sizeof(entry.signature), L"%s", method->ident_str().c_str());
         entry.entry = get_cursor();
         entry.params = method->params()->children.size();
         entry.locals = method->locals.size();
@@ -201,7 +198,7 @@ public:
             for (auto &type_pair : types) {
                 auto type = type_pair.second;
 
-                strcpy(p.types[i].name, type.name.c_str());
+                wcscpy(p.types[i].name, type.name.c_str());
                 p.types[i].methods_len = type.methods.size();
                 p.types[i].methods = (methoddata*)malloc(sizeof(methoddata) * type.methods.size());
                 memcpy(p.types[i].methods, &type.methods[0], sizeof(methoddata) * type.methods.size());
@@ -210,8 +207,8 @@ public:
             }
         }
         if (spool.size() > 0) {
-            p.rdata = (char*)malloc(sizeof(char) * spool.size());
-            memcpy((char*)p.rdata, rdata, sizeof(char) * spool.size());
+            p.rdata = (wchar_t*)malloc(sizeof(wchar_t) * spool.size());
+            memcpy((wchar_t*)p.rdata, rdata, sizeof(wchar_t) * spool.size());
         }
         if (instructions.size() > 0) {
             p.code = (instruction*)malloc(sizeof(instruction) * instructions.size());
@@ -228,7 +225,7 @@ public:
 private:
     string_pool spool;
 
-    std::map<std::string, codegen_typedata> types;
+    std::map<std::wstring, codegen_typedata> types;
 
     std::vector<program_entry> entries;
     std::vector<instruction> instructions;
@@ -261,7 +258,7 @@ private:
         if (node->is_virtual)
             ; // incomplete vnode transformation
 
-        printf("%s %d, %d\n", typeid(*node).name(), node->type, node->token().line);
+        rklog("%s %d, %d\n", typeid(*node).name(), node->type, node->token().line);
         switch (node->type) {
             _route(root);
             _route(class);
@@ -304,6 +301,8 @@ private:
 
         emit(node->body());
 
+		// FIXME
+		emitter.emit(opcode::op_ldi, 0);
         emitter.emit(opcode::op_ret);
         emitter.fin_method();
     }
@@ -382,31 +381,31 @@ private:
         emitter.emit(opcode::op_newobj, sig2hash(node->ident_str()));
     }
     void emit_newarr(newarr_node *node) {
-        for (auto child : node->children)
-            emit(child);
+        for (int i=node->children.size()-1; i>=0;i--)
+            emit(node->children[i]);
         emitter.emit(opcode::op_newarr, node->children.size());
     }
     void emit_op(op_node *node) {
         emit(node->left());
         emit(node->right());
 
-        if (node->op == "+")
+        if (node->op == L"+")
             emitter.emit(opcode::op_add);
-        else if (node->op == "-")
+        else if (node->op == L"-")
             emitter.emit(opcode::op_sub);
-        else if (node->op == "*")
+        else if (node->op == L"*")
             emitter.emit(opcode::op_mul);
-        else if (node->op == "/")
+        else if (node->op == L"/")
             emitter.emit(opcode::op_div);
-        else if (node->op == ">")
+        else if (node->op == L">")
             emitter.emit(opcode::op_g);
-        else if (node->op == "<")
+        else if (node->op == L"<")
             emitter.emit(opcode::op_l);
-        else if (node->op == ">=")
+        else if (node->op == L">=")
             emitter.emit(opcode::op_ge);
-        else if (node->op == "<=")
+        else if (node->op == L"<=")
             emitter.emit(opcode::op_le);
-        else if (node->op == "==")
+        else if (node->op == L"==")
             emitter.emit(opcode::op_eq);
     }
     void emit_assignment(assignment_node *node) {
@@ -414,7 +413,7 @@ private:
 
         auto ident = dynamic_cast<ident_node*>(node->left());
         if (ident == nullptr) {
-            ctx.push_error(syntax_error(node->left()->token(), "Wrong l-value type."));
+            ctx.push_error(syntax_error(node->left()->token(), L"Wrong l-value type."));
             return;
         }
 

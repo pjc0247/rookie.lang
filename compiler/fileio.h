@@ -6,19 +6,20 @@
 
 class fileio {
 public:
-    static char *read_string(const char *filepath) {
-        FILE *fp = fopen(filepath, "rb");
+    static wchar_t *read_string(const std::wstring &filepath) {
+        FILE *fp = _wfopen(filepath.c_str(), L"rtS, ccs=UTF-8");
+
         if (!fp) {
             throw std::exception(
-                ("no such file: " + std::string(filepath)).c_str());
+                (char*)(L"no such file: " + std::wstring(filepath)).c_str());
         }
 
         fseek(fp, 0, SEEK_END);
         auto len = ftell(fp);
         fseek(fp, 0, SEEK_SET);
 
-        char *buf = new char[len + 1];
-        fread(buf, sizeof(char), len, fp);
+		wchar_t *buf = new wchar_t[len + 1];
+        fread(buf, sizeof(wchar_t), len, fp);
         buf[len] = 0;
 
         fclose(fp);

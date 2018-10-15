@@ -11,11 +11,11 @@
 #define _str2cmp(m, idx, c0, c1) *(unsigned short*)(m+idx) == ((c1 << 8) | c0)
 
 struct lexer_token {
-    std::string raw;
+    std::wstring raw;
     token_type type;
     int priority;
 
-    lexer_token(const std::string &raw, token_type type, int priority = 0) :
+    lexer_token(const std::wstring &raw, token_type type, int priority = 0) :
         raw(raw), type(type), priority(priority) {
     }
 };
@@ -27,8 +27,8 @@ public:
         init_rules();
     }
 
-    std::vector<token> lex(const std::string &_src) {
-        std::string src = " " + _src + " ";
+    std::vector<token> lex(const std::wstring &_src) {
+        std::wstring src = L" " + _src + L" ";
         std::vector<token> result;
 
         int head = 1, tail = 1;
@@ -80,7 +80,7 @@ public:
                 tail = head;
                 found = true;
 
-                if (t.raw == "\r\n") {
+                if (t.raw == L"\r\n") {
                     line++; cols = 1;
                 }
                 break;
@@ -108,51 +108,51 @@ public:
 
 private:
     void init_rules() {
-        rules.push_back(lexer_token("\r\n", token_type::none));
-        rules.push_back(lexer_token(" ", token_type::none));
-        rules.push_back(lexer_token("\t", token_type::none));
+        rules.push_back(lexer_token(L"\r\n", token_type::none));
+        rules.push_back(lexer_token(L" ", token_type::none));
+        rules.push_back(lexer_token(L"\t", token_type::none));
 
-        rules.push_back(lexer_token("//", token_type::none));
+        rules.push_back(lexer_token(L"//", token_type::none));
 
-        rules.push_back(lexer_token("include", token_type::keyword));
+        rules.push_back(lexer_token(L"include", token_type::keyword));
 
-        rules.push_back(lexer_token("@", token_type::keyword));
-        rules.push_back(lexer_token("class", token_type::keyword));
-        rules.push_back(lexer_token("def", token_type::keyword));
-        rules.push_back(lexer_token("if", token_type::keyword));
-        rules.push_back(lexer_token("for", token_type::keyword));
-        rules.push_back(lexer_token("return", token_type::keyword));
+        rules.push_back(lexer_token(L"@", token_type::keyword));
+        rules.push_back(lexer_token(L"class", token_type::keyword));
+        rules.push_back(lexer_token(L"def", token_type::keyword));
+        rules.push_back(lexer_token(L"if", token_type::keyword));
+        rules.push_back(lexer_token(L"for", token_type::keyword));
+        rules.push_back(lexer_token(L"return", token_type::keyword));
         //rules.push_back(lexer_token("new", token_type::keyword));
 
-        rules.push_back(lexer_token("++", token_type::op));
-        rules.push_back(lexer_token("--", token_type::op));
+        rules.push_back(lexer_token(L"++", token_type::op));
+        rules.push_back(lexer_token(L"--", token_type::op));
 
-        rules.push_back(lexer_token("+", token_type::op, 2));
-        rules.push_back(lexer_token("-", token_type::op, 2));
-        rules.push_back(lexer_token("*", token_type::op, 4));
-        rules.push_back(lexer_token("/", token_type::op, 4));
+        rules.push_back(lexer_token(L"+", token_type::op, 2));
+        rules.push_back(lexer_token(L"-", token_type::op, 2));
+        rules.push_back(lexer_token(L"*", token_type::op, 4));
+        rules.push_back(lexer_token(L"/", token_type::op, 4));
 
-        rules.push_back(lexer_token("==", token_type::op, 1));
-        rules.push_back(lexer_token("<=", token_type::op, 1));
-        rules.push_back(lexer_token(">=", token_type::op, 1));
-        rules.push_back(lexer_token("<", token_type::op, 1));
-        rules.push_back(lexer_token(">", token_type::op, 1));
+        rules.push_back(lexer_token(L"==", token_type::op, 1));
+        rules.push_back(lexer_token(L"<=", token_type::op, 1));
+        rules.push_back(lexer_token(L">=", token_type::op, 1));
+        rules.push_back(lexer_token(L"<", token_type::op, 1));
+        rules.push_back(lexer_token(L">", token_type::op, 1));
 
-        rules.push_back(lexer_token("=", token_type::op, -5000));
+        rules.push_back(lexer_token(L"=", token_type::op, -5000));
 
-        rules.push_back(lexer_token("(", token_type::left_paren, -2000));
-        rules.push_back(lexer_token(")", token_type::right_paren, -2000));
-        rules.push_back(lexer_token("{", token_type::left_bracket));
-        rules.push_back(lexer_token("}", token_type::right_bracket, -99999));
-        rules.push_back(lexer_token("[", token_type::left_sq_bracket, -900));
-        rules.push_back(lexer_token("]", token_type::right_sq_bracket, -900));
+        rules.push_back(lexer_token(L"(", token_type::left_paren, -2000));
+        rules.push_back(lexer_token(L")", token_type::right_paren, -2000));
+        rules.push_back(lexer_token(L"{", token_type::left_bracket));
+        rules.push_back(lexer_token(L"}", token_type::right_bracket, -99999));
+        rules.push_back(lexer_token(L"[", token_type::left_sq_bracket, -900));
+        rules.push_back(lexer_token(L"]", token_type::right_sq_bracket, -900));
 
-        rules.push_back(lexer_token(".", token_type::dot, -3000));
-        rules.push_back(lexer_token(",", token_type::comma, -1000));
-        rules.push_back(lexer_token(";", token_type::semicolon, -9999));
+        rules.push_back(lexer_token(L".", token_type::dot, -3000));
+        rules.push_back(lexer_token(L",", token_type::comma, -1000));
+        rules.push_back(lexer_token(L";", token_type::semicolon, -9999));
     }
 
-    token parse(const std::string &raw) {
+    token parse(const std::wstring &raw) {
         if (raw.length() == 0)
             return token();
 
@@ -164,11 +164,11 @@ private:
             t.literal_type = literal_type::string;
             t.raw = t.raw.substr(1, t.raw.size() - 2);
         }
-        else if (std::regex_match(raw, std::regex("-?[0-9]+"))) {
+        else if (std::regex_match(raw, std::wregex(L"-?[0-9]+"))) {
             t.type = token_type::literal;
             t.literal_type = literal_type::integer;
         }
-        else if (std::regex_match(raw, std::regex("[a-zA-Z_]+[a-zA-Z0-9_]*"))) {
+        else if (std::regex_match(raw, std::wregex(L"[a-zA-Z_]+[a-zA-Z0-9_]*"))) {
             t.type = token_type::ident;
 
             if (t.raw.length() >= rooke_max_signature - 1)
@@ -199,20 +199,24 @@ public:
         result.clear();
         depth = 0;
 
+#if _DEBUG
         for (auto &token : _tokens)
-            printf("%s ", token.raw.c_str());
-        printf("\n\n\r\n");
+            rklog("%s ", token.raw.c_str());
+        rklog("\n\n\r\n");
+#endif
 
         tokens = preprocess(_tokens);
 
+#if _DEBUG
         for (auto &token : tokens)
-            printf("%s ", token.raw.c_str());
-        printf("\n\n");
+			rklog("%s ", token.raw.c_str());
+		rklog("\n\n");
+#endif
 
         for (cursor = 0; cursor < tokens.size(); cursor ++) {
             auto token = tokens[cursor];
 
-            printf("%s / %d / %d / %d\n", token.raw.c_str(), token.type, token.line, depth);
+            rklog("%S / %d / %d / %d\n", token.raw.c_str(), token.type, token.line, depth);
 
             if (token.type == token_type::left_bracket)
                 depth--;
@@ -236,9 +240,11 @@ public:
 
         std::reverse(result.begin(), result.end());
 
+#if _DEBUG
         printf("\r\n\r\nSTOKEN\r\n");
         for (auto &stoken : result)
-            printf("%s\r\n", stoken.to_string().c_str());
+            printf("%S\r\n", stoken.to_string().c_str());
+#endif
 
         return result;
     }
@@ -326,9 +332,9 @@ private:
         stoken stoken(token);
 
         if (token.type == token_type::keyword) {
-            if (token.raw == "class")
+            if (token.raw == L"class")
                 stoken.type = stoken_type::st_class;
-            else if (token.raw == "include")
+            else if (token.raw == L"include")
                 stoken.type = stoken_type::st_include;
         }
         else if (token.type == token_type::ident)
@@ -352,9 +358,9 @@ private:
         if (token.type == token_type::keyword) {
             result.push_back(pop_and_parse());
 
-            if (token.raw == "def")
+            if (token.raw == L"def")
                 stoken.type = stoken_type::st_defmethod;
-            else if (token.raw == "@")
+            else if (token.raw == L"@")
                 stoken.type = stoken_type::st_annotation;
         }
         else if (token.type == token_type::left_paren) {
@@ -469,9 +475,9 @@ private:
         }
         else if (token.type == token_type::keyword) {
             _mark_as_parsed(stoken);
-            if (token.raw == "return") {
-                flush_until_priority(-3000);
-                stoken.type = stoken_type::st_return;
+            if (token.raw == L"return") {
+				flush_until_priority(-3000);
+                stack.push_back(token);
             }
             else {
                 stack.push_back(token);
@@ -522,15 +528,15 @@ private:
         return stoken;
     }
     void parse_keyword(const token &token, stoken &stoken) {
-        if (token.raw == "class")
+        if (token.raw == L"class")
             stoken.type = stoken_type::st_class;
-        else if (token.raw == "def")
+        else if (token.raw == L"def")
             stoken.type = stoken_type::st_defmethod;
-        else if (token.raw == "if")
+        else if (token.raw == L"if")
             stoken.type = stoken_type::st_if;
-        else if (token.raw == "for")
+        else if (token.raw == L"for")
             stoken.type = stoken_type::st_for;
-        else if (token.raw == "return")
+        else if (token.raw == L"return")
             stoken.type = stoken_type::st_return;
     }
 
@@ -539,13 +545,13 @@ private:
             auto token = stack.back();
 
             if (token.priority <= priority) {
-                printf("   stopped : %s\n", token.raw.c_str());
+                rklog("   stopped : %s\n", token.raw.c_str());
                 break;
             }
 
             stack.pop_back();
 
-            printf("   flushed : %s, %d\n", token.raw.c_str(), token.priority);
+            rklog("   flushed : %s, %d\n", token.raw.c_str(), token.priority);
             auto parsed = parse(token);
             if (parsed.type != stoken_type::none &&
                 parsed.type != stoken_type::nothing)
@@ -557,14 +563,14 @@ private:
             auto token = stack.back();
             stack.pop_back();
 
-            printf("   flushed : %s \n", token.raw.c_str());
+			rklog("   flushed : %s \n", token.raw.c_str());
             auto parsed = parse(token);
             if (parsed.type != stoken_type::none &&
                 parsed.type != stoken_type::nothing)
                 result.push_back(parsed);
 
             if (token.type == type) {
-                printf("   stop flushing at %s\n", token.raw.c_str());
+                rklog("   stop flushing at %s\n", token.raw.c_str());
                 return token;
             }
         }
@@ -575,7 +581,7 @@ private:
         auto token = stack.back();
         stack.pop_back();
         auto p = parse(token);
-        printf(" pop_and_parse %s %d\n", to_string(p.type), stack.size());
+        rklog(" pop_and_parse %s %d\n", to_string(p.type), stack.size());
         return p;
     }
 

@@ -4,7 +4,7 @@
 
 class syntax_traveler {
 public:
-    int transform(root_node *root) {
+    virtual int transform(root_node *root) {
         _visit(root);
 
         return changes;
@@ -31,6 +31,6 @@ protected:
         return ret;
     }
 
-private:
+protected:
     int changes;
 };

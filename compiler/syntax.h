@@ -12,6 +12,7 @@ enum class syntax_type {
     syn_none,
     syn_root,
 
+	syn_endl,
     syn_pop,
 
     syn_include,
@@ -132,6 +133,13 @@ public:
         is_virtual = true;
     }
 };
+class endl_node : public syntax_node {
+public:
+	endl_node(const stoken &token, syntax_node *parent)
+		: syntax_node(token, parent) {
+		type = syntax_type::syn_endl;
+	}
+};
 class pop_node : public syntax_node {
 public:
     pop_node(const stoken &token, syntax_node *parent)
@@ -188,7 +196,7 @@ public:
         literal_type = literal_type::integer;
         integer = n;
     }
-    literal_node(const stoken &token, syntax_node *parent, const std::string &_str) :
+    literal_node(const stoken &token, syntax_node *parent, const std::wstring &_str) :
         literal_node(token, parent) {
         literal_type = literal_type::string;
         str = _str;
@@ -198,16 +206,16 @@ public:
     literal_type literal_type;
 
     int integer;
-    std::string str;
+    std::wstring str;
 };
 class ident_node : public syntax_node {
 public:
-    ident_node(const stoken &token, syntax_node *parent, const std::string &ident) :
+    ident_node(const stoken &token, syntax_node *parent, const std::wstring &ident) :
         syntax_node(token, parent), ident(ident) {
         type = syntax_type::syn_ident;
     }
 public:
-    std::string ident;
+    std::wstring ident;
 };
 
 class include_node : public syntax_node {
@@ -218,7 +226,7 @@ public:
         type = syntax_type::syn_include;
     }
 
-    std::string &path() const {
+    std::wstring &path() const {
         return ((literal_node*)children[0])->str;
     }
 };
@@ -258,7 +266,7 @@ public:
     ident_node *ident() {
         return (ident_node*)children[0];
     }
-    const std::string &ident_str() {
+    const std::wstring &ident_str() {
         return ident()->ident;
     }
 };
@@ -273,7 +281,7 @@ public:
     ident_node *ident() {
         return (ident_node*)children[0];
     }
-    const std::string &ident_str() {
+    const std::wstring &ident_str() {
         return ident()->ident;
     }
     params_node *params() {
@@ -283,7 +291,7 @@ public:
         return (block_node*)children[2];
     }
 
-    void push_local(const std::string &str) {
+    void push_local(const std::wstring &str) {
         if (locals.empty() ||
             std::find(locals.begin(), locals.end(), str) == locals.end())
             locals.push_back(str);
@@ -304,7 +312,7 @@ protected:
     }
 
 public:
-    std::vector<std::string> locals;
+    std::vector<std::wstring> locals;
 };
 class field_node : public syntax_node {
 public:
@@ -317,7 +325,7 @@ public:
     ident_node *ident() const {
         return dynamic_cast<ident_node*>(children[0]);
     }
-    std::string &ident_str() const {
+    std::wstring &ident_str() const {
         return ident()->ident;
     }
 };
@@ -331,7 +339,7 @@ public:
     ident_node *ident() const {
         return dynamic_cast<ident_node*>(children[0]);
     }
-    std::string &ident_str() const {
+    std::wstring &ident_str() const {
         return ident()->ident;
     }
 
@@ -354,7 +362,7 @@ public:
     ident_node *ident() {
         return (ident_node*)children[0];
     }
-    const std::string &ident_str() {
+    const std::wstring &ident_str() {
         return ident()->ident;
     }
 
@@ -419,7 +427,7 @@ public:
         return children[0];
     }
 public:
-    std::string op;
+    std::wstring op;
 };
 
 class op_node : public syntax_node {
@@ -439,7 +447,7 @@ public:
     }
 
 public:
-    std::string op;
+    std::wstring op;
 };
 
 class assignment_node : public op_node {

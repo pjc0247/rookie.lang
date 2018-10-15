@@ -21,10 +21,10 @@
     b.function(name, [] body );
 
 #define is_rkint(v) v.type == value_type::integer
-#define is_rkstr(v) v.type == value_type::string
+#define is_rkstr(v) (v.type == value_type::object && v.objref->sighash == sighash_string)
 #define is_rkchar(v) v.type == value_type::character
 #define rkint(v) v.integer
-#define rkcstr(v) v.str
+#define rkcstr(v) (((rkstring*)v.objref)->c_str())
 #define rkchar(v) v.character
 
 class stack_provider {
@@ -65,19 +65,19 @@ private:
     std::deque<value> &stackref;
 };
 
-typedef std::map<std::string, std::function<void(stack_provider&)>> bindmap;
+typedef std::map<std::wstring, std::function<void(stack_provider&)>> bindmap;
 
 class type_builder {
 public:
-    type_builder(const std::string &name) :
+    type_builder(const std::wstring &name) :
         name(name) {
 
-        method("to_string", [name]() {
+        method(L"to_string", [name]() {
             return value::mkstring(name.c_str());
         });
     }
 
-    type_builder &method(const std::string &signature,
+    type_builder &method(const std::wstring &signature,
         const std::function<value()> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
@@ -85,7 +85,7 @@ public:
         });
         return *this;
     }
-    type_builder &method(const std::string &signature,
+    type_builder &method(const std::wstring &signature,
         const std::function<value(value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
@@ -93,7 +93,7 @@ public:
         });
         return *this;
     }
-    type_builder &method(const std::string &signature,
+    type_builder &method(const std::wstring &signature,
         const std::function<value(value&, value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
@@ -102,7 +102,7 @@ public:
         });
         return *this;
     }
-    type_builder &method(const std::string &signature,
+    type_builder &method(const std::wstring &signature,
         const std::function<value(value&, value&, value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
@@ -111,7 +111,7 @@ public:
         });
         return *this;
     }
-    type_builder &method(const std::string &signature,
+    type_builder &method(const std::wstring &signature,
         const std::function<value(value&, value&, value&, value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
@@ -120,7 +120,7 @@ public:
         });
         return *this;
     }
-    type_builder &method(const std::string &signature,
+    type_builder &method(const std::wstring &signature,
         const std::function<value(value&, value&, value&, value&, value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
@@ -129,7 +129,7 @@ public:
         });
         return *this;
     }
-    type_builder &method(const std::string &signature,
+    type_builder &method(const std::wstring &signature,
         const std::function<value(value&, value&, value&, value&, value&, value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
@@ -138,7 +138,7 @@ public:
         });
         return *this;
     }
-    type_builder &method(const std::string &signature,
+    type_builder &method(const std::wstring &signature,
         const std::function<value(value&, value&, value&, value&, value&, value&, value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
@@ -148,7 +148,7 @@ public:
         return *this;
     }
     
-    const std::string &get_name() const {
+    const std::wstring &get_name() const {
         return name;
     }
     const bindmap &get_methods() const {
@@ -156,7 +156,7 @@ public:
     }
 
 private:
-    std::string name;
+    std::wstring name;
     bindmap methods;
 };
 
@@ -166,21 +166,21 @@ public:
         types.push_back(type);
     }
 
-    void function(const std::string &signature,
+    void function(const std::wstring &signature,
         const std::function<value()> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
             sp.push(function());
         });
     }
-    void function(const std::string &signature,
+    void function(const std::wstring &signature,
         const std::function<value(value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
             sp.replace<0>(function(sp.get(0)));
         });
     }
-    void function(const std::string &signature,
+    void function(const std::wstring &signature,
         const std::function<value(value&,value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
@@ -188,7 +188,7 @@ public:
             sp.drop<1>();
         });
     }
-    void function(const std::string &signature,
+    void function(const std::wstring &signature,
         const std::function<value(value&, value&, value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
@@ -196,7 +196,7 @@ public:
             sp.drop<2>();
         });
     }
-    void function(const std::string &signature,
+    void function(const std::wstring &signature,
         const std::function<value(value&, value&, value&, value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
@@ -204,7 +204,7 @@ public:
             sp.drop<3>();
         });
     }
-    void function(const std::string &signature,
+    void function(const std::wstring &signature,
         const std::function<value(value&, value&, value&, value&, value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
@@ -212,7 +212,7 @@ public:
             sp.drop<4>();
         });
     }
-    void function(const std::string &signature,
+    void function(const std::wstring &signature,
         const std::function<value(value&, value&, value&, value&, value&, value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
@@ -220,7 +220,7 @@ public:
             sp.drop<5>();
         });
     }
-    void function(const std::string &signature,
+    void function(const std::wstring &signature,
         const std::function<value(value&, value&, value&, value&, value&, value&, value&)> &function) {
 
         _bind(signature, [function](stack_provider &sp) {
@@ -231,7 +231,7 @@ public:
 
     template <typename T>
     binding &import() {
-        printf("[import] %s\n", typeid(T).name());
+        rklog("[import] %s\n", typeid(T).name());
         T::import(*this);
         return *this;
     }
@@ -257,7 +257,7 @@ public:
     }
 
     static void method(type_builder &type,
-        const char *name, value(T::*function)()) {
+        const wchar_t *name, value(T::*function)()) {
 
         type.method(name, [function](value &_this) {
             auto obj = ((T*)_this.objref);
@@ -265,7 +265,7 @@ public:
         });
     }
     static void method(type_builder &type,
-        const char *name, value(T::*function)(value&)) {
+        const wchar_t *name, value(T::*function)(value&)) {
 
         type.method(name, [function](value &_this, value &a) {
             auto obj = ((T*)_this.objref);
@@ -273,7 +273,7 @@ public:
         });
     }
     static void method(type_builder &type,
-        const char *name, value(T::*function)(value&, value&)) {
+        const wchar_t *name, value(T::*function)(value&, value&)) {
 
         type.method(name, [function](value &_this, value &a, value &b) {
             auto obj = ((T*)_this.objref);
@@ -281,7 +281,7 @@ public:
         });
     }
     static void method(type_builder &type,
-        const char *name, value(T::*function)(value&, value&, value&)) {
+        const wchar_t *name, value(T::*function)(value&, value&, value&)) {
 
         type.method(name, [function](value &_this, value &a, value &b, value &c) {
             auto obj = ((T*)_this.objref);
@@ -289,7 +289,7 @@ public:
         });
     }
     static void method(type_builder &type,
-        const char *name, value(T::*function)(value&, value&, value&, value&)) {
+        const wchar_t *name, value(T::*function)(value&, value&, value&, value&)) {
 
         type.method(name, [function](value &_this, value &a, value &b, value &c, value &d) {
             auto obj = ((T*)_this.objref);
@@ -297,7 +297,7 @@ public:
         });
     }
     static void method(type_builder &type,
-        const char *name, value(T::*function)(value&, value&, value&, value&, value&)) {
+        const wchar_t *name, value(T::*function)(value&, value&, value&, value&, value&)) {
 
         type.method(name, [function](value &_this, value &a, value &b, value &c, value &d, value &e) {
             auto obj = ((T*)_this.objref);
@@ -305,7 +305,7 @@ public:
         });
     }
     static void method(type_builder &type,
-        const char *name, value(T::*function)(value&, value&, value&, value&, value&, value&)) {
+        const wchar_t *name, value(T::*function)(value&, value&, value&, value&, value&, value&)) {
 
         type.method(name, [function](value &_this, value &a, value &b, value &c, value &d, value &e, value &f) {
             auto obj = ((T*)_this.objref);

@@ -52,39 +52,39 @@ enum class stoken_type {
     begin_block, end_block
 };
 
-inline const char *to_string(stoken_type type) {
+inline const wchar_t *to_string(stoken_type type) {
     switch (type) {
-    case stoken_type::none: return "none";
-    case stoken_type::nothing: return "nothing";
-    case stoken_type::st_include: return "st_include";
-    case stoken_type::comma: return "comma";
-    case stoken_type::endl: return "endl";
-    case stoken_type::ident: return "ident";
-    case stoken_type::st_literal: return "st_literal";
-    case stoken_type::op: return "op";
-    case stoken_type::st_memberaccess: return "st_memberaccess";
-    case stoken_type::st_class: return "st_class";
-    case stoken_type::st_newobj: return "st_newobj";
-    case stoken_type::st_defmethod: return "st_defmethod";
-    case stoken_type::st_annotation: return "st_annotation";
-    case stoken_type::st_return: return "st_return";
-    case stoken_type::st_if: return "st_if";
-    case stoken_type::st_for: return "st_for";
-    case stoken_type::st_arraccess: return "st_arraccess";
-    case stoken_type::st_begin_arr: return "st_begin_arr";
-    case stoken_type::st_end_arr: return "st_end_arr";
-    case stoken_type::st_begin_call: return "st_begin_call";
-    case stoken_type::st_end_call: return "st_end_call";
-    case stoken_type::st_begin_param: return "st_begin_param";
-    case stoken_type::st_end_param: return "st_end_param";
-    case stoken_type::begin_block: return "begin_block";
-    case stoken_type::end_block: return "end_block";
-    default: return "st_unknown";
+    case stoken_type::none: return L"none";
+    case stoken_type::nothing: return L"nothing";
+    case stoken_type::st_include: return L"st_include";
+    case stoken_type::comma: return L"comma";
+    case stoken_type::endl: return L"endl";
+    case stoken_type::ident: return L"ident";
+    case stoken_type::st_literal: return L"st_literal";
+    case stoken_type::op: return L"op";
+    case stoken_type::st_memberaccess: return L"st_memberaccess";
+    case stoken_type::st_class: return L"st_class";
+    case stoken_type::st_newobj: return L"st_newobj";
+    case stoken_type::st_defmethod: return L"st_defmethod";
+    case stoken_type::st_annotation: return L"st_annotation";
+    case stoken_type::st_return: return L"st_return";
+    case stoken_type::st_if: return L"st_if";
+    case stoken_type::st_for: return L"st_for";
+    case stoken_type::st_arraccess: return L"st_arraccess";
+    case stoken_type::st_begin_arr: return L"st_begin_arr";
+    case stoken_type::st_end_arr: return L"st_end_arr";
+    case stoken_type::st_begin_call: return L"st_begin_call";
+    case stoken_type::st_end_call: return L"st_end_call";
+    case stoken_type::st_begin_param: return L"st_begin_param";
+    case stoken_type::st_end_param: return L"st_end_param";
+    case stoken_type::begin_block: return L"begin_block";
+    case stoken_type::end_block: return L"end_block";
+    default: return L"st_unknown";
     }
 }
 
 struct token {
-    std::string raw;
+    std::wstring raw;
     token_type type;
     literal_type literal_type;
     int priority;
@@ -98,7 +98,7 @@ struct token {
         return token();
     }
     token() :
-        raw(""), type(token_type::none), priority(0),
+        raw(L""), type(token_type::none), priority(0),
         line(0), cols(0),
         stype(stoken_type::none), 
         hint_stype(stoken_type::none) {
@@ -121,7 +121,7 @@ struct token {
     }
 };
 struct stoken {
-    std::string raw;
+    std::wstring raw;
     stoken_type type;
 
     token source;
@@ -135,7 +135,7 @@ struct stoken {
         raw(token.raw),
         type(stoken_type::none) {
     }
-    std::string to_string() const {
-        return std::string(::to_string(type)) + " (" + raw + ")";
+    std::wstring to_string() const {
+        return std::wstring(::to_string(type)) + L" (" + raw + L")";
     }
 };

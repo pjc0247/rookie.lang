@@ -21,10 +21,10 @@ struct callinfo {
 };
 class calltable_builder {
 public:
-    void add_programcall(const std::string &signature, int entry) {
+    void add_programcall(const std::wstring &signature, int entry) {
 
     }
-    int add_syscall(const std::string &signature) {
+    int add_syscall(const std::wstring &signature) {
         int entry = table.size();
 
         callinfo ci;
@@ -36,7 +36,7 @@ public:
         return entry;
     }
 
-    bool try_get(const std::string &signature, callinfo &callinfo) {
+    bool try_get(const std::wstring &signature, callinfo &callinfo) {
         auto it = lookup.find(signature);
         if (it == lookup.end()) return false;
         callinfo = table[(*it).second];
@@ -47,7 +47,7 @@ public:
     }
 
 private:
-    std::map<std::string, int> lookup;
+    std::map<std::wstring, int> lookup;
     std::vector<callinfo> table;
 };
 struct calltable {
@@ -84,8 +84,8 @@ struct value {
         object *objref;
 
         int integer;
-        char character;
-        const char *str;
+		wchar_t character;
+        const wchar_t *str;
     };
 
     value() :
@@ -107,13 +107,13 @@ struct value {
         v.integer = n;
         return v;
     }
-    static value mkchar(char c) {
+    static value mkchar(wchar_t c) {
         value v;
         v.type = value_type::character;
         v.character = c;
         return v;
     }
-    static value mkstring(const char *str) {
+    static value mkstring(const wchar_t *str) {
         value v;
         v.type = value_type::string;
         v.str = str;
@@ -136,7 +136,9 @@ const value rknull = value(value_type::null);
 
 class object {
 public:
+	int sighash;
+
     std::map<int, callinfo> *vtable;
 
-    std::map<std::string, value> properties;
+    std::map<std::wstring, value> properties;
 };

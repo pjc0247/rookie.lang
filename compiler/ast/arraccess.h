@@ -10,7 +10,7 @@ protected:
     virtual syntax_node *visit(syntax_node *node) {
         if (is_transformable(node)) {
             auto new_node = new callmember_node(node->s_token(), node->parent);
-            auto at = new ident_node(node->s_token(), new_node, "at");
+            auto at = new ident_node(node->s_token(), new_node, L"at");
 
             // METHOD_NAME
             new_node->append(at);

@@ -6,7 +6,7 @@ class callnewobj_transformer : public syntax_traveler {
 protected:
     bool is_transformable(syntax_node *node) {
         return node->type == syntax_type::syn_callmember &&
-            ((callmember_node*)node)->ident_str() == "new";
+            ((callmember_node*)node)->ident_str() == L"new";
     }
     virtual syntax_node *visit(syntax_node *node) {
         if (is_transformable(node)) {

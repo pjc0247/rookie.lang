@@ -9,7 +9,9 @@ class value;
 class exe_context {
 public:
     exe_context(runner &r, stack_provider &sp);
-    value call(value &obj, const std::string &name);
+    value call(value &obj, const std::wstring &name);
+
+	value next_param();
 
 private:
     runner &r;

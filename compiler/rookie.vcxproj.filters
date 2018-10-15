@@ -57,6 +57,9 @@
       <Filter>libs</Filter>
     </ClInclude>
     <ClInclude Include="exe_context.h" />
+    <ClInclude Include="ast\endlpop.h">
+      <Filter>ast</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

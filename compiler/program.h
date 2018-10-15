@@ -37,38 +37,38 @@ typedef enum opcode : unsigned char {
     op_endenum // not a real opcode, indicates last num
 } opcode_t;
 
-inline const char *to_string(opcode type) {
+inline const wchar_t *to_string(opcode type) {
     switch (type) {
-    case op_nop: return "op_nop";
-    case op_add: return "op_add";
-    case op_sub: return "op_sub";
-    case op_mul: return "op_mul";
-    case op_div: return "op_div";
-    case op_eq: return "op_eq";
-    case op_g: return "op_g";
-    case op_l: return "op_l";
-    case op_ge: return "op_ge";
-    case op_le: return "op_le";
-    case op_newobj: return "op_newobj";
-    case op_newarr: return "op_newarr";
-    case op_syscall: return "op_syscall";
-    case op_call: return "op_call";
-    case op_vcall: return "op_vcall";
-    case op_ret: return "op_ret";
-    case op_dup: return "op_dup";
-    case op_pop: return "op_pop";
-    case op_ldloc: return "op_ldloc";
-    case op_stloc: return "op_stloc";
-    case op_ldstate: return "op_ldstate";
-    case op_ststate: return "op_ststate";
-    case op_setcallee: return "op_setcallee";
-    case op_ldi: return "op_ldi";
-    case op_ldstr: return "op_ldstr";
-    case op_ldnull: return "op_ldnull";
-    case op_jmp_true: return "op_jmp_true";
-    case op_jmp_false: return "op_jmp_false";
+    case op_nop: return L"op_nop";
+    case op_add: return L"op_add";
+    case op_sub: return L"op_sub";
+    case op_mul: return L"op_mul";
+    case op_div: return L"op_div";
+    case op_eq: return L"op_eq";
+    case op_g: return L"op_g";
+    case op_l: return L"op_l";
+    case op_ge: return L"op_ge";
+    case op_le: return L"op_le";
+    case op_newobj: return L"op_newobj";
+    case op_newarr: return L"op_newarr";
+    case op_syscall: return L"op_syscall";
+    case op_call: return L"op_call";
+    case op_vcall: return L"op_vcall";
+    case op_ret: return L"op_ret";
+    case op_dup: return L"op_dup";
+    case op_pop: return L"op_pop";
+    case op_ldloc: return L"op_ldloc";
+    case op_stloc: return L"op_stloc";
+    case op_ldstate: return L"op_ldstate";
+    case op_ststate: return L"op_ststate";
+    case op_setcallee: return L"op_setcallee";
+    case op_ldi: return L"op_ldi";
+    case op_ldstr: return L"op_ldstr";
+    case op_ldnull: return L"op_ldnull";
+    case op_jmp_true: return L"op_jmp_true";
+    case op_jmp_false: return L"op_jmp_false";
 
-    default: return "op_unknown";
+    default: return L"op_unknown";
     }
 }
 
@@ -109,11 +109,11 @@ struct instruction {
 };
 
 struct methoddata {
-    char name[rooke_max_signature];
+    wchar_t name[rooke_max_signature];
     int entry;
 };
 struct typedata {
-    char name[rooke_max_signature];
+	wchar_t name[rooke_max_signature];
     int methods_len;
     methoddata *methods;
 };
@@ -131,7 +131,7 @@ struct program_header {
 };
 // program_entry: ?????bytes
 struct program_entry {
-    char signature[rooke_max_signature];
+    wchar_t signature[rooke_max_signature];
     char params;
     char ret;
     short locals;
@@ -144,7 +144,7 @@ struct program {
 
     program_entry *entries;
     instruction *code;
-    const char *rdata;
+    const wchar_t *rdata;
     typedata *types;
 
     program() :
@@ -187,24 +187,24 @@ struct program {
     }
 
     void dump() {
-        printf("[rookie_program]\r\n");
+        wprintf(L"[rookie_program]\r\n");
 
-        printf("  [types]\n");
+        wprintf(L"  [types]\n");
         for (int i = 0; i < header.types_len; i++) {
-            printf("    [%s]\n", types[i].name);
+            wprintf(L"    [%s]\n", types[i].name);
 
             for (int j = 0; j < types[i].methods_len; j++) {
-                printf("      * %s\n", types[i].methods[j].name);
+                wprintf(L"      * %s\n", types[i].methods[j].name);
             } 
         }
 
         for (int i = 0; i < header.entry_len; i++) {
-            printf("  [%s]\n", entries[i].signature);
-            printf("    * params: %d\n", entries[i].params);
-            printf("    * locals: %d\n", entries[i].locals);
-            printf("    * body\n");
+            wprintf(L"  [%s]\n", entries[i].signature);
+            wprintf(L"    * params: %d\n", entries[i].params);
+            wprintf(L"    * locals: %d\n", entries[i].locals);
+            wprintf(L"    * body\n");
             for (int j = entries[i].entry; j < entries[i].entry + entries[i].codesize; j++) {
-                printf("      %s, %d\n", to_string((opcode)code[j].opcode), code[j].operand);
+                wprintf(L"      %s, %d\n", to_string((opcode)code[j].opcode), code[j].operand);
             }
         }
     }

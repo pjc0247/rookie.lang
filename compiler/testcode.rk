@@ -4,16 +4,10 @@ include "a.rky";
 
 class foo {
     def _ctor() {
-        z = b;
-        print(fib(6));
+        return bar();
     }
 
-    def fib(x) {
-        print(x);
-        
-        if (x == 0) return 0;
-        if (x == 1) return 1;
-
-        return fib(x-1) + fib(x-2);
+    def bar(){
+        return 4;
     }
 }

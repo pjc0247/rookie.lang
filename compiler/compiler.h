@@ -13,6 +13,7 @@
 #include "ast/callmember.h"
 #include "ast/callnewobj.h"
 #include "ast/arraccess.h"
+#include "ast/endlpop.h"
 
 #define rky_no_optimization (1 << 0)
 
@@ -21,6 +22,7 @@ public:
     // Builds a new compiler with default options.
     static compiler default_compiler(binding &binding) {
         return compiler(binding)
+			.transformer<endlpop_transformer>()
             .transformer<callmember_transformer>()
             .transformer<callnewobj_transformer>()
             .transformer<arraccess_transformer>()
@@ -51,7 +53,7 @@ public:
     // Builds a AST-tree which may contain v-nodes.
     root_node *ast_raw(
         compile_context &ctx,
-        const std::string &src, std::vector<compile_error> &errors) {
+        const std::wstring &src, std::vector<compile_error> &errors) {
 
         auto tokens = lexer(ctx).lex(src);
         auto stokens = sexper(ctx).sexp(tokens);
@@ -63,11 +65,13 @@ public:
     // Builds a AST-tree, fully transformed
     root_node *ast_transformed(
         compile_context &ctx,
-        const std::string &src, std::vector<compile_error> &errors) {
+        const std::wstring &src, std::vector<compile_error> &errors) {
 
         auto root = ast_raw(ctx, src, errors);
         
+#if _DEBUG
         root->dump();
+#endif
 
         vnode_transformer().transform(root);
 
@@ -76,22 +80,22 @@ public:
         int total_changes = 0;
         do {
             round_changes = 0;
-            printf("[optimise] round %d\n", round++);
+            rklog("[optimise] round %d\n", round++);
             for (auto &t : transformers) {
                 t->prepare();
-                printf("   [transform] %s\n", typeid(*t).name());
+				rklog("   [transform] %s\n", typeid(*t).name());
                 round_changes += t->transform(root);
             }
             total_changes += round_changes;
-            printf("%d node(s) optimised in this round.\n", round_changes);
-            printf("%d changes so far!\n\n", total_changes);
+			rklog("%d node(s) optimised in this round.\n", round_changes);
+			rklog("%d changes so far!\n\n", total_changes);
         } while (round_changes > 0);
 
         return root;
     }
 
     // Compiles given codes into a program.
-    bool compile(const std::string &src,
+    bool compile(const std::wstring &src,
         program &program,
         std::vector<compile_error> &errors) {
 
@@ -107,7 +111,9 @@ public:
         auto cg = code_gen(ctx, syscalls);
         ctx.fin();
 
+#if _DEBUG
         root->dump();
+#endif
         program = cg.generate(root);
 
         delete root;
