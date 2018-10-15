@@ -44,6 +44,7 @@ protected:
             depth -= node->children.size();
         }
         else if (
+            node->type == syntax_type::syn_memberaccess ||
             node->type == syntax_type::syn_assignment ||
             node->type == syntax_type::syn_op) {
             depth -= 2;

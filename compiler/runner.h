@@ -39,6 +39,8 @@ enum class runtime_typekind {
     tk_programtype
 };
 struct runtime_typedata {
+    std::wstring name;
+
     runtime_typekind typekind;
 
     calltable vtable;
@@ -87,8 +89,8 @@ public:
                 stack.push_back(value::mkstring(p.rdata + inst.operand));
                 _newobj_systype(sighash_string, sp);
             }
-            else if (inst.opcode == opcode::op_ldstate)
-                stack.push_back(value::mkstring(p.rdata + inst.operand));
+            //else if (inst.opcode == opcode::op_ldstate)
+            //    stack.push_back(value::mkstring(p.rdata + inst.operand));
 
             else if (inst.opcode == opcode::op_pop)
                 stack.pop_back();
@@ -213,6 +215,23 @@ public:
                 stack[bp + inst.operand] = stack.back();
                 stack.pop_back();
             }
+            else if (inst.opcode == opcode::op_ldstate) {
+                auto obj = pop();
+
+                if (obj.type != value_type::object)
+                    throw invalid_program_exception("target is not a object");
+
+                push(obj.objref->properties[inst.operand]);
+            }
+            else if (inst.opcode == opcode::op_ststate) {
+                auto obj = pop(); 
+                auto value = pop();
+                
+                if (obj.type != value_type::object)
+                    throw invalid_program_exception("target is not a object");
+
+                obj.objref->properties[inst.operand] = value;
+            }
 
             else if (inst.opcode == opcode::op_jmp_true) {
                 if (pop().integer != 0)
@@ -299,6 +318,7 @@ private:
                 vtable.table[methodhash].entry = method.entry;
             }
             tdata.vtable = vtable;
+            tdata.name = type.name;
 
             types[sig2hash(type.name)] = tdata;
         }

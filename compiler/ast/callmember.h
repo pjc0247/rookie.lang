@@ -6,7 +6,8 @@ class callmember_transformer : public syntax_traveler {
 protected:
     bool is_transformable(syntax_node *node) {
         return node->type == syntax_type::syn_memberaccess &&
-            node->children[0]->type == syntax_type::syn_ident &&
+            (node->children[0]->type == syntax_type::syn_ident ||
+             node->children[0]->type == syntax_type::syn_this) &&
             node->children[1]->type == syntax_type::syn_call;
     }
     virtual syntax_node *visit(syntax_node *node) {

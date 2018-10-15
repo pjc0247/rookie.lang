@@ -268,6 +268,8 @@ private:
             _route(call);
             _route(return);
             _route(block);
+            _route(this);
+            _route(memberaccess);
             _route(ident);
             _route(literal);
             _route(newobj);
@@ -357,7 +359,19 @@ private:
         for (auto child : node->children)
             emit(child);
     }
+    void emit_this(this_node *node) {
+        emitter.emit(opcode::op_ldloc, 0);
+    }
+    void emit_memberaccess(memberaccess_node *node) {
+        emit(node->children[0]);
+        emitter.emit(opcode::op_ldstate, sig2hash(node->property_name()));
+    }
     void emit_ident(ident_node *node) {
+        if (node->ident == L"this") {
+            emitter.emit(opcode::op_ldloc, 0);
+            return;
+        }
+
         auto lookup = scope.lookup_variable(node->ident);
         if (lookup.type == lookup_type::not_exist) {
             ctx.push_error(undefined_variable_error(node->token()));
@@ -412,21 +426,29 @@ private:
         emit(node->right());
 
         auto ident = dynamic_cast<ident_node*>(node->left());
-        if (ident == nullptr) {
-            ctx.push_error(syntax_error(node->left()->token(), L"Wrong l-value type."));
+        if (ident != nullptr) {
+            auto lookup = scope.lookup_variable(ident->ident);
+            if (lookup.type == lookup_type::not_exist) {
+                ctx.push_error(undefined_variable_error(ident->token()));
+                return;
+            }
+
+            if (lookup.type == lookup_type::var_local)
+                emitter.emit(opcode::op_stloc, lookup.index);
+            else if (lookup.type == lookup_type::var_field)
+                emitter.emit(opcode::op_ststate, lookup.index);
+
             return;
         }
 
-        auto lookup = scope.lookup_variable(ident->ident);
-        if (lookup.type == lookup_type::not_exist) {
-            ctx.push_error(undefined_variable_error(ident->token()));
+        auto memberaccess = dynamic_cast<memberaccess_node*>(node->left());
+        if (memberaccess != nullptr) {
+            emit(memberaccess->children[0]);
+            emitter.emit(opcode::op_ststate, sig2hash(memberaccess->property_name()));
             return;
         }
 
-        if (lookup.type == lookup_type::var_local)
-            emitter.emit(opcode::op_stloc, lookup.index);
-        else if (lookup.type == lookup_type::var_field)
-            emitter.emit(opcode::op_ststate, lookup.index);
+        ctx.push_error(syntax_error(node->left()->token(), L"Wrong l-value type."));
     }
     void emit_if(if_node *node) {
         emit(node->cond());

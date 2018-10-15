@@ -4,10 +4,14 @@ include "a.rky";
 
 class foo {
     def _ctor() {
-        return bar();
+        a = foo.new();
+        a.bar();
     }
 
     def bar(){
-        return 4;
+        cc = foo.new();
+        cc.c = 1234;
+
+        print(cc.c);
     }
 }

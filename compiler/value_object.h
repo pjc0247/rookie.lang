@@ -139,6 +139,5 @@ public:
     int sighash;
 
     std::map<int, callinfo> *vtable;
-
-    std::map<std::wstring, value> properties;
+    std::map<int, value> properties;
 };

@@ -83,6 +83,8 @@ public:
                     node = op(token);
                 else if (token.type == stoken_type::ident)
                     node = ident(token);
+                else if (token.type == stoken_type::st_this)
+                    node = _this(token);
                 else if (token.type == stoken_type::st_literal)
                     node = literal(token);
 
@@ -159,6 +161,10 @@ private:
     }
     for_node *_for(const stoken &token) {
         auto node = new for_node(token, current);
+        return node;
+    }
+    this_node *_this(const stoken &token) {
+        auto node = new this_node(token, current);
         return node;
     }
     ident_node *ident(const stoken &token) {

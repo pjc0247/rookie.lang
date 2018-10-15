@@ -38,6 +38,7 @@ enum class stoken_type {
 
     st_memberaccess,
 
+    st_this,
     st_newobj,
     st_annotation,
     st_class, st_defmethod,
@@ -59,6 +60,7 @@ inline const wchar_t *to_string(stoken_type type) {
     case stoken_type::st_include: return L"st_include";
     case stoken_type::comma: return L"comma";
     case stoken_type::endl: return L"endl";
+    case stoken_type::st_this: return L"st_this";
     case stoken_type::ident: return L"ident";
     case stoken_type::st_literal: return L"st_literal";
     case stoken_type::op: return L"op";

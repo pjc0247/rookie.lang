@@ -23,6 +23,7 @@ enum class syntax_type {
     syn_block,
     syn_literal,
     syn_ident,
+    syn_this,
     syn_newarr,
     syn_newobj,
 
@@ -148,6 +149,14 @@ public:
     }
 };
 
+class this_node : public syntax_node {
+public:
+    this_node(const stoken &token, syntax_node *parent)
+        : syntax_node(token, parent) {
+        type = syntax_type::syn_this;
+    }
+};
+
 class root_node : public syntax_node {
 public:
     root_node(compile_context &ctx) :
@@ -237,6 +246,10 @@ public:
         syntax_node(token, parent) {
         type = syntax_type::syn_memberaccess;
         capacity = 2;
+    }
+
+    const std::wstring &property_name() const {
+        return ((ident_node*)children[1])->ident;
     }
 };
 class arraccess_node : public syntax_node {

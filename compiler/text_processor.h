@@ -122,6 +122,7 @@ private:
         rules.push_back(lexer_token(L"if", token_type::keyword));
         rules.push_back(lexer_token(L"for", token_type::keyword));
         rules.push_back(lexer_token(L"return", token_type::keyword));
+        //rules.push_back(lexer_token(L"this", token_type::keyword));
         //rules.push_back(lexer_token("new", token_type::keyword));
 
         rules.push_back(lexer_token(L"++", token_type::op));
@@ -538,6 +539,8 @@ private:
             stoken.type = stoken_type::st_for;
         else if (token.raw == L"return")
             stoken.type = stoken_type::st_return;
+        else if (token.raw == L"this")
+            stoken.type = stoken_type::st_this;
     }
 
     void flush_until_priority(int priority) {
