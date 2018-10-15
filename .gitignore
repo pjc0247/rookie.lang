@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+bin/*.*
+!bin/*.exe
+
 *.rky
 
 # User-specific files
@@ -22,7 +25,6 @@
 x64/
 x86/
 bld/
-[Bb]in/
 [Oo]bj/
 [Ll]og/
 
