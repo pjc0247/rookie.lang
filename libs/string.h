@@ -42,9 +42,9 @@ public:
         return value::mkstring(str.c_str());
     }
 
-	const wchar_t *c_str() const {
-		return str.c_str();
-	}
+    const wchar_t *c_str() const {
+        return str.c_str();
+    }
 
 private:
     std::wstring str;

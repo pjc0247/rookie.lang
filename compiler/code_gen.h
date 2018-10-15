@@ -301,8 +301,8 @@ private:
 
         emit(node->body());
 
-		// FIXME
-		emitter.emit(opcode::op_ldi, 0);
+        // FIXME
+        emitter.emit(opcode::op_ldi, 0);
         emitter.emit(opcode::op_ret);
         emitter.fin_method();
     }

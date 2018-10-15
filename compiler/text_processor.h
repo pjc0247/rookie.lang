@@ -449,7 +449,7 @@ private:
                     .with_priority(-3000)
                     .with_hint(stoken_type::st_end_arr));
                 stoken.type = stoken_type::st_end_arr;
-            }
+            }   
         }
         else if (token.type == token_type::ident) {
             if (prev_token().type == token_type::dot) {

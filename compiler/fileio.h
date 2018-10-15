@@ -18,7 +18,7 @@ public:
         auto len = ftell(fp);
         fseek(fp, 0, SEEK_SET);
 
-		wchar_t *buf = new wchar_t[len + 1];
+        wchar_t *buf = new wchar_t[len + 1];
         fread(buf, sizeof(wchar_t), len, fp);
         buf[len] = 0;
 

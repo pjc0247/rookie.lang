@@ -4,58 +4,58 @@
 
 class endlpop_transformer : public syntax_traveler {
 protected:
-	virtual int transform(root_node *root) {
-		for (auto klass : root->children) {
-			if (klass->type != syntax_type::syn_class)
-				continue;
+    virtual int transform(root_node *root) {
+        for (auto klass : root->children) {
+            if (klass->type != syntax_type::syn_class)
+                continue;
 
-			for (auto method : klass->children) {
-				if (method->type != syntax_type::syn_method)
-					continue;
+            for (auto method : klass->children) {
+                if (method->type != syntax_type::syn_method)
+                    continue;
 
-				auto mn = (method_node*)method;
+                auto mn = (method_node*)method;
 
-				depth = 0;
-				_visit(mn->body());
-			}
-		}
+                depth = 0;
+                _visit(mn->body());
+            }
+        }
 
-		return changes;
-	}
-	virtual syntax_node *visit(syntax_node *node) {
-		printf("%s, %d\n", typeid(*node).name(), depth);
+        return changes;
+    }
+    virtual syntax_node *visit(syntax_node *node) {
+        printf("%s, %d\n", typeid(*node).name(), depth);
 
-		if (node->type == syntax_type::syn_ident ||
-			node->type == syntax_type::syn_literal)
-			depth++;
-		else if (
-			node->type == syntax_type::syn_call ||
-			node->type == syntax_type::syn_callmember) {
+        if (node->type == syntax_type::syn_ident ||
+            node->type == syntax_type::syn_literal)
+            depth++;
+        else if (
+            node->type == syntax_type::syn_call ||
+            node->type == syntax_type::syn_callmember) {
 
-			depth -= node->children.size();
-		}
-		else if (node->type == syntax_type::syn_newarr) {
-			depth -= node->children.size();
-		}
-		else if (
-			node->type == syntax_type::syn_assignment ||
-			node->type == syntax_type::syn_op) {
-			depth -= 2;
-		}
-		else if (node->type == syntax_type::syn_return)
-			depth --;
+            depth -= node->children.size();
+        }
+        else if (node->type == syntax_type::syn_newarr) {
+            depth -= node->children.size();
+        }
+        else if (
+            node->type == syntax_type::syn_assignment ||
+            node->type == syntax_type::syn_op) {
+            depth -= 2;
+        }
+        else if (node->type == syntax_type::syn_return)
+            depth --;
 
-		if (node->type == syntax_type::syn_endl) {
-			if (depth >= 1) {
-				auto pop = new pop_node(node->s_token(), node->parent);
-				node = pop;
-			}
-			depth = 0;
-		}
+        if (node->type == syntax_type::syn_endl) {
+            if (depth >= 1) {
+                auto pop = new pop_node(node->s_token(), node->parent);
+                node = pop;
+            }
+            depth = 0;
+        }
 
-		return node;
-	}
+        return node;
+    }
 
 private:
-	int depth = 0;
+    int depth = 0;
 };

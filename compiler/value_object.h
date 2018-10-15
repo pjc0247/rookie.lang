@@ -84,7 +84,7 @@ struct value {
         object *objref;
 
         int integer;
-		wchar_t character;
+        wchar_t character;
         const wchar_t *str;
     };
 
@@ -136,7 +136,7 @@ const value rknull = value(value_type::null);
 
 class object {
 public:
-	int sighash;
+    int sighash;
 
     std::map<int, callinfo> *vtable;
 

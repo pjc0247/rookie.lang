@@ -22,7 +22,7 @@ public:
     // Builds a new compiler with default options.
     static compiler default_compiler(binding &binding) {
         return compiler(binding)
-			.transformer<endlpop_transformer>()
+            .transformer<endlpop_transformer>()
             .transformer<callmember_transformer>()
             .transformer<callnewobj_transformer>()
             .transformer<arraccess_transformer>()
@@ -83,12 +83,12 @@ public:
             rklog("[optimise] round %d\n", round++);
             for (auto &t : transformers) {
                 t->prepare();
-				rklog("   [transform] %s\n", typeid(*t).name());
+                rklog("   [transform] %s\n", typeid(*t).name());
                 round_changes += t->transform(root);
             }
             total_changes += round_changes;
-			rklog("%d node(s) optimised in this round.\n", round_changes);
-			rklog("%d changes so far!\n\n", total_changes);
+            rklog("%d node(s) optimised in this round.\n", round_changes);
+            rklog("%d changes so far!\n\n", total_changes);
         } while (round_changes > 0);
 
         return root;

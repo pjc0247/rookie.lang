@@ -31,7 +31,7 @@ public:
             _ending_expression(st_end_arr);
 
             if (token.type == stoken_type::endl)
-				append_and_set(new endl_node(token, current));
+                append_and_set(new endl_node(token, current));
             else if (token.type == stoken_type::st_include)
                 append_and_replace(include(token));
             else if (token.type == stoken_type::begin_block) {
@@ -134,7 +134,7 @@ private:
         return node;
     }
     block_node *block(const stoken &token) {
-		depth = 0;
+        depth = 0;
         auto node = new block_node(token, current);
         return node;
     }
@@ -161,7 +161,7 @@ private:
         return node;
     }
     if_node *_if(const stoken &token) {
-		depth--;
+        depth--;
         auto node = new if_node(token, current);
         return node;
     }

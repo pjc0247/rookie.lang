@@ -19,15 +19,15 @@ _rookie_function(L"print", (value v) {
     return rknull;
 });
 _rookie_function(L"puts", (value v) {
-	if (is_rkint(v))
-		printf("%d\n", rkint(v));
-	else if (is_rkstr(v)) {
-		wprintf(L"%s\n", rkcstr(v));
-	}
-	else if (is_rkchar(v))
-		wprintf(L"%c\n", rkchar(v));
+    if (is_rkint(v))
+        printf("%d\n", rkint(v));
+    else if (is_rkstr(v)) {
+        wprintf(L"%s\n", rkcstr(v));
+    }
+    else if (is_rkchar(v))
+        wprintf(L"%c\n", rkchar(v));
 
-	return rknull;
+    return rknull;
 });
 
 _end_rookie_library

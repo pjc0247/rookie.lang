@@ -113,7 +113,7 @@ struct methoddata {
     int entry;
 };
 struct typedata {
-	wchar_t name[rooke_max_signature];
+    wchar_t name[rooke_max_signature];
     int methods_len;
     methoddata *methods;
 };

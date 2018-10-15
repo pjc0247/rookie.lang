@@ -11,7 +11,7 @@ public:
     exe_context(runner &r, stack_provider &sp);
     value call(value &obj, const std::wstring &name);
 
-	value next_param();
+    value next_param();
 
 private:
     runner &r;

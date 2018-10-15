@@ -12,7 +12,7 @@ enum class syntax_type {
     syn_none,
     syn_root,
 
-	syn_endl,
+    syn_endl,
     syn_pop,
 
     syn_include,
@@ -135,10 +135,10 @@ public:
 };
 class endl_node : public syntax_node {
 public:
-	endl_node(const stoken &token, syntax_node *parent)
-		: syntax_node(token, parent) {
-		type = syntax_type::syn_endl;
-	}
+    endl_node(const stoken &token, syntax_node *parent)
+        : syntax_node(token, parent) {
+        type = syntax_type::syn_endl;
+    }
 };
 class pop_node : public syntax_node {
 public:

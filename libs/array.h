@@ -20,16 +20,16 @@ public:
         b.add_type(type);
     }
 
-	rkarray(int n) {
-		for (int i = 0; i < n; i++) {
-			value v = rkctx->next_param();
-			push(v);
-		}
-	}
+    rkarray(int n) {
+        for (int i = 0; i < n; i++) {
+            value v = rkctx->next_param();
+            push(v);
+        }
+    }
 
-	value static create_array(value &idx) {
-		return value::mkobjref(new rkarray(0));
-	}
+    value static create_array(value &idx) {
+        return value::mkobjref(new rkarray(0));
+    }
 
     value at(value &idx) {
         return ary[rkint(idx)];
