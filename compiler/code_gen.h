@@ -364,7 +364,7 @@ private:
     }
     void emit_memberaccess(memberaccess_node *node) {
         emit(node->children[0]);
-        emitter.emit(opcode::op_ldstate, sig2hash(node->property_name()));
+        emitter.emit(opcode::op_ldprop, sig2hash(node->property_name()));
     }
     void emit_ident(ident_node *node) {
         if (node->ident == L"this") {
@@ -381,7 +381,7 @@ private:
         if (lookup.type == lookup_type::var_local)
             emitter.emit(opcode::op_ldloc, lookup.index);
         else if (lookup.type == lookup_type::var_field)
-            emitter.emit(opcode::op_ldstate, lookup.index);
+            emitter.emit(opcode::op_ldprop, lookup.index);
     }
     void emit_literal(literal_node *node) {
         if (node->literal_type == literal_type::integer)
@@ -436,7 +436,7 @@ private:
             if (lookup.type == lookup_type::var_local)
                 emitter.emit(opcode::op_stloc, lookup.index);
             else if (lookup.type == lookup_type::var_field)
-                emitter.emit(opcode::op_ststate, lookup.index);
+                emitter.emit(opcode::op_stprop, lookup.index);
 
             return;
         }
@@ -444,7 +444,7 @@ private:
         auto memberaccess = dynamic_cast<memberaccess_node*>(node->left());
         if (memberaccess != nullptr) {
             emit(memberaccess->children[0]);
-            emitter.emit(opcode::op_ststate, sig2hash(memberaccess->property_name()));
+            emitter.emit(opcode::op_stprop, sig2hash(memberaccess->property_name()));
             return;
         }
 

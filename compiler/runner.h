@@ -89,7 +89,7 @@ public:
                 stack.push_back(value::mkstring(p.rdata + inst.operand));
                 _newobj_systype(sighash_string, sp);
             }
-            //else if (inst.opcode == opcode::op_ldstate)
+            //else if (inst.opcode == opcode::op_ldprop)
             //    stack.push_back(value::mkstring(p.rdata + inst.operand));
 
             else if (inst.opcode == opcode::op_pop)
@@ -215,7 +215,7 @@ public:
                 stack[bp + inst.operand] = stack.back();
                 stack.pop_back();
             }
-            else if (inst.opcode == opcode::op_ldstate) {
+            else if (inst.opcode == opcode::op_ldprop) {
                 auto obj = pop();
 
                 if (obj.type != value_type::object)
@@ -223,7 +223,7 @@ public:
 
                 push(obj.objref->properties[inst.operand]);
             }
-            else if (inst.opcode == opcode::op_ststate) {
+            else if (inst.opcode == opcode::op_stprop) {
                 auto obj = pop(); 
                 auto value = pop();
                 

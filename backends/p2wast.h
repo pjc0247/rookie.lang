@@ -133,12 +133,12 @@ private:
             case opcode::op_ldloc:
             case opcode::op_ldi:
             case opcode::op_ldnull:
-            case opcode::op_ldstate:
+            case opcode::op_ldprop:
                 stackdepth++;
                 break;
             case opcode::op_ret:
             case opcode::op_stloc:
-            case opcode::op_ststate:
+            case opcode::op_stprop:
                 stackdepth--;
                 break;
 
