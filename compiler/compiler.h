@@ -132,10 +132,15 @@ public:
 
     template <typename T>
     compiler &transformer() {
-        for (auto &t : transformers) {
+        for (auto &t : firstpass) {
             if (strcmp(typeid(*t).name(), (typeid(T).name())) == 0)
                 throw std::invalid_argument("Duplicated transformer");
         }
+        for (auto &t : optimizers) {
+            if (strcmp(typeid(*t).name(), (typeid(T).name())) == 0)
+                throw std::invalid_argument("Duplicated transformer");
+        }
+
         _transformer<T>();
         return *this;
     }

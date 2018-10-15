@@ -60,6 +60,7 @@
     <ClInclude Include="ast\endlpop.h">
       <Filter>ast</Filter>
     </ClInclude>
+    <ClInclude Include="reflection.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">
