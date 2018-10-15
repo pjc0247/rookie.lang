@@ -1,0 +1,20 @@
+
+class json_value {
+}
+
+class json_parser { 
+  static def parse(json) {
+    root = json_value.new();
+    
+    return root;
+  }
+}
+
+
+class program {
+  def main() {
+    json = "{\"a\" : 1234}";
+    
+    json_parser.parse(json);
+  }
+}
