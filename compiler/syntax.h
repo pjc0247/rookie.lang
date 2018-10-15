@@ -60,6 +60,12 @@ public:
     syntax_node *nearest_incomplete_node();
 
     syntax_node *append(syntax_node *node) {
+        // 'endl' only can be accepted in block_node.
+        if (node->type == syntax_type::syn_endl) {
+            if (type != syntax_type::syn_block)
+                return this;
+        }
+
         node->parent = this;
         children.push_back(node);
 

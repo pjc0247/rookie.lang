@@ -39,6 +39,7 @@ protected:
             node->type == syntax_type::syn_callmember) {
 
             depth -= node->children.size();
+            depth++;
         }
         else if (node->type == syntax_type::syn_newarr) {
             depth -= node->children.size();
@@ -57,6 +58,9 @@ protected:
                 auto pop = new pop_node(node->s_token(), node->parent);
                 node = pop;
             }
+            else
+                node = nullptr;
+
             depth = 0;
         }
 

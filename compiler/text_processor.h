@@ -523,7 +523,6 @@ private:
         else if (token.type == token_type::keyword) {
             parse_keyword(token, stoken);
         }
-        
 
         return stoken;
     }

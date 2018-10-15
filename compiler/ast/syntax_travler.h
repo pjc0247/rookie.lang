@@ -26,6 +26,15 @@ protected:
 
             if (child != node->children[i])
                 changes++;
+
+            // remove
+            if (node->children[i] == nullptr) {
+                node->children.erase(
+                    std::find(node->children.begin(), node->children.end(),
+                    node->children[i]));
+
+                i--;
+            }
         }
 
         return ret;
