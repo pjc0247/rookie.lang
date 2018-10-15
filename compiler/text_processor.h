@@ -128,16 +128,16 @@ private:
         rules.push_back(lexer_token(L"++", token_type::op));
         rules.push_back(lexer_token(L"--", token_type::op));
 
-        rules.push_back(lexer_token(L"+", token_type::op, 2));
-        rules.push_back(lexer_token(L"-", token_type::op, 2));
-        rules.push_back(lexer_token(L"*", token_type::op, 4));
-        rules.push_back(lexer_token(L"/", token_type::op, 4));
+        rules.push_back(lexer_token(L"+", token_type::op, -5001));
+        rules.push_back(lexer_token(L"-", token_type::op, -5001));
+        rules.push_back(lexer_token(L"*", token_type::op, -5000));
+        rules.push_back(lexer_token(L"/", token_type::op, -5000));
 
         rules.push_back(lexer_token(L"==", token_type::op, 1));
         rules.push_back(lexer_token(L"<=", token_type::op, 1));
         rules.push_back(lexer_token(L">=", token_type::op, 1));
-        rules.push_back(lexer_token(L"<", token_type::op, 1));
-        rules.push_back(lexer_token(L">", token_type::op, 1));
+        rules.push_back(lexer_token(L"<", token_type::op, -5002));
+        rules.push_back(lexer_token(L">", token_type::op, -5002));
 
         rules.push_back(lexer_token(L"=", token_type::op, -5000));
 
@@ -217,7 +217,7 @@ public:
         for (cursor = 0; cursor < tokens.size(); cursor ++) {
             auto token = tokens[cursor];
 
-            rklog("%S / %d / %d / %d\n", token.raw.c_str(), token.type, token.line, depth);
+            rklog("%S / %d / %d / %d\n", token.raw.c_str(), token.type, token.priority, depth);
 
             if (token.type == token_type::left_bracket)
                 depth--;
@@ -453,6 +453,7 @@ private:
             }   
         }
         else if (token.type == token_type::ident) {
+            _mark_as_parsed(stoken);
             if (prev_token().type == token_type::dot) {
                 stack.push_back(prev_token().preparsed(stoken_type::st_memberaccess));
                 stack.push_back(token);
@@ -464,15 +465,13 @@ private:
             else if (next_token().type == token_type::right_paren) {
                 stack.push_back(next_token().preparsed(stoken_type::st_begin_call));
                 stack.push_back(token);
-                
+
                 ::stoken endcall(next_token());
                 endcall.type = stoken_type::st_end_call;
                 result.push_back(endcall);
             }
             else
-                stack.push_back(token);
-
-            _mark_as_parsed(stoken);
+                stoken.type = stoken_type::ident;
         }
         else if (token.type == token_type::keyword) {
             _mark_as_parsed(stoken);
@@ -548,13 +547,13 @@ private:
             auto token = stack.back();
 
             if (token.priority <= priority) {
-                rklog("   stopped : %s\n", token.raw.c_str());
+                rklog("   stopped : %S, %d\n", token.raw.c_str(), token.priority);
                 break;
             }
 
             stack.pop_back();
 
-            rklog("   flushed : %s, %d\n", token.raw.c_str(), token.priority);
+            rklog("   flushed : %S, %d\n", token.raw.c_str(), token.priority);
             auto parsed = parse(token);
             if (parsed.type != stoken_type::none &&
                 parsed.type != stoken_type::nothing)
@@ -566,14 +565,14 @@ private:
             auto token = stack.back();
             stack.pop_back();
 
-            rklog("   flushed : %s \n", token.raw.c_str());
+            rklog("   flushed : %S \n", token.raw.c_str());
             auto parsed = parse(token);
             if (parsed.type != stoken_type::none &&
                 parsed.type != stoken_type::nothing)
                 result.push_back(parsed);
 
             if (token.type == type) {
-                rklog("   stop flushing at %s\n", token.raw.c_str());
+                rklog("   stop flushing at %S\n", token.raw.c_str());
                 return token;
             }
         }
