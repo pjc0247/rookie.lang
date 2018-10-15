@@ -34,3 +34,5 @@ protected:
 protected:
     int changes;
 };
+
+class optimize_travler : public syntax_traveler {};

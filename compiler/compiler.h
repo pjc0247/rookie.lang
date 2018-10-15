@@ -75,13 +75,18 @@ public:
 
         vnode_transformer().transform(root);
 
+        // 1. Firstpass transformers
+        for (auto &t : firstpass)
+            t->transform(root);
+
+        // 2. Optimizers
         int round = 0;
         int round_changes = 0;
         int total_changes = 0;
         do {
             round_changes = 0;
             rklog("[optimise] round %d\n", round++);
-            for (auto &t : transformers) {
+            for (auto &t : optimizers) {
                 t->prepare();
                 rklog("   [transform] %s\n", typeid(*t).name());
                 round_changes += t->transform(root);
@@ -131,8 +136,7 @@ public:
             if (strcmp(typeid(*t).name(), (typeid(T).name())) == 0)
                 throw std::invalid_argument("Duplicated transformer");
         }
-
-        transformers.push_back(std::make_shared<T>());
+        _transformer<T>();
         return *this;
     }
     compiler &bindings(binding &bindings) {
@@ -141,6 +145,21 @@ public:
     }
 
 private:
+    template <typename T>
+    typename std::enable_if<
+        std::is_base_of<optimize_travler, T>::value>::type
+    _transformer() {
+        optimizers.push_back(std::make_shared<T>());
+    }
+    template <typename T>
+    typename std::enable_if<
+        !std::is_base_of<optimize_travler, T>::value>::type
+        _transformer() {
+        firstpass.push_back(std::make_shared<T>());
+    }
+
+private:
     binding &binding;
-    std::vector<std::shared_ptr<syntax_traveler>> transformers;
+
+    std::vector<std::shared_ptr<syntax_traveler>> firstpass, optimizers;
 };
