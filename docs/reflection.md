@@ -1,6 +1,7 @@
 reflection
 ====
 
+__istypeof__
 ```cpp
 value your_func(value &foo) {
   auto is_foo = rk_istypeof(rktype("foo"), foo);
