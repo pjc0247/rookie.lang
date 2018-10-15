@@ -21,7 +21,6 @@ public:
         auto root = new root_node(ctx);
         current = root;
 
-        depth++;
         for (auto &token : stokens) {
             rklog("%s\n", token.raw.c_str());
 
@@ -56,9 +55,6 @@ public:
 
             else if (token.type == stoken_type::st_begin_call) {
                 append_and_replace(call(token));
-            }
-            else if (token.type == stoken_type::st_end_call) {
-                depth -= current->children.size() - 1;
             }
 
             else if (token.type == stoken_type::st_begin_arr) {
@@ -134,7 +130,6 @@ private:
         return node;
     }
     block_node *block(const stoken &token) {
-        depth = 0;
         auto node = new block_node(token, current);
         return node;
     }
@@ -143,7 +138,6 @@ private:
         return node;
     }
     call_node *call(const stoken &token) {
-        depth++;
         auto node = new call_node(token, current);
         return node;
     }
@@ -156,12 +150,10 @@ private:
         return node;
     }
     return_node *_return(const stoken &token) {
-        depth--;
         auto node = new return_node(token, current);
         return node;
     }
     if_node *_if(const stoken &token) {
-        depth--;
         auto node = new if_node(token, current);
         return node;
     }
@@ -170,12 +162,10 @@ private:
         return node;
     }
     ident_node *ident(const stoken &token) {
-        depth++;
         auto node = new ident_node(token, current, token.raw);
         return node;
     }
     literal_node *literal(const stoken &token) {
-        depth++;
         auto node = new literal_node(token, current);
 
         node->literal_type = token.source.literal_type;
@@ -192,17 +182,14 @@ private:
     }
     syntax_node *op(const stoken &token) {
         if (token.raw == L"=") {
-            depth -= 2;
             return new assignment_node(token, current);
         }
         else if (token.raw == L"++" || token.raw == L"--") {
-            depth--;
             auto node = new standalone_op_node(token, current);
             node->op = token.raw;
             return node;
         }
         else {
-            depth -= 2;
             auto node = new op_node(token, current);
             node->op = token.raw;
             return node;
@@ -211,8 +198,6 @@ private:
 
 private:
     compile_context &ctx;
-
-    int depth;
 
     class_node *current_class;
     method_node *current_method;

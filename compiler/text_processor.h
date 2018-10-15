@@ -209,8 +209,8 @@ public:
 
 #if _DEBUG
         for (auto &token : tokens)
-			rklog("%s ", token.raw.c_str());
-		rklog("\n\n");
+            rklog("%s ", token.raw.c_str());
+        rklog("\n\n");
 #endif
 
         for (cursor = 0; cursor < tokens.size(); cursor ++) {
@@ -476,7 +476,7 @@ private:
         else if (token.type == token_type::keyword) {
             _mark_as_parsed(stoken);
             if (token.raw == L"return") {
-				flush_until_priority(-3000);
+                flush_until_priority(-3000);
                 stack.push_back(token);
             }
             else {
@@ -563,7 +563,7 @@ private:
             auto token = stack.back();
             stack.pop_back();
 
-			rklog("   flushed : %s \n", token.raw.c_str());
+            rklog("   flushed : %s \n", token.raw.c_str());
             auto parsed = parse(token);
             if (parsed.type != stoken_type::none &&
                 parsed.type != stoken_type::nothing)

@@ -2,6 +2,12 @@
 
 #include "syntax_travler.h"
 
+// Inserts pop_node if required.
+// 
+//    example)
+//      - 1 + 2;
+//          to
+//      - pop(1 + 2);
 class endlpop_transformer : public syntax_traveler {
 protected:
     virtual int transform(root_node *root) {
