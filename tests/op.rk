@@ -1,0 +1,8 @@
+class testcase {
+    def main() {
+        puts(1 + 5);
+        puts(2 * 5);
+        puts(1 - 5);
+        puts(5 / 1);
+    }
+}

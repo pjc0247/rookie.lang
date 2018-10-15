@@ -1,0 +1,11 @@
+class testcase {
+    def main() {
+        a = "hello world";
+        puts(a);
+        puts(a.length());
+
+        b = "안녕하세요";
+        puts(b);
+        puts(b.length());
+    }
+}
