@@ -8,8 +8,6 @@
 #include "token.h"
 #include "errors.h"
 
-#define _str2cmp(m, idx, c0, c1) *(unsigned short*)(m+idx) == ((c1 << 8) | c0)
-
 struct lexer_token {
     std::wstring raw;
     token_type type;
@@ -43,7 +41,7 @@ public:
                 inside_quote ^= true;
             if (inside_quote) goto end_loop;
 
-            if (_str2cmp(src.c_str(), head, '/', '/')) {
+            if (src[head] == '/' && src[head + 1] == '/') {
                 while (head < src.length() - 1) {
                     head++;
                     if (src[head] == '\n') break;
