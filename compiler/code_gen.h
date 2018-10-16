@@ -374,7 +374,13 @@ private:
         emitter.emit(opcode::op_ldloc, 0);
     }
     void emit_memberaccess(memberaccess_node *node) {
-        emit(node->children[0]);
+        if (node->children[0]->type == syntax_type::syn_ident &&
+            ((ident_node*)node->children[0])->ident == L"this") {
+            emitter.emit(opcode::op_ldthis);
+        }
+        else
+            emit(node->children[0]);
+
         emitter.emit(opcode::op_ldprop, sig2hash(node->property_name()));
     }
     void emit_ident(ident_node *node) {
@@ -385,7 +391,7 @@ private:
 
         auto lookup = scope.lookup_variable(node->ident);
         if (lookup.type == lookup_type::not_exist) {
-            ctx.push_error(undefined_variable_error(node->token()));
+            //ctx.push_error(undefined_variable_error(node->token()));
             return;
         }
 

@@ -24,7 +24,6 @@ public:
     }
 
     static value create_instance2(value &str) {
-        printf("CREATE STRIGN %S\n", str.str);
         auto ptr = new rkstring();
         ptr->str = str.str;
         return value::mkobjref(ptr);

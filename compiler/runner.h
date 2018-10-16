@@ -102,6 +102,9 @@ public:
             //else if (inst.opcode == opcode::op_ldprop)
             //    stack.push_back(value::mkstring(p.rdata + inst.operand));
 
+            else if (inst.opcode == opcode::op_ldthis)
+                stack.push_back(stack[bp-1]);
+
             else if (inst.opcode == opcode::op_pop)
                 stack.pop_back();
             else if (inst.opcode == opcode::op_dup)
@@ -206,8 +209,6 @@ public:
                     syscall(callinfo.entry, sp);
                 else if (callinfo.type == call_type::ct_programcall_direct)
                     programcall(callinfo.entry);
-
-                ;
             }
             else if (inst.opcode == opcode::op_ret) {
                 auto ret = pop();

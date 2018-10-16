@@ -25,6 +25,7 @@ typedef enum opcode : unsigned char {
 
     op_dup,
     op_pop,
+    op_ldthis,
     op_ldloc, op_stloc,
     op_ldprop, op_stprop,
     op_setcallee,
@@ -57,6 +58,7 @@ inline const wchar_t *to_string(opcode type) {
     case op_ret: return L"op_ret";
     case op_dup: return L"op_dup";
     case op_pop: return L"op_pop";
+    case op_ldthis: return L"op_ldthis";
     case op_ldloc: return L"op_ldloc";
     case op_stloc: return L"op_stloc";
     case op_ldprop: return L"op_ldprop";
