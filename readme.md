@@ -38,10 +38,14 @@ program p; // program you built
 p2wast().convert(p);
 ```
 
-work with binaries
+Compling
 ----
-```cpp
-program_writer::write("a.rky", p);
+* __rookie__ requires C++17.
 
-program_reader::read("a.rky", p);
+__MSVC__<br>
+Just open the `.sln` file and build it.
+
+__WebAssembly(emcc)__<br>
+```
+make
 ```
