@@ -62,6 +62,10 @@ public:
         execute(&p.entries[p.header.main_entry]);
     }
     void execute(program_entry *_entry) {
+#ifdef RK_HALT_ON_LONG_EXECUTION
+        halt_counter = 0;
+#endif
+
         current_entry = _entry;
         pc = _entry->entry;
         bp = 0;
@@ -72,6 +76,14 @@ public:
 
         exectx = new exe_context(*this, sp);
         while (true) {
+#ifdef RK_HALT_ON_LONG_EXECUTION
+            halt_counter++;
+            if (halt_counter >= 10000) {
+                printf("Force break due to `RK_HALT_ON_LONG_EXECUTION` flag.\n");
+                break;
+            }
+#endif
+
             if (pc >= p.header.code_len)
                 throw invalid_program_exception("unexpected end of program.");
 
@@ -388,4 +400,8 @@ private:
 
     std::deque<callframe> callstack;
     std::deque<value> stack;
+
+#ifdef RK_HALT_ON_LONG_EXECUTION
+    int halt_counter;
+#endif
 };
