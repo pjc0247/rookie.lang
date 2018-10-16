@@ -13,7 +13,7 @@ all:
 		-s WASM=1 \
 		-s ERROR_ON_UNDEFINED_SYMBOLS=0 \
 		-s DISABLE_EXCEPTION_CATCHING=0 \
-		-s EXPORTED_FUNCTIONS='["_rk_compile_and_run"]' \
+		-s EXPORTED_FUNCTIONS='["_rk_exec", "_rk_exec_utf8"]' \
 		-s EXTRA_EXPORTED_RUNTIME_METHODS='["allocate", "intArrayFromString", "ccall", "cwrap"]'
 
 	export EMCC_DEBUG=""

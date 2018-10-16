@@ -475,8 +475,13 @@ private:
         }
         else if (token.type == token_type::keyword) {
             _mark_as_parsed(stoken);
-            if (token.raw == L"return") {
-                flush_until_priority(-3000);
+
+            // Keywords such as
+            //   KEYWORD (LINE);  // if (code)
+            if (token.raw == L"return" ||
+                token.raw == L"if") {
+
+                flush_single_line();
                 stack.push_back(token);
             }
             else {
@@ -540,7 +545,10 @@ private:
         else if (token.raw == L"this")
             stoken.type = stoken_type::st_this;
     }
-
+    
+    void flush_single_line() {
+        flush_until_priority(-9999);
+    }
     void flush_until_priority(int priority) {
         while (!stack.empty()) {
             auto token = stack.back();

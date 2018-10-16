@@ -29,7 +29,7 @@ protected:
         return changes;
     }
     virtual syntax_node *visit(syntax_node *node) {
-        printf("%s, %d\n", typeid(*node).name(), depth);
+        rklog("%s, %d\n", typeid(*node).name(), depth);
 
         if (node->type == syntax_type::syn_ident ||
             node->type == syntax_type::syn_literal)

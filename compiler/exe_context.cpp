@@ -6,7 +6,14 @@
 
 #include "exe_context.h"
 
-thread_local exe_context *rkctx = nullptr;
+thread_local exe_context *_rkctx = nullptr;
+
+exe_context *rkctx() {
+    return _rkctx;
+}
+void set_rkctx(exe_context *v) {
+    _rkctx = v;
+}
 
 exe_context::exe_context(runner &r, stack_provider &sp) :
     r(r), sp(sp) {

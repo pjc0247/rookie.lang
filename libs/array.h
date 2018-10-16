@@ -4,6 +4,7 @@
 
 #include "binding.h"
 #include "value_object.h"
+#include "object.h"
 
 class rkarray : public rkobject<rkarray> {
 public:
@@ -22,7 +23,7 @@ public:
 
     rkarray(int n) {
         for (int i = 0; i < n; i++) {
-            value v = rkctx->next_param();
+            value v = rkctx()->next_param();
             push(v);
         }
     }

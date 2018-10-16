@@ -51,15 +51,24 @@ public:
     }
 };
 
-class invalid_program_exception : public std::exception {
+class base_exception : public std::exception {
+public:
+    base_exception(const char *msg) {
+        this->msg = std::string(msg);
+    }
+    virtual char const *what() const noexcept { return msg.c_str(); }
+private:
+    std::string msg;
+};
+class invalid_program_exception : public base_exception {
 public:
     invalid_program_exception(const char *msg)
-        : std::exception(msg) {
+        : base_exception(msg) {
     }
 };
-class invalid_access_exception : public std::exception {
+class invalid_access_exception : public base_exception {
 public:
     invalid_access_exception(const char *msg)
-        : std::exception(msg) {
+        : base_exception(msg) {
     }
 };

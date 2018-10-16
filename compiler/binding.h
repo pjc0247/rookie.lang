@@ -51,10 +51,6 @@ public:
         stackref.pop_back();
         drop<N - 1>();
     }
-    template <>
-    __forceinline void drop<1>() {
-        stackref.pop_back();
-    }
 
     template <int N>
     __forceinline void replace(const value &v) {
@@ -64,6 +60,11 @@ public:
 private:
     std::deque<value> &stackref;
 };
+
+template <>
+__forceinline void stack_provider::drop<1>() {
+    stackref.pop_back();
+}
 
 typedef std::map<std::wstring, std::function<void(stack_provider&)>> bindmap;
 
@@ -250,7 +251,7 @@ private:
 };
 
 template <typename T>
-class rkobject : public object {
+class rkobjectbase : public object {
 public:
     static value create_instance() {
         return value::mkobjref(new T());
@@ -261,7 +262,7 @@ public:
 
         type.method(name, [function](value &_this) {
             auto obj = ((T*)_this.objref);
-            return std::invoke(function, obj);
+            return stdinvoke(function, obj);
         });
     }
     static void method(type_builder &type,
@@ -269,7 +270,7 @@ public:
 
         type.method(name, [function](value &_this, value &a) {
             auto obj = ((T*)_this.objref);
-            return std::invoke(function, obj, a);
+            return stdinvoke(function, obj, a);
         });
     }
     static void method(type_builder &type,
@@ -277,7 +278,7 @@ public:
 
         type.method(name, [function](value &_this, value &a, value &b) {
             auto obj = ((T*)_this.objref);
-            return std::invoke(function, obj, a, b);
+            return stdinvoke(function, obj, a, b);
         });
     }
     static void method(type_builder &type,
@@ -285,7 +286,7 @@ public:
 
         type.method(name, [function](value &_this, value &a, value &b, value &c) {
             auto obj = ((T*)_this.objref);
-            return std::invoke(function, obj, a, b, c);
+            return stdinvoke(function, obj, a, b, c);
         });
     }
     static void method(type_builder &type,
@@ -293,7 +294,7 @@ public:
 
         type.method(name, [function](value &_this, value &a, value &b, value &c, value &d) {
             auto obj = ((T*)_this.objref);
-            return std::invoke(function, obj, a, b, c, d);
+            return stdinvoke(function, obj, a, b, c, d);
         });
     }
     static void method(type_builder &type,
@@ -301,7 +302,7 @@ public:
 
         type.method(name, [function](value &_this, value &a, value &b, value &c, value &d, value &e) {
             auto obj = ((T*)_this.objref);
-            return std::invoke(function, obj, a, b, c, d, e);
+            return stdinvoke(function, obj, a, b, c, d, e);
         });
     }
     static void method(type_builder &type,
@@ -309,7 +310,7 @@ public:
 
         type.method(name, [function](value &_this, value &a, value &b, value &c, value &d, value &e, value &f) {
             auto obj = ((T*)_this.objref);
-            return std::invoke(function, obj, a, b, c, d, e, f);
+            return stdinvoke(function, obj, a, b, c, d, e, f);
         });
     }
 };

@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClInclude Include="..\backends\p2wast.h" />
     <ClInclude Include="..\libs\array.h" />
+    <ClInclude Include="..\libs\object.h" />
     <ClInclude Include="..\libs\stdlib.h" />
     <ClInclude Include="..\libs\string.h" />
     <ClInclude Include="..\thirdparty\argagg.hpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="binding.h" />
     <ClInclude Include="code_gen.h" />
     <ClInclude Include="exe_context.h" />
+    <ClInclude Include="extern_interface.h" />
     <ClInclude Include="fileio.h" />
     <ClInclude Include="gc.h" />
     <ClInclude Include="compilation.h" />
@@ -186,7 +188,9 @@
     <ClInclude Include="vnode_transformer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\backends\p2wast.cpp" />
     <ClCompile Include="exe_context.cpp" />
+    <ClCompile Include="extern_interface.cpp" />
     <ClCompile Include="gc.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="sig2hash.cpp" />

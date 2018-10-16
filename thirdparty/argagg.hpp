@@ -46,7 +46,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <utility>
 #include <vector>
 
@@ -427,7 +427,7 @@ namespace argagg {
          * Maps from definition name to the structure which contains the parser
          * results for that definition.
          */
-        std::unordered_map<std::string, option_results> options;
+        std::map<std::string, option_results> options;
 
         /**
          * @brief
@@ -588,7 +588,7 @@ namespace argagg {
          * Maps from a long flag (an std::string) to a pointer to the original @ref
          * definition that the flag represents.
          */
-        std::unordered_map<std::string, const definition*> long_map;
+        std::map<std::string, const definition*> long_map;
 
         /**
          * @brief
@@ -1138,7 +1138,7 @@ namespace argagg {
         parser_map validate_definitions(
             const std::vector<definition>& definitions)
     {
-        std::unordered_map<std::string, const definition*> long_map;
+        std::map<std::string, const definition*> long_map;
         parser_map map{ {{nullptr}}, std::move(long_map) };
 
         for (auto& defn : definitions) {
@@ -1210,7 +1210,7 @@ namespace argagg {
         // Initialize the parser results that we'll be returning. Store the program
         // name (assumed to be the first command line argument) and initialize
         // everything else as empty.
-        std::unordered_map<std::string, option_results> options{};
+        std::map<std::string, option_results> options{};
         std::vector<const char*> pos;
         parser_results results{ argv[0], std::move(options), std::move(pos) };
 

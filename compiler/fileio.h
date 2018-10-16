@@ -4,13 +4,14 @@
 #include <string>
 #include <exception>
 
+#ifndef __EMSCRIPTEN__
 class fileio {
 public:
     static wchar_t *read_string(const std::wstring &filepath) {
         FILE *fp = _wfopen(filepath.c_str(), L"rtS, ccs=UTF-8");
 
         if (!fp) {
-            throw std::exception(
+            throw base_exception(
                 (char*)(L"no such file: " + std::wstring(filepath)).c_str());
         }
 
@@ -27,3 +28,4 @@ public:
         return buf;
     }
 };
+#endif

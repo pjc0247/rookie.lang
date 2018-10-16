@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <string>
 #include <map>
@@ -62,8 +62,6 @@ public:
         execute(&p.entries[p.header.main_entry]);
     }
     void execute(program_entry *_entry) {
-        rklog("===execute===\n");
-
         current_entry = _entry;
         pc = _entry->entry;
         bp = 0;
@@ -79,7 +77,7 @@ public:
 
             auto inst = p.code[pc++];
 
-            rklog("%S,   %d\n", to_string((opcode_t)inst.opcode), inst.operand);
+            rklog("[%d] %S,   %d\n", pc, to_string((opcode_t)inst.opcode), inst.operand);
 
             if (inst.opcode == opcode::op_nop);
             else if (inst.opcode == opcode::op_ldi)
@@ -147,7 +145,7 @@ public:
 #endif
 
                 if (types[inst.operand].typekind == runtime_typekind::tk_programtype) {
-                    auto objref = new object();
+                    auto objref = new rkscriptobject();
                     push(value::mkobjref(objref));
 
                     objref->vtable = &types[inst.operand].vtable.table;
@@ -171,7 +169,7 @@ public:
                 }
             }
             else if (inst.opcode == opcode::op_newarr) {
-                rkctx = exectx;
+                set_rkctx(exectx);
                 auto aryref = new rkarray(inst.operand);
                 // FIXME
                 aryref->vtable = &types[sighash_array].vtable.table;
@@ -333,7 +331,7 @@ private:
         return v;
     }
     __forceinline void syscall(int index, stack_provider &sp) {
-        rkctx = exectx;
+        set_rkctx(exectx);
         syscalls.table[index](sp);
     }
     __forceinline void programcall(int index) {

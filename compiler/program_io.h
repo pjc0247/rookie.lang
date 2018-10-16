@@ -5,6 +5,7 @@
 
 #include "program.h"
 
+#ifndef __EMSCRIPTEN__
 class program_writer {
 public:
     static bool write(const std::wstring &path, const program &p) {
@@ -39,3 +40,4 @@ public:
         return true;
     }
 };
+#endif

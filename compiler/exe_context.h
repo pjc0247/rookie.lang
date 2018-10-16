@@ -18,4 +18,7 @@ private:
     stack_provider &sp;
 };
 
-extern thread_local exe_context *rkctx;
+extern "C" { 
+    exe_context *rkctx();
+}
+void set_rkctx(exe_context *exe);
