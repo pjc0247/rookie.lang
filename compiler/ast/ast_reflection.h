@@ -10,6 +10,27 @@
 class astr {
 public:
     static std::vector<method_node*>
+    all_methods(syntax_node *root) {
+        return filter<method_node*>(root, [](syntax_node *n) {
+            if (n->type == syntax_type::syn_method) return true;
+        });
+    }
+    static std::vector<class_node*>
+    all_classes(syntax_node *root) {
+        return filter<class_node*>(root, [](syntax_node *n) {
+            if (n->type == syntax_type::syn_class) return true;
+        });
+    }
+    static class_node *
+    find_class(syntax_node *root, const std::wstring &name) {
+        auto r = filter<class_node*>(root, [](syntax_node *n) {
+            if (n->type == syntax_type::syn_class) return true;
+        });
+        if (r.size() == 0) return nullptr;
+        return r[0];
+    }
+
+    static std::vector<method_node*>
     find_method_with_annotation(syntax_node *root, const std::wstring &name) {
         return filter<method_node*>(root, [name](syntax_node *n) {
             if (n->type == syntax_type::syn_method) {
