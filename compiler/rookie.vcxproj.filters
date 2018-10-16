@@ -76,6 +76,7 @@
       <Filter>ast</Filter>
     </ClInclude>
     <ClInclude Include="type_attr.h" />
+    <ClInclude Include="stack_provider.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

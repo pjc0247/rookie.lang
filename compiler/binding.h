@@ -6,6 +6,7 @@
 #include <functional>
 
 #include "value_object.h"
+#include "stack_provider.h"
 #include "exe_context.h"
 
 #define _bind(signature, lambda) \
@@ -25,46 +26,8 @@
 #define is_rkchar(v) v.type == value_type::character
 #define rkint(v) v.integer
 #define rkcstr(v) (((rkstring*)v.objref)->c_str())
+#define rkwstr(v) (((rkstring*)v.objref)->w_str())
 #define rkchar(v) v.character
-
-class stack_provider {
-public:
-    stack_provider(std::deque<value> &stack) :
-        stackref(stack) {
-    }
-
-    void push(const value &v) {
-        stackref.push_back(v);
-    }
-    value pop() {
-        auto item = stackref.back();
-        stackref.pop_back();
-        return item;
-    }
-
-    __forceinline value &get(int n) {
-        return stackref[stackref.size() - 1 - n];
-    }
-    
-    template <int N>
-    __forceinline void drop() {
-        stackref.pop_back();
-        drop<N - 1>();
-    }
-
-    template <int N>
-    __forceinline void replace(const value &v) {
-        stackref[stackref.size() - 1 - N] = v;
-    }
-
-private:
-    std::deque<value> &stackref;
-};
-
-template <>
-__forceinline void stack_provider::drop<1>() {
-    stackref.pop_back();
-}
 
 typedef std::map<std::wstring, std::function<void(stack_provider&)>> bindmap;
 

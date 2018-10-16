@@ -18,6 +18,16 @@ void set_rkctx(exe_context *v) {
 exe_context::exe_context(runner &r, stack_provider &sp) :
     r(r), sp(sp) {
 }
+
+template <>
+value exe_context::newobj(const std::wstring &name) {
+    push_newobj(name);
+    return sp.pop();
+}
+void exe_context::push_newobj(const std::wstring &name) {
+    r._newobj_systype(sig2hash(name), sp);
+}
+
 value exe_context::call(value &obj, const std::wstring &name) {
     sp.push(obj);
     r._vcall(sig2hash(name), sp);

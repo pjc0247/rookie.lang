@@ -24,6 +24,7 @@ public:
     }
 
     static value create_instance2(value &str) {
+        printf("CREATE STRIGN %S\n", str.str);
         auto ptr = new rkstring();
         ptr->str = str.str;
         return value::mkobjref(ptr);
@@ -35,8 +36,9 @@ public:
         return value::mkinteger(str.size());
     }
     value append(value &other) {
-        auto r = value::mkstring((str + other.str).c_str());
-        return create_instance2(r);
+        auto appended = (str + rkwstr(other));
+        auto r = value::mkstring(appended.c_str());
+        return rkctx()->newobj(L"string", r);
     }
 
     value to_string() {
@@ -45,6 +47,9 @@ public:
 
     const wchar_t *c_str() const {
         return str.c_str();
+    }
+    const std::wstring w_str() const {
+        return str;
     }
 
 private:

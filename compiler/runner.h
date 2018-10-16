@@ -206,6 +206,8 @@ public:
                     syscall(callinfo.entry, sp);
                 else if (callinfo.type == call_type::ct_programcall_direct)
                     programcall(callinfo.entry);
+
+                ;
             }
             else if (inst.opcode == opcode::op_ret) {
                 auto ret = pop();
