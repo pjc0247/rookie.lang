@@ -158,7 +158,9 @@
     <ClInclude Include="..\libs\stdlib.h" />
     <ClInclude Include="..\libs\string.h" />
     <ClInclude Include="..\thirdparty\argagg.hpp" />
+    <ClInclude Include="ast\annotation.h" />
     <ClInclude Include="ast\arraccess.h" />
+    <ClInclude Include="ast\ast_reflection.h" />
     <ClInclude Include="ast\callmember.h" />
     <ClInclude Include="ast\callnewobj.h" />
     <ClInclude Include="ast\endlpop.h" />

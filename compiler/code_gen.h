@@ -9,6 +9,8 @@
 #include "binding.h"
 #include "errors.h"
 
+#include "ast/ast_reflection.h"
+
 #include "sig2hash.h"
 
 enum class lookup_type {
@@ -239,6 +241,12 @@ public:
     }
 
     program generate(root_node *root) {
+        auto m = astr::find_method_with_annotation(root, L"main");
+        if (m.size() == 0)
+            ctx.push_error(codegen_error(L"No entry for `main`"));
+        if (m.size() >= 2)
+            ctx.push_error(codegen_error(L"More than 2 entries for `main`"));
+
         emitter = program_builder();
 
         emit(root);

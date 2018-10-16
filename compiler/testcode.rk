@@ -1,7 +1,9 @@
 class example_fibo {
-    def main() {
-        for (i=0;i<5;i++)
-            print(i);
+    @main
+    def main2() {
+        a = "21234";
+        for (i=0;i<a.length();i++)
+            print(a[i]);
     }
                
     def fib(x) {        

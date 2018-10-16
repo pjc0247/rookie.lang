@@ -59,7 +59,7 @@ public:
     bool is_complete() const;
     syntax_node *nearest_incomplete_node();
 
-    syntax_node *append(syntax_node *node) {
+    syntax_node *append(syntax_node *node, bool fire_oncomplete=true) {
         // 'endl' only can be accepted in block_node.
         if (node->type == syntax_type::syn_endl) {
             if (type != syntax_type::syn_block)
@@ -69,7 +69,7 @@ public:
         node->parent = this;
         children.push_back(node);
 
-        if (is_complete()) {
+        if (fire_oncomplete && is_complete()) {
             on_complete();
             return nearest_incomplete_node();
         }
@@ -314,6 +314,9 @@ public:
         if (locals.empty() ||
             std::find(locals.begin(), locals.end(), str) == locals.end())
             locals.push_back(str);
+    }
+    void push_annotation(annotation_node *node) {
+        append(node, false);
     }
 
 protected:

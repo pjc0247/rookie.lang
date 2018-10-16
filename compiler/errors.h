@@ -22,6 +22,12 @@ public:
     }
 };
 
+class codegen_error : public compile_error {
+public:
+    codegen_error(const std::wstring &message) :
+        compile_error(::token(), message) {
+    }
+};
 class name_too_long_error : public compile_error {
 public:
     name_too_long_error(const token &token) :

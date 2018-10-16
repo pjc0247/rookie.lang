@@ -69,6 +69,12 @@
       <Filter>libs</Filter>
     </ClInclude>
     <ClInclude Include="extern_interface.h" />
+    <ClInclude Include="ast\annotation.h">
+      <Filter>ast</Filter>
+    </ClInclude>
+    <ClInclude Include="ast\ast_reflection.h">
+      <Filter>ast</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

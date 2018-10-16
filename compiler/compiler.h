@@ -10,6 +10,7 @@
 
 #include "optimiser.h"
 
+#include "ast/annotation.h"
 #include "ast/callmember.h"
 #include "ast/callnewobj.h"
 #include "ast/arraccess.h"
@@ -22,11 +23,14 @@ public:
     // Builds a new compiler with default options.
     static compiler default_compiler(binding &binding) {
         return compiler(binding)
+            // FIRSTPASS
+            .transformer<annotation_transformer>()
             .transformer<endlpop_transformer>()
             .transformer<callmember_transformer>()
             .transformer<callnewobj_transformer>()
             .transformer<arraccess_transformer>()
 
+            // OPTIMIZERS
             .transformer<precalc>()
             //.transformer<tco>(); // tail-call optimizer
             ;
