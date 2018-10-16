@@ -80,7 +80,7 @@ public:
                 tail = head;
                 found = true;
 
-                if (t.raw == L"\r\n") {
+                if (t.raw == L"\n") {
                     line++; cols = 1;
                 }
                 break;
@@ -108,7 +108,7 @@ public:
 
 private:
     void init_rules() {
-        rules.push_back(lexer_token(L"\r\n", token_type::none));
+        rules.push_back(lexer_token(L"\n", token_type::none));
         rules.push_back(lexer_token(L" ", token_type::none));
         rules.push_back(lexer_token(L"\t", token_type::none));
 
@@ -202,7 +202,7 @@ public:
 
 #if _DEBUG
         for (auto &token : _tokens)
-            rklog("%s ", token.raw.c_str());
+            rklog("%S ", token.raw.c_str());
         rklog("\n\n\r\n");
 #endif
 
@@ -210,7 +210,7 @@ public:
 
 #if _DEBUG
         for (auto &token : tokens)
-            rklog("%s ", token.raw.c_str());
+            rklog("%S ", token.raw.c_str());
         rklog("\n\n");
 #endif
 
@@ -482,11 +482,9 @@ private:
                 token.raw == L"if") {
 
                 flush_single_line();
-                stack.push_back(token);
             }
-            else {
-                stack.push_back(token);
-            }
+
+            stack.push_back(token);
         } 
         else
             stoken = parse(token);
