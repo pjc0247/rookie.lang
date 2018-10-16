@@ -5,6 +5,7 @@
 #include "token.h"
 #include "syntax.h"
 #include "compilation.h"
+#include "type_attr.h"
 
 #define _ending_expression(expname) \
     if (token.type == stoken_type:: expname) { \
@@ -17,11 +18,15 @@ public:
 
     }
 
-    root_node *build(const std::vector<stoken> &stokens) {
+    root_node *build(const std::vector<stoken> &_stokens) {
+        stokens = &_stokens;
+
         auto root = new root_node(ctx);
         current = root;
 
-        for (auto &token : stokens) {
+        for (cursor=0; cursor<stokens->size(); cursor++) {
+            auto &token = stokens->at(cursor);
+
             rklog("%s\n", token.raw.c_str());
 
             _ending_expression(end_block);
@@ -125,6 +130,10 @@ private:
     }
     method_node *method(const stoken &token) {
         auto node = new method_node(token, current);
+
+        if (prev_token().type == stoken_type::st_static)
+            node->attr |= method_attr::method_static;
+
         return node;
     }
     pop_node *pop(const stoken &token) {
@@ -202,10 +211,24 @@ private:
         }
     }
 
+    const stoken &prev_token() const {
+        if (cursor == 0)
+            return stoken::empty();
+        return stokens->at(cursor - 1);
+    }
+    const stoken &next_token() const {
+        if (cursor + 1 == stokens->size())
+            return stoken::empty();
+        return stokens->at(cursor + 1);
+    }
+
 private:
     compile_context &ctx;
 
     class_node *current_class;
     method_node *current_method;
     syntax_node *current;
+
+    const std::vector<stoken> *stokens;
+    int cursor;
 };

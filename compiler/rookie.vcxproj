@@ -186,6 +186,7 @@
     <ClInclude Include="text_processor.h" />
     <ClInclude Include="token.h" />
     <ClInclude Include="tree_builder.h" />
+    <ClInclude Include="type_attr.h" />
     <ClInclude Include="value_object.h" />
     <ClInclude Include="vnode_transformer.h" />
   </ItemGroup>

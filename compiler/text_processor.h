@@ -117,6 +117,7 @@ private:
         rules.push_back(lexer_token(L"@", token_type::keyword));
         rules.push_back(lexer_token(L"class", token_type::keyword));
         rules.push_back(lexer_token(L"def", token_type::keyword));
+        rules.push_back(lexer_token(L"static", token_type::keyword));
         rules.push_back(lexer_token(L"if", token_type::keyword));
         rules.push_back(lexer_token(L"for", token_type::keyword));
         rules.push_back(lexer_token(L"return", token_type::keyword));
@@ -355,12 +356,25 @@ private:
         stoken stoken(token);
 
         if (token.type == token_type::keyword) {
-            result.push_back(pop_and_parse());
+            // Keywords with trailing ident.
+            //   ex) def METHOD_NAME
+            if (token.raw == L"def" ||
+                token.raw == L"@")
+                result.push_back(pop_and_parse());
 
             if (token.raw == L"def")
                 stoken.type = stoken_type::st_defmethod;
+            if (token.raw == L"static")
+                stoken.type = stoken_type::st_static;
             else if (token.raw == L"@")
                 stoken.type = stoken_type::st_annotation;
+
+            // Method decorator token
+            if (token.raw == L"static" &&
+                prev_token().raw != L"def") {
+
+                ctx.push_error(unexpected_token_error(token));
+            }
         }
         else if (token.type == token_type::left_paren) {
             flush_until_type(token_type::right_paren);

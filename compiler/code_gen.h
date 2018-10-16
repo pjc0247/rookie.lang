@@ -8,6 +8,7 @@
 #include "compilation.h"
 #include "binding.h"
 #include "errors.h"
+#include "type_attr.h"
 
 #include "ast/ast_reflection.h"
 
@@ -244,8 +245,10 @@ public:
         auto m = astr::find_method_with_annotation(root, L"main");
         if (m.size() == 0)
             ctx.push_error(codegen_error(L"No entry for `main`"));
-        if (m.size() >= 2)
+        else if (m.size() >= 2)
             ctx.push_error(codegen_error(L"More than 2 entries for `main`"));
+        else if (!(m[0]->attr & method_attr::method_static))
+            ctx.push_error(codegen_error(L"`main` is not a static method."));
 
         emitter = program_builder();
 

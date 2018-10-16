@@ -75,6 +75,7 @@
     <ClInclude Include="ast\ast_reflection.h">
       <Filter>ast</Filter>
     </ClInclude>
+    <ClInclude Include="type_attr.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">
