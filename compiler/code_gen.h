@@ -307,6 +307,7 @@ private:
             _route(memberaccess);
             _route(ident);
             _route(literal);
+            _route(null);
             _route(newobj);
             _route(newarr);
             _route(op);
@@ -429,6 +430,9 @@ private:
             emitter.emit(opcode::op_ldi, node->integer);
         else if (node->literal_type == literal_type::string)
             emitter.emit(opcode::op_ldstr, node->str);
+    }
+    void emit_null(null_node *node) {
+        emitter.emit(opcode::op_ldnull);
     }
     void emit_newobj(newobj_node *node) {
         for (auto it = node->begin_args(); it != node->end_args(); ++it)

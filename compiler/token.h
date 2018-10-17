@@ -26,9 +26,10 @@ enum class stoken_type {
     // none: not specified yet
     // nothing: specified as `nothing`
     none, nothing,
-
+    
     st_include,
 
+    st_null,
     comma, endl,
 
     ident,
@@ -59,6 +60,7 @@ inline const wchar_t *to_string(stoken_type type) {
     case stoken_type::none: return L"none";
     case stoken_type::nothing: return L"nothing";
     case stoken_type::st_include: return L"st_include";
+    case stoken_type::st_null: return L"st_null";
     case stoken_type::comma: return L"comma";
     case stoken_type::endl: return L"endl";
     case stoken_type::st_this: return L"st_this";

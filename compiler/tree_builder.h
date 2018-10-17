@@ -92,6 +92,8 @@ public:
                     node = _this(token);
                 else if (token.type == stoken_type::st_literal)
                     node = literal(token);
+                else if (token.type == stoken_type::st_null)
+                    node = simple_create<null_node>(token);
 
                 if (node != nullptr)
                     append_and_set(node);
@@ -110,6 +112,12 @@ private:
         //printf("append %s / %s\n", typeid(*current).name(), typeid(*node).name());
         current->append(node);
         current = node;
+    }
+
+    template <typename T>
+    T *simple_create(const stoken &token) {
+        auto node = new T(token, current);
+        return node;
     }
 
     include_node *include(const stoken &token) {

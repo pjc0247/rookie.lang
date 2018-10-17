@@ -109,6 +109,9 @@ public:
                 stack.push_back(value::mkstring(p.rdata + inst.operand));
                 _newobj_systype(sighash_string, sp);
             }
+            else if (inst.opcode == opcode::op_ldnull)
+                push(value::null());
+
             //else if (inst.opcode == opcode::op_ldprop)
             //    stack.push_back(value::mkstring(p.rdata + inst.operand));
 

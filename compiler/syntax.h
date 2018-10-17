@@ -24,6 +24,7 @@ enum class syntax_type {
     syn_literal,
     syn_ident,
     syn_this,
+    syn_null,
     syn_newarr,
     syn_newobj,
 
@@ -160,6 +161,13 @@ public:
     this_node(const stoken &token, syntax_node *parent)
         : syntax_node(token, parent) {
         type = syntax_type::syn_this;
+    }
+};
+class null_node : public syntax_node {
+public:
+    null_node(const stoken &token, syntax_node *parent)
+        : syntax_node(token, parent) {
+        type = syntax_type::syn_null;
     }
 };
 

@@ -95,6 +95,12 @@ struct value {
         type(type) {
     }
 
+    static value null() {
+        value v;
+        v.type = value_type::object;
+        v.objref = nullptr;
+        return v;
+    }
     static value mkobjref(object *objref) {
         value v;
         v.type = value_type::object;
