@@ -150,40 +150,6 @@ struct program {
     const wchar_t *rdata;
     typedata *types;
 
-    program() :
-        entries(nullptr), code(nullptr), rdata(nullptr) {
-    }
-    program(const program &other) = default;
-    program(program &&other) {
-        header = other.header;
-
-        entries = other.entries;
-        code = other.code;
-        rdata = other.rdata;
-        types = other.types;
-
-        other.entries = nullptr;
-        other.code = nullptr;
-        other.rdata = nullptr;
-        other.types = nullptr;
-    }
-    program& operator=(program &&other) {
-        if (this != &other) {
-            header = other.header;
-
-            entries = other.entries;
-            code = other.code;
-            rdata = other.rdata;
-            types = other.types;
-
-            other.entries = nullptr;
-            other.code = nullptr;
-            other.rdata = nullptr;
-            other.types = nullptr;
-        }
-        return *this;
-    }
-
     void dump() {
         wprintf(L"[rookie_program]\r\n");
 
