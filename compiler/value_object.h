@@ -97,7 +97,7 @@ struct value {
 
     static value null() {
         value v;
-        v.type = value_type::object;
+        v.type = value_type::null;
         v.objref = nullptr;
         return v;
     }
