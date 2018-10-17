@@ -1,16 +1,23 @@
-class example_fibo {
+class example_object {
     @main
-    def main2() {
-        a = "21234";
-        for (i=0;i<a.length();i++)
-            print(a[i]);
-    }
-               
-    def fib(x) {        
-        if (x == 0) return 0;
-        if (x == 1) return 1;
-        
-        return fib(x-1) + fib(x-2);
+    static def main() {
+        f = foo.new();
+        f.v = 1234;
+        f.say_hello();
+
+        f = foo.new();
+        f.v = 5678;
+        f.say_hello();
     }
 }
- 
+
+class foo {
+    def say_hello() {
+        hello = "hello";
+
+        for (i=0;i<hello.length();i++)
+            print(hello[i]);
+
+        print(this.v);
+    }
+}

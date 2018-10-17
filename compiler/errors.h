@@ -66,6 +66,12 @@ public:
 private:
     std::string msg;
 };
+class codegen_exception : public base_exception {
+public:
+    codegen_exception(const char *msg)
+        : base_exception(msg) {
+    }
+};
 class invalid_program_exception : public base_exception {
 public:
     invalid_program_exception(const char *msg)

@@ -10,6 +10,7 @@
 #include "program_io.h"
 #include "runner.h"
 #include "fileio.h"
+#include "debugger.h"
 
 #include "libs/stdlib.h"
 #include "libs/array.h"
@@ -28,19 +29,22 @@ program compile(const std::wstring &filepath) {
 
     auto rc = compiler::default_compiler(b);
 
-    program p;
-    std::vector<compile_error> errors;
-    if (rc.compile(buf, p, errors)) {
+    compile_option opts;
+    opts.generate_pdb = true;
+
+    auto out = rc.compile(buf, opts);
+    if (out.errors.empty()) {
     
 #if _DEBUG
-        p.dump();
+        out.program.dump();
 #endif
 
-        runner(p, b).execute();
+        debugger dbg(out.pdb);
+        runner(out.program, b).attach_debugger(dbg).execute();
     }
     else {
-        printf("Build failed with %d error(s):\n", errors.size());
-        for (auto &err : errors) {
+        printf("Build failed with %d error(s):\n", out.errors.size());
+        for (auto &err : out.errors) {
             wprintf(L"  * (ln: %d, col: %d): %s\n",
                 err.line, err.cols,
                 err.message.c_str());
@@ -50,7 +54,7 @@ program compile(const std::wstring &filepath) {
 
     delete[] buf;
 
-    return p;
+    return out.program;
 #else
     throw base_exception("Not supported");
 #endif

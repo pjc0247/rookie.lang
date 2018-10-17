@@ -25,9 +25,10 @@ void rk_exec(const char *code) {
 
     auto rc = compiler::default_compiler(b);
 
-    program p;
-    std::vector<compile_error> errors;
-    if (rc.compile(str2wstr(code), p, errors)) {
-        runner(p, b).execute();
+    compile_option opts;
+
+    auto out = rc.compile(str2wstr(code), opts);
+    if (out.errors.empty()) {
+        runner(out.program, b).execute();
     }
 }

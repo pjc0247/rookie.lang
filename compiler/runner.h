@@ -11,7 +11,7 @@
 #include "value_object.h"
 #include "gc.h"
 #include "binding.h"
-
+#include "debugger.h"
 #include "exe_context.h"
 
 #include "libs/array.h"
@@ -47,12 +47,19 @@ struct runtime_typedata {
 };
 
 class runner {
+    friend exe_context;
+    friend debugger;
 public:
     runner(const program &p, binding &binding) :
         p(p), binding(binding),
         callee_ptr(nullptr) {
 
         build_runtime_data();
+    }
+
+    runner &attach_debugger(debugger &_dbger) {
+        dbger = &_dbger;
+        return *this;
     }
 
     void execute() {
@@ -75,6 +82,9 @@ public:
         stack_provider sp(stack);
 
         exectx = new exe_context(*this, sp);
+
+        if (dbger) dbger->on_begin_program(*this, p);
+
         while (true) {
 #ifdef RK_HALT_ON_LONG_EXECUTION
             halt_counter++;
@@ -89,7 +99,7 @@ public:
 
             auto inst = p.code[pc++];
 
-            rklog("[%d] %S,   %d\n", pc, to_string((opcode_t)inst.opcode), inst.operand);
+            if (dbger) dbger->on_pre_exec(*this, inst);
 
             if (inst.opcode == opcode::op_nop);
             else if (inst.opcode == opcode::op_ldi)
@@ -293,7 +303,7 @@ public:
 
 private:
     void build_runtime_data() {
-        for (auto &b : binding.get_methods()) {
+        for (auto &b : binding.get_functions()) {
             syscalls.table.push_back(b.second);
         }
         for (auto &type : binding.get_types()) {
@@ -403,6 +413,8 @@ private:
 
     std::deque<callframe> callstack;
     std::deque<value> stack;
+
+    debugger *dbger;
 
 #ifdef RK_HALT_ON_LONG_EXECUTION
     int halt_counter;

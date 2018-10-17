@@ -79,12 +79,14 @@ private:
         for (int i = 0; i < entry.params; i++)
             out.append(" (param i32) ");
 
+        /*
         if (entry.ret != ptype::t_none) {
             if (entry.ret == ptype::t_integer)
                 out.append(" (result i32) ");
             if (entry.ret == ptype::t_string)
                 out.append(" (result i32) ");
         }
+        */
         out.append("\r\n");
         emit_body(p, entry);
         out.append(")\r\n");

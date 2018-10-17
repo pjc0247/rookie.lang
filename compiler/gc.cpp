@@ -20,6 +20,10 @@ void gc::collect() {
     sweep(ctx);
 }
 
+int gc::object_count() {
+    return all_objects.size();
+}
+
 void gc::mark(value &v, gc_context &ctx) {
     if (v.type != value_type::object)
         return;

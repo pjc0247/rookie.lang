@@ -4,6 +4,7 @@
 
 #include "value_object.h"
 #include "stack_provider.h"
+#include "gc.h"
 
 class runner;
 class value;
@@ -25,6 +26,8 @@ public:
     value call(value &obj, const std::wstring &name);
 
     value next_param();
+
+    gc &gc();
 
 private:
     runner &r;

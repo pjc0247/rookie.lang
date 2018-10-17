@@ -98,6 +98,8 @@ struct token {
     stoken_type stype;
     stoken_type hint_stype;
 
+    int dbg_codeidx;
+
     static token padding() {
         return token();
     }
@@ -105,7 +107,8 @@ struct token {
         raw(L""), type(token_type::none), priority(0),
         line(0), cols(0),
         stype(stoken_type::none), 
-        hint_stype(stoken_type::none) {
+        hint_stype(stoken_type::none),
+        dbg_codeidx(-1) {
     }
     token &preparsed(stoken_type type) {
         stype = type;

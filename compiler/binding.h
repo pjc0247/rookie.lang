@@ -203,7 +203,7 @@ public:
     const std::vector<type_builder> &get_types() const {
         return types;
     }
-    const bindmap &get_methods() const {
+    const bindmap &get_functions() const {
         return methods;
     }
 
@@ -218,6 +218,14 @@ class rkobjectbase : public object {
 public:
     static value create_instance() {
         return value::mkobjref(new T());
+    }
+
+    static void static_method(type_builder &type,
+        const wchar_t *name, value(*function)()) {
+
+        type.method(name, [function]() {
+            return stdinvoke(function);
+        });
     }
 
     static void method(type_builder &type,

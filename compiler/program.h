@@ -183,11 +183,6 @@ struct program {
         }
         return *this;
     }
-    virtual ~program() {
-        if (entries != nullptr)
-            free(entries);
-        entries = nullptr;
-    }
 
     void dump() {
         wprintf(L"[rookie_program]\r\n");

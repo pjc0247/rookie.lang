@@ -36,3 +36,7 @@ value exe_context::call(value &obj, const std::wstring &name) {
 value exe_context::next_param() {
     return sp.pop();
 }
+
+gc &exe_context::gc() {
+    return r.gc;
+}

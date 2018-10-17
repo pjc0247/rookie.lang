@@ -3,6 +3,7 @@
 #include <map>
 #include <set>
 
+#include "string_pool.h"
 #include "syntax.h"
 #include "program.h"
 #include "compilation.h"
@@ -92,42 +93,6 @@ private:
     method_node *current_method;
 };
 
-class string_pool {
-public:
-    int get_ptr(const std::wstring &str) {
-        if (indexes.find(str) != indexes.end())
-            return indexes[str];
-        return append(str);
-    }
-    const wchar_t *fin() const {
-        if (pool.empty())
-            return L"";
-        return &(pool.front());
-    }
-    unsigned int size() const {
-        return pool.size();
-    }
-
-    void dump() {
-        printf("===begin_string_pool====\r\n");
-        for (int i = 0; i < pool.size(); i++)
-            putchar(pool[i]);
-        printf("\r\n===end_string_pool====\r\n");
-    }
-private:
-    int append(const std::wstring &str) {
-        auto ptr = pool.size();
-        pool.insert(pool.end(), str.begin(), str.end());
-        pool.insert(pool.end(), 0);
-        indexes[str] = ptr;
-        return ptr;
-    }
-
-private:
-    std::map<std::wstring, int> indexes;
-    std::vector<wchar_t> pool;
-};
-
 struct codegen_typedata {
     std::wstring name;
     std::vector<methoddata> methods;
@@ -135,17 +100,24 @@ struct codegen_typedata {
 
 class program_builder {
 public:
+    void set_codeindex(unsigned int index) {
+        codeindex = index;
+    }
+
     void emit(opcode_t opcode, const std::wstring &operand) {
         emit(opcode, spool.get_ptr(operand));
     }
     void emit(opcode_t opcode, const callsite &cs) {
         instructions.push_back(instruction(opcode, cs));
+        instruction_indexes.push_back(codeindex);
     }
     void emit(opcode_t opcode, int operand) {
         instructions.push_back(instruction(opcode, operand));
+        instruction_indexes.push_back(codeindex);
     }
     int emit(opcode_t opcode) {
         instructions.push_back(instruction(opcode, 0));
+        instruction_indexes.push_back(codeindex);
         return instructions.size() - 1;
     }
 
@@ -225,6 +197,47 @@ public:
         return p;
     }
 
+    pdb generate_pdb(string_pool &code, binding &bindings) {
+        pdb p;
+        std::vector<pdb_signature> sigs;
+
+        for (auto &func : bindings.get_functions()) {
+            sigs.push_back(pdb_signature(sig2hash(func.first), func.first.c_str()));
+        }
+        for (auto &type : bindings.get_types()) {
+            sigs.push_back(pdb_signature(sig2hash(type.get_name()), type.get_name().c_str()));
+
+            for (auto &method : type.get_methods()) {
+                sigs.push_back(pdb_signature(sig2hash(method.first), method.first.c_str()));
+            }
+        }
+        for (auto &type : types) {
+            auto type_name = type.first;
+
+            sigs.push_back(pdb_signature(sig2hash(type_name), type_name.c_str()));
+
+            for (auto &method : type.second.methods) {
+                sigs.push_back(pdb_signature(sig2hash(method.name), method.name));
+            }
+        }
+
+        p.sigtable = new pdb_signature[sigs.size()];
+        p.sigtable_len = sigs.size();
+        memcpy(p.sigtable, &sigs[0], sizeof(pdb_signature) * sigs.size());
+
+        p.inst_data = new pdb_instruction_data[instructions.size()];
+        p.inst_data_len = instructions.size();
+        for (int i = 0; i < instructions.size(); i++) {
+            p.inst_data[i].codeindex = instruction_indexes[i];
+        }
+
+        p.code = new wchar_t[code.size()];
+        p.code_len = code.size();
+        memcpy(p.code, code.fin(), sizeof(wchar_t) * code.size());
+
+        return p;
+    }
+
 private:
     string_pool spool;
 
@@ -232,6 +245,9 @@ private:
 
     std::vector<program_entry> entries;
     std::vector<instruction> instructions;
+    std::vector<unsigned int> instruction_indexes;
+
+    unsigned int codeindex;
 };
 
 class code_gen {
@@ -256,6 +272,12 @@ public:
 
         return emitter.fin();
     }
+    pdb generate_pdb(binding &bindings) {
+        if (ctx.opts.generate_pdb == false)
+            throw codegen_exception("generate_pdb == false");
+
+        return emitter.generate_pdb(ctx.code, bindings);
+    }
 
 private:
 #define _route(syntax_name) \
@@ -268,6 +290,8 @@ private:
 
         if (node->is_virtual)
             ; // incomplete vnode transformation
+
+        emitter.set_codeindex(node->token().dbg_codeidx);
 
         rklog("%s %d, %d\n", typeid(*node).name(), node->type, node->token().line);
         switch (node->type) {

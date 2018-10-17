@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 
+#include "string_pool.h"
 #include "token.h"
 #include "errors.h"
 
@@ -20,8 +21,9 @@ struct lexer_token {
 
 class lexer {
 public:
-    lexer(compile_context &ctx) :
+    lexer(compile_context &ctx) : 
         ctx(ctx) {
+        spool = &ctx.code;
         init_rules();
     }
 
@@ -34,8 +36,13 @@ public:
         bool inside_quote = false;
         bool inside_comment = false;
 
+        std::wstring line_buf;
+        int spool_idx = 0;
+
         while (head < src.length() - 1) {
             bool found = false;
+
+            line_buf.push_back(src[head]);
 
             if (src[head] == '"' && src[head - 1] != '\\')
                 inside_quote ^= true;
@@ -61,6 +68,7 @@ public:
                     auto t = parse(src.substr(tail, head - tail));
                     t.line = line;
                     t.cols = cols;
+                    t.dbg_codeidx = spool_idx;
                     result.push_back(t);
 
                     cols += head - tail;
@@ -71,6 +79,7 @@ public:
                 t.type = rule.type;
                 t.priority = rule.priority;
                 t.line = line; t.cols = cols;
+                t.dbg_codeidx = spool_idx;
                 result.push_back(t);
 
                 head += candidate.length();
@@ -80,6 +89,12 @@ public:
 
                 if (t.raw == L"\n") {
                     line++; cols = 1;
+
+                    if (ctx.opts.generate_pdb) {
+                        spool->get_ptr(line_buf);
+                        spool_idx = spool->size();
+                        line_buf.clear();
+                    }
                 }
                 break;
             }
@@ -93,6 +108,7 @@ public:
             auto t = parse(src.substr(tail, head - tail));
             t.line = line;
             t.cols = cols;
+            t.dbg_codeidx = spool_idx;
             result.push_back(t);
         }
 
@@ -182,6 +198,8 @@ private:
     compile_context &ctx;
 
     std::vector<lexer_token> rules;
+
+    string_pool *spool;
 };
 
 enum class semantic_position {

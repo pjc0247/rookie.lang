@@ -104,34 +104,34 @@ public:
     }
 
     // Compiles given codes into a program.
-    bool compile(const std::wstring &src,
-        program &program,
-        std::vector<compile_error> &errors) {
+    compile_output compile(const std::wstring &src,
+        const compile_option &opts) {
 
-        compile_context ctx;
-
+        compile_output out;
+        compile_context ctx(opts);
         calltable_builder syscalls;
 
-        for (auto &b : binding.get_methods()) {
+        for (auto &b : binding.get_functions()) {
             syscalls.add_syscall(b.first);
         }
 
-        auto root = ast_transformed(ctx, src, errors);
+        auto root = ast_transformed(ctx, src, out.errors);
         auto cg = code_gen(ctx, syscalls);
         ctx.fin();
 
 #if _DEBUG
         root->dump();
 #endif
-        program = cg.generate(root);
+
+        out.program = cg.generate(root);
+        if (opts.generate_pdb)
+            out.pdb = cg.generate_pdb(binding);
 
         delete root;
 
-        if (ctx.errors.empty())
-            return true;
-
-        errors = ctx.errors;
-        return false;
+        if (ctx.errors.empty() == false)
+            out.errors = ctx.errors;
+        return out;
     }
 
     template <typename T>
@@ -163,7 +163,7 @@ private:
     template <typename T>
     typename std::enable_if<
         !std::is_base_of<optimize_travler, T>::value>::type
-        _transformer() {
+    _transformer() {
         firstpass.push_back(std::make_shared<T>());
     }
 

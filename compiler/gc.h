@@ -16,6 +16,8 @@ public:
 
     void collect();
 
+    int object_count();
+
 protected:
     void mark(value &v, gc_context &ctx);
     void sweep(gc_context &ctx);
