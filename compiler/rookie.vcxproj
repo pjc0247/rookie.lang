@@ -168,6 +168,7 @@
     <ClInclude Include="ast\syntax_travler.h" />
     <ClInclude Include="binding.h" />
     <ClInclude Include="code_gen.h" />
+    <ClInclude Include="conout.h" />
     <ClInclude Include="dbg.h" />
     <ClInclude Include="debugger.h" />
     <ClInclude Include="exe_context.h" />

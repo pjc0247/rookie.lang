@@ -42,7 +42,7 @@ public:
         while (head < src.length() - 1) {
             bool found = false;
 
-            line_buf.push_back(src[head]);
+            //line_buf.push_back(src[head]);
 
             if (src[head] == '"' && src[head - 1] != '\\')
                 inside_quote ^= true;
@@ -72,6 +72,8 @@ public:
                     result.push_back(t);
 
                     cols += head - tail;
+
+                    line_buf.insert(line_buf.end(), t.raw.begin(), t.raw.end());
                 }
 
                 auto t = token();
@@ -81,6 +83,8 @@ public:
                 t.line = line; t.cols = cols;
                 t.dbg_codeidx = spool_idx;
                 result.push_back(t);
+
+                line_buf.insert(line_buf.end(), t.raw.begin(), t.raw.end());
 
                 head += candidate.length();
                 cols += candidate.length();

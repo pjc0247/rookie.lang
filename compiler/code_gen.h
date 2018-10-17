@@ -225,7 +225,7 @@ public:
         p.sigtable_len = sigs.size();
         memcpy(p.sigtable, &sigs[0], sizeof(pdb_signature) * sigs.size());
 
-        p.inst_data = new pdb_instruction_data[instructions.size()];
+        p.inst_data = new pdb_instruction[instructions.size()];
         p.inst_data_len = instructions.size();
         for (int i = 0; i < instructions.size(); i++) {
             p.inst_data[i].codeindex = instruction_indexes[i];
