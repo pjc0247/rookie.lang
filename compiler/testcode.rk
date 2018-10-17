@@ -3,11 +3,7 @@ class example_object {
     static def main() {
         f = foo.new();
         f.v = 1234;
-        f.say_hello();
-
-        f = foo.new();
-        f.v = 5678;
-        f.say_hello();
+        f.v = null;
     }
 }
 
