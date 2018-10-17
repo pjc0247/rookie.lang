@@ -1,7 +1,7 @@
 debugger
 ====
 
-![dbg](dbger.jpg)<br>
+<img src="dbger.jpg" width=400 />
 
 ```cpp
 compile_option opts;
