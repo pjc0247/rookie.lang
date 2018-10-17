@@ -93,30 +93,32 @@ struct callsite {
     }
 };
 struct instruction {
-    unsigned char opcode;
+    uint8_t opcode;
 
     union {
         // full operand with 4 bytes.
-        int operand;
+        uint32_t operand;
 
+        // encodings
         callsite cs;
+        int32_t i32;
     };
 
-    instruction(opcode_t _o, int operand) :
-        opcode((unsigned char)_o), operand(operand) {
+    instruction(opcode_t _o, uint32_t operand) :
+        opcode((uint8_t)_o), operand(operand) {
     }
     instruction(opcode_t _o, const callsite &cs) :
-        opcode((unsigned char)_o), cs(cs) {
+        opcode((uint8_t)_o), cs(cs) {
     }
 };
 
 struct methoddata {
     wchar_t name[rooke_max_signature];
-    int entry;
+    uint32_t entry;
 };
 struct typedata {
     wchar_t name[rooke_max_signature];
-    int methods_len;
+    uint32_t methods_len;
     methoddata *methods;
 };
 #pragma pack (pop)
@@ -124,22 +126,21 @@ struct typedata {
 #pragma pack (push, 1)
 // program_header: 12bytes
 struct program_header {
-    unsigned int code_len;
-    unsigned int rdata_len;
-    unsigned int entry_len;
-    unsigned int types_len;
-
-    unsigned int main_entry;
+    uint32_t code_len;
+    uint32_t rdata_len;
+    uint32_t entry_len;
+    uint32_t types_len;
+    
+    uint32_t main_entry;
 };
 // program_entry: ?????bytes
 struct program_entry {
     wchar_t signature[rooke_max_signature];
-    char params;
-    char ret;
-    short locals;
+    uint16_t params;
+    uint16_t locals;
 
-    int entry;
-    int codesize;
+    uint32_t entry;
+    uint32_t codesize;
 };
 struct program {
     program_header header;
@@ -210,5 +211,33 @@ struct program {
             }
         }
     }
+};
+#pragma pack (pop)
+
+#pragma pack (push, 1)
+struct pdb_signature {
+    uint32_t sighash;
+    wchar_t signature[rooke_max_signature];
+
+    pdb_signature() { }
+    pdb_signature(uint32_t sighash, const wchar_t *name) :
+        sighash(sighash) {
+        wcscpy(signature, name);
+    }
+};
+struct pdb_instruction_data {
+    uint32_t codeindex;
+};
+struct pdb {
+    uint32_t program_hash;
+
+    pdb_signature *sigtable;
+    uint32_t sigtable_len;
+
+    pdb_instruction_data *inst_data;
+    uint32_t inst_data_len;
+
+    wchar_t *code;
+    uint32_t code_len;
 };
 #pragma pack (pop)
