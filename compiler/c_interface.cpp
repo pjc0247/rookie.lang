@@ -14,7 +14,7 @@
 #include "libs/string.h"
 #include "libs/stdlib.h"
 
-#include "extern_interface.h"
+#include "c_interface.h"
 
 void rk_exec(const char *code) {
     binding b;
