@@ -143,12 +143,12 @@ struct program_entry {
     uint32_t codesize;
 };
 struct program {
-    program_header header;
+    program_header  header;
 
-    program_entry *entries;
-    instruction *code;
-    const wchar_t *rdata;
-    typedata *types;
+    program_entry   *entries;
+    instruction     *code;
+    const wchar_t   *rdata;
+    typedata        *types;
 
     void dump() {
         wprintf(L"[rookie_program]\r\n");
@@ -177,8 +177,8 @@ struct program {
 
 #pragma pack (push, 1)
 struct pdb_signature {
-    uint32_t sighash;
-    wchar_t signature[rooke_max_signature];
+    uint32_t  sighash;
+    wchar_t   signature[rooke_max_signature];
 
     pdb_signature() { }
     pdb_signature(uint32_t sighash, const wchar_t *name) :
@@ -186,19 +186,19 @@ struct pdb_signature {
         wcscpy(signature, name);
     }
 };
-struct pdb_instruction_data {
+struct pdb_instruction {
     uint32_t codeindex;
 };
 struct pdb {
-    uint32_t program_hash;
+    uint32_t         program_hash;
 
-    pdb_signature *sigtable;
-    uint32_t sigtable_len;
+    pdb_signature    *sigtable;
+    uint32_t         sigtable_len;
 
-    pdb_instruction_data *inst_data;
-    uint32_t inst_data_len;
+    pdb_instruction  *inst_data;
+    uint32_t         inst_data_len;
 
-    wchar_t *code;
-    uint32_t code_len;
+    wchar_t          *code;
+    uint32_t         code_len;
 };
 #pragma pack (pop)
