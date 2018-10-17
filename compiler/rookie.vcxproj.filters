@@ -7,11 +7,11 @@
     <ClCompile Include="syntax.cpp" />
     <ClCompile Include="sig2hash.cpp" />
     <ClCompile Include="exe_context.cpp" />
-    <ClCompile Include="extern_interface.cpp" />
     <ClCompile Include="..\backends\p2wast.cpp">
       <Filter>backends</Filter>
     </ClCompile>
     <ClCompile Include="debugger.cpp" />
+    <ClCompile Include="c_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binding.h" />
@@ -69,7 +69,6 @@
     <ClInclude Include="..\libs\object.h">
       <Filter>libs</Filter>
     </ClInclude>
-    <ClInclude Include="extern_interface.h" />
     <ClInclude Include="ast\annotation.h">
       <Filter>ast</Filter>
     </ClInclude>
@@ -84,6 +83,7 @@
     <ClInclude Include="debugger.h" />
     <ClInclude Include="string_pool.h" />
     <ClInclude Include="dbg.h" />
+    <ClInclude Include="c_interface.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

@@ -19,12 +19,12 @@ struct compile_output {
     std::vector<compile_error> errors;
 };
 
+// Shared variables during compilation pipeline.
 class compile_context {
 public:
     compile_context(const compile_option &opts) :
         opts(opts) {
     }
-        
 
     void push_error(const compile_error &err) {
         errors.push_back(err);

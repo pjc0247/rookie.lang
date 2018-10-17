@@ -18,7 +18,7 @@
 #include "thirdparty/argagg.hpp"
 
 program compile(const std::wstring &filepath) {
-#ifndef __EMSCRIPTEN__
+#ifndef RK_ENV_WEB
     wchar_t *buf = fileio::read_string(filepath);
 
     binding b;
