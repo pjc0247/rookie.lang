@@ -1,0 +1,9 @@
+class stdout_test {
+    @main
+    static main() {
+        puts(1234);
+        puts(true);
+        puts(false);
+        puts("hello");
+    }
+}

@@ -1,0 +1,7 @@
+class foo {
+    @main
+    static def main() { }
+
+    @main
+    static def main2() { }
+}

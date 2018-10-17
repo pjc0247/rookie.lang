@@ -1,0 +1,7 @@
+class for_test {
+    @main
+    static main() {
+        for (i=0;i<5;i++)
+            print(i);
+    }
+}
