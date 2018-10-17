@@ -4,6 +4,8 @@ class example_object {
         f = foo.new();
         f.v = 1234;
         f.v = null;
+
+        puts(f.v);
     }
 }
 

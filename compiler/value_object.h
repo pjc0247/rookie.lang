@@ -126,6 +126,10 @@ struct value {
         return v;
     }
 };
+inline bool operator==(const value& lhs, const void *rhs) {
+    if (lhs.type == value_type::null) return true;
+    return false;
+}
 inline bool operator==(const value& lhs, const value& rhs) {
     if (lhs.type != rhs.type)
         return false;
