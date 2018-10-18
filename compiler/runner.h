@@ -130,23 +130,23 @@ public:
 
             else if (inst.opcode == opcode::op_eq) {
                 _pop2_int(left, right);
-                push(value::mkinteger(left.integer == right.integer));
+                push(value::mkboolean(left.integer == right.integer));
             }
             else if (inst.opcode == opcode::op_l) {
                 _pop2_int(left, right);
-                push(value::mkinteger(left.integer > right.integer));
+                push(value::mkboolean(left.integer > right.integer));
             }
             else if (inst.opcode == opcode::op_g) {
                 _pop2_int(left, right);
-                push(value::mkinteger(left.integer < right.integer));
+                push(value::mkboolean(left.integer < right.integer));
             }
             else if (inst.opcode == opcode::op_le) {
                 _pop2_int(left, right);
-                push(value::mkinteger(left.integer >= right.integer));
+                push(value::mkboolean(left.integer >= right.integer));
             }
             else if (inst.opcode == opcode::op_ge) {
                 _pop2_int(left, right);
-                push(value::mkinteger(left.integer <= right.integer));
+                push(value::mkboolean(left.integer <= right.integer));
             }
 
             else if (inst.opcode == opcode::op_add) {

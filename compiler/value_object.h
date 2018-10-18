@@ -115,6 +115,12 @@ struct value {
         v.integer = 0;
         return v;
     }
+    static value mkboolean(bool b) {
+        value v;
+        v.type = value_type::boolean;
+        v.integer = b ? 1 : 0;
+        return v;
+    }
     static value mkobjref(object *objref) {
         value v;
         v.type = value_type::object;

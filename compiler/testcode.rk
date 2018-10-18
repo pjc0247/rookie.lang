@@ -1,7 +1,7 @@
 class example_string {
     @main
     static def main() {
-        a = true;
+        a = 1 > 5;
 
         print(a);
     }
