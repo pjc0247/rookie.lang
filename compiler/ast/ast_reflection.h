@@ -13,18 +13,21 @@ public:
     all_methods(syntax_node *root) {
         return filter<method_node*>(root, [](syntax_node *n) {
             if (n->type == syntax_type::syn_method) return true;
+            return false;
         });
     }
     static std::vector<class_node*>
     all_classes(syntax_node *root) {
         return filter<class_node*>(root, [](syntax_node *n) {
             if (n->type == syntax_type::syn_class) return true;
+            return false;
         });
     }
     static class_node *
     find_class(syntax_node *root, const std::wstring &name) {
         auto r = filter<class_node*>(root, [](syntax_node *n) {
             if (n->type == syntax_type::syn_class) return true;
+            return false;
         });
         if (r.size() == 0) return nullptr;
         return r[0];
