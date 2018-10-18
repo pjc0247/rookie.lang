@@ -1,12 +1,11 @@
 class example_string {
     @main
     static def main() {
-        a = 1 > 5;
+        a = null;
 
         print(a);
     }
     static def foo2(){
         print(1234); 
-        
     }
 }

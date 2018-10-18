@@ -30,6 +30,8 @@ public:
         .transformer<precalc>()
         //.transformer<tco>(); // tail-call optimizer
         ;
+
+        return c;
     }
 
     // Builds a new compiler with given options.
