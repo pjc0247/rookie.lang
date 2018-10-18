@@ -3,7 +3,7 @@ class example_string {
     static def main() {
         a = null;
         b = 1234;
-        c = true;
+        d = true;
 
         c = foo.new();
         c.hello(1234);

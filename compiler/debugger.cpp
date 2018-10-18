@@ -112,7 +112,7 @@ void debugger::dumpstack() {
 
     con::setColor(CON_WHITE);
     printf("\n\n");
-    printf("=======DUMPSTACK=======\n");
+    printf("[[DUMPSTACK]=====================\n");
     for (int i= r->stack.size()-1;i>=0;i--) {
         auto &item = r->stack[i];
 
