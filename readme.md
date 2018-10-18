@@ -2,7 +2,7 @@ rookie
 ====
 
 __[ONLINE PLAYGROUND](https://pjc0247.github.io/try-rookie/)__<br>
-__[LANGUAGE DOCUMENTATION - incomplete](docs/)
+__[LANGUAGE DOCUMENTATION - incomplete](docs/)__
 
 Concept
 ----
