@@ -34,9 +34,6 @@ void debugger::on_pre_exec(runner &r, const instruction &inst) {
     }
     rklog("    ");
 
-    //for (int i = 0; i < pdb._pdb.code_len; i++)
-        //printf("%d: %c, %d\n", i, pdb._pdb.code[i], pdb._pdb.code[i]);
-
     bool ignoring = true;
     int quote = 0;
     int cnt = -1;
@@ -99,7 +96,6 @@ void debugger::on_pre_exec(runner &r, const instruction &inst) {
         }
     }
     con::setColor(CON_LIGHTGRAY);
-        //rklog(" %S ", pdb._pdb.code[pdb._pdb.inst_data[r.pc].codeindex]);
 
     rklog("\n");
 }
@@ -137,7 +133,7 @@ void debugger::dumpstack() {
         else if (item.type == value_type::null)
             printf("%8s, ", "NULL");
         else if (item.type == value_type::object)
-            printf("%8s, ", "OBJECT");
+            printf("%8s, %15S", "OBJECT", pdb.get_name(item.objref->sighash).c_str());
         
         
         printf("\n");
