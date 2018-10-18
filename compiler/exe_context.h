@@ -4,6 +4,7 @@
 
 #include "value_object.h"
 #include "stack_provider.h"
+#include "debugger.h"
 #include "gc.h"
 
 class runner;
@@ -28,6 +29,7 @@ public:
     value next_param();
 
     gc &gc();
+    debugger *debugger();
 
 private:
     runner &r;

@@ -40,3 +40,6 @@ value exe_context::next_param() {
 gc &exe_context::gc() {
     return r.gc;
 }
+debugger *exe_context::debugger() {
+    return r.dbger;
+}

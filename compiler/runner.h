@@ -315,6 +315,11 @@ private:
             syscalls.table.push_back(b.second);
         }
         for (auto &type : binding.get_types()) {
+            for (auto &static_method : type.get_static_methods())
+                syscalls.table.push_back(static_method.second);
+        }
+
+        for (auto &type : binding.get_types()) {
             auto typesighash = sig2hash(type.get_name());
 
             auto methods = type.get_methods();

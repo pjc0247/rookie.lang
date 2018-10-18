@@ -68,9 +68,10 @@ public:
     lookup_result lookup_variable(const std::wstring &ident) {
         lookup_result result;
 
-        for (auto type : ctx.types) {
+        for (auto _type : ctx.types) {
+            auto type = _type.second;
+
             if (type.name == ident) {
-                printf("FOUND\n");
                 result.type = lookup_type::var_typename;
                 return result;
             }
@@ -149,9 +150,13 @@ public:
         compiletime_methoddata mdata;
         mdata.name = method->ident_str();
         mdata.entry = entries.size();
-        for (auto type : ctx.types) {
+        for (auto &_type : ctx.types) {
+            auto &type = _type.second;
+
             if (type.name == current_class->ident_str()) {
-                type.methods.push_back(mdata);
+                for (auto &method : type.methods) {
+                    method.entry = entries.size();
+                }
                 break;
             }
         }
@@ -190,7 +195,9 @@ public:
         if (ctx.types.size() > 0) {
             p.types = (typedata*)malloc(sizeof(typedata) * ctx.types.size());
             int i = 0;
-            for (auto &type : ctx.types) {
+            for (auto &_type : ctx.types) {
+                auto &type = _type.second;
+
                 wcscpy(p.types[i].name, type.name.c_str());
                 p.types[i].methods_len = type.methods.size();
                 p.types[i].methods = (methoddata*)malloc(sizeof(methoddata) * type.methods.size());
@@ -236,11 +243,11 @@ public:
             }
         }
         for (auto &type : ctx.types) {
-            auto type_name = type.name;
+            auto type_name = type.first;
 
             sigs.push_back(pdb_signature(sig2hash(type_name), type_name.c_str()));
 
-            for (auto &method : type.methods) {
+            for (auto &method : type.second.methods) {
                 sigs.push_back(pdb_signature(sig2hash(method.name), method.name.c_str()));
             }
         }
@@ -318,6 +325,20 @@ public:
 
     program generate(root_node *root) {
         auto classes = astr::all_classes(ctx.root_node);
+
+        for (auto _class : ctx.bindings.get_types()) {
+            compiletime_typedata tdata;
+            tdata.name = _class.get_name();
+            tdata.attr = class_attr::class_systype;
+            for (auto _method : _class.get_methods()) {
+                compiletime_methoddata mdata;
+                mdata.name = _method.first;
+                mdata.attr = method_attr::method_syscall;
+                tdata.methods.push_back(mdata);
+            }
+            ctx.types[tdata.name] = tdata;
+        }
+
         for (auto _class : classes) {
             compiletime_typedata tdata;
             tdata.name = _class->ident_str();
@@ -326,7 +347,7 @@ public:
                 mdata.name = _method->ident_str();
                 tdata.methods.push_back(mdata);
             }
-            ctx.types.push_back(tdata);
+            ctx.types[tdata.name] = tdata;
         }
 
         auto m = astr::find_method_with_annotation(root, L"main");
@@ -433,13 +454,26 @@ private:
     }
     void emit_callstatic(callmember_node *node) {
         auto callee = (ident_node*)node->children[1];
+        auto callee_name = callee->ident;
+        if (ctx.types.find(callee_name) == ctx.types.end())
+            ; // ???
+        auto &callee_type = (*ctx.types.find(callee_name)).second;
 
         for (auto it = std::next(node->begin_args()); it != node->end_args(); ++it)
             emit(*it);
 
-        emitter.emit_defer(opcode::op_call,
-            callsite(callsite_lookup::cs_method, 1, 0),
-            callee->ident + L"::" + node->ident_str());
+        if (callee_type.attr & class_attr::class_systype) {
+            auto signature = callee_name + L"::" + node->ident_str();
+            auto lookup = scope.lookup_method(signature);
+
+            emitter.emit(opcode::op_syscall,
+                callsite(callsite_lookup::cs_method, lookup.index));
+        }
+        else {
+            emitter.emit_defer(opcode::op_call,
+                callsite(callsite_lookup::cs_method, 1, 0),
+                callee_name + L"::" + node->ident_str());
+        }
     }
     void emit_callmember(callmember_node *node) {
         auto callee = (ident_node*)node->children[1];

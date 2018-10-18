@@ -6,8 +6,10 @@
 #include "string_pool.h"
 #include "token.h"
 #include "syntax.h"
+#include "binding.h"
 #include "program.h"
 #include "errors.h"
+#include "type_attr.h"
 
 struct compile_option {
     bool generate_pdb = false;
@@ -23,17 +25,30 @@ struct compile_output {
 struct compiletime_methoddata {
     std::wstring name;
     uint32_t entry;
+    method_attr attr;
+
+    compiletime_methoddata() :
+        entry(),
+        attr(method_attr::method_none) {
+    }
 };
 struct compiletime_typedata {
     std::wstring name;
+    class_attr attr;
+
     std::vector<compiletime_methoddata> methods;
+
+    compiletime_typedata() :
+        attr(class_attr::class_none) {
+    }
 };
 
 // Shared variables during compilation pipeline.
 class compile_context {
 public:
-    compile_context(const compile_option &opts) :
-        opts(opts) {
+    compile_context(const compile_option &opts, binding &bindings) :
+        opts(opts),
+        bindings(bindings) {
     }
 
     void push_error(const compile_error &err) {
@@ -49,8 +64,9 @@ public:
     std::vector<compile_error> errors;
 
     // Compile data
+    binding &bindings;
     syntax_node *root_node;
-    std::vector<compiletime_typedata> types;
+    std::map<std::wstring, compiletime_typedata> types;
     
     string_pool code;
 };

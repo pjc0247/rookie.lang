@@ -159,6 +159,8 @@ struct program {
     void dump() {
         wprintf(L"[rookie_program]\r\n");
 
+        wprintf(L"  * codesize: %d\n", header.code_len);
+
         wprintf(L"  [types]\n");
         for (int i = 0; i < header.types_len; i++) {
             wprintf(L"    [%s]\n", types[i].name);
@@ -169,7 +171,7 @@ struct program {
         }
 
         for (int i = 0; i < header.entry_len; i++) {
-            wprintf(L"  [%s]\n", entries[i].signature);
+            wprintf(L"  [%s, %d]\n", entries[i].signature, entries[i].entry);
             wprintf(L"    * params: %d\n", entries[i].params);
             wprintf(L"    * locals: %d\n", entries[i].locals);
             wprintf(L"    * body\n");

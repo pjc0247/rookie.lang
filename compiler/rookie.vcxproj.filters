@@ -85,6 +85,9 @@
     <ClInclude Include="dbg.h" />
     <ClInclude Include="c_interface.h" />
     <ClInclude Include="conout.h" />
+    <ClInclude Include="..\libs\debugger.h">
+      <Filter>libs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

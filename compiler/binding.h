@@ -9,8 +9,8 @@
 #include "stack_provider.h"
 #include "exe_context.h"
 
-#define _bind(signature, lambda) \
-    methods[signature] = lambda
+#define _bind(b, signature, lambda) \
+    b[signature] = lambda
 
 #define _rookie_library(name) \
     class name { \
@@ -43,10 +43,19 @@ public:
         });
     }
 
+    type_builder &static_method(const std::wstring &signature,
+        const std::function<value()> &function) {
+
+        _bind(static_methods, signature, [function](stack_provider &sp) {
+            sp.push(function());
+        });
+        return *this;
+    }
+
     type_builder &method(const std::wstring &signature,
         const std::function<value()> &function) {
 
-        _bind(signature, [function](stack_provider &sp) {
+        _bind(methods, signature, [function](stack_provider &sp) {
             sp.push(function());
         });
         return *this;
@@ -54,7 +63,7 @@ public:
     type_builder &method(const std::wstring &signature,
         const std::function<value(value&)> &function) {
 
-        _bind(signature, [function](stack_provider &sp) {
+        _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<0>(function(sp.get(0)));
         });
         return *this;
@@ -62,7 +71,7 @@ public:
     type_builder &method(const std::wstring &signature,
         const std::function<value(value&, value&)> &function) {
 
-        _bind(signature, [function](stack_provider &sp) {
+        _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<1>(function(sp.get(1), sp.get(0)));
             sp.drop<1>();
         });
@@ -71,7 +80,7 @@ public:
     type_builder &method(const std::wstring &signature,
         const std::function<value(value&, value&, value&)> &function) {
 
-        _bind(signature, [function](stack_provider &sp) {
+        _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<2>(function(sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<2>();
         });
@@ -80,7 +89,7 @@ public:
     type_builder &method(const std::wstring &signature,
         const std::function<value(value&, value&, value&, value&)> &function) {
 
-        _bind(signature, [function](stack_provider &sp) {
+        _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<3>(function(sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<3>();
         });
@@ -89,7 +98,7 @@ public:
     type_builder &method(const std::wstring &signature,
         const std::function<value(value&, value&, value&, value&, value&)> &function) {
 
-        _bind(signature, [function](stack_provider &sp) {
+        _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<4>(function(sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<4>();
         });
@@ -98,7 +107,7 @@ public:
     type_builder &method(const std::wstring &signature,
         const std::function<value(value&, value&, value&, value&, value&, value&)> &function) {
 
-        _bind(signature, [function](stack_provider &sp) {
+        _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<5>(function(sp.get(5), sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<5>();
         });
@@ -107,7 +116,7 @@ public:
     type_builder &method(const std::wstring &signature,
         const std::function<value(value&, value&, value&, value&, value&, value&, value&)> &function) {
 
-        _bind(signature, [function](stack_provider &sp) {
+        _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<6>(function(sp.get(6), sp.get(5), sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<6>();
         });
@@ -120,10 +129,14 @@ public:
     const bindmap &get_methods() const {
         return methods;
     }
+    const bindmap &get_static_methods() const {
+        return static_methods;
+    }
 
 private:
     std::wstring name;
     bindmap methods;
+    bindmap static_methods;
 };
 
 class binding {
@@ -135,21 +148,21 @@ public:
     void function(const std::wstring &signature,
         const std::function<value()> &function) {
 
-        _bind(signature, [function](stack_provider &sp) {
+        _bind(methods, signature, [function](stack_provider &sp) {
             sp.push(function());
         });
     }
     void function(const std::wstring &signature,
         const std::function<value(value&)> &function) {
 
-        _bind(signature, [function](stack_provider &sp) {
+        _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<0>(function(sp.get(0)));
         });
     }
     void function(const std::wstring &signature,
         const std::function<value(value&,value&)> &function) {
 
-        _bind(signature, [function](stack_provider &sp) {
+        _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<1>(function(sp.get(1), sp.get(0)));
             sp.drop<1>();
         });
@@ -157,7 +170,7 @@ public:
     void function(const std::wstring &signature,
         const std::function<value(value&, value&, value&)> &function) {
 
-        _bind(signature, [function](stack_provider &sp) {
+        _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<2>(function(sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<2>();
         });
@@ -165,7 +178,7 @@ public:
     void function(const std::wstring &signature,
         const std::function<value(value&, value&, value&, value&)> &function) {
 
-        _bind(signature, [function](stack_provider &sp) {
+        _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<3>(function(sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<3>();
         });
@@ -173,7 +186,7 @@ public:
     void function(const std::wstring &signature,
         const std::function<value(value&, value&, value&, value&, value&)> &function) {
 
-        _bind(signature, [function](stack_provider &sp) {
+        _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<4>(function(sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<4>();
         });
@@ -181,7 +194,7 @@ public:
     void function(const std::wstring &signature,
         const std::function<value(value&, value&, value&, value&, value&, value&)> &function) {
 
-        _bind(signature, [function](stack_provider &sp) {
+        _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<5>(function(sp.get(5), sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<5>();
         });
@@ -189,7 +202,7 @@ public:
     void function(const std::wstring &signature,
         const std::function<value(value&, value&, value&, value&, value&, value&, value&)> &function) {
 
-        _bind(signature, [function](stack_provider &sp) {
+        _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<6>(function(sp.get(6), sp.get(5), sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<6>();
         });
@@ -225,7 +238,7 @@ public:
     static void static_method(type_builder &type,
         const wchar_t *name, value(*function)()) {
 
-        type.method(name, [function]() {
+        type.static_method(name, [function]() {
             return stdinvoke(function);
         });
     }

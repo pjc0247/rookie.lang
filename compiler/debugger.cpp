@@ -3,11 +3,13 @@
 #include "conout.h"
 #include "runner.h"
 
-void debugger::on_begin_program(runner &r, const program &p) {
+void debugger::on_begin_program(runner &_r, const program &p) {
     con::setColor(CON_WHITE);
     rklog("[%3s] %15s,   %12s,   %s\n", "PC", "OPCODE", "OPERAND", "CODE");
     rklog("[%3s] %15s,   %12s,   %s\n", "---", "-----", "-----", "-----");
     con::setColor(CON_LIGHTGRAY);
+
+    r = &_r;
 }
 void debugger::on_pre_exec(runner &r, const instruction &inst) {
     con::setColor(CON_LIGHTGRAY);
@@ -100,4 +102,45 @@ void debugger::on_pre_exec(runner &r, const instruction &inst) {
         //rklog(" %S ", pdb._pdb.code[pdb._pdb.inst_data[r.pc].codeindex]);
 
     rklog("\n");
+}
+
+void debugger::dumpstack() {
+    if (r == nullptr) {
+        printf("No active runner.\n");
+        return;
+    }
+
+    con::setColor(CON_WHITE);
+    printf("\n\n");
+    printf("=======DUMPSTACK=======\n");
+    for (int i= r->stack.size()-1;i>=0;i--) {
+        auto &item = r->stack[i];
+
+        
+        if (r->callee_ptr == &item) {
+            con::setColor(CON_YELLOW);
+            printf("  > ");
+        }
+        else {
+            con::setColor(CON_LIGHTCYAN);
+            printf("  * ");
+        }
+
+        con::setColor(CON_LIGHTMAGENTA);
+        printf("%2d  ", i);
+
+        con::setColor(CON_WHITE);
+        if (item.type == value_type::integer)
+            printf("%8s, %15d", "INT", item.integer);
+        else if (item.type == value_type::boolean)
+            printf("%8s, %15s", "BOOL", item.integer == 1 ? "true" : "false");
+        else if (item.type == value_type::null)
+            printf("%8s, ", "NULL");
+        else if (item.type == value_type::object)
+            printf("%8s, ", "OBJECT");
+        
+        
+        printf("\n");
+    }
+    printf("\n\n");
 }

@@ -104,11 +104,16 @@ public:
         const compile_option &opts) {
 
         compile_output out;
-        compile_context ctx(opts);
+        compile_context ctx(opts, binding);
         calltable_builder syscalls;
 
         for (auto &b : binding.get_functions()) {
             syscalls.add_syscall(b.first);
+        }
+        for (auto &type : binding.get_types()) {
+            for (auto &static_method : type.get_static_methods()) {
+                syscalls.add_syscall(type.get_name() + L"::" + static_method.first);
+            }
         }
 
         auto root = ast_transformed(ctx, src, out.errors);

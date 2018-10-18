@@ -2,10 +2,23 @@ class example_string {
     @main
     static def main() {
         a = null;
+        b = 1234;
+        c = true;
 
-        example_string.qqq();
+        c = foo.new();
+        c.hello(1234);
+
+
+        //a.hello();
     }
     static def foo2(){
         print(1234); 
+    }
+}
+
+class foo {
+    def hello(arg) {
+        debugger.dumpstack();
+        print(arg);
     }
 }

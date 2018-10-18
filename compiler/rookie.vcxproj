@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClInclude Include="..\backends\p2wast.h" />
     <ClInclude Include="..\libs\array.h" />
+    <ClInclude Include="..\libs\debugger.h" />
     <ClInclude Include="..\libs\gc.h" />
     <ClInclude Include="..\libs\object.h" />
     <ClInclude Include="..\libs\stdlib.h" />
