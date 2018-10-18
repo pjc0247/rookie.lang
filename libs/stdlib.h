@@ -8,9 +8,10 @@ _rookie_library(rkstdlib)
 
 // TODO
 // print is 'puts' currently
-_rookie_function(L"print", (value v) {
+_rookie_function(L"print", (value &v) {
     if (v == nullptr)
         printf("null\n");
+
     else if (is_rkint(v))
         printf("%d\n", rkint(v));
     else if (is_rkstr(v))
@@ -20,7 +21,7 @@ _rookie_function(L"print", (value v) {
 
     return rknull;
 });
-_rookie_function(L"puts", (value v) {
+_rookie_function(L"puts", (value &v) {
     if (v == nullptr)
         printf("null\n");
     else if (is_rkint(v))

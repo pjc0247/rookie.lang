@@ -31,8 +31,8 @@ public:
         std::wstring src = L" " + _src + L" ";
         std::vector<token> result;
 
-        int head = 1, tail = 1;
-        int line = 1, cols = 1;
+        uint32_t head = 1, tail = 1;
+        uint32_t line = 1, cols = 1;
         bool inside_quote = false;
         bool inside_comment = false;
 
@@ -62,6 +62,9 @@ public:
                 if (head + candidate.length() >= src.length())
                     continue;
                 if (src.substr(head, candidate.length()) != candidate)
+                    continue;
+                if (rule.type == token_type::keyword &&
+                    is_ident_acceptible(src[head - 1]))
                     continue;
 
                 if (head != tail) {
@@ -142,6 +145,11 @@ private:
         rules.push_back(lexer_token(L"for", token_type::keyword));
         rules.push_back(lexer_token(L"return", token_type::keyword));
         rules.push_back(lexer_token(L"null", token_type::keyword));
+
+        rules.push_back(lexer_token(L"try", token_type::keyword));
+        rules.push_back(lexer_token(L"catch", token_type::keyword));
+        rules.push_back(lexer_token(L"true", token_type::keyword));
+        rules.push_back(lexer_token(L"false", token_type::keyword));
         //rules.push_back(lexer_token(L"this", token_type::keyword));
         //rules.push_back(lexer_token("new", token_type::keyword));
 
@@ -171,6 +179,15 @@ private:
         rules.push_back(lexer_token(L".", token_type::dot, -3000));
         rules.push_back(lexer_token(L",", token_type::comma, -1000));
         rules.push_back(lexer_token(L";", token_type::semicolon, -9999));
+    }
+
+    bool is_ident_acceptible(wchar_t c) {
+        if ((c >= 'a' && c <= 'z') ||
+            (c >= 'A' && c <= 'Z') ||
+            (c >= '0' && c <= '9') ||
+            c == '_')
+            return true;
+        return false;
     }
 
     token parse(const std::wstring &raw) {
@@ -579,6 +596,11 @@ private:
             stoken.type = stoken_type::st_this;
         else if (token.raw == L"null")
             stoken.type = stoken_type::st_null;
+
+        else if (token.raw == L"true")
+            stoken.type = stoken_type::st_true;
+        else if (token.raw == L"false")
+            stoken.type = stoken_type::st_false;
     }
     
     void flush_single_line() {

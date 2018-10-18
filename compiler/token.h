@@ -30,6 +30,7 @@ enum class stoken_type {
     st_include,
 
     st_null,
+    st_true, st_false,
     comma, endl,
 
     ident,
@@ -47,6 +48,8 @@ enum class stoken_type {
     st_if, st_for,
     st_return,
 
+    st_try, st_catch, st_finally,
+
     st_arraccess,
 
     st_begin_arr, st_end_arr,
@@ -61,6 +64,8 @@ inline const wchar_t *to_string(stoken_type type) {
     case stoken_type::nothing: return L"nothing";
     case stoken_type::st_include: return L"st_include";
     case stoken_type::st_null: return L"st_null";
+    case stoken_type::st_true: return L"st_true";
+    case stoken_type::st_false: return L"st_false";
     case stoken_type::comma: return L"comma";
     case stoken_type::endl: return L"endl";
     case stoken_type::st_this: return L"st_this";

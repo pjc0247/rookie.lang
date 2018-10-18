@@ -32,6 +32,7 @@ typedef enum opcode : unsigned char {
 
     op_ldi,
     op_ldstr, op_ldnull,
+    op_ldtrue, op_ldfalse,
 
     op_jmp_true, op_jmp_false,
 
@@ -67,6 +68,8 @@ inline const wchar_t *to_string(opcode type) {
     case op_ldi: return L"op_ldi";
     case op_ldstr: return L"op_ldstr";
     case op_ldnull: return L"op_ldnull";
+    case op_ldtrue: return L"op_ldtrue";
+    case op_ldfalse: return L"op_ldfalse";
     case op_jmp_true: return L"op_jmp_true";
     case op_jmp_false: return L"op_jmp_false";
 
@@ -78,18 +81,21 @@ typedef enum callsite_lookup {
     cs_method,
     cs_syscall
 };
+typedef enum callsite_flag {
+    cf_defer = 1
+};
 
 #pragma pack (push, 1)
 struct callsite {
-    unsigned char lookup_type;
-    unsigned char pushed;
-    short index;
+    uint8_t lookup_type;
+    uint8_t flags;
+    uint16_t index;
 
-    callsite(unsigned char lookup_type, short index) :
-        lookup_type(lookup_type), index(index), pushed(0) {
+    callsite(uint8_t lookup_type, uint16_t index) :
+        lookup_type(lookup_type), index(index), flags(0) {
     }
-    callsite(unsigned char lookup_type, unsigned char pushed, short index) :
-        lookup_type(lookup_type), index(index), pushed(pushed) {
+    callsite(uint8_t lookup_type, uint8_t flags , uint16_t index) :
+        lookup_type(lookup_type), index(index), flags(flags) {
     }
 };
 struct instruction {

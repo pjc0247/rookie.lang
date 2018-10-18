@@ -52,6 +52,7 @@ class runner {
 public:
     runner(const program &p, binding &binding) :
         p(p), binding(binding),
+        dbger(nullptr),
         callee_ptr(nullptr) {
 
         build_runtime_data();
@@ -111,6 +112,10 @@ public:
             }
             else if (inst.opcode == opcode::op_ldnull)
                 push(value::null());
+            else if (inst.opcode == opcode::op_ldtrue)
+                push(value::_true());
+            else if (inst.opcode == opcode::op_ldfalse)
+                push(value::_false());
 
             //else if (inst.opcode == opcode::op_ldprop)
             //    stack.push_back(value::mkstring(p.rdata + inst.operand));
@@ -329,14 +334,14 @@ private:
             types[typesighash] = tdata;
         }
 
-        for (int i = 0; i < p.header.types_len; i++) {
+        for (uint32_t i = 0; i < p.header.types_len; i++) {
             auto type = p.types[i];
 
             runtime_typedata tdata;
             tdata.typekind = runtime_typekind::tk_programtype;
 
             calltable vtable;
-            for (int j = 0; j < type.methods_len; j++) {
+            for (uint32_t j = 0; j < type.methods_len; j++) {
                 auto method = type.methods[j];
                 auto methodhash = sig2hash(method.name);
 

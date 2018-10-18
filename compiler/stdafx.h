@@ -10,7 +10,7 @@
 #define DEBUG 0
 #endif
 
-#define rklog(fmt, ...) do { if (DEBUG) printf(fmt, __VA_ARGS__); } while (0)
+#define rklog(fmt, ...) do { if (DEBUG) printf(fmt, ##__VA_ARGS__); } while (0)
 
 #ifdef _MSC_VER
     #define stdinvoke std::invoke

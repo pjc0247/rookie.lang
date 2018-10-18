@@ -57,30 +57,30 @@ public:
     }
 };
 
-class base_exception : public std::exception {
+class rkexception : public std::exception {
 public:
-    base_exception(const char *msg) {
+    rkexception(const char *msg) {
         this->msg = std::string(msg);
     }
     virtual char const *what() const noexcept { return msg.c_str(); }
 private:
     std::string msg;
 };
-class codegen_exception : public base_exception {
+class codegen_exception : public rkexception {
 public:
     codegen_exception(const char *msg)
-        : base_exception(msg) {
+        : rkexception(msg) {
     }
 };
-class invalid_program_exception : public base_exception {
+class invalid_program_exception : public rkexception {
 public:
     invalid_program_exception(const char *msg)
-        : base_exception(msg) {
+        : rkexception(msg) {
     }
 };
-class invalid_access_exception : public base_exception {
+class invalid_access_exception : public rkexception {
 public:
     invalid_access_exception(const char *msg)
-        : base_exception(msg) {
+        : rkexception(msg) {
     }
 };

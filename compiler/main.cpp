@@ -40,7 +40,9 @@ program compile(const std::wstring &filepath) {
 #endif
 
         debugger dbg(out.pdb);
-        runner(out.program, b).attach_debugger(dbg).execute();
+        runner(out.program, b)
+            .attach_debugger(dbg)
+            .execute();
     }
     else {
         printf("Build failed with %d error(s):\n", out.errors.size());
@@ -56,7 +58,7 @@ program compile(const std::wstring &filepath) {
 
     return out.program;
 #else
-    throw base_exception("Not supported");
+    throw rkexception("Not supported");
 #endif
 }
 
@@ -71,6 +73,9 @@ int main(int argc, char **argv) {
           "shows the help messages", 0},
         { "out", {"-o", "--out"},
           "sets output path", 1},
+        { "debug-vm",{ "--debug-vm" },
+          "prints additional output for vm", 0},
+
         { "wasm", {"-w", "--wasm"},
           "generated wast file and write it", 1}
     }};

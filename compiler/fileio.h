@@ -11,7 +11,7 @@ public:
         FILE *fp = _wfopen(filepath.c_str(), L"rtS, ccs=UTF-8");
 
         if (!fp) {
-            throw base_exception(
+            throw rkexception(
                 (char*)(L"no such file: " + std::wstring(filepath)).c_str());
         }
 

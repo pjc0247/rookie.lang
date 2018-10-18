@@ -6,7 +6,6 @@
 #include <list>
 
 #include "token.h"
-#include "compilation.h"
 
 enum class syntax_type {
     syn_none,
@@ -23,6 +22,7 @@ enum class syntax_type {
     syn_block,
     syn_literal,
     syn_ident,
+    syn_bool,
     syn_this,
     syn_null,
     syn_newarr,
@@ -38,7 +38,9 @@ enum class syntax_type {
 
     syn_if,
     syn_for,
-    syn_return
+    syn_return,
+
+    syn_try, syn_catch, syn_finally
 };
 
 class root_node;
@@ -109,7 +111,7 @@ public:
 protected:
     virtual void on_complete() { }
 
-    compile_context &ctx() const;
+    //compile_context &ctx() const;
 
     syntax_node *find_upward_until(syntax_type type) const {
         syntax_node *current = parent;
@@ -173,8 +175,7 @@ public:
 
 class root_node : public syntax_node {
 public:
-    root_node(compile_context &ctx) :
-        ctx(ctx),
+    root_node() :
         syntax_node(stoken(::token()), nullptr) {
 
         root_ref = this;
@@ -188,9 +189,6 @@ public:
     void add_reference(syntax_node *node) {
         flatten_children.push_back(node);
     }
-
-public:
-    compile_context & ctx;
 
 private:
     std::list<syntax_node*> flatten_children;
@@ -429,6 +427,54 @@ public:
         if (children.size() == 0)
             return nullptr;
         return children[0];
+    }
+};
+
+class bool_node : public syntax_node {
+public:
+    bool_node(const stoken &token, syntax_node *parent, bool v) :
+        syntax_node(token, parent) {
+        capacity = 1;
+        type = syntax_type::syn_bool;
+    }
+
+public:
+    bool value;
+};
+
+class try_node : public syntax_node {
+public:
+    try_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
+        capacity = 1;
+        type = syntax_type::syn_try;
+    }
+
+    block_node *block() {
+        return (block_node*)children[0];
+    }
+};
+class catch_node : public syntax_node {
+public:
+    catch_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
+        capacity = 2;
+        type = syntax_type::syn_catch;
+    }
+
+    syntax_node *expression() {
+        return children[0];
+    }
+    block_node *block() {
+        return (block_node*)children[1];
+    }
+};
+class finally_node : public syntax_node {
+public:
+    finally_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
+        capacity = 1;
+        type = syntax_type::syn_finally;
     }
 };
 

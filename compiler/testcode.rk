@@ -1,21 +1,12 @@
-class example_object {
+class example_string {
     @main
     static def main() {
-        f = foo.new();
-        f.v = 1234;
-        f.v = null;
+        a = true;
 
-        puts(f.v);
+        print(a);
     }
-}
-
-class foo {
-    def say_hello() {
-        hello = "hello";
-
-        for (i=0;i<hello.length();i++)
-            print(hello[i]);
-
-        print(this.v);
+    static def foo2(){
+        print(1234); 
+        
     }
 }

@@ -6,6 +6,7 @@
 #include <functional>
 
 #include "sig2hash.h"
+#include "errors.h"
 
 enum class call_type {
     ct_programcall_direct,
@@ -61,6 +62,7 @@ struct syscalltable {
 enum class value_type : char {
     empty,
     null,
+    boolean,
     integer, character, string, object, array
 };
 
@@ -101,6 +103,18 @@ struct value {
         v.objref = nullptr;
         return v;
     }
+    static value _true() {
+        value v;
+        v.type = value_type::boolean;
+        v.integer = 1;
+        return v;
+    }
+    static value _false() {
+        value v;
+        v.type = value_type::boolean;
+        v.integer = 0;
+        return v;
+    }
     static value mkobjref(object *objref) {
         value v;
         v.type = value_type::object;
@@ -136,10 +150,14 @@ inline bool operator==(const value& lhs, const value& rhs) {
 
     if (lhs.type == value_type::integer)
         return lhs.integer == rhs.integer;
+    if (lhs.type == value_type::boolean)
+        return lhs.integer == rhs.integer;
     if (lhs.type == value_type::string)
         return lhs.str == rhs.str;
     if (lhs.type == value_type::object)
         return lhs.objref == rhs.objref;
+
+    throw rkexception("unimplemented operator");
 }
 
 const value rknull = value(value_type::null);

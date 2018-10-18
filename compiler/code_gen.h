@@ -20,6 +20,7 @@ enum class lookup_type {
 
     var_local,
     var_field,
+    var_typename,
 
     mtd_method,
     mtd_syscall
@@ -31,7 +32,8 @@ struct lookup_result {
 
 class scope {
 public:
-    scope(calltable_builder &syscalls) :
+    scope(compile_context &ctx, calltable_builder &syscalls) :
+        ctx(ctx),
         syscalls(syscalls) {
     }
 
@@ -65,7 +67,15 @@ public:
     }
     lookup_result lookup_variable(const std::wstring &ident) {
         lookup_result result;
-        
+
+        for (auto type : ctx.types) {
+            if (type.name == ident) {
+                printf("FOUND\n");
+                result.type = lookup_type::var_typename;
+                return result;
+            }
+        }
+
         for (int i = 0; i<current_method->locals.size(); i++) {
             if (current_method->locals[i] == ident) {
                 result.type = lookup_type::var_local;
@@ -87,19 +97,20 @@ public:
     }
 
 private:
+    compile_context &ctx;
+
     calltable_builder &syscalls;
 
     class_node *current_class;
     method_node *current_method;
 };
 
-struct codegen_typedata {
-    std::wstring name;
-    std::vector<methoddata> methods;
-};
-
 class program_builder {
 public:
+    program_builder(compile_context &ctx) :
+        ctx(ctx) {
+    }
+
     void set_codeindex(unsigned int index) {
         codeindex = index;
     }
@@ -110,6 +121,12 @@ public:
     void emit(opcode_t opcode, const callsite &cs) {
         instructions.push_back(instruction(opcode, cs));
         instruction_indexes.push_back(codeindex);
+    }
+    void emit_defer(opcode_t opcode, const callsite &cs, const std::wstring &signature) {
+        instructions.push_back(instruction(opcode, cs));
+        instruction_indexes.push_back(codeindex);
+
+        defered_calls.push_back(signature);
     }
     void emit(opcode_t opcode, int operand) {
         instructions.push_back(instruction(opcode, operand));
@@ -125,22 +142,23 @@ public:
         instructions[i].operand = operand;
     }
 
-    void emit_class(const std::wstring &name) {
-        if (types.find(name) == types.end()) {
-            codegen_typedata tdata;
-            tdata.name = name;
-            types[name] = tdata;
-        }
+    void emit_class(class_node *_class) {
+        current_class = _class;
     }
-    void emit_method(const std::wstring &classname, method_node *method) {
-        methoddata mdata;
-        wcscpy(mdata.name, method->ident_str().c_str());
+    void emit_method(method_node *method) {
+        compiletime_methoddata mdata;
+        mdata.name = method->ident_str();
         mdata.entry = entries.size();
-        types[classname].methods.push_back(mdata);
+        for (auto type : ctx.types) {
+            if (type.name == current_class->ident_str()) {
+                type.methods.push_back(mdata);
+                break;
+            }
+        }
 
         program_entry entry;
         memset(&entry, 0, sizeof(program_entry));
-        swprintf(entry.signature, sizeof(entry.signature), L"%s", method->ident_str().c_str());
+        swprintf(entry.signature, sizeof(entry.signature), L"%s::%s", current_class->ident_str().c_str(), method->ident_str().c_str());
         entry.entry = get_cursor();
         entry.params = method->params()->children.size();
         entry.locals = method->locals.size();
@@ -156,27 +174,33 @@ public:
     }
 
     program fin() {
+        resolve_defered_calls();
+
         program p;
         memset(&p, 0, sizeof(program));
         p.header.code_len = instructions.size();
         p.header.rdata_len = spool.size();
         p.header.entry_len = entries.size();
-        p.header.types_len = types.size();
+        p.header.types_len = ctx.types.size();
 
         p.header.main_entry = 0;
 
         auto rdata = spool.fin();
 
-        if (types.size() > 0) {
-            p.types = (typedata*)malloc(sizeof(typedata) * types.size());
+        if (ctx.types.size() > 0) {
+            p.types = (typedata*)malloc(sizeof(typedata) * ctx.types.size());
             int i = 0;
-            for (auto &type_pair : types) {
-                auto type = type_pair.second;
-
+            for (auto &type : ctx.types) {
                 wcscpy(p.types[i].name, type.name.c_str());
                 p.types[i].methods_len = type.methods.size();
                 p.types[i].methods = (methoddata*)malloc(sizeof(methoddata) * type.methods.size());
-                memcpy(p.types[i].methods, &type.methods[0], sizeof(methoddata) * type.methods.size());
+                
+                for (int j = 0; j < type.methods.size(); j++) {
+                    auto method = type.methods[j];
+
+                    wcscpy(p.types[i].methods[j].name, method.name.c_str());
+                    p.types[i].methods[j].entry = method.entry;
+                }
 
                 i++;
             }
@@ -211,13 +235,13 @@ public:
                 sigs.push_back(pdb_signature(sig2hash(method.first), method.first.c_str()));
             }
         }
-        for (auto &type : types) {
-            auto type_name = type.first;
+        for (auto &type : ctx.types) {
+            auto type_name = type.name;
 
             sigs.push_back(pdb_signature(sig2hash(type_name), type_name.c_str()));
 
-            for (auto &method : type.second.methods) {
-                sigs.push_back(pdb_signature(sig2hash(method.name), method.name));
+            for (auto &method : type.methods) {
+                sigs.push_back(pdb_signature(sig2hash(method.name), method.name.c_str()));
             }
         }
 
@@ -239,13 +263,47 @@ public:
     }
 
 private:
+    void resolve_defered_calls() {
+        rklog("resolve defered calls\n");
+
+        for (auto &inst : instructions) {
+            if (inst.opcode == opcode::op_call) {
+                if (inst.cs.flags & callsite_flag::cf_defer) {
+                    auto method_name = defered_calls[inst.cs.index];
+
+                    auto eidx = find_entry(method_name);
+                    if (eidx == -1)
+                        throw codegen_exception("unresolved method_name");
+                    inst.cs.index = eidx;
+
+                    end_loop :;
+                }
+            }
+        }
+    }
+
+    int find_entry(const std::wstring &signature) {
+        for (int i = 0; i<entries.size(); i++) {
+            if (signature == entries[i].signature)
+                return i;
+        }
+        return -1;
+    }
+
+private:
+    compile_context &ctx;
+
     string_pool spool;
 
-    std::map<std::wstring, codegen_typedata> types;
+    //std::map<std::wstring, codegen_typedata> types;
+
+    class_node *current_class;
 
     std::vector<program_entry> entries;
     std::vector<instruction> instructions;
     std::vector<unsigned int> instruction_indexes;
+
+    std::vector<std::wstring> defered_calls;
 
     unsigned int codeindex;
 };
@@ -253,11 +311,24 @@ private:
 class code_gen {
 public:
     code_gen(compile_context &ctx, calltable_builder &syscalls) :
-        scope(syscalls),
-        ctx(ctx) {
+        scope(ctx, syscalls),
+        ctx(ctx),
+        emitter(ctx) {
     }
 
     program generate(root_node *root) {
+        auto classes = astr::all_classes(ctx.root_node);
+        for (auto _class : classes) {
+            compiletime_typedata tdata;
+            tdata.name = _class->ident_str();
+            for (auto _method : _class->methods) {
+                compiletime_methoddata mdata;
+                mdata.name = _method->ident_str();
+                tdata.methods.push_back(mdata);
+            }
+            ctx.types.push_back(tdata);
+        }
+
         auto m = astr::find_method_with_annotation(root, L"main");
         if (m.size() == 0)
             ctx.push_error(codegen_error(L"No entry for `main`"));
@@ -265,8 +336,6 @@ public:
             ctx.push_error(codegen_error(L"More than 2 entries for `main`"));
         else if (!(m[0]->attr & method_attr::method_static))
             ctx.push_error(codegen_error(L"`main` is not a static method."));
-
-        emitter = program_builder();
 
         emit(root);
 
@@ -308,6 +377,7 @@ private:
             _route(ident);
             _route(literal);
             _route(null);
+            _route(bool);
             _route(newobj);
             _route(newarr);
             _route(op);
@@ -327,7 +397,7 @@ private:
     void emit_class(class_node *node) {
         current_class = node;
         scope.set_class(node);
-        emitter.emit_class(node->ident_str());
+        emitter.emit_class(node);
 
         for (int i = 1; i < node->children.size(); i++)
             emit(node->children[i]);
@@ -335,7 +405,7 @@ private:
     void emit_method(method_node *node) {
         current_method = node;
         scope.set_method(node);
-        emitter.emit_method(current_class->ident_str(), node);
+        emitter.emit_method(node);
 
         emit(node->body());
 
@@ -361,7 +431,25 @@ private:
                 emitter.emit(opcode::op_syscall, callsite(callsite_lookup::cs_syscall, lookup.index));
         }
     }
+    void emit_callstatic(callmember_node *node) {
+        auto callee = (ident_node*)node->children[1];
+
+        for (auto it = std::next(node->begin_args()); it != node->end_args(); ++it)
+            emit(*it);
+
+        emitter.emit_defer(opcode::op_call,
+            callsite(callsite_lookup::cs_method, 1, 0),
+            callee->ident + L"::" + node->ident_str());
+    }
     void emit_callmember(callmember_node *node) {
+        auto callee = (ident_node*)node->children[1];
+        auto lookup = scope.lookup_variable(callee->ident);
+
+        if (lookup.type == lookup_type::var_typename) {
+            emit_callstatic(node);
+            return;
+        }
+
         for (auto it = node->begin_args(); it != node->end_args(); ++it) {
             emit(*it);
 
@@ -429,6 +517,12 @@ private:
             emitter.emit(opcode::op_ldi, node->integer);
         else if (node->literal_type == literal_type::string)
             emitter.emit(opcode::op_ldstr, node->str);
+    }
+    void emit_bool(bool_node *node) {
+        if (node->value)
+            emitter.emit(opcode::op_ldtrue);
+        else 
+            emitter.emit(opcode::op_ldfalse);
     }
     void emit_null(null_node *node) {
         emitter.emit(opcode::op_ldnull);
@@ -516,5 +610,5 @@ private:
     program_builder emitter;
 
     class_node *current_class;
-    method_node *current_method;
+    method_node *current_method;    
 };

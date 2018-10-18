@@ -11,6 +11,8 @@
     if (token.type == stoken_type:: expname) { \
         current = current->nearest_incomplete_node(); continue; }
 
+const stoken empty_stoken = stoken::empty();
+
 class tree_builder {
 public:
     tree_builder(compile_context &ctx) :
@@ -21,8 +23,10 @@ public:
     root_node *build(const std::vector<stoken> &_stokens) {
         stokens = &_stokens;
 
-        auto root = new root_node(ctx);
+        auto root = new root_node();
         current = root;
+
+        ctx.root_node = root;
 
         for (cursor=0; cursor<stokens->size(); cursor++) {
             auto &token = stokens->at(cursor);
@@ -94,6 +98,9 @@ public:
                     node = literal(token);
                 else if (token.type == stoken_type::st_null)
                     node = simple_create<null_node>(token);
+                else if (token.type == stoken_type::st_true ||
+                         token.type == stoken_type::st_false)
+                    node = _bool(token);
 
                 if (node != nullptr)
                     append_and_set(node);
@@ -184,6 +191,14 @@ private:
         auto node = new this_node(token, current);
         return node;
     }
+    bool_node *_bool(const stoken &token) {
+        bool v;
+        if (token.raw == L"true") v = true;
+        else v = false;
+
+        auto node = new bool_node(token, current, v);
+        return node;
+    }
     ident_node *ident(const stoken &token) {
         auto node = new ident_node(token, current, token.raw);
         return node;
@@ -221,12 +236,12 @@ private:
 
     const stoken &prev_token() const {
         if (cursor == 0)
-            return stoken::empty();
+            return empty_stoken;
         return stokens->at(cursor - 1);
     }
     const stoken &next_token() const {
         if (cursor + 1 == stokens->size())
-            return stoken::empty();
+            return empty_stoken;
         return stokens->at(cursor + 1);
     }
 
@@ -238,5 +253,5 @@ private:
     syntax_node *current;
 
     const std::vector<stoken> *stokens;
-    int cursor;
+    uint32_t cursor;
 };

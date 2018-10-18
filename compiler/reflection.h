@@ -4,7 +4,7 @@
 
 #define rktype(name) sig2hash(name)
 
-__forceinline bool rk_istypeof(unsigned int sighash, const value &v) {
+__forceinline bool rk_istypeof(uint32_t sighash, const value &v) {
     return v.type == value_type::object ?
         v.objref->sighash == sighash :
         false;

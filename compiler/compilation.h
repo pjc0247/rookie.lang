@@ -5,6 +5,7 @@
 
 #include "string_pool.h"
 #include "token.h"
+#include "syntax.h"
 #include "program.h"
 #include "errors.h"
 
@@ -17,6 +18,15 @@ struct compile_output {
     pdb pdb;
 
     std::vector<compile_error> errors;
+};
+
+struct compiletime_methoddata {
+    std::wstring name;
+    uint32_t entry;
+};
+struct compiletime_typedata {
+    std::wstring name;
+    std::vector<compiletime_methoddata> methods;
 };
 
 // Shared variables during compilation pipeline.
@@ -34,9 +44,13 @@ public:
     }
 
 public:
+    // Input & Output
     const compile_option &opts;
-
     std::vector<compile_error> errors;
+
+    // Compile data
+    syntax_node *root_node;
+    std::vector<compiletime_typedata> types;
     
     string_pool code;
 };

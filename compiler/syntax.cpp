@@ -20,10 +20,6 @@ syntax_node *syntax_node::nearest_incomplete_node() {
     }
 }
 
-compile_context &syntax_node::ctx() const {
-    return root()->ctx;
-}
-
 void syntax_node::dump(int depth) {
     for (int i = 0; i < depth * 2; i++)
         putchar(' ');
