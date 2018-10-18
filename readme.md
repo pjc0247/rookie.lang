@@ -2,20 +2,29 @@ rookie
 ====
 
 __[ONLINE PLAYGROUND](https://pjc0247.github.io/try-rookie/)__<br>
-__rookie__ is a asfdlnsagklnsdafklnsdanfkwelg language that lnsdaflngnfanskefwoelinf for lskdnflsdngflf use.
 
+Concept
+----
+* Similar to C oriented languages (which means very intuitive)
+* Less confusing syntax, unlike modern languages.
+* Supports `OOP`.
+
+Usage
+----
 ```cpp
-program p;
-std::vector<compile_error> errors;
+compile_option opts;
+compile_output out;
 
-if (compiler::default_compiler()
-    .compile("a = 1;b = 4;", p, errors)) {
+out = compiler::default_compiler()
+    .compile("a = 1;b = 4;", opts);
+
+if (out.errors.empty()) {
 
     printf("DONE!");
 }
 else {
     printf("Your code has following error(s).\r\n");
-    for (auto &err : errors)
+    for (auto &err : out.errors)
         printf("%s\r\n", err.message.c_str());
 }
 ```
