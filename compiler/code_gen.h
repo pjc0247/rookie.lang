@@ -273,7 +273,7 @@ private:
 
                     auto eidx = find_entry(method_name);
                     if (eidx == -1)
-                        throw codegen_exception("unresolved method_name");
+                        ctx.push_error(codegen_error(L"Unresolved name: " + method_name));
                     inst.cs.index = eidx;
 
                     end_loop :;

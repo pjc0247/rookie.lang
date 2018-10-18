@@ -2,6 +2,8 @@ class example_string {
     @main
     static def main() {
         a = null;
+
+        example_string.qqq();
     }
     static def foo2(){
         print(1234); 
