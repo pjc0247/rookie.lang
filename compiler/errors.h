@@ -4,6 +4,7 @@
 #include <exception>
 
 #include "token.h"
+#include "syntax.h"
 
 struct compile_error {
     std::wstring message;
@@ -39,7 +40,9 @@ class syntax_error : public compile_error {
 public:
     syntax_error(const token &token, const std::wstring &message) :
         compile_error(token, message) {
-
+    }
+    syntax_error(syntax_node *node, const std::wstring &message) :
+        syntax_error(node->token(), message) {
     }
 };
 class undeclared_method_error : public compile_error {

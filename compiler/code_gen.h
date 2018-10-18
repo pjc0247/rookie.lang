@@ -450,12 +450,21 @@ private:
             return;
         }
 
-        for (auto it = node->begin_args(); it != node->end_args(); ++it) {
-            emit(*it);
+        if (node->children[1]->type == syntax_type::syn_ident &&
+            ((ident_node*)node->children[1])->ident == L"this") {
 
-            if (node->begin_args() == it)
-                emitter.emit(opcode::op_setcallee);
+            if (current_method->attr & method_attr::method_static)
+                ctx.push_error(syntax_error(node, L"invalid this inside static method."));
+
+            emitter.emit(opcode::op_ldthis);
         }
+        else
+            emit(*node->begin_args());
+
+        emitter.emit(opcode::op_setcallee);
+
+        for (auto it = std::next(node->begin_args()); it != node->end_args(); ++it)
+            emit(*it);
 
         /*
         auto target = node->calltarget();
@@ -483,11 +492,17 @@ private:
             emit(child);
     }
     void emit_this(this_node *node) {
+        if (current_method->attr & method_attr::method_static)
+            ctx.push_error(syntax_error(node, L"invalid this inside static method."));
+
         emitter.emit(opcode::op_ldloc, 0);
     }
     void emit_memberaccess(memberaccess_node *node) {
         if (node->children[0]->type == syntax_type::syn_ident &&
             ((ident_node*)node->children[0])->ident == L"this") {
+
+            if (current_method->attr & method_attr::method_static)
+                ctx.push_error(syntax_error(node, L"invalid this inside static method."));
             emitter.emit(opcode::op_ldthis);
         }
         else
