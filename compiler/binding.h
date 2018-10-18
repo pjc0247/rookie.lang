@@ -24,10 +24,12 @@
 #define is_rkint(v) v.type == value_type::integer
 #define is_rkstr(v) (v.type == value_type::object && v.objref->sighash == sighash_string)
 #define is_rkchar(v) v.type == value_type::character
+#define is_rkbool(v) v.type == value_type::boolean
 #define rkint(v) v.integer
 #define rkcstr(v) (((rkstring*)v.objref)->c_str())
 #define rkwstr(v) (((rkstring*)v.objref)->w_str())
 #define rkchar(v) v.character
+#define rkbool(v) (v.integer == 1 ? true : false)
 
 typedef std::map<std::wstring, std::function<void(stack_provider&)>> bindmap;
 

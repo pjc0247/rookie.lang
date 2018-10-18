@@ -22,26 +22,20 @@ class compiler {
 public:
     // Builds a new compiler with default options.
     static compiler default_compiler(binding &binding) {
-        return compiler(binding)
-            // FIRSTPASS
-            .transformer<annotation_transformer>()
-            .transformer<endlpop_transformer>()
-            .transformer<callmember_transformer>()
-            .transformer<callnewobj_transformer>()
-            .transformer<arraccess_transformer>()
+        auto c = compiler(binding);
 
-            // OPTIMIZERS
-            .transformer<precalc>()
-            //.transformer<tco>(); // tail-call optimizer
-            ;
+        // ESSENTIALS TRANSFORMERS
+        include_essential_passes(c)
+        // OPTIMIZERS
+        .transformer<precalc>()
+        //.transformer<tco>(); // tail-call optimizer
+        ;
     }
 
     // Builds a new compiler with given options.
     static compiler build_compiler(binding &binding, int options = 0) {
-        auto c = compiler(binding)
-            .transformer<callmember_transformer>()
-            .transformer<callnewobj_transformer>()
-            .transformer<arraccess_transformer>();
+        auto c = compiler(binding);
+        include_essential_passes(c);
 
         if (!(options & rky_no_optimization))
             c.transformer<precalc>();
@@ -154,6 +148,15 @@ public:
     }
 
 private:
+    static compiler &include_essential_passes(compiler &c) {
+        c.transformer<annotation_transformer>()
+         .transformer<endlpop_transformer>()
+         .transformer<callmember_transformer>()
+         .transformer<callnewobj_transformer>()
+         .transformer<arraccess_transformer>();
+        return c;
+    }
+
     template <typename T>
     typename std::enable_if<
         std::is_base_of<optimize_travler, T>::value>::type

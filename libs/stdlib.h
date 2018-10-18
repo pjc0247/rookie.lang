@@ -12,6 +12,8 @@ _rookie_function(L"print", (value &v) {
     if (v == nullptr)
         printf("null\n");
 
+    else if (is_rkbool(v))
+        printf("%s\n", rkbool(v) ? "true" : "false");
     else if (is_rkint(v))
         printf("%d\n", rkint(v));
     else if (is_rkstr(v))
@@ -24,6 +26,9 @@ _rookie_function(L"print", (value &v) {
 _rookie_function(L"puts", (value &v) {
     if (v == nullptr)
         printf("null\n");
+
+    else if (is_rkbool(v))
+        printf("%s\n", rkbool(v) ? "true" : "false");
     else if (is_rkint(v))
         printf("%d\n", rkint(v));
     else if (is_rkstr(v)) {
