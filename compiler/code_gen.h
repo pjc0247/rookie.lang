@@ -180,10 +180,11 @@ public:
         return instructions.size();
     }
 
-    program fin() {
+    program *fin() {
         resolve_defered_calls();
 
-        program p;
+        program *_p = new program();
+        program &p = *_p;
         auto types = ctx.get_programtypes();
 
         memset(&p, 0, sizeof(program));
@@ -227,11 +228,12 @@ public:
             memcpy(p.entries, &entries[0], sizeof(program_entry) * entries.size());
         }
 
-        return p;
+        return _p;
     }
 
-    pdb generate_pdb(string_pool &code, binding &bindings) {
-        pdb p;
+    pdb *generate_pdb(string_pool &code, binding &bindings) {
+        pdb *_p = new pdb();
+        pdb &p = *_p;
         std::vector<pdb_signature> sigs;
 
         for (auto &func : bindings.get_functions()) {
@@ -268,7 +270,7 @@ public:
         p.code_len = code.size();
         memcpy(p.code, code.fin(), sizeof(wchar_t) * code.size());
 
-        return p;
+        return _p;
     }
 
 private:
@@ -323,7 +325,7 @@ public:
         emitter(ctx) {
     }
 
-    program generate(root_node *root) {
+    program *generate(root_node *root) {
         auto classes = astr::all_classes(ctx.root_node);
 
         for (auto _class : ctx.bindings.get_types()) {
@@ -362,7 +364,7 @@ public:
 
         return emitter.fin();
     }
-    pdb generate_pdb(binding &bindings) {
+    pdb *generate_pdb(binding &bindings) {
         if (ctx.opts.generate_pdb == false)
             throw codegen_exception("generate_pdb == false");
 

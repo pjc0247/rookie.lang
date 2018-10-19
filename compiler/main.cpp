@@ -18,7 +18,7 @@
 #include "libs/debugger.h"
 #include "thirdparty/argagg.hpp"
 
-program compile(const std::wstring &filepath) {
+program *compile(const std::wstring &filepath) {
 #ifndef RK_ENV_WEB
     wchar_t *buf = fileio::read_string(filepath);
 
@@ -38,11 +38,11 @@ program compile(const std::wstring &filepath) {
     if (out.errors.empty()) {
     
 #if _DEBUG
-        out.program.dump();
+        out.program->dump();
 #endif
 
-        debugger dbg(out.pdb);
-        runner(out.program, b)
+        debugger dbg(*out.pdb);
+        runner(*out.program, b)
             .attach_debugger(dbg)
             .execute();
     }
@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
 #endif
         }
 
-        program p;
+        program *p = nullptr;
         for (auto path : args.pos) {
             p = compile(str2wstr(path));
 
@@ -116,7 +116,7 @@ int main(int argc, char **argv) {
 
         if (args["wasm"]) {
             auto p2 = p2wast();
-            p2.convert(p);
+            p2.convert(*p);
             p2.dump();
         }
 

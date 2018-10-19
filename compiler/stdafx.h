@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+struct IUnknown; // Workaround for "combaseapi.h(229): error C2187: syntax error: 'identifier' was unexpected here" when using /permissive-
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>

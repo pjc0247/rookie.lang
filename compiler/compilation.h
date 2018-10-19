@@ -16,8 +16,8 @@ struct compile_option {
 };
 
 struct compile_output {
-    program program;
-    pdb pdb;
+    program *program;
+    pdb     *pdb;
 
     std::vector<compile_error> errors;
 };
