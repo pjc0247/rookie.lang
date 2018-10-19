@@ -1,4 +1,4 @@
-the rookie programming language
+rookie
 ====
 
 [![Build Status](https://travis-ci.org/pjc0247/rookie.lang.svg?branch=master)](https://travis-ci.org/pjc0247/rookie.lang)
