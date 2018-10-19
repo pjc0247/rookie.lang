@@ -2,6 +2,13 @@
 
 #include "gc.h"
 
+gc::~gc() {
+    for (auto obj : all_objects) {
+        if (obj != nullptr)
+            delete obj;
+    }
+}
+
 void gc::add_object(object *objref) {
     all_objects.insert(objref);
 }

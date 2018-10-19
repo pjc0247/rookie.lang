@@ -28,8 +28,8 @@ struct compile_output {
     }
     ~compile_output() {
         // it's safe to pass nullptr
-        rk_free(program);
-        rk_free(pdb);
+        rk_free_program(program);
+        rk_free_pdb(pdb);
     }
 };
 

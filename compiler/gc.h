@@ -11,6 +11,8 @@ struct gc_context {
 
 class gc {
 public:
+    virtual ~gc();
+
     void add_object(object *objref);
     void remove_object(object *objref);
 

@@ -33,12 +33,12 @@ void rk_exec(const char *code) {
     }
 }
 
-void rk_free(program *p) {
+void rk_free_program(program *p) {
     if (p == nullptr) return;
 
     delete p;
 }
-void rk_free(pdb *p) {
+void rk_free_pdb(pdb *p) {
     if (p == nullptr) return;
 
     delete p;
