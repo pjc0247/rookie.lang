@@ -1,0 +1,7 @@
+CC = clang++
+SRCS := $(wildcard ./compiler/*.cpp)
+
+all:
+	$(CC) -Os -std=c++17 $(SRCS) -I. -Icompiler \
+        -o bin/rookie \
+		-Wc++11-extensions
