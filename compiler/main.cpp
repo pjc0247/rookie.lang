@@ -16,6 +16,7 @@
 #include "libs/array.h"
 #include "libs/string.h"
 #include "libs/debugger.h"
+#include "libs/gc.h"
 #include "thirdparty/argagg.hpp"
 
 program *compile(const std::wstring &filepath) {
@@ -27,6 +28,7 @@ program *compile(const std::wstring &filepath) {
     b.import<rkstdlib>();
     b.import<rkarray>();
     b.import<rkstring>();
+    b.import<rkgc>();
     b.import<rkdebugger>();
 
     auto rc = compiler::default_compiler(b);

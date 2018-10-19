@@ -47,13 +47,15 @@ struct runtime_typedata {
 };
 
 class runner {
+    friend gc;
     friend exe_context;
     friend debugger;
 public:
     runner(const program &p, binding &binding) :
         p(p), binding(binding),
         dbger(nullptr),
-        callee_ptr(nullptr) {
+        callee_ptr(nullptr),
+        gc(*this) {
 
         build_runtime_data();
     }

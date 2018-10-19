@@ -5,13 +5,15 @@
 
 #include "value_object.h"
 
+struct runner;
 struct gc_context {
     std::set<object*> marks;
 };
 
 class gc {
 public:
-    virtual ~gc();
+    gc(runner &r);
+    virtual ~gc();  
 
     void add_object(object *objref);
     void remove_object(object *objref);
@@ -25,6 +27,8 @@ protected:
     void sweep(gc_context &ctx);
 
 private:
+    runner &r;
+
     std::set<object*> all_objects;
     std::vector<value> roots;
 };

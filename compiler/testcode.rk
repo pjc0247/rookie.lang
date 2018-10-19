@@ -1,6 +1,19 @@
 class op_priority_test {
     @main
     static def main() {
+        a = "ASDF";
+        b = "ASDF";
+
+        print(gc.object_count());
+        gc.collect();
+        print(gc.object_count());
+
+        a = null;
+        b = null;
+
+        gc.collect();
+        print(gc.object_count());
+
         puts(1 * 5 + 25 / 5); // 10
     }
 }

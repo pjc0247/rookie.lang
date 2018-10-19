@@ -1,7 +1,12 @@
 #include "stdafx.h"
 
+#include "runner.h"
+
 #include "gc.h"
 
+gc::gc(runner &r) :
+    r(r) {
+}
 gc::~gc() {
     for (auto obj : all_objects) {
         if (obj != nullptr)
@@ -20,7 +25,7 @@ void gc::collect() {
     gc_context ctx;
 
     // MARK
-    for (auto &v : roots)
+    for (auto &v : r.stack)
         mark(v, ctx);
 
     // SWEEP
@@ -41,10 +46,14 @@ void gc::mark(value &v, gc_context &ctx) {
         mark(prop.second, ctx);
 }
 void gc::sweep(gc_context &ctx) {
-    for (auto objref : all_objects) {
+    for (auto it = all_objects.begin(); it != all_objects.end();) {
+        auto objref = *it;
+
         if (ctx.marks.find(objref) == ctx.marks.end()) {
-            remove_object(objref);
+            it = all_objects.erase(it);
             delete objref;
         }
+        else
+            ++it;
     }
 }
