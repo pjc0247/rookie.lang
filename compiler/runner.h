@@ -254,9 +254,9 @@ public:
                 auto obj = pop();
 
                 if (obj.type != value_type::object)
-                    throw invalid_program_exception("target is not a object");
+                    throw invalid_program_exception("target is not an object");
 
-                push(obj.objref->properties[inst.operand]);
+                push(obj.objref->get_property(inst.operand));
             }
             else if (inst.opcode == opcode::op_stprop) {
                 auto obj = pop(); 
@@ -422,7 +422,7 @@ private:
     exe_context *exectx;
 
     syscalltable syscalls;
-    std::map<int, runtime_typedata> types;
+    std::map<uint32_t, runtime_typedata> types;
 
     gc gc;
     debugger *dbger;

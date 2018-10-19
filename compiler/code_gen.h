@@ -555,12 +555,11 @@ private:
         auto lookup = scope.lookup_variable(node->ident);
         if (lookup.type == lookup_type::not_exist) {
             //ctx.push_error(undefined_variable_error(node->token()));
-            return;
         }
 
         if (lookup.type == lookup_type::var_local)
             emitter.emit(opcode::op_ldloc, lookup.index);
-        else if (lookup.type == lookup_type::var_field)
+        else //if (lookup.type == lookup_type::var_field)
             emitter.emit(opcode::op_ldprop, lookup.index);
     }
     void emit_literal(literal_node *node) {

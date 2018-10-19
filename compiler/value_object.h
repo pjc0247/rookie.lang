@@ -52,7 +52,7 @@ private:
     std::vector<callinfo> table;
 };
 struct calltable {
-    std::map<int, callinfo> table;
+    std::map<uint32_t, callinfo> table;
 };
 class stack_provider;
 struct syscalltable {
@@ -170,8 +170,17 @@ const value rknull = value(value_type::null);
 
 class object {
 public:
+
+    __forceinline const value &get_property(uint32_t keyhash) {
+        auto it = properties.find(keyhash);
+        if (it == properties.end())
+            return rknull;
+        return (*it).second;
+    }
+
+public:
     int sighash;
 
-    std::map<int, callinfo> *vtable;
-    std::map<int, value> properties;
+    std::map<uint32_t, callinfo> *vtable;
+    std::map<uint32_t, value> properties;
 };
