@@ -147,7 +147,6 @@ public:
         current_class = _class;
     }
     void emit_method(method_node *method) {
-        printf("EMIT %S\n", method->ident_str().c_str());
         compiletime_methoddata mdata;
         mdata.name = method->ident_str();
         mdata.entry = entries.size();

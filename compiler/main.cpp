@@ -46,7 +46,7 @@ program *compile(const std::wstring &filepath) {
 
         debugger dbg(*out.pdb);
         runner(*out.program, b)
-            .attach_debugger(dbg)
+            //.attach_debugger(dbg)
             .execute();
     }
     else {
@@ -68,7 +68,6 @@ program *compile(const std::wstring &filepath) {
 }
 
 int main(int argc, char **argv) {
-    printf("%d\n", sig2hash(L"_1"));
 #ifdef RK_ENV_WEB
     printf("[rookie::webenv].\n");
 #endif
@@ -100,7 +99,7 @@ int main(int argc, char **argv) {
 #if _DEBUG
             args.pos.push_back("testcode.rk");
 #else
-            throw base_exception("No input provided.");
+            throw rkexception("No input provided.");
 #endif
         }
 

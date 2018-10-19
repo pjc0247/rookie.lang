@@ -1,18 +1,13 @@
-class op_priority_test {
+class testcase {
     @main
     static def main() {
-        a = idx.new();
-
-        print(-1);
+        puts(fib(5));
     }
-}
 
-class idx {
-    def __getitem__ (x) { 
-        return x;
-    }
-    def __setitem__ (x, y){ 
-        print(x)
-        print(y)
+    def fib(x) {
+        if (x == 0) return 0;
+        if (x == 1) return 1;
+
+        return fib(x-1) + fib(x-2);
     }
 }
