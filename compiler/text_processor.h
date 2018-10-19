@@ -35,7 +35,7 @@ public:
         uint32_t line = 1, cols = 1;
         bool inside_quote = false;
         bool inside_comment = false;
-        token last;
+        wchar_t last_meaningful_ch = 0;
 
         std::wstring line_buf;
         int spool_idx = 0;
@@ -66,8 +66,9 @@ public:
                     continue;
 
                 if (rule.raw == L"-" &&
-                    (last.type != token_type::ident ||
-                     last.type != token_type::right_bracket))
+                    (last_meaningful_ch == L'(' ||
+                     last_meaningful_ch == L',' ||
+                     last_meaningful_ch == L'='))
                     continue;
                 if (rule.type == token_type::keyword &&
                     is_ident_acceptible(src[head - 1]))
@@ -92,7 +93,6 @@ public:
                 t.line = line; t.cols = cols;
                 t.dbg_codeidx = spool_idx;
                 result.push_back(t);
-                last = t;
 
                 line_buf.insert(line_buf.end(), t.raw.begin(), t.raw.end());
 
@@ -126,6 +126,10 @@ public:
             result.push_back(t);
         }
 
+        if (src[head] != ' ' && src[head] != '\t' &&
+            src[head] != '\r' && src[head] != '\n')
+            last_meaningful_ch = src[head];
+
         result.erase(
             std::remove_if(
                 result.begin(), result.end(),
@@ -148,9 +152,9 @@ private:
         rules.push_back(lexer_token(L"class", token_type::keyword));
         rules.push_back(lexer_token(L"def", token_type::keyword));
         rules.push_back(lexer_token(L"static", token_type::keyword));
-        rules.push_back(lexer_token(L"if", token_type::keyword, -9998));
+        rules.push_back(lexer_token(L"if", token_type::keyword, -9000));
         rules.push_back(lexer_token(L"for", token_type::keyword));
-        rules.push_back(lexer_token(L"return", token_type::keyword));
+        rules.push_back(lexer_token(L"return", token_type::keyword, -9000));
         rules.push_back(lexer_token(L"null", token_type::keyword));
 
         rules.push_back(lexer_token(L"try", token_type::keyword));
@@ -345,7 +349,7 @@ private:
                             tokens.erase(std::prev(it));
 
                             if (modify_p)
-                                (*inserted).priority = -10000;
+                                (*inserted).priority = std::min(-6000, (*inserted).priority);
 
                             break;
                         }
@@ -558,8 +562,7 @@ private:
 
                 flush_single_line();
             }
-
-            stack.push_back(token);
+                stack.push_back(token);
         } 
         else
             stoken = parse(token);
