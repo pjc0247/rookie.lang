@@ -33,3 +33,15 @@ includes
 ```ruby
 include "math.rky";
 ```
+
+
+indexer
+----
+```ruby
+def __getitem__ (key) {
+    return key;
+}
+def __setitem__ (key, value) {
+   set(key, value);
+}
+```
