@@ -160,7 +160,8 @@ private:
          .transformer<endlpop_transformer>()
          .transformer<callmember_transformer>()
          .transformer<callnewobj_transformer>()
-         .transformer<arraccess_transformer>();
+         .transformer<arr_setitem_transformer>()
+         .transformer<arr_getitem_transformer>();
         return c;
     }
 

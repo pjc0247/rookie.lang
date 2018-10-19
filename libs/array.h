@@ -13,6 +13,7 @@ public:
 
         type.method(L"new", create_array);
 
+        method(type, L"__getitem__", &rkarray::at);
         method(type, L"at", &rkarray::at);
         method(type, L"push", &rkarray::push);
         method(type, L"remove", &rkarray::remove);

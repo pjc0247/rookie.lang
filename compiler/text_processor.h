@@ -512,28 +512,30 @@ private:
         }
         else if (token.type == token_type::ident) {
             _mark_as_parsed(stoken);
+            bool pushed = false;
+
             if (prev_token().type == token_type::dot) {
                 stack.push_back(prev_token().preparsed(stoken_type::st_memberaccess));
-                
+                pushed = true;
             }
             else if (next_token().type == token_type::right_sq_bracket) {
                 stack.push_back(next_token().preparsed(stoken_type::st_arraccess));
-                //stack.push_back(token);
+                pushed = true;
             }
 
             if (next_token().type == token_type::right_paren) {
                 stack.push_back(next_token().preparsed(stoken_type::st_begin_call));
-                //stack.push_back(token);
+                pushed = true;
 
                 ::stoken endcall(next_token());
                 endcall.type = stoken_type::st_end_call;
                 result.push_back(endcall);
             }
+
+            if (pushed)
+                stack.push_back(token);
             else
                 stoken.type = stoken_type::ident;
-
-            if (stoken.type != stoken_type::ident)
-                stack.push_back(token);
         }
         else if (token.type == token_type::keyword) {
             _mark_as_parsed(stoken);

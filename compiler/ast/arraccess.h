@@ -2,15 +2,42 @@
 
 #include "syntax_travler.h"
 
-class arraccess_transformer : public syntax_traveler {
+class arr_setitem_transformer : public syntax_traveler {
 protected:
     bool is_transformable(syntax_node *node) {
-        return node->type == syntax_type::syn_arraccess;
+        return node->type == syntax_type::syn_assignment &&
+            node->children[0]->type == syntax_type::syn_arraccess;
     }
     virtual syntax_node *visit(syntax_node *node) {
         if (is_transformable(node)) {
             auto new_node = new callmember_node(node->s_token(), node->parent);
-            auto at = new ident_node(node->s_token(), new_node, L"at");
+            auto arr_node = (arraccess_node*)node->children[0];
+            auto at = new ident_node(node->s_token(), new_node, L"__setitem__");
+
+            // METHOD_NAME
+            new_node->append(at);
+            // .this
+            new_node->append(arr_node->children[0]);
+
+            // ARGS 
+            new_node->append(arr_node->children[1]);
+            new_node->append(node->children[1]);
+
+            return new_node;
+        }
+        return node;
+    }
+};
+class arr_getitem_transformer : public syntax_traveler {
+protected:
+    bool is_transformable(syntax_node *node) {
+        return node->type == syntax_type::syn_arraccess &&
+            node->parent->type != syntax_type::syn_assignment;
+    }
+    virtual syntax_node *visit(syntax_node *node) {
+        if (is_transformable(node)) {
+            auto new_node = new callmember_node(node->s_token(), node->parent);
+            auto at = new ident_node(node->s_token(), new_node, L"__getitem__");
 
             // METHOD_NAME
             new_node->append(at);

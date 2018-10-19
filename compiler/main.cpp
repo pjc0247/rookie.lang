@@ -17,6 +17,7 @@
 #include "libs/string.h"
 #include "libs/debugger.h"
 #include "libs/gc.h"
+#include "libs/object.h"
 #include "thirdparty/argagg.hpp"
 
 program *compile(const std::wstring &filepath) {
