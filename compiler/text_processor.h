@@ -35,6 +35,7 @@ public:
         uint32_t line = 1, cols = 1;
         bool inside_quote = false;
         bool inside_comment = false;
+        token last;
 
         std::wstring line_buf;
         int spool_idx = 0;
@@ -63,6 +64,11 @@ public:
                     continue;
                 if (src.substr(head, candidate.length()) != candidate)
                     continue;
+
+                if (rule.raw == L"-" &&
+                    (last.type != token_type::ident ||
+                     last.type != token_type::right_bracket))
+                    continue;
                 if (rule.type == token_type::keyword &&
                     is_ident_acceptible(src[head - 1]))
                     continue;
@@ -86,6 +92,7 @@ public:
                 t.line = line; t.cols = cols;
                 t.dbg_codeidx = spool_idx;
                 result.push_back(t);
+                last = t;
 
                 line_buf.insert(line_buf.end(), t.raw.begin(), t.raw.end());
 
@@ -181,6 +188,10 @@ private:
         rules.push_back(lexer_token(L";", token_type::semicolon, -9999));
     }
 
+    bool is_number(wchar_t c) {
+        if (c >= '0' && c <= '9') return true;
+        return false;
+    }
     bool is_ident_acceptible(wchar_t c) {
         if ((c >= 'a' && c <= 'z') ||
             (c >= 'A' && c <= 'Z') ||

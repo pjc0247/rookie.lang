@@ -3,6 +3,8 @@ class op_priority_test {
     static def main() {
         a = idx.new();
 
+        b= -1;
+
         print(b);
     }
 }
