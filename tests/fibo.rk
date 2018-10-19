@@ -1,5 +1,6 @@
 class testcase {
-    def main() {
+    @main
+    static def main() {
         puts(fib(5));
     }
 
