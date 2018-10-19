@@ -1,0 +1,15 @@
+class chaincall_test {
+    @main
+    static def main() {
+        r = chaincall_test.new()
+          ._1()
+          ._2()
+          ._3();
+
+        puts(r);
+    }
+
+    def _1() { puts(1); return this; }
+    def _2() { puts(2); return this; }
+    def _3() { puts(3); return 4; }
+}

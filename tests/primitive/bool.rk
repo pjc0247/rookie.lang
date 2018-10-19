@@ -1,0 +1,10 @@
+class bool_test {
+    @main
+    static def main() {
+        a = 1 > 5;
+        if (a == false) puts("PASS");
+
+        a = 5 > 1
+        if (a == true) puts("PASS");
+    }
+}

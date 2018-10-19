@@ -1,0 +1,6 @@
+class op_priority_test {
+    @main
+    static def main() {
+        puts(1 * 5 + 25 / 5); // 10
+    }
+}
