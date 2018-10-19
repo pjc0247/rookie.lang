@@ -433,7 +433,8 @@ public:
 class bool_node : public syntax_node {
 public:
     bool_node(const stoken &token, syntax_node *parent, bool v) :
-        syntax_node(token, parent) {
+        syntax_node(token, parent),
+        value(v) {
         capacity = 1;
         type = syntax_type::syn_bool;
     }

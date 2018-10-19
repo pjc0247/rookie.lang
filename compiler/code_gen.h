@@ -147,6 +147,7 @@ public:
         current_class = _class;
     }
     void emit_method(method_node *method) {
+        printf("EMIT %S\n", method->ident_str().c_str());
         compiletime_methoddata mdata;
         mdata.name = method->ident_str();
         mdata.entry = entries.size();
@@ -154,8 +155,9 @@ public:
             auto &type = _type.second;
 
             if (type.name == current_class->ident_str()) {
-                for (auto &method : type.methods) {
-                    method.entry = entries.size();
+                for (auto &_method : type.methods) {
+                    if (_method.name == method->ident_str())
+                        _method.entry = entries.size();
                 }
                 break;
             }
@@ -182,22 +184,22 @@ public:
         resolve_defered_calls();
 
         program p;
+        auto types = ctx.get_programtypes();
+
         memset(&p, 0, sizeof(program));
         p.header.code_len = instructions.size();
         p.header.rdata_len = spool.size();
         p.header.entry_len = entries.size();
-        p.header.types_len = ctx.types.size();
+        p.header.types_len = types.size();
 
         p.header.main_entry = 0;
 
         auto rdata = spool.fin();
 
         if (ctx.types.size() > 0) {
-            p.types = (typedata*)malloc(sizeof(typedata) * ctx.types.size());
+            p.types = (typedata*)malloc(sizeof(typedata) * types.size());
             int i = 0;
-            for (auto &_type : ctx.types) {
-                auto &type = _type.second;
-
+            for (auto &type : types) {
                 wcscpy(p.types[i].name, type.name.c_str());
                 p.types[i].methods_len = type.methods.size();
                 p.types[i].methods = (methoddata*)malloc(sizeof(methoddata) * type.methods.size());
@@ -301,8 +303,6 @@ private:
     compile_context &ctx;
 
     string_pool spool;
-
-    //std::map<std::wstring, codegen_typedata> types;
 
     class_node *current_class;
 
@@ -546,7 +546,7 @@ private:
     }
     void emit_ident(ident_node *node) {
         if (node->ident == L"this") {
-            emitter.emit(opcode::op_ldloc, 0);
+            emitter.emit(opcode::op_ldthis);
             return;
         }
 

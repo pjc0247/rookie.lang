@@ -5,8 +5,8 @@
 
 void debugger::on_begin_program(runner &_r, const program &p) {
     con::setColor(CON_WHITE);
-    rklog("[%3s] %15s,   %12s,   %s\n", "PC", "OPCODE", "OPERAND", "CODE");
-    rklog("[%3s] %15s,   %12s,   %s\n", "---", "-----", "-----", "-----");
+    rklog("[%3s] %15s    %12s    %s\n", "PC", "OPCODE", "OPERAND", "CODE");
+    rklog("[%3s] %15s    %12s    %s\n", "---", "-----", "-----", "-----");
     con::setColor(CON_LIGHTGRAY);
 
     r = &_r;
@@ -17,7 +17,7 @@ void debugger::on_pre_exec(runner &r, const instruction &inst) {
     con::setColor(CON_YELLOW);
     rklog("%3d", r.pc);
     con::setColor(CON_LIGHTGRAY);
-    rklog("] %15S, ", to_string((opcode_t)inst.opcode));
+    rklog("] %15S    ", to_string((opcode_t)inst.opcode));
     if (inst.opcode == opcode::op_vcall ||
         inst.opcode == opcode::op_call ||
         inst.opcode == opcode::op_syscall ||
@@ -39,7 +39,7 @@ void debugger::on_pre_exec(runner &r, const instruction &inst) {
     int cnt = -1;
 
     std::vector<std::wstring> keywords({
-        L"for", L"if", L"class", L"def", L"static"
+        L"for", L"if", L"class", L"def", L"static", L"this"
     });
 
     con::setColor(CON_LIGHTGRAY);
@@ -112,7 +112,6 @@ void debugger::dumpstack() {
     for (int i= r->stack.size()-1;i>=0;i--) {
         auto &item = r->stack[i];
 
-        
         if (r->callee_ptr == &item) {
             con::setColor(CON_YELLOW);
             printf("  > ");
@@ -134,7 +133,6 @@ void debugger::dumpstack() {
             printf("%8s, ", "NULL");
         else if (item.type == value_type::object)
             printf("%8s, %15S", "OBJECT", pdb.get_name(item.objref->sighash).c_str());
-        
         
         printf("\n");
     }

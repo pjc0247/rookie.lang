@@ -174,7 +174,7 @@ private:
     typename std::enable_if<
         !std::is_base_of<optimize_travler, T>::value>::type
     _transformer() {
-        firstpass.push_back(std::make_shared<T>());
+        optimizers.push_back(std::make_shared<T>());
     }
 
 private:

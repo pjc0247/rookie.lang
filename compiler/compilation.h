@@ -51,6 +51,23 @@ public:
         bindings(bindings) {
     }
 
+    std::vector<compiletime_typedata> get_programtypes() {
+        std::vector<compiletime_typedata> r;
+        for (auto &p : types) {
+            if (!(p.second.attr & class_attr::class_systype))
+                r.push_back(p.second);
+        }
+        return r;
+    }
+    std::vector<compiletime_typedata> get_systypes() {
+        std::vector<compiletime_typedata> r;
+        for (auto &p : types) {
+            if (p.second.attr & class_attr::class_systype)
+                r.push_back(p.second);
+        }
+        return r;
+    }
+
     void push_error(const compile_error &err) {
         errors.push_back(err);
     }

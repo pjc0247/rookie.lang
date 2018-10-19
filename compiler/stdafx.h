@@ -2,7 +2,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <memory.h>
+#include <cstring>
 #include <string>
+#include <algorithm>
 
 #if _DEBUG
 #define DEBUG 1
@@ -19,7 +22,7 @@
     #define stdinvoke std::__invoke
 #endif
 
-#ifdef __EMSCRIPTEN__
+#if defined(__EMSCRIPTEN__) || defined(__clang__)
     #define RK_ENV_WEB
     #define RK_HALT_ON_LONG_EXECUTION
 #else
@@ -30,6 +33,8 @@
 #ifdef RK_ENV_WEB
     #define CONSTEXPR
     #define THREAD_LOCAL
+
+    #define _wfopen(a, b) nullptr
 #else
     #define CONSTEXPR constexpr
     #define THREAD_LOCAL thread_local

@@ -28,9 +28,9 @@
         _invalid_stackitem;
 
 #define _pop1_int(a) \
-    autoa = pop(); _ensure_int(a);
+    autoa = pop(); 
 #define _pop2_int(a, b) \
-    auto a = pop(); auto b = pop(); _ensure_int(a,b);
+    auto a = pop(); auto b = pop(); 
 
 #define _stacktop() stack[stack.size() - 1]
 
@@ -177,6 +177,8 @@ public:
                     throw invalid_program_exception("No such type");
 #endif
 
+                // FIXME
+
                 if (types[inst.operand].typekind == runtime_typekind::tk_programtype) {
                     auto objref = new rkscriptobject();
                     push(value::mkobjref(objref));
@@ -311,14 +313,17 @@ public:
 
 private:
     void build_runtime_data() {
+        // SYS FUNCTIONS
         for (auto &b : binding.get_functions()) {
             syscalls.table.push_back(b.second);
         }
+        // STATIC METHODS
         for (auto &type : binding.get_types()) {
             for (auto &static_method : type.get_static_methods())
                 syscalls.table.push_back(static_method.second);
         }
 
+        // SYS METHODS
         for (auto &type : binding.get_types()) {
             auto typesighash = sig2hash(type.get_name());
 
@@ -339,6 +344,7 @@ private:
             types[typesighash] = tdata;
         }
 
+        // PROGRAM METHODS
         for (uint32_t i = 0; i < p.header.types_len; i++) {
             auto type = p.types[i];
 
@@ -417,17 +423,17 @@ private:
     std::map<int, runtime_typedata> types;
 
     gc gc;
+    debugger *dbger;
 
+    // REGISTERS
     program_entry *current_entry;
     short pc; // program counter
     short bp; // base stack pointer
+    value *callee_ptr; // .this
 
-    value *callee_ptr;
-
+    // STACKS
     std::deque<callframe> callstack;
     std::deque<value> stack;
-
-    debugger *dbger;
 
 #ifdef RK_HALT_ON_LONG_EXECUTION
     int halt_counter;
