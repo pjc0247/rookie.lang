@@ -26,6 +26,15 @@ struct compile_output {
         program(nullptr),
         pdb(nullptr){
     }
+    compile_output(compile_output &&o) {
+        pdb = o.pdb;
+        program = o.program;
+        errors = o.errors;
+
+        o.pdb = nullptr;
+        o.program = nullptr;
+        o.errors.clear();
+    }
     ~compile_output() {
         // it's safe to pass nullptr
         rk_free_program(program);
