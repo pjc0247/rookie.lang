@@ -1,0 +1,19 @@
+class indexer_test {
+    @main
+    static def main() {
+        a = idx.new();
+
+        puts(a[2]);
+        a[5] = 1234;
+    }
+}
+
+class idx {
+    def __getitem__ (x) { 
+        return x;
+    }
+    def __setitem__ (x, y){ 
+        puts(x)
+        puts(y)
+    }
+}
