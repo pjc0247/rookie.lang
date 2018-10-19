@@ -32,3 +32,14 @@ void rk_exec(const char *code) {
         runner(*out.program, b).execute();
     }
 }
+
+void rk_free(program *p) {
+    if (p == nullptr) return;
+
+    delete p;
+}
+void rk_free(pdb *p) {
+    if (p == nullptr) return;
+
+    delete p;
+}

@@ -10,6 +10,7 @@
 #include "program.h"
 #include "errors.h"
 #include "type_attr.h"
+#include "c_interface.h"
 
 struct compile_option {
     bool generate_pdb = false;
@@ -20,6 +21,16 @@ struct compile_output {
     pdb     *pdb;
 
     std::vector<compile_error> errors;
+
+    compile_output() :
+        program(nullptr),
+        pdb(nullptr){
+    }
+    ~compile_output() {
+        // it's safe to pass nullptr
+        rk_free(program);
+        rk_free(pdb);
+    }
 };
 
 struct compiletime_methoddata {
