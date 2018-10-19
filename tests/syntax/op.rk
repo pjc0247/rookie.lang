@@ -1,5 +1,6 @@
 class testcase {
-    def main() {
+	@main
+    static def main() {
         puts(1 + 5);
         puts(2 * 5);
         puts(1 - 5);

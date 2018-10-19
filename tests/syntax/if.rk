@@ -1,6 +1,6 @@
 class if_test {
     @main
-    static main() {
+    static def main() {
         if (5 > 1) puts(true);
         else puts(false);
 

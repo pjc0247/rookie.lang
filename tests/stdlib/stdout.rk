@@ -1,6 +1,6 @@
 class stdout_test {
     @main
-    static main() {
+    static def main() {
         puts(1234);
         puts(true);
         puts(false);

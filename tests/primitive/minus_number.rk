@@ -2,6 +2,7 @@ class minus_number_test {
     @main
     static def main() {
         a = -1;
+        print(a);
         print(-1);
     }
 }

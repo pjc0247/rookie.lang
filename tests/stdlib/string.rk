@@ -1,5 +1,6 @@
 class testcase {
-    def main() {
+	@main
+    static def main() {
         a = "hello world";
         puts(a);
         puts(a.length());
