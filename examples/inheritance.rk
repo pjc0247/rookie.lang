@@ -1,0 +1,21 @@
+class person {
+    def greeting() {
+        print("PERSON: Hello");
+    }
+}
+class engineer : person {
+    def greeting() {
+        print("ENGINEER: Hello world");
+    }
+}
+
+class test {
+    @main
+    static def main() {
+        // PERSON: Hello
+        person.new().greeting();
+
+        // ENGINEER: Hello world
+        engineer.new().greeting();
+    }
+}
