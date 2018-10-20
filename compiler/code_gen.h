@@ -443,14 +443,16 @@ private:
         if (target->type == syntax_type::syn_ident) {
             auto lookup = scope.lookup_method(node->ident_str());
 
-            if (lookup.type == lookup_type::not_exist) {
-                ctx.push_error(undeclared_method_error(node->token(), node->ident_str()));
-                return;
-            }
-            else if (lookup.type == lookup_type::mtd_method)
+            //if (lookup.type == lookup_type::not_exist) {
+                //ctx.push_error(undeclared_method_error(node->token(), node->ident_str()));
+            //    return;
+            //}
+            if (lookup.type == lookup_type::mtd_method)
                 emitter.emit(opcode::op_call, callsite(callsite_lookup::cs_method, lookup.index));
             else if (lookup.type == lookup_type::mtd_syscall)
                 emitter.emit(opcode::op_syscall, callsite(callsite_lookup::cs_syscall, lookup.index));
+            else 
+                emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()));
         }
     }
     void emit_callstatic(callmember_node *node) {

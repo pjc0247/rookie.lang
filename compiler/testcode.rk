@@ -9,6 +9,6 @@ class for_test {
 }
 class foo {
     def hello() {
-        print(this.__get_prop("c"));
+        print(__get_prop("c"));
     }
 }
