@@ -5,6 +5,8 @@
 
 #include "value_object.h"
 
+const uint32_t gc_grow_size = 50;
+
 struct runner;
 struct gc_context {
     std::set<object*> marks;
@@ -31,4 +33,6 @@ private:
 
     std::set<object*> all_objects;
     std::vector<value> roots;
+
+    uint32_t next_collect;
 };

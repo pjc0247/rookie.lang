@@ -6,6 +6,8 @@
 
 gc::gc(runner &r) :
     r(r) {
+
+    next_collect = gc_grow_size;
 }
 gc::~gc() {
     for (auto obj : all_objects) {
@@ -16,6 +18,13 @@ gc::~gc() {
 
 void gc::add_object(object *objref) {
     all_objects.insert(objref);
+
+    if (all_objects.size() >= next_collect) {
+        collect();
+
+        if (all_objects.size() >= next_collect * 0.7)
+            next_collect += gc_grow_size;
+    }
 }
 void gc::remove_object(object *objref) {
     all_objects.erase(objref);
