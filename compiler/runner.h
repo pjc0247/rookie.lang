@@ -434,8 +434,8 @@ private:
 
     // REGISTERS
     program_entry *current_entry;
-    short pc; // program counter
-    short bp; // base stack pointer
+    uint16_t pc; // program counter
+    uint16_t bp; // base stack pointer
     value *callee_ptr; // .this
 
     // STACKS

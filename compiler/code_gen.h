@@ -49,7 +49,7 @@ public:
     lookup_result lookup_method(const std::wstring &ident) {
         lookup_result result;
 
-        for (int i = 0; i<current_class->methods.size(); i++) {
+        for (uint32_t i = 0; i<current_class->methods.size(); i++) {
             if (current_class->methods[i]->ident_str() == ident) {
                 result.type = lookup_type::mtd_method;
                 result.index = i;
@@ -80,7 +80,7 @@ public:
             }
         }
 
-        for (int i = 0; i<current_method->locals.size(); i++) {
+        for (uint32_t i = 0; i<current_method->locals.size(); i++) {
             if (current_method->locals[i] == ident) {
                 result.type = lookup_type::var_local;
                 result.index = i;
@@ -88,7 +88,7 @@ public:
             }
         }
 
-        for (int i=0;i<current_class->fields.size();i++) {
+        for (uint32_t i=0;i<current_class->fields.size();i++) {
             if (current_class->fields[i]->ident_str() == ident) {
                 result.type = lookup_type::var_field;
                 result.index = i;
@@ -442,27 +442,24 @@ private:
         for (auto it = node->begin_args(); it != node->end_args(); ++it)
             emit(*it);
 
-        auto target = node->calltarget();
-        if (target->type == syntax_type::syn_ident) {
-            auto lookup = scope.lookup_method(node->ident_str());
+        auto lookup = scope.lookup_method(node->ident_str());
 
-            //if (lookup.type == lookup_type::not_exist) {
-                //ctx.push_error(undeclared_method_error(node->token(), node->ident_str()));
-            //    return;
-            //}
-            if (lookup.type == lookup_type::mtd_syscall)
-                emitter.emit(opcode::op_syscall, callsite(callsite_lookup::cs_syscall, lookup.index));
-            else {
-                if (lookup.method != nullptr &&
-                    lookup.method->attr & method_attr::method_static) {
+        //if (lookup.type == lookup_type::not_exist) {
+            //ctx.push_error(undeclared_method_error(node->token(), node->ident_str()));
+        //    return;
+        //}
+        if (lookup.type == lookup_type::mtd_syscall)
+            emitter.emit(opcode::op_syscall, callsite(callsite_lookup::cs_syscall, lookup.index));
+        else {
+            if (lookup.method != nullptr &&
+                lookup.method->attr & method_attr::method_static) {
 
-                    emitter.emit_defer(opcode::op_call,
-                        callsite(callsite_lookup::cs_method, 1, 0),
-                        node->declaring_class()->ident_str() + L"::" + node->ident_str());
-                }
-                else 
-                    emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()));
+                emitter.emit_defer(opcode::op_call,
+                    callsite(callsite_lookup::cs_method, 1, 0),
+                    node->declaring_class()->ident_str() + L"::" + node->ident_str());
             }
+            else
+                emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()));
         }
     }
     void emit_callstatic(callmember_node *node) {

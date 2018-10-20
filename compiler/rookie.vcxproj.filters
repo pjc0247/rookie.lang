@@ -91,6 +91,9 @@
     <ClInclude Include="..\libs\debugger.h">
       <Filter>libs</Filter>
     </ClInclude>
+    <ClInclude Include="..\includes\rookie.h">
+      <Filter>includes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">
@@ -104,6 +107,9 @@
     </Filter>
     <Filter Include="ast">
       <UniqueIdentifier>{cce98081-4015-4241-a704-125edcc837de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="includes">
+      <UniqueIdentifier>{1a7adbd0-7f2b-40f8-a697-98885db2b37e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

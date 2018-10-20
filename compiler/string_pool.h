@@ -22,7 +22,7 @@ public:
 
     void dump() {
         printf("===begin_string_pool====\r\n");
-        for (int i = 0; i < pool.size(); i++)
+        for (uint32_t i = 0; i < pool.size(); i++)
             putchar(pool[i]);
         printf("\r\n===end_string_pool====\r\n");
     }

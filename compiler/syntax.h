@@ -131,7 +131,7 @@ public:
     root_node *root_ref;
     syntax_node *parent;
     std::deque<syntax_node*> children;
-    int capacity;
+    uint32_t capacity;
 
     bool is_virtual;
 };
@@ -331,7 +331,7 @@ protected:
         auto prev_locals = locals;
 
         locals.clear();
-        for (int i = 0; i < params()->children.size(); i++) {
+        for (uint32_t i = 0; i < params()->children.size(); i++) {
             if (params()->children[i]->type == syntax_type::syn_ident)
                 push_local(((ident_node*)params()->children[i])->ident);
         }
@@ -387,10 +387,6 @@ public:
     call_node(const stoken &token, syntax_node *parent) :
         syntax_node(token, parent) {
         type = syntax_type::syn_call;
-    }
-
-    syntax_node *calltarget() const {
-        return children[0];
     }
 
     ident_node *ident() {

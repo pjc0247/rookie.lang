@@ -11,7 +11,7 @@ public:
     runtime_pdb(const pdb &pdb) :
         _pdb(pdb) {
 
-        for (int i = 0; i < pdb.sigtable_len; i++) {
+        for (uint32_t i = 0; i < pdb.sigtable_len; i++) {
             auto sig = pdb.sigtable[i];
             sigtable[sig.sighash] = sig.signature;
         }
