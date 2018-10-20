@@ -1,0 +1,12 @@
+class string_test {
+    @main
+    static def main() {
+        a = "hello";
+        b = "world";
+
+        print(a);
+        print(b);
+
+        // TODO more tests
+    }
+}

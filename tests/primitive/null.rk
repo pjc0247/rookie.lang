@@ -1,0 +1,12 @@
+class null_test {
+    @main
+    static def main() {
+        a = null;
+        b = null;
+
+        print(a);
+        print(b);
+        print(a == b);
+        print(a == 1);
+    }
+}
