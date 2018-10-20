@@ -447,9 +447,7 @@ private:
                 //ctx.push_error(undeclared_method_error(node->token(), node->ident_str()));
             //    return;
             //}
-            if (lookup.type == lookup_type::mtd_method)
-                emitter.emit(opcode::op_call, callsite(callsite_lookup::cs_method, lookup.index));
-            else if (lookup.type == lookup_type::mtd_syscall)
+            if (lookup.type == lookup_type::mtd_syscall)
                 emitter.emit(opcode::op_syscall, callsite(callsite_lookup::cs_syscall, lookup.index));
             else 
                 emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()));
