@@ -28,6 +28,8 @@ enum class lookup_type {
 struct lookup_result {
     lookup_type type;
     int index;
+
+    method_node *method;
 };
 
 class scope {
@@ -51,6 +53,7 @@ public:
             if (current_class->methods[i]->ident_str() == ident) {
                 result.type = lookup_type::mtd_method;
                 result.index = i;
+                result.method = current_class->methods[i];
                 return result;
             }
         }
@@ -449,8 +452,17 @@ private:
             //}
             if (lookup.type == lookup_type::mtd_syscall)
                 emitter.emit(opcode::op_syscall, callsite(callsite_lookup::cs_syscall, lookup.index));
-            else 
-                emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()));
+            else {
+                if (lookup.method != nullptr &&
+                    lookup.method->attr & method_attr::method_static) {
+
+                    emitter.emit_defer(opcode::op_call,
+                        callsite(callsite_lookup::cs_method, 1, 0),
+                        node->declaring_class()->ident_str() + L"::" + node->ident_str());
+                }
+                else 
+                    emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()));
+            }
         }
     }
     void emit_callstatic(callmember_node *node) {

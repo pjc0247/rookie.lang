@@ -1,16 +1,13 @@
-class callmember_test {
+class testcase {
     @main
     static def main() {
-        foo.new().hello();
+        puts(fib(5));
     }
-}
 
-class foo {
-    def hello() {
-        puts ("hello");
-        bye();
-    }
-    def bye(){
-        print ("bye");
+    static def fib(x) {
+        if (x == 0) return 0;
+        if (x == 1) return 1;
+
+        return fib(x-1) + fib(x-2);
     }
 }
