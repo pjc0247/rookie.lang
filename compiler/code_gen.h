@@ -182,7 +182,7 @@ public:
         return instructions.size();
     }
 
-    program *fin() {
+    program *fin(method_node *main_node) {
         resolve_defered_calls();
 
         program *_p = new program();
@@ -196,6 +196,13 @@ public:
         p.header.types_len = types.size();
 
         p.header.main_entry = 0;
+        for (int i = 0; i < entries.size(); i++) {
+            auto sig = main_node->declaring_class()->ident_str() + L"::" + main_node->ident_str();
+            if (sig == entries[i].signature) {
+                p.header.main_entry = i;
+                break;
+            }
+        }
 
         auto rdata = spool.fin();
 
@@ -212,6 +219,16 @@ public:
 
                     wcscpy(p.types[i].methods[j].name, method.name.c_str());
                     p.types[i].methods[j].entry = method.entry;
+                }
+
+                p.types[i].parents_len = type.parents.size();
+                if (type.parents.size() > 0) {
+                    p.types[i].parents = (uint32_t*)malloc(sizeof(uint32_t) * type.parents.size());
+                    int offset = 0;
+                    for (auto &parent : type.parents) {
+                        p.types[i].parents[offset] = sig2hash(parent);
+                        offset++;
+                    }
                 }
 
                 i++;
@@ -351,6 +368,14 @@ public:
                 mdata.name = _method->ident_str();
                 tdata.methods.push_back(mdata);
             }
+            auto parents = _class->parents();
+            if (parents != nullptr) {
+                for (auto _p : parents->children) {
+                    auto p = (ident_node*)_p;
+                    tdata.parents.push_back(p->ident);
+                }
+            }
+
             ctx.types[tdata.name] = tdata;
         }
 
@@ -364,7 +389,7 @@ public:
 
         emit(root);
 
-        return emitter.fin();
+        return emitter.fin(m[0]);
     }
     pdb *generate_pdb(binding &bindings) {
         if (ctx.opts.generate_pdb == false)
@@ -424,7 +449,7 @@ private:
         scope.set_class(node);
         emitter.emit_class(node);
 
-        for (int i = 2; i < node->children.size(); i++)
+        for (int i = 1; i < node->children.size(); i++)
             emit(node->children[i]);
     }
     void emit_method(method_node *node) {

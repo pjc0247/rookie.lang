@@ -1,9 +1,21 @@
-class comment_test : object {
+class foo {
+    def hello() {
+        print("HJELLO2");
+    }
+    def basdf(){
+        print("QWER");
+    }
+}
+
+class bar :foo {
+    
+}
+
+class comment_test {
     @main
     static def main() {
-        // a = "hello";
-        // b = "world";
-        // print(1234);
-        // print(a);
+        bar.new().basdf();
     }
+
+
 }

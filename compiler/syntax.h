@@ -361,12 +361,27 @@ public:
         return ident()->ident;
     }
 };
+
+class inherit_node : public syntax_node {
+public:
+    inherit_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
+        type = syntax_type::syn_inherit;
+    }
+};
 class class_node : public syntax_node {
 public:
     class_node(const stoken &token, syntax_node *parent) :
         syntax_node(token, parent) {
         attr = 0;
         type = syntax_type::syn_class;
+    }
+
+    inherit_node *parents() const {
+        if (children.size() <= 1) return nullptr;
+        if (children[1]->type == syntax_type::syn_inherit)
+            return (inherit_node*)children[1];
+        return nullptr;
     }
 
     ident_node *ident() const {
@@ -381,14 +396,6 @@ public:
     std::vector<method_node*> methods;
 
     unsigned int attr;
-};
-
-class inherit_node : public syntax_node {
-public:
-    inherit_node(const stoken &token, syntax_node *parent) :
-        syntax_node(token, parent) {
-        type = syntax_type::syn_inherit;
-    }
 };
 
 class call_node : public syntax_node {

@@ -56,6 +56,7 @@ struct compiletime_typedata {
     std::wstring name;
     class_attr attr;
 
+    std::vector<std::wstring> parents;
     std::vector<compiletime_methoddata> methods;
 
     compiletime_typedata() :

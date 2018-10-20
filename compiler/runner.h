@@ -75,7 +75,7 @@ public:
 #ifdef RK_HALT_ON_LONG_EXECUTION
         halt_counter = 0;
 #endif
-
+         
         current_entry = _entry;
         pc = _entry->entry;
         bp = 0;
@@ -348,17 +348,44 @@ private:
 
         // PROGRAM METHODS
         for (uint32_t i = 0; i < p.header.types_len; i++) {
+            load_programtype(sig2hash(p.types[i].name));
+        }
+    }
+
+    void load_programtype(uint32_t sighash) {
+        // Already loaded
+        if (types.find(sighash) != types.end())
+            return;
+
+        for (uint32_t i = 0; i < p.header.types_len; i++) {
             auto type = p.types[i];
+
+            if (sig2hash(type.name) != sighash)
+                continue;
 
             runtime_typedata tdata;
             tdata.typekind = runtime_typekind::tk_programtype;
 
             calltable vtable;
-            // simple inherit ==> FIXME
-            auto basevtable = types[sighash_object].vtable.table;
-            for (auto &method : basevtable) {
-                vtable.table[method.first] = method.second;
+
+            if (p.types[i].parents_len == 0) {
+                auto basevtable = types[sighash_object].vtable.table;
+                for (auto &method : basevtable) {
+                    vtable.table[method.first] = method.second;
+                }
             }
+            else {
+                for (int j = 0; j < p.types[i].parents_len; j++) {
+                    uint32_t parent_hash = p.types[i].parents[j];
+
+                    load_programtype(parent_hash);
+
+                    for (auto &method : types[parent_hash].vtable.table) {
+                        vtable.table[method.first] = method.second;
+                    }
+                }
+            }
+
             for (uint32_t j = 0; j < type.methods_len; j++) {
                 auto method = type.methods[j];
                 auto methodhash = sig2hash(method.name);

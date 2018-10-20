@@ -281,6 +281,7 @@ public:
         rklog("\n\n");
 #endif
 
+        has_inherit_list = false;
         for (cursor = 0; cursor < tokens.size(); cursor ++) {
             auto token = tokens[cursor];
 
@@ -405,10 +406,8 @@ private:
         stoken stoken(token);
 
         if (token.type == token_type::keyword) {
-            if (token.raw == L"class") {
+            if (token.raw == L"class")
                 stoken.type = stoken_type::st_class;
-                has_inherit_list = false;
-            }
             else if (token.raw == L"include")
                 stoken.type = stoken_type::st_include;
         }
@@ -417,12 +416,11 @@ private:
         else if (token.type == token_type::literal)
             stoken.type = stoken_type::st_literal;
         else if (token.type == token_type::colon) {
-            has_inherit_list = true;
             stoken.type = stoken_type::st_begin_inherit;
         }
         else if (token.type == token_type::left_bracket) {
-            if (has_inherit_list)
-                stoken.type = stoken_type::st_end_inherit;
+            _mark_as_parsed(stoken);
+            stoken.type = stoken_type::st_end_inherit;
         }
         else if (token.type == token_type::right_bracket ||
                 token.type == token_type::semicolon)
@@ -474,6 +472,8 @@ private:
             flush_until_priority(token.priority);
             stoken.type = stoken_type::comma;
         }
+        else if (token.type == token_type::right_bracket)
+            stoken.type = stoken_type::end_block;
         else if (token.type == token_type::left_bracket ||
             token.type == token_type::right_bracket)
             _mark_as_parsed(stoken);

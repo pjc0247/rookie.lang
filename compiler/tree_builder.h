@@ -34,7 +34,6 @@ public:
             rklog("%s\n", token.raw.c_str());
 
             _ending_expression(end_block);
-            _ending_expression(st_end_inherit);
             _ending_expression(st_end_param);
             _ending_expression(st_end_call);
             _ending_expression(st_end_arr);
@@ -52,6 +51,10 @@ public:
             }
             else if (token.type == stoken_type::st_begin_inherit) {
                 append_and_replace(inherit(token));
+            }
+            else if (token.type == stoken_type::st_end_inherit) {
+                if (current->type == syntax_type::syn_inherit)
+                    current = current->parent;
             }
             else if (token.type == stoken_type::st_defmethod) {
                 current_method = method(token);

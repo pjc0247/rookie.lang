@@ -124,6 +124,10 @@ struct methoddata {
 };
 struct typedata {
     wchar_t name[rooke_max_signature];
+
+    uint32_t parents_len;
+    uint32_t *parents;
+
     uint32_t methods_len;
     methoddata *methods;
 };
@@ -159,6 +163,7 @@ struct program {
     void dump() {
         wprintf(L"[rookie_program]\r\n");
 
+        wprintf(L"  * main: %d\n", header.main_entry);
         wprintf(L"  * codesize: %d\n", header.code_len);
 
         wprintf(L"  [types]\n");
