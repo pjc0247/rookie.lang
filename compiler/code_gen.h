@@ -559,7 +559,7 @@ private:
         if (lookup.type == lookup_type::var_local)
             emitter.emit(opcode::op_ldloc, lookup.index);
         else //if (lookup.type == lookup_type::var_field)
-            emitter.emit(opcode::op_ldprop, lookup.index);
+            emitter.emit(opcode::op_ldprop, sig2hash(node->ident));
     }
     void emit_literal(literal_node *node) {
         if (node->literal_type == literal_type::integer)
