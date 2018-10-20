@@ -5,27 +5,25 @@
 #include "binding.h"
 #include "value_object.h"
 
-#include "array.h"
-
 template <typename T>
 class rkobject : public rkobjectbase<T> {
+public:
+    
+};
+
+class rkscriptobject : public rkobject<rkscriptobject> {
 public:
     static void import(binding &b) {
         auto type = type_builder(L"object");
 
-        type.method(L"new", rkobjectbase<T>::create_object);
-
-        method(type, L"properties", &rkobject::properties);
+        method(type, L"properties", &rkscriptobject::all_properties);
+        method(type, L"__get_prop", &rkscriptobject::get_property);
 
         b.add_type(type);
     }
 
-    value properties() {
+    value all_properties() {
         return value::mkinteger(1);
     }
-
-private:
-    std::vector<value> ary;
+    value get_property(value &key);
 };
-
-class rkscriptobject : public rkobject<rkscriptobject> {};

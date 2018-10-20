@@ -31,6 +31,7 @@ program *compile(const std::wstring &filepath) {
     b.import<rkstring>();
     b.import<rkgc>();
     b.import<rkdebugger>();
+    b.import<rkscriptobject>();
 
     auto rc = compiler::default_compiler(b);
 
@@ -46,7 +47,7 @@ program *compile(const std::wstring &filepath) {
 
         debugger dbg(*out.pdb);
         runner(*out.program, b)
-            //.attach_debugger(dbg)
+            .attach_debugger(dbg)
             .execute();
     }
     else {

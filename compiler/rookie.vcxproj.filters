@@ -12,6 +12,9 @@
     </ClCompile>
     <ClCompile Include="debugger.cpp" />
     <ClCompile Include="c_interface.cpp" />
+    <ClCompile Include="..\libs\object.cpp">
+      <Filter>libs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binding.h" />

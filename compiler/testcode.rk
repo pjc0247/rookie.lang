@@ -1,7 +1,14 @@
 class for_test {
     @main
     static def main() {
-        for (i=0;i<5;i++)
-            print(i);
+        f = foo.new();
+        f.b = 1234;
+        f.c = 1234;
+        f.hello();
+    }
+}
+class foo {
+    def hello() {
+        print(this.__get_prop("c"));
     }
 }

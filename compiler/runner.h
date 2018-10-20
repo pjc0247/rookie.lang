@@ -227,7 +227,7 @@ public:
                 auto sighash = inst.operand;
 
                 auto callinfo = calleeobj->vtable->at(sighash);
-                if (callinfo.type == call_type::ct_syscall_direct)
+                if (callinfo.type == call_type::ct_syscall_direct)  
                     syscall(callinfo.entry, sp);
                 else if (callinfo.type == call_type::ct_programcall_direct)
                     programcall(callinfo.entry);
@@ -354,6 +354,11 @@ private:
             tdata.typekind = runtime_typekind::tk_programtype;
 
             calltable vtable;
+            // simple inherit ==> FIXME
+            auto basevtable = types[sighash_object].vtable.table;
+            for (auto &method : basevtable) {
+                vtable.table[method.first] = method.second;
+            }
             for (uint32_t j = 0; j < type.methods_len; j++) {
                 auto method = type.methods[j];
                 auto methodhash = sig2hash(method.name);
