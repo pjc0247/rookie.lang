@@ -47,7 +47,9 @@ program *compile(const std::wstring &filepath) {
 
         debugger dbg(*out.pdb);
         runner(*out.program, b)
+#if _DEBUG
             .attach_debugger(dbg)
+#endif
             .execute();
     }
     else {
