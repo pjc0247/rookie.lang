@@ -13,6 +13,7 @@ enum class token_type {
     literal,
 
     keyword,
+    annotation,
     op,
 
     dot, comma, semicolon,

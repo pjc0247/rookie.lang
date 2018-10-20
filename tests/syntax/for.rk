@@ -2,6 +2,6 @@ class for_test {
     @main
     static def main() {
         for (i=0;i<5;i++)
-            print(i);
+            puts(i);
     }
 }

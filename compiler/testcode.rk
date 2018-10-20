@@ -1,19 +1,7 @@
-class op_priority_test {
+class for_test {
     @main
     static def main() {
-        a = idx.new();
-
-        print(a[2]);
-        a[5] = 1234;
-    }
-}
-
-class idx {
-    def __getitem__ (x) { 
-        return x;
-    }
-    def __setitem__ (x, y){ 
-        print(x)
-        print(y)
+        for (i=0;i<5;i++)
+            print(i);
     }
 }

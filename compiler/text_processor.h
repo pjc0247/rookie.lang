@@ -73,6 +73,9 @@ public:
                 if (rule.type == token_type::keyword &&
                     is_ident_acceptible(src[head - 1]))
                     continue;
+                if (rule.type == token_type::keyword &&
+                    is_ident_acceptible(src[head + rule.raw.length()]))
+                    continue;
 
                 if (head != tail) {
                     auto t = parse(src.substr(tail, head - tail));
@@ -151,12 +154,12 @@ private:
 
         rules.push_back(lexer_token(L"include", token_type::keyword));
 
-        rules.push_back(lexer_token(L"@", token_type::keyword));
+        rules.push_back(lexer_token(L"@", token_type::annotation));
         rules.push_back(lexer_token(L"class", token_type::keyword));
         rules.push_back(lexer_token(L"def", token_type::keyword));
         rules.push_back(lexer_token(L"static", token_type::keyword));
         rules.push_back(lexer_token(L"if", token_type::keyword, -9000));
-        rules.push_back(lexer_token(L"for", token_type::keyword));
+        rules.push_back(lexer_token(L"for", token_type::keyword, -10000));
         rules.push_back(lexer_token(L"return", token_type::keyword, -9000));
         rules.push_back(lexer_token(L"null", token_type::keyword));
 
@@ -424,7 +427,8 @@ private:
     void sexp_class(token &token) {
         stoken stoken(token);
 
-        if (token.type == token_type::keyword) {
+        if (token.type == token_type::keyword ||
+            token.type == token_type::annotation) {
             // Keywords with trailing ident.
             //   ex) def METHOD_NAME
             if (token.raw == L"def" ||
@@ -567,11 +571,12 @@ private:
             // Keywords such as
             //   KEYWORD (LINE);  // if (code)
             if (token.raw == L"return" ||
-                token.raw == L"if") {
+                token.raw == L"if" ||
+                token.raw == L"for") {
 
                 flush_single_line();
             }
-                stack.push_back(token);
+            stack.push_back(token);
         } 
         else
             stoken = parse(token);
