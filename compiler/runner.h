@@ -346,12 +346,36 @@ private:
             types[typesighash] = tdata;
         }
 
-        // PROGRAM METHODS
+        load_all_systypes();
+        load_all_programtypes();
+    }
+
+    void load_all_systypes() {
+        for (auto &type : binding.get_types()) {
+            auto typesighash = sig2hash(type.get_name());
+
+            auto methods = type.get_methods();
+            calltable vtable;
+
+            for (auto &method : methods) {
+                auto sighash = sig2hash(method.first);
+                syscalls.table.push_back(method.second);
+
+                vtable.table[sighash].type = call_type::ct_syscall_direct;
+                vtable.table[sighash].entry = syscalls.table.size() - 1;
+            }
+
+            runtime_typedata tdata;
+            tdata.typekind = runtime_typekind::tk_systype;
+            tdata.vtable = vtable;
+            types[typesighash] = tdata;
+        }
+    }
+    void load_all_programtypes() {
         for (uint32_t i = 0; i < p.header.types_len; i++) {
             load_programtype(sig2hash(p.types[i].name));
         }
     }
-
     void load_programtype(uint32_t sighash) {
         // Already loaded
         if (types.find(sighash) != types.end())

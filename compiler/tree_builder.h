@@ -31,8 +31,6 @@ public:
         for (cursor=0; cursor<stokens->size(); cursor++) {
             auto &token = stokens->at(cursor);
 
-            rklog("%s\n", token.raw.c_str());
-
             _ending_expression(end_block);
             _ending_expression(st_end_param);
             _ending_expression(st_end_call);
