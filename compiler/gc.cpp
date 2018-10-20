@@ -42,8 +42,13 @@ void gc::mark(value &v, gc_context &ctx) {
 
     ctx.marks.insert(v.objref);
 
-    for (auto &prop : v.objref->properties)
+    for (auto &prop : v.objref->properties) {
+        if (ctx.marks.find(prop.second.objref) !=
+            ctx.marks.end())
+            continue;
+
         mark(prop.second, ctx);
+    }
 }
 void gc::sweep(gc_context &ctx) {
     for (auto it = all_objects.begin(); it != all_objects.end();) {
