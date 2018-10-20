@@ -57,7 +57,7 @@ Compling
 * __rookie__ requires C++17.
 
 __MSVC__<br>
-Just open the `.sln` file and build it.
+Just open the `.sln` file and build it. You may require VS 2017 or higher.
 
 __WebAssembly(emcc)__<br>
 ```
