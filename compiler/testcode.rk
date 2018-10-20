@@ -1,4 +1,4 @@
-class comment_test {
+class comment_test : object {
     @main
     static def main() {
         // a = "hello";

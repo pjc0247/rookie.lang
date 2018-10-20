@@ -34,6 +34,7 @@ public:
             rklog("%s\n", token.raw.c_str());
 
             _ending_expression(end_block);
+            _ending_expression(st_end_inherit);
             _ending_expression(st_end_param);
             _ending_expression(st_end_call);
             _ending_expression(st_end_arr);
@@ -48,6 +49,9 @@ public:
             else if (token.type == stoken_type::st_class) {
                 current_class = klass(token);
                 append_and_replace(current_class);
+            }
+            else if (token.type == stoken_type::st_begin_inherit) {
+                append_and_replace(inherit(token));
             }
             else if (token.type == stoken_type::st_defmethod) {
                 current_method = method(token);
@@ -133,6 +137,10 @@ private:
     }
     class_node *klass(const stoken &token) {
         auto node = new class_node(token, current);
+        return node;
+    }
+    inherit_node *inherit(const stoken &token) {
+        auto node = new inherit_node(token, current);
         return node;
     }
     params_node *params(const stoken &token) {

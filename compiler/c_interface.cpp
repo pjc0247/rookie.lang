@@ -1,8 +1,5 @@
 #include "stdafx.h"
 
-//#include <codecvt>
-//#include <locale>
-
 #include "code_gen.h"
 #include "compiler.h"
 #include "backends/p2wast.h"
@@ -40,6 +37,10 @@ void rk_free_program(program *p) {
 }
 void rk_free_pdb(pdb *p) {
     if (p == nullptr) return;
+
+    delete[] p->code;
+    delete[] p->inst_data;
+    delete[] p->sigtable;
 
     delete p;
 }

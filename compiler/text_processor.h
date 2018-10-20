@@ -195,6 +195,7 @@ private:
 
         rules.push_back(lexer_token(L".", token_type::dot, -3000));
         rules.push_back(lexer_token(L",", token_type::comma, -1000));
+        rules.push_back(lexer_token(L":", token_type::colon, -9999));
         rules.push_back(lexer_token(L";", token_type::semicolon, -9999));
     }
 
@@ -404,8 +405,10 @@ private:
         stoken stoken(token);
 
         if (token.type == token_type::keyword) {
-            if (token.raw == L"class")
+            if (token.raw == L"class") {
                 stoken.type = stoken_type::st_class;
+                has_inherit_list = false;
+            }
             else if (token.raw == L"include")
                 stoken.type = stoken_type::st_include;
         }
@@ -413,10 +416,16 @@ private:
             stoken.type = stoken_type::ident;
         else if (token.type == token_type::literal)
             stoken.type = stoken_type::st_literal;
-
-        else if (token.type == token_type::left_bracket ||
-            token.type == token_type::right_bracket ||
-            token.type == token_type::semicolon)
+        else if (token.type == token_type::colon) {
+            has_inherit_list = true;
+            stoken.type = stoken_type::st_begin_inherit;
+        }
+        else if (token.type == token_type::left_bracket) {
+            if (has_inherit_list)
+                stoken.type = stoken_type::st_end_inherit;
+        }
+        else if (token.type == token_type::right_bracket ||
+                token.type == token_type::semicolon)
             _mark_as_parsed(stoken);
 
         if (stoken.type == stoken_type::none)
@@ -714,6 +723,8 @@ private:
 
     int cursor;
     int depth;
+
+    bool has_inherit_list;
 
     std::vector<token> tokens;
     std::vector<stoken> result;

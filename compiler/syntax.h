@@ -18,6 +18,7 @@ enum class syntax_type {
 
     syn_annotation,
     syn_class, syn_field, syn_method, syn_params,
+    syn_inherit,
 
     syn_block,
     syn_literal,
@@ -380,6 +381,14 @@ public:
     std::vector<method_node*> methods;
 
     unsigned int attr;
+};
+
+class inherit_node : public syntax_node {
+public:
+    inherit_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
+        type = syntax_type::syn_inherit;
+    }
 };
 
 class call_node : public syntax_node {

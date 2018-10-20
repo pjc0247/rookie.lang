@@ -16,7 +16,7 @@ enum class token_type {
     annotation,
     op,
 
-    dot, comma, semicolon,
+    dot, comma, colon, semicolon,
 
     left_paren, right_paren,
     left_bracket, right_bracket,
@@ -44,7 +44,9 @@ enum class stoken_type {
     st_this,
     st_newobj,
     st_annotation,
-    st_class, st_defmethod,
+    st_class,
+    st_begin_inherit, st_end_inherit,
+    st_defmethod,
     st_static,
     st_if, st_for,
     st_return,
@@ -75,6 +77,8 @@ inline const wchar_t *to_string(stoken_type type) {
     case stoken_type::op: return L"op";
     case stoken_type::st_memberaccess: return L"st_memberaccess";
     case stoken_type::st_class: return L"st_class";
+    case stoken_type::st_begin_inherit: return L"st_begin_inherit";
+    case stoken_type::st_end_inherit: return L"st_end_inherit";
     case stoken_type::st_newobj: return L"st_newobj";
     case stoken_type::st_static: return L"st_static";
     case stoken_type::st_defmethod: return L"st_defmethod";
