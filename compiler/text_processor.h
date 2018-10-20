@@ -96,6 +96,9 @@ public:
 
                 line_buf.insert(line_buf.end(), t.raw.begin(), t.raw.end());
 
+                if (is_ignorable(src[head]))
+                    last_meaningful_ch = src[head];
+
                 head += candidate.length();
                 cols += candidate.length();
                 tail = head;
@@ -114,8 +117,12 @@ public:
             }
 
             end_loop:
-            if (!found)
+            if (!found) {
+                if (is_ignorable(src[head]))
+                    last_meaningful_ch = src[head];
+
                 head++;
+            }
         }
 
         if (head != tail) {
@@ -125,10 +132,6 @@ public:
             t.dbg_codeidx = spool_idx;
             result.push_back(t);
         }
-
-        if (src[head] != ' ' && src[head] != '\t' &&
-            src[head] != '\r' && src[head] != '\n')
-            last_meaningful_ch = src[head];
 
         result.erase(
             std::remove_if(
@@ -192,6 +195,12 @@ private:
         rules.push_back(lexer_token(L";", token_type::semicolon, -9999));
     }
 
+    bool is_ignorable(wchar_t c) {
+        if (c != ' ' && c != '\t' &&
+            c != '\r' && c != '\n')
+            return true;
+        return false;
+    }
     bool is_number(wchar_t c) {
         if (c >= '0' && c <= '9') return true;
         return false;

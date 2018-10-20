@@ -1,9 +1,9 @@
-class indexer_test {
+class op_priority_test {
     @main
     static def main() {
         a = idx.new();
 
-        puts(a[2]);
+        print(a[2]);
         a[5] = 1234;
     }
 }
@@ -13,7 +13,7 @@ class idx {
         return x;
     }
     def __setitem__ (x, y){ 
-        puts(x)
-        puts(y)
+        print(x)
+        print(y)
     }
 }
