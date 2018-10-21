@@ -93,9 +93,6 @@ public:
         errors.push_back(err);
     }
 
-    void fin() {
-    }
-
 public:
     // Input & Output
     const compile_option &opts;

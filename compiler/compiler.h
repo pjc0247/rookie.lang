@@ -121,7 +121,6 @@ public:
 
         auto root = ast_transformed(ctx, src, out.errors);
         auto cg = code_gen(ctx, syscalls);
-        ctx.fin();
 
 #if _DEBUG
         root->dump();

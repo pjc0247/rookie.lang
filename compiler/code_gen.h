@@ -30,6 +30,11 @@ struct lookup_result {
     int index;
 
     method_node *method;
+
+    lookup_result() :
+        type(lookup_type::not_exist),
+        method(nullptr) {
+    }
 };
 
 class scope {
@@ -484,8 +489,11 @@ private:
                     callsite(callsite_lookup::cs_method, 1, 0),
                     node->declaring_class()->ident_str() + L"::" + node->ident_str());
             }
-            else
+            else {
+                if (current_method->attr & method_attr::method_static)
+                    ctx.push_error(codegen_error(L"Cannot call non-static method inside static-method."));
                 emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()));
+            }
         }
     }
     void emit_callstatic(callmember_node *node) {
