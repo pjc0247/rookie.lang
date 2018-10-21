@@ -9,6 +9,12 @@
 
 #include "c_interface.h"
 
+struct rkcc {
+    binding binding;
+
+    std::vector<type_builder> types;
+};
+
 void rk_exec(const char *code) {
     auto b = binding::default_binding();
     auto rc = compiler::default_compiler(b);
@@ -21,6 +27,24 @@ void rk_exec(const char *code) {
     }
 }
 
+rkcc *rk_init() {
+    auto cc = new rkcc();
+
+    return cc;
+}
+int rk_add_type(rkcc *cc, const char *name) {
+    auto tb = type_builder(str2wstr(name));
+    cc->types.push_back(tb);
+
+    return cc->types.size() - 1;
+}
+void rk_compile(rkcc *cc, const char *src) {
+
+}
+
+void rk_free_cc(rkcc *cc) {
+    delete cc;
+}
 void rk_free_program(program *p) {
     if (p == nullptr) return;
 
