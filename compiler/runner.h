@@ -243,7 +243,11 @@ public:
                 auto calleeobj = callee_ptr->objref;
                 auto sighash = inst.operand;
 
-                auto callinfo = calleeobj->vtable->at(sighash);
+                auto _callinfo = calleeobj->vtable->find(sighash);
+                if (_callinfo == calleeobj->vtable->end())
+                    throw rkexception("No such method");
+
+                auto callinfo = (*_callinfo).second;
                 if (callinfo.type == call_type::ct_syscall_direct)  
                     syscall(callinfo.entry, sp);
                 else if (callinfo.type == call_type::ct_programcall_direct)
