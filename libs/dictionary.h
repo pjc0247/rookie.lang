@@ -19,6 +19,8 @@ public:
         method(type, L"__getitem__", &rkdictionary::get);
         method(type, L"__setitem__", &rkdictionary::set);
         method(type, L"size", &rkdictionary::size);
+        method(type, L"contains", &rkdictionary::contains);
+        method(type, L"remove", &rkdictionary::remove);
 
         b.add_type(type);
     }
@@ -35,18 +37,30 @@ public:
         return value::mkobjref(new rkdictionary(0));
     }
 
-    value get(value &idx) {
-        auto h = sig2hash(rkwstr(idx));
+    value get(value &key) {
+        auto h = sig2hash(rkwstr(key));
         return dic[h];
     }
-    value set(value &idx, value &v) {
-        auto h = sig2hash(rkwstr(idx));
+    value set(value &key, value &v) {
+        auto h = sig2hash(rkwstr(key));
         dic[h] = v;
         return rknull;
     }
     
     value size() {
         return value::mkinteger(dic.size());
+    }
+    value contains(value &key) {
+        auto h = sig2hash(rkwstr(key));
+        if (dic.find(h) == dic.end())
+            return value::_false();
+        return value::_true();
+    }
+    value remove(value &key) {
+        auto h = sig2hash(rkwstr(key));
+        if (dic.erase(h))
+            return value::_true();
+        return value::_false();
     }
 
 private:
