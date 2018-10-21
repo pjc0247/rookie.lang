@@ -1,3 +1,15 @@
+Rookie Programming Language
+====
+
+Syntax
+----
+
+C++ API
+----
+
+C API
+----
+
 Syntax
 ====
 
