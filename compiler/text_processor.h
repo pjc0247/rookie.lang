@@ -195,7 +195,7 @@ private:
 
         rules.push_back(lexer_token(L".", token_type::dot, -3000));
         rules.push_back(lexer_token(L",", token_type::comma, -1000));
-        rules.push_back(lexer_token(L":", token_type::colon, -9999));
+        rules.push_back(lexer_token(L":", token_type::colon, -1000));
         rules.push_back(lexer_token(L";", token_type::semicolon, -9999));
     }
 
@@ -516,7 +516,10 @@ private:
             _mark_as_parsed(stoken);
         }
         else if (token.type == token_type::right_bracket) {
-            result.push_back(parse(token));
+            if (prev_token().raw == L")")
+                stack.push_back(::token(token).preparsed(stoken_type::nothing));
+            else
+                result.push_back(parse(token));
             depth++;
 
             _mark_as_parsed(stoken);
