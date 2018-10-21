@@ -1,0 +1,13 @@
+class strconcat_test {
+    @main
+    static def main() {
+        puts("A" + "B");
+
+        a = "hello";
+        b = "world";
+        puts(a + b);
+
+        print(a + "world");
+        print("hello" + b);
+    }
+}
