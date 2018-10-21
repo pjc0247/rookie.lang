@@ -32,7 +32,8 @@ enum class stoken_type {
 
     st_null,
     st_true, st_false,
-    comma, endl,
+    comma, endl, 
+    st_colon,
 
     ident,
     st_literal,

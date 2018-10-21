@@ -15,6 +15,7 @@
 #include "exe_context.h"
 
 #include "libs/array.h"
+#include "libs/dictionary.h"
 
 #define _invalid_stackitem \
     throw new invalid_program_exception("invalid stackitem, expected integer");
@@ -210,6 +211,15 @@ public:
                 auto aryref = new rkarray(inst.operand);
                 // FIXME
                 aryref->vtable = &types[sighash_array].vtable.table;
+                push(value::mkobjref(aryref));
+
+                gc.add_object(aryref);
+            }
+            else if (inst.opcode == opcode::op_newdic) {
+                set_rkctx(exectx);
+                auto aryref = new rkdictionary(inst.operand);
+                // FIXME
+                aryref->vtable = &types[sighash_dictionary].vtable.table;
                 push(value::mkobjref(aryref));
 
                 gc.add_object(aryref);

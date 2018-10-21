@@ -430,6 +430,7 @@ private:
             _route(bool);
             _route(newobj);
             _route(newarr);
+            _route(newdic);
             _route(op);
             _route(assignment);
             _route(if);
@@ -619,6 +620,14 @@ private:
         for (int i=node->children.size()-1; i>=0;i--)
             emit(node->children[i]);
         emitter.emit(opcode::op_newarr, node->children.size());
+    }
+    void emit_newdic(newdic_node *node) {
+        for (int i=0;i<node->children.size();i+=2) {
+            auto key = (ident_node*)node->children[i];
+            emitter.emit(opcode::op_ldstr, key->ident);
+            emit(node->children[i + 1]);
+        }
+        emitter.emit(opcode::op_newdic, node->children.size() / 2);
     }
     void emit_op(op_node *node) {
         emit(node->left());

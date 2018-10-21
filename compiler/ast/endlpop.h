@@ -41,7 +41,9 @@ protected:
             depth -= node->children.size();
             depth++;
         }
-        else if (node->type == syntax_type::syn_newarr) {
+        else if (node->type == syntax_type::syn_newarr ||
+            node->type == syntax_type::syn_newdic) {
+
             depth -= node->children.size();
         }
         else if (

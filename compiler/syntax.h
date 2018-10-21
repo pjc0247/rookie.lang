@@ -28,6 +28,7 @@ enum class syntax_type {
     syn_null,
     syn_newarr,
     syn_newobj,
+    syn_newdic,
 
     syn_arraccess,
     syn_memberaccess,
@@ -573,6 +574,13 @@ public:
     newobj_node(const stoken &token, syntax_node *parent) :
         callmember_node(token, parent) {
         type = syntax_type::syn_newobj;
+    }
+};
+class newdic_node : public syntax_node {
+public:
+    newdic_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
+        type = syntax_type::syn_newdic;
     }
 };
 

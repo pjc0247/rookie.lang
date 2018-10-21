@@ -14,6 +14,7 @@
 
 #include "libs/stdlib.h"
 #include "libs/array.h"
+#include "libs/dictionary.h"
 #include "libs/string.h"
 #include "libs/debugger.h"
 #include "libs/gc.h"
@@ -28,6 +29,7 @@ program *compile(const std::wstring &filepath) {
 
     b.import<rkstdlib>();
     b.import<rkarray>();
+    b.import<rkdictionary>();
     b.import<rkstring>();
     b.import<rkgc>();
     b.import<rkdebugger>();

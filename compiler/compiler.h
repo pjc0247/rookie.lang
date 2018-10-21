@@ -15,6 +15,7 @@
 #include "ast/callnewobj.h"
 #include "ast/arraccess.h"
 #include "ast/endlpop.h"
+#include "ast/newdic.h"
 
 #define rky_no_optimization (1 << 0)
 
@@ -96,6 +97,8 @@ public:
             rklog("%d changes so far!\n\n", total_changes);
         } while (round_changes > 0);
 
+        ((syntax_traveler*)(new endlpop_transformer()))->transform(root);
+
         return root;
     }
 
@@ -157,9 +160,9 @@ public:
 private:
     static compiler &include_essential_passes(compiler &c) {
         c.transformer<annotation_transformer>()
-         .transformer<endlpop_transformer>()
          .transformer<callmember_transformer>()
          .transformer<callnewobj_transformer>()
+         .transformer<newdic_transformer>()
          .transformer<arr_setitem_transformer>()
          .transformer<arr_getitem_transformer>();
         return c;

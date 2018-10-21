@@ -94,6 +94,12 @@
     <ClInclude Include="..\includes\rookie.h">
       <Filter>includes</Filter>
     </ClInclude>
+    <ClInclude Include="ast\newdic.h">
+      <Filter>ast</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\dictionary.h">
+      <Filter>libs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

@@ -488,6 +488,7 @@ private:
 
         if (token.type == token_type::dot ||
             token.type == token_type::semicolon ||
+            token.type == token_type::colon ||
             token.type == token_type::comma) {
 
             _mark_as_parsed(stoken);
@@ -622,6 +623,8 @@ private:
             stoken.type = stoken_type::endl;
         else if (token.type == token_type::comma)
             stoken.type = stoken_type::comma;
+        else if (token.type == token_type::colon)
+            stoken.type = stoken_type::st_colon;
         else if (token.type == token_type::dot)
             stoken.type = stoken_type::nothing;
         else if (token.type == token_type::keyword) {
