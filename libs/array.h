@@ -14,6 +14,8 @@ public:
         type.method(L"new", create_array);
 
         method(type, L"__getitem__", &rkarray::at);
+        method(type, L"__setitem__", &rkarray::set);
+
         method(type, L"at", &rkarray::at);
         method(type, L"push", &rkarray::push);
         method(type, L"remove", &rkarray::remove);
@@ -35,6 +37,10 @@ public:
 
     value at(value &idx) {
         return ary[rkint(idx)];
+    }
+    value set(value &idx, value &v) {
+        ary[rkint(idx)] = v;
+        return rknull;
     }
     value push(value &v) {
         ary.push_back(v);
