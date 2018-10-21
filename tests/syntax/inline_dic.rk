@@ -1,0 +1,14 @@
+class inline_dic_test {
+    @main
+    static def main() {
+        a = {
+            foo: "foo",
+            bar: "bar"
+        };
+
+        print(a["foo"]);
+        print(a["bar"]);
+
+        print(a.size());
+    }
+}

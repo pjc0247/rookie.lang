@@ -18,6 +18,7 @@ public:
 
         method(type, L"__getitem__", &rkdictionary::get);
         method(type, L"__setitem__", &rkdictionary::set);
+        method(type, L"size", &rkdictionary::size);
 
         b.add_type(type);
     }
@@ -44,7 +45,7 @@ public:
         return rknull;
     }
     
-    value length() {
+    value size() {
         return value::mkinteger(dic.size());
     }
 
