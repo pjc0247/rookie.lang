@@ -16,7 +16,7 @@ public:
 
         type.method(L"new", create_array);
 
-        method(type, L"__getitem__", &rkdictionary::at);
+        method(type, L"__getitem__", &rkdictionary::get);
         method(type, L"__setitem__", &rkdictionary::set);
 
         b.add_type(type);
@@ -34,7 +34,7 @@ public:
         return value::mkobjref(new rkdictionary(0));
     }
 
-    value at(value &idx) {
+    value get(value &idx) {
         auto h = sig2hash(rkwstr(idx));
         return dic[h];
     }
