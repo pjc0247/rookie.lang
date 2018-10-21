@@ -203,6 +203,7 @@
   <ItemGroup>
     <ClCompile Include="..\backends\p2wast.cpp" />
     <ClCompile Include="..\libs\object.cpp" />
+    <ClCompile Include="binding.cpp" />
     <ClCompile Include="debugger.cpp" />
     <ClCompile Include="exe_context.cpp" />
     <ClCompile Include="c_interface.cpp" />

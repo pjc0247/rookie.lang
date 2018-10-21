@@ -12,29 +12,13 @@
 #include "fileio.h"
 #include "debugger.h"
 
-#include "libs/stdlib.h"
-#include "libs/array.h"
-#include "libs/dictionary.h"
-#include "libs/string.h"
-#include "libs/debugger.h"
-#include "libs/gc.h"
-#include "libs/object.h"
 #include "thirdparty/argagg.hpp"
 
 program *compile(const std::wstring &filepath) {
 #ifndef RK_ENV_WEB
     wchar_t *buf = fileio::read_string(filepath);
 
-    binding b;
-
-    b.import<rkstdlib>();
-    b.import<rkarray>();
-    b.import<rkdictionary>();
-    b.import<rkstring>();
-    b.import<rkgc>();
-    b.import<rkdebugger>();
-    b.import<rkscriptobject>();
-
+    auto b = binding::default_binding();
     auto rc = compiler::default_compiler(b);
 
     compile_option opts;

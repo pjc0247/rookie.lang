@@ -141,6 +141,8 @@ private:
 
 class binding {
 public:
+    static binding default_binding();
+
     void add_type(type_builder &type) {
         types.push_back(type);
     }

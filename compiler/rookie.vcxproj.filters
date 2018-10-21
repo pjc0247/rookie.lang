@@ -15,6 +15,7 @@
     <ClCompile Include="..\libs\object.cpp">
       <Filter>libs</Filter>
     </ClCompile>
+    <ClCompile Include="binding.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binding.h" />

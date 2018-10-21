@@ -7,19 +7,10 @@
 #include "runner.h"
 #include "fileio.h"
 
-#include "libs/array.h"
-#include "libs/string.h"
-#include "libs/stdlib.h"
-
 #include "c_interface.h"
 
 void rk_exec(const char *code) {
-    binding b;
-
-    b.import<rkstdlib>();
-    b.import<rkarray>();
-    b.import<rkstring>();
-
+    auto b = binding::default_binding();
     auto rc = compiler::default_compiler(b);
 
     compile_option opts;
