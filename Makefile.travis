@@ -1,5 +1,5 @@
 CC = clang++
-SRCS := $(wildcard ./compiler/*.cpp)
+SRCS := $(wildcard ./compiler/*.cpp, ./libs/*.cpp)
 
 all:
 	$(CC) -Os -std=c++17 $(SRCS) -I. -Icompiler -Iincludes \
