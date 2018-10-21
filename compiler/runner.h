@@ -31,7 +31,7 @@
 #define _pop1_int(a) \
     autoa = pop(); 
 #define _pop2_int(a, b) \
-    auto a = pop(); auto b = pop(); 
+    auto b = pop(); auto a = pop(); 
 
 #define _stacktop() stack[stack.size() - 1]
 
@@ -154,24 +154,31 @@ public:
 
             else if (inst.opcode == opcode::op_add) {
                 _pop2_int(left, right);
-                right.integer += left.integer;
-                push(right);
+
+                if (left.type == value_type::integer) {
+                    left.integer += right.integer;
+                    push(left);
+                }
+                else if (is_rkstr(left)) {
+                    auto str = new rkstring(rkwstr(left) + rkwstr(right));
+                    push(_initobj_systype(sighash_string, str));
+                }
             }
             else if (inst.opcode == opcode::op_sub) {
                 _pop2_int(left, right);
-                right.integer -= left.integer;
-                push(right);
+                left.integer -= right.integer;
+                push(left);
             }
             else if (inst.opcode == opcode::op_div) {
                 _pop2_int(left, right);
                 // TODO: check left is zero
-                right.integer /= left.integer;
-                push(right);
+                left.integer /= right.integer;
+                push(left);
             }
             else if (inst.opcode == opcode::op_mul) {
                 _pop2_int(left, right);
-                right.integer *= left.integer;
-                push(right);
+                left.integer *= right.integer;
+                push(left);
             }
 
             else if (inst.opcode == opcode::op_newobj) {
@@ -321,6 +328,15 @@ public:
         obj.objref->sighash = sighash;
 
         gc.add_object(obj.objref);
+    }
+    __forceinline value _initobj_systype(int sighash, object *objref) {
+        auto obj = value::mkobjref(objref);
+        obj.objref->vtable = &types[sighash].vtable.table;
+        obj.objref->sighash = sighash;
+
+        gc.add_object(obj.objref);
+
+        return obj;
     }
 
 private:

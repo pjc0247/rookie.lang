@@ -23,6 +23,12 @@ public:
         b.add_type(type);
     }
 
+    rkstring() {
+    }
+    rkstring(const std::wstring &str) :
+        str(str) {
+    }
+
     static value create_instance2(value &str) {
         auto ptr = new rkstring();
         ptr->str = str.str;
