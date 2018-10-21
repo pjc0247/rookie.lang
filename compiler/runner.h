@@ -120,11 +120,11 @@ public:
             else if (inst.opcode == opcode::op_ldfalse)
                 push(value::_false());
 
-            //else if (inst.opcode == opcode::op_ldprop)
-            //    stack.push_back(value::mkstring(p.rdata + inst.operand));
-
             else if (inst.opcode == opcode::op_ldthis)
                 stack.push_back(stack[bp-1]);
+
+            else if (inst.opcode == opcode::op_dup)
+                push(stack.back());
 
             else if (inst.opcode == opcode::op_pop)
                 stack.pop_back();
