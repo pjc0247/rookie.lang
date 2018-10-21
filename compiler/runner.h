@@ -244,8 +244,10 @@ public:
                 auto sighash = inst.operand;
 
                 auto _callinfo = calleeobj->vtable->find(sighash);
-                if (_callinfo == calleeobj->vtable->end())
-                    throw rkexception("No such method");
+                if (_callinfo == calleeobj->vtable->end()) {
+                    exception = rkexception("No such method");
+                    goto error;
+                }
 
                 auto callinfo = (*_callinfo).second;
                 if (callinfo.type == call_type::ct_syscall_direct)  
@@ -301,7 +303,12 @@ public:
             else
                 throw invalid_program_exception("unknown instruction.");
 
-//                printf("STACK %d\n", stack.size());
+        end_loop:
+            continue;
+        error:
+            printf("[EXCEPTION]\n");
+            printf("%s\n", exception.what());
+            break;
         }
 
         delete exectx;
@@ -518,6 +525,8 @@ private:
     uint16_t pc; // program counter
     uint16_t bp; // base stack pointer
     value *callee_ptr; // .this
+
+    rkexception exception;
 
     // STACKS
     std::deque<callframe> callstack;

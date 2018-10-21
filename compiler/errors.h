@@ -62,6 +62,9 @@ public:
 
 class rkexception : public std::exception {
 public:
+    rkexception() {
+        this->msg = std::string();
+    }
     rkexception(const char *msg) {
         this->msg = std::string(msg);
     }
