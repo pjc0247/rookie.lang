@@ -1,4 +1,4 @@
-CC = emcc
+EMCC = emcc
 LIBS := $(wildcard ./libs/*.cpp)
 SRCS := $(wildcard ./compiler/*.cpp)
 
