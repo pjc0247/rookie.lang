@@ -4,7 +4,8 @@
 
 enum class literal_type {
     integer,
-    string
+    string,
+    string_with_interpoloation
 };
 enum class token_type {
     none,

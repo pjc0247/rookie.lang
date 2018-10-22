@@ -16,6 +16,7 @@
 #include "ast/arraccess.h"
 #include "ast/endlpop.h"
 #include "ast/newdic.h"
+#include "ast/string_interpolation.h"
 
 #define rky_no_optimization (1 << 0)
 
@@ -162,6 +163,7 @@ private:
          .transformer<callmember_transformer>()
          .transformer<callnewobj_transformer>()
          .transformer<newdic_transformer>()
+         .transformer<string_interpolation_transformer>()
          .transformer<arr_setitem_transformer>()
          .transformer<arr_getitem_transformer>();
         return c;

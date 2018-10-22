@@ -221,6 +221,7 @@ private:
             node->integer = std::stoi(token.raw);
             break;
         case literal_type::string:
+        case literal_type::string_with_interpoloation:
             node->str = token.raw;
             break;
         }

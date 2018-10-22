@@ -45,7 +45,7 @@ public:
 
             //line_buf.push_back(src[head]);
 
-            if (src[head] == '"' && src[head - 1] != '\\')
+            if ((src[head] == '"' || src[head] == '`') && src[head - 1] != '\\')
                 inside_quote ^= true;
             if (inside_quote) goto end_loop;
 
@@ -228,6 +228,11 @@ private:
         if (raw[0] == '"' && raw[raw.length() - 1] == '"') {
             t.type = token_type::literal;
             t.literal_type = literal_type::string;
+            t.raw = t.raw.substr(1, t.raw.size() - 2);
+        }
+        if (raw[0] == '`' && raw[raw.length() - 1] == '`') {
+            t.type = token_type::literal;
+            t.literal_type = literal_type::string_with_interpoloation;
             t.raw = t.raw.substr(1, t.raw.size() - 2);
         }
         else if (std::regex_match(raw, std::wregex(L"-?[0-9]+"))) {

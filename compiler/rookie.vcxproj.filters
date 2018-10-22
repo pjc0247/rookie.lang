@@ -121,5 +121,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="ast\string_interpolation.h">
+      <Filter>ast</Filter>
+    </None>
   </ItemGroup>
 </Project>
