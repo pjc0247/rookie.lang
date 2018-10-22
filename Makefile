@@ -5,8 +5,7 @@ all:
 	export EMCC_DEBUG=1
 
 	mkdir -p www
-	mkdir -p intermediate
-	$(EMCC) -Os -std=c++17 $(SRCS) -I. -Icompiler \
+	$(EMCC) -Os -std=c++17 $(SRCS) -I. -Icompiler -Iincludes \
 		-o www/rklang.html -Wc++11-extensions \
 		-s WASM=1 \
 		-s NO_FILESYSTEM=1 \
