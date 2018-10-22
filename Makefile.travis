@@ -1,8 +1,14 @@
-CC = clang++
+CC = docker run --rm -v $(pwd):/src trzeci/emscripten emcc
 LIBS := $(wildcard ./libs/*.cpp)
 SRCS := $(wildcard ./compiler/*.cpp)
 
 all:
-	$(CC) -Os -std=c++17 $(SRCS) $(LIBS) -I. -Icompiler -Iincludes \
-        -o bin/rookie \
-		-Wc++11-extensions
+	mkdir -p www
+	$(EMCC) -Os -std=c++17 $(SRCS) $(LIBS) -I. -Icompiler -Iincludes \
+		-o www/rklang.js -Wc++11-extensions \
+		-s WASM=1 \
+		-s NO_FILESYSTEM=1 \
+		-s ERROR_ON_UNDEFINED_SYMBOLS=0 \
+		-s DISABLE_EXCEPTION_CATCHING=0 \
+		-s EXPORTED_FUNCTIONS='["_rk_exec", "_rk_exec_utf8"]' \
+		-s EXTRA_EXPORTED_RUNTIME_METHODS='["allocate", "intArrayFromString", "ccall", "cwrap"]'
