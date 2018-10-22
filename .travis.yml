@@ -8,12 +8,11 @@ script: docker exec -it emscripten make -f ./Makefile.travis
 
 deploy:
   provider: pages
-  repo: try-rookie
+  repo: pjc0247/try-rookie
   target-branch: master
-  local-dir: www/
+  local-dir: ./www
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
   keep-history: true
   on:
     branch: master
-    
