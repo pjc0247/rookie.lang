@@ -534,6 +534,13 @@ public:
         capacity = 2;
         type = syntax_type::syn_op;
     }
+    op_node(const stoken &token, syntax_node *parent, const std::wstring &op) :
+        op(op),
+        syntax_node(token, parent) {
+
+        capacity = 2;
+        type = syntax_type::syn_op;
+    }
 
     syntax_node *left() {
         return children[0];
