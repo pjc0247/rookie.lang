@@ -1,4 +1,4 @@
-CC = docker run --rm -v $(pwd):/src trzeci/emscripten emcc
+CC = emcc
 LIBS := $(wildcard ./libs/*.cpp)
 SRCS := $(wildcard ./compiler/*.cpp)
 
