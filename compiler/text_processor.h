@@ -286,6 +286,7 @@ public:
         rklog("\n\n");
 #endif
 
+        next_is_at = false;
         has_inherit_list = false;
         for (cursor = 0; cursor < tokens.size(); cursor ++) {
             auto token = tokens[cursor];
@@ -403,6 +404,13 @@ private:
             }
         }
 
+        // a@ -> @a
+        for (auto it = tokens.rbegin(); it != tokens.rend(); ++it) {
+            if ((*it).type == token_type::annotation) {
+                std::iter_swap(it, std::prev(it));
+            }
+        }
+
         return std::vector<token>(tokens.rbegin(), tokens.rend());
     }
 
@@ -439,20 +447,20 @@ private:
     void sexp_class(token &token) {
         stoken stoken(token);
 
-        if (token.type == token_type::keyword ||
-            token.type == token_type::annotation) {
+        if (token.type == token_type::annotation) {
+            _mark_as_parsed(stoken);
+            next_is_at = true;
+        }
+        else if (token.type == token_type::keyword) {
             // Keywords with trailing ident.
             //   ex) def METHOD_NAME
-            if (token.raw == L"def" ||
-                token.raw == L"@")
+            if (token.raw == L"def")
                 result.push_back(pop_and_parse());
 
             if (token.raw == L"def")
                 stoken.type = stoken_type::st_defmethod;
             if (token.raw == L"static")
                 stoken.type = stoken_type::st_static;
-            else if (token.raw == L"@")
-                stoken.type = stoken_type::st_annotation;
 
             // Method decorator token
             if (token.raw == L"static" &&
@@ -470,8 +478,21 @@ private:
             stoken.type = stoken_type::st_end_param;
         }
         else if (token.type == token_type::ident) {
-            stack.push_back(token);
             _mark_as_parsed(stoken);
+
+            if (next_is_at) {
+                ::stoken id(token);
+                id.type = stoken_type::ident;
+                result.push_back(id);
+
+                ::stoken at(token);
+                at.type = stoken_type::st_annotation;
+                result.push_back(at);
+
+                next_is_at = false;
+            }
+            else
+                stack.push_back(token);
         }
         else if (token.type == token_type::comma) {
             flush_until_priority(token.priority);
@@ -499,6 +520,10 @@ private:
             _mark_as_parsed(stoken);
             flush_until_priority(token.priority);
             stoken = parse(token);
+        }
+        else if (token.type == token_type::annotation) {
+            _mark_as_parsed(stoken);
+            next_is_at = true;
         }
         else if (token.type == token_type::op) {
             flush_until_priority(token.priority);
@@ -578,10 +603,20 @@ private:
                 result.push_back(endcall);
             }
 
-            if (pushed)
-                stack.push_back(token);
-            else
+            ::token ident_token = token;
+            if (next_is_at)
+                ident_token.raw = L"@" + token.raw;
+
+            if (pushed) {
+                stack.push_back(ident_token);
+            }
+            else {
                 stoken.type = stoken_type::ident;
+                stoken.raw = L"@" + token.raw;
+                stoken.source = ident_token;
+            }
+
+            next_is_at = false;
         }
         else if (token.type == token_type::keyword) {
             _mark_as_parsed(stoken);
@@ -735,6 +770,7 @@ private:
     int cursor;
     int depth;
 
+    bool next_is_at;
     bool has_inherit_list;
 
     std::vector<token> tokens;
