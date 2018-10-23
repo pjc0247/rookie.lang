@@ -595,14 +595,13 @@ private:
         }
 
         auto lookup = scope.lookup_variable(node->ident);
-        if (lookup.type == lookup_type::not_exist) {
-            //ctx.push_error(undefined_variable_error(node->token()));
-        }
 
-        if (lookup.type == lookup_type::var_local)
+        if (node->ident[0] == L'@') {
+            emitter.emit(opcode::op_ldthis);
+            emitter.emit(opcode::op_ldprop, sig2hash(node->ident, 1));
+        }
+        else
             emitter.emit(opcode::op_ldloc, lookup.index);
-        else //if (lookup.type == lookup_type::var_field)
-            emitter.emit(opcode::op_ldprop, sig2hash(node->ident));
     }
     void emit_literal(literal_node *node) {
         if (node->literal_type == literal_type::integer)
@@ -671,10 +670,12 @@ private:
                 return;
             }
 
-            if (lookup.type == lookup_type::var_local)
+            if (ident->ident[0] == L'@') {
+                emitter.emit(opcode::op_ldthis);
+                emitter.emit(opcode::op_stprop, sig2hash(ident->ident, 1));
+            }
+            else 
                 emitter.emit(opcode::op_stloc, lookup.index);
-            else if (lookup.type == lookup_type::var_field)
-                emitter.emit(opcode::op_stprop, lookup.index);
 
             return;
         }

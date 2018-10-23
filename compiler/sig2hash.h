@@ -2,7 +2,8 @@
 
 #include <string>
 
-unsigned int sig2hash(const std::wstring &str);
+unsigned int sig2hash(const std::wstring &str, int offset = 0);
+unsigned int sig2hash(const wchar_t *str, int offset = 0);
 CONSTEXPR unsigned int sig2hash_c(const wchar_t str[]);
 
 #define _predefined_hash(name) \

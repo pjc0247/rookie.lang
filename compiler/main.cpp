@@ -111,10 +111,14 @@ int main(int argc, char **argv) {
 
         return 0;
     }
+#ifndef _DEBUG
     catch (std::exception e) {
         std::cout << e.what() << std::endl;
         return -1;
     }
+#else
+    catch (int n) { }
+#endif
 #endif
 }
 
