@@ -7,12 +7,7 @@ before_install:
 script: docker exec -it emscripten make -f ./Makefile.travis
 
 deploy:
-  provider: pages
-  repo: pjc0247/try-rookie
-  target-branch: master
-  local-dir: ./www
-  skip-cleanup: true
-  github-token: $GITHUB_TOKEN
-  keep-history: true
-  on:
-    branch: master
+  - provider: script
+    script: bash .travis_publish
+    on:
+      tags: true

@@ -1,0 +1,16 @@
+#!/bin/bash
+PUBLICATION_BRANCH=master
+# Checkout the branch
+REPO_PATH=$PWD
+pushd $HOME
+git clone --branch=$PUBLICATION_BRANCH    https://${GITHUB_TOKEN}@github.com/$TRAVIS_REPO_SLUG publish 2>&1 > /dev/null
+cd publish
+# Update pages
+cp -r $REPO_PATH/www .
+# Commit and push latest version
+git add .
+git config user.name  "Travis"
+git config user.email "travis@travis-ci.org"
+git commit -m "Updated distribution."
+git push -fq origin $PUBLICATION_BRANCH 2>&1 > /dev/null
+popd
