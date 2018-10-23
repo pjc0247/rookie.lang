@@ -3,7 +3,7 @@ PUBLICATION_BRANCH=master
 # Checkout the branch
 REPO_PATH=$PWD
 pushd $HOME
-git clone --branch=$PUBLICATION_BRANCH    https://${GITHUB_TOKEN}@github.com/$TRAVIS_REPO_SLUG publish 2>&1 > /dev/null
+git clone --branch=$PUBLICATION_BRANCH    https://${GITHUB_TOKEN}@github.com/pjc0247/try-rookie.git publish 2>&1 > /dev/null
 cd publish
 # Update pages
 cp -r $REPO_PATH/www .
