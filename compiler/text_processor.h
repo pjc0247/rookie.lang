@@ -604,17 +604,16 @@ private:
             }
 
             ::token ident_token = token;
-            if (next_is_at)
+            if (next_is_at) {
                 ident_token.raw = L"@" + token.raw;
-
-            if (pushed) {
-                stack.push_back(ident_token);
-            }
-            else {
-                stoken.type = stoken_type::ident;
                 stoken.raw = L"@" + token.raw;
                 stoken.source = ident_token;
             }
+
+            if (pushed)
+                stack.push_back(ident_token);
+            else 
+                stoken.type = stoken_type::ident;
 
             next_is_at = false;
         }
