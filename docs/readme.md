@@ -1,6 +1,10 @@
 Rookie Programming Language
 ====
 
+See (rookielang.github.io)(rookielang.github.io)<br>
+See (rookielang.github.io)(rookielang.github.io)<br>
+See (rookielang.github.io)(rookielang.github.io)<br>
+
 Syntax
 ----
 
