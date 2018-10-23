@@ -82,8 +82,6 @@ int main(int argc, char **argv) {
             return 0;
         }
 
-        args.pos.push_back("testcode.rk");
-
         if (args.pos.size() == 0) {
 #if _DEBUG
             args.pos.push_back("testcode.rk");
