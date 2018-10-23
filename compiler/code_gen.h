@@ -637,8 +637,14 @@ private:
         emitter.emit(opcode::op_newdic, node->children.size() / 2);
     }
     void emit_op(op_node *node) {
-        emit(node->left());
-        emit(node->right());
+        if (node->op == L"is") {
+            emit(node->left());
+            emitter.emit(opcode::op_ldi, sig2hash(node->right()->token().raw));
+        }
+        else {
+            emit(node->left());
+            emit(node->right());
+        }
 
         if (node->op == L"+")
             emitter.emit(opcode::op_add);
@@ -658,6 +664,8 @@ private:
             emitter.emit(opcode::op_le);
         else if (node->op == L"==")
             emitter.emit(opcode::op_eq);
+        else if (node->op == L"is")
+            emitter.emit(opcode::op_eqtype);
     }
     void emit_assignment(assignment_node *node) {
         emit(node->right());

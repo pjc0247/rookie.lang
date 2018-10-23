@@ -12,6 +12,7 @@ typedef enum ptype : unsigned char {
 typedef enum opcode : unsigned char {
     op_nop = 0,
 
+    op_eqtype,
     op_add,
     op_sub,
     op_mul,
@@ -42,6 +43,7 @@ typedef enum opcode : unsigned char {
 inline const wchar_t *to_string(opcode type) {
     switch (type) {
     case op_nop: return L"op_nop";
+    case op_eqtype: return L"op_eqtype";
     case op_add: return L"op_add";
     case op_sub: return L"op_sub";
     case op_mul: return L"op_mul";

@@ -86,6 +86,7 @@ struct value {
         object *objref;
 
         int integer;
+        unsigned int uinteger;
         wchar_t character;
         const wchar_t *str;
     };

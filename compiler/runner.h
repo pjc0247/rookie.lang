@@ -131,6 +131,10 @@ public:
             else if (inst.opcode == opcode::op_dup)
                 stack.push_back(stack.back());
 
+            else if (inst.opcode == opcode::op_eqtype) {
+                _pop2_int(left, right);
+                push(value::mkboolean(left.objref->sighash == right.uinteger));
+            }
             else if (inst.opcode == opcode::op_eq) {
                 _pop2_int(left, right);
                 push(value::mkboolean(left.integer == right.integer));

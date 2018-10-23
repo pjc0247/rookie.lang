@@ -173,6 +173,7 @@ private:
         rules.push_back(lexer_token(L"++", token_type::op));
         rules.push_back(lexer_token(L"--", token_type::op));
 
+        rules.push_back(lexer_token(L"is", token_type::op));
         rules.push_back(lexer_token(L"+", token_type::op, -5001));
         rules.push_back(lexer_token(L"-", token_type::op, -5001));
         rules.push_back(lexer_token(L"*", token_type::op, -5000));
