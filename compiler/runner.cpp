@@ -224,37 +224,28 @@ void runner::execute(program_entry *_entry) {
             syscall(inst.cs.index, sp);
         else if (inst.opcode == opcode::op_vcall) {
             auto sighash = inst.operand;
+            std::map<uint32_t, callinfo> *vtable;
 
             if (callee_ptr->type == value_type::integer) {
-                auto _ci = types[sighash_integer].vtable.table.find(sighash);
-                if (_ci == types[sighash_integer].vtable.table.end()) {
-                    exception = rkexception("No such method");
-                    goto error;
-                }
-
+                vtable = &types[sighash_integer].vtable.table;
                 push(top());
-
-                auto ci = (*_ci).second;
-                if (ci.type == call_type::ct_syscall_direct)
-                    syscall(ci.entry, sp);
-                else if (ci.type == call_type::ct_programcall_direct)
-                    programcall(ci.entry);
             }
             else {
                 auto calleeobj = callee_ptr->objref;
-
-                auto _callinfo = calleeobj->vtable->find(sighash);
-                if (_callinfo == calleeobj->vtable->end()) {
-                    exception = rkexception("No such method");
-                    goto error;
-                }
-
-                auto callinfo = (*_callinfo).second;
-                if (callinfo.type == call_type::ct_syscall_direct)
-                    syscall(callinfo.entry, sp);
-                else if (callinfo.type == call_type::ct_programcall_direct)
-                    programcall(callinfo.entry);
+                vtable = calleeobj->vtable;
             }
+
+            auto _callinfo = vtable->find(sighash);
+            if (_callinfo == vtable->end()) {
+                exception = rkexception("No such method");
+                goto error;
+            }
+
+            auto callinfo = (*_callinfo).second;
+            if (callinfo.type == call_type::ct_syscall_direct)
+                syscall(callinfo.entry, sp);
+            else if (callinfo.type == call_type::ct_programcall_direct)
+                programcall(callinfo.entry);
         }
         else if (inst.opcode == opcode::op_ret) {
             auto ret = pop();
