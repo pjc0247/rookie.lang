@@ -47,7 +47,7 @@ public:
     }
 
     value to_string() {
-        return value::mkstring(str.c_str());
+        return value::mkobjref(this);
     }
 
     const wchar_t *c_str() const {
