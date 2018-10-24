@@ -16,6 +16,7 @@
       <Filter>libs</Filter>
     </ClCompile>
     <ClCompile Include="binding.cpp" />
+    <ClCompile Include="runner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binding.h" />
