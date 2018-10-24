@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "libs/stdlib.h"
+#include "libs/integer.h"
 #include "libs/array.h"
 #include "libs/dictionary.h"
 #include "libs/string.h"
@@ -15,6 +16,7 @@ binding binding::default_binding() {
 
     b.import<rkstdlib>();
     b.import<rkarray>();
+    b.import<rkinteger>();
     b.import<rkdictionary>();
     b.import<rkstring>();
     b.import<rkgc>();

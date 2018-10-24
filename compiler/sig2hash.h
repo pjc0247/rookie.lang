@@ -15,3 +15,4 @@ _predefined_hash(object);
 _predefined_hash(array);
 _predefined_hash(dictionary);
 _predefined_hash(string);
+_predefined_hash(integer);

@@ -18,6 +18,7 @@
     <ClCompile Include="binding.cpp" />
     <ClCompile Include="runner.cpp" />
     <ClCompile Include="value_op.cpp" />
+    <ClCompile Include="value.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binding.h" />
@@ -104,6 +105,9 @@
       <Filter>libs</Filter>
     </ClInclude>
     <ClInclude Include="value_op.h" />
+    <ClInclude Include="..\libs\integer.h">
+      <Filter>libs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

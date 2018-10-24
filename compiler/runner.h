@@ -25,6 +25,7 @@ enum class runtime_typekind {
 };
 struct runtime_typedata {
     std::wstring name;
+    uint32_t sighash;
 
     std::vector<uint32_t> parents;
 

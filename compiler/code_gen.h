@@ -665,7 +665,7 @@ private:
         else if (node->op == L"==")
             emitter.emit(opcode::op_eq);
         else if (node->op == L"is")
-            emitter.emit(opcode::op_eqtype);
+            emitter.emit(opcode::op_eqtype, sig2hash(node->right()->token().raw));
     }
     void emit_assignment(assignment_node *node) {
         emit(node->right());

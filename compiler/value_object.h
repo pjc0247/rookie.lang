@@ -146,6 +146,7 @@ struct value {
         v.str = str;
         return v;
     }
+    static value mkstring2(const wchar_t *str);
 };
 inline bool operator==(const value& lhs, const void *rhs) {
     if (lhs.type == value_type::null) return true;

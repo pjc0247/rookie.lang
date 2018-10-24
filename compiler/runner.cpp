@@ -101,7 +101,7 @@ void runner::execute(program_entry *_entry) {
 
             auto type = get_type(left);
 
-            if (left.objref->sighash == right.uinteger)
+            if (type.sighash == right.uinteger)
                 push(value::mkboolean(true));
             else {
                 for (auto hash : type.parents) {
@@ -223,20 +223,38 @@ void runner::execute(program_entry *_entry) {
         else if (inst.opcode == opcode::op_syscall)
             syscall(inst.cs.index, sp);
         else if (inst.opcode == opcode::op_vcall) {
-            auto calleeobj = callee_ptr->objref;
             auto sighash = inst.operand;
 
-            auto _callinfo = calleeobj->vtable->find(sighash);
-            if (_callinfo == calleeobj->vtable->end()) {
-                exception = rkexception("No such method");
-                goto error;
-            }
+            if (callee_ptr->type == value_type::integer) {
+                auto _ci = types[sighash_integer].vtable.table.find(sighash);
+                if (_ci == types[sighash_integer].vtable.table.end()) {
+                    exception = rkexception("No such method");
+                    goto error;
+                }
 
-            auto callinfo = (*_callinfo).second;
-            if (callinfo.type == call_type::ct_syscall_direct)
-                syscall(callinfo.entry, sp);
-            else if (callinfo.type == call_type::ct_programcall_direct)
-                programcall(callinfo.entry);
+                push(top());
+
+                auto ci = (*_ci).second;
+                if (ci.type == call_type::ct_syscall_direct)
+                    syscall(ci.entry, sp);
+                else if (ci.type == call_type::ct_programcall_direct)
+                    programcall(ci.entry);
+            }
+            else {
+                auto calleeobj = callee_ptr->objref;
+
+                auto _callinfo = calleeobj->vtable->find(sighash);
+                if (_callinfo == calleeobj->vtable->end()) {
+                    exception = rkexception("No such method");
+                    goto error;
+                }
+
+                auto callinfo = (*_callinfo).second;
+                if (callinfo.type == call_type::ct_syscall_direct)
+                    syscall(callinfo.entry, sp);
+                else if (callinfo.type == call_type::ct_programcall_direct)
+                    programcall(callinfo.entry);
+            }
         }
         else if (inst.opcode == opcode::op_ret) {
             auto ret = pop();
@@ -408,27 +426,6 @@ void runner::build_runtime_data() {
             syscalls.table.push_back(static_method.second);
     }
 
-    // SYS METHODS
-    for (auto &type : binding.get_types()) {
-        auto typesighash = sig2hash(type.get_name());
-
-        auto methods = type.get_methods();
-        calltable vtable;
-
-        for (auto &method : methods) {
-            auto sighash = sig2hash(method.first);
-            syscalls.table.push_back(method.second);
-
-            vtable.table[sighash].type = call_type::ct_syscall_direct;
-            vtable.table[sighash].entry = syscalls.table.size() - 1;
-        }
-
-        runtime_typedata tdata;
-        tdata.typekind = runtime_typekind::tk_systype;
-        tdata.vtable = vtable;
-        types[typesighash] = tdata;
-    }
-
     load_all_systypes();
     load_all_programtypes();
 }
@@ -451,6 +448,7 @@ void runner::load_all_systypes() {
         runtime_typedata tdata;
         tdata.typekind = runtime_typekind::tk_systype;
         tdata.vtable = vtable;
+        tdata.sighash = typesighash;
 
         // TODO
         tdata.parents.push_back(sighash_object);
@@ -513,6 +511,7 @@ void runner::load_programtype(uint32_t sighash) {
         }
         tdata.vtable = vtable;
         tdata.name = type.name;
+        tdata.sighash = sighash;
 
         types[sig2hash(type.name)] = tdata;
     }

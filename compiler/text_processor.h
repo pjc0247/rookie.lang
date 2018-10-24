@@ -615,8 +615,12 @@ private:
 
             if (pushed)
                 stack.push_back(ident_token);
-            else 
-                stoken.type = stoken_type::ident;
+            else {
+                if (token.type == token_type::ident)
+                    stoken.type = stoken_type::ident;
+                else if (token.type == token_type::literal)
+                    stoken.type = stoken_type::st_literal;
+            }
 
             next_is_at = false;
         }

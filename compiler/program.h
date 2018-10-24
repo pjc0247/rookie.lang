@@ -154,6 +154,7 @@ struct program_entry {
 
     uint32_t entry;
     uint32_t codesize;
+    uint16_t stacksize;
 };
 struct program {
     program_header  header;
