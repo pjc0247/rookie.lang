@@ -500,7 +500,7 @@ private:
             stoken.type = stoken_type::comma;
         }
         else if (token.type == token_type::right_bracket)
-            stoken.type = stoken_type::end_block;
+            stoken.type = stoken_type::st_end_block;
         else if (token.type == token_type::left_bracket ||
             token.type == token_type::right_bracket)
             _mark_as_parsed(stoken);
@@ -654,10 +654,10 @@ private:
         if (token.stype != stoken_type::none)
             stoken.type = token.stype;
         else if (token.type == token_type::left_bracket) {
-            stoken.type = stoken_type::begin_block;
+            stoken.type = stoken_type::st_begin_block;
         }
         else if (token.type == token_type::right_bracket) {
-            stoken.type = stoken_type::end_block;
+            stoken.type = stoken_type::st_end_block;
         }
         else if (token.type == token_type::literal) {
             stoken.type = stoken_type::st_literal;

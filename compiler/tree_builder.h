@@ -31,7 +31,7 @@ public:
         for (cursor=0; cursor<stokens->size(); cursor++) {
             auto &token = stokens->at(cursor);
 
-            _ending_expression(end_block);
+            _ending_expression(st_end_block);
             _ending_expression(st_end_param);
             _ending_expression(st_end_call);
             _ending_expression(st_end_arr);
@@ -40,7 +40,7 @@ public:
                 append_and_set(new endl_node(token, current));
             else if (token.type == stoken_type::st_include)
                 append_and_replace(include(token));
-            else if (token.type == stoken_type::begin_block) {
+            else if (token.type == stoken_type::st_begin_block) {
                 append_and_replace(block(token));
             }
             else if (token.type == stoken_type::st_class) {

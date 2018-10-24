@@ -60,7 +60,7 @@ enum class stoken_type {
     st_begin_arr, st_end_arr,
     st_begin_call, st_end_call,
     st_begin_param, st_end_param,
-    begin_block, end_block
+    st_begin_block, st_end_block
 };
 
 inline const wchar_t *to_string(stoken_type type) {
@@ -95,8 +95,8 @@ inline const wchar_t *to_string(stoken_type type) {
     case stoken_type::st_end_call: return L"st_end_call";
     case stoken_type::st_begin_param: return L"st_begin_param";
     case stoken_type::st_end_param: return L"st_end_param";
-    case stoken_type::begin_block: return L"begin_block";
-    case stoken_type::end_block: return L"end_block";
+    case stoken_type::st_begin_block: return L"st_begin_block";
+    case stoken_type::st_end_block: return L"st_end_block";
     default: return L"st_unknown";
     }
 }
