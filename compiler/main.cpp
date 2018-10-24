@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "value_op.h"
 #include "code_gen.h"
 #include "compiler.h"
 #include "backends/p2wast.h"

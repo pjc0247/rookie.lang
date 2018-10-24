@@ -91,12 +91,8 @@ struct value {
         const wchar_t *str;
     };
 
-    value() :
-        type(value_type::empty) {
-    }
-    value(value_type type) :
-        type(type) {
-    }
+    value();
+    value(value_type type);
 
     static value null() {
         value v;
@@ -148,25 +144,6 @@ struct value {
     }
     static value mkstring2(const wchar_t *str);
 };
-inline bool operator==(const value& lhs, const void *rhs) {
-    if (lhs.type == value_type::null) return true;
-    return false;
-}
-inline bool operator==(const value& lhs, const value& rhs) {
-    if (lhs.type != rhs.type)
-        return false;
-
-    if (lhs.type == value_type::integer)
-        return lhs.integer == rhs.integer;
-    if (lhs.type == value_type::boolean)
-        return lhs.integer == rhs.integer;
-    if (lhs.type == value_type::string)
-        return lhs.str == rhs.str;
-    if (lhs.type == value_type::object)
-        return lhs.objref == rhs.objref;
-
-    throw rkexception("unimplemented operator");
-}
 
 const value rknull = value(value_type::null);
 
@@ -187,3 +164,23 @@ public:
     std::map<uint32_t, value> properties;
     std::vector<value> gc_refs;
 };
+
+inline bool operator==(const value& lhs, const void *rhs) {
+    if (lhs.type == value_type::null) return true;
+    return false;
+}
+inline bool operator==(const value& lhs, const value& rhs) {
+    if (lhs.type != rhs.type)
+        return false;
+
+    if (lhs.type == value_type::integer)
+        return lhs.integer == rhs.integer;
+    if (lhs.type == value_type::boolean)
+        return lhs.integer == rhs.integer;
+    if (lhs.type == value_type::string)
+        return lhs.str == rhs.str;
+    if (lhs.type == value_type::object)
+        return lhs.objref == rhs.objref;
+
+    throw rkexception("unimplemented operator");
+}
