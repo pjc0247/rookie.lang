@@ -199,6 +199,7 @@
     <ClInclude Include="tree_builder.h" />
     <ClInclude Include="type_attr.h" />
     <ClInclude Include="value_object.h" />
+    <ClInclude Include="value_op.h" />
     <ClInclude Include="vnode_transformer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -219,6 +220,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="syntax.cpp" />
+    <ClCompile Include="value_op.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ast\string_interpolation.h" />

@@ -17,6 +17,7 @@
     </ClCompile>
     <ClCompile Include="binding.cpp" />
     <ClCompile Include="runner.cpp" />
+    <ClCompile Include="value_op.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binding.h" />
@@ -102,6 +103,7 @@
     <ClInclude Include="..\libs\dictionary.h">
       <Filter>libs</Filter>
     </ClInclude>
+    <ClInclude Include="value_op.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

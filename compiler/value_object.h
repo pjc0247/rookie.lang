@@ -186,6 +186,3 @@ public:
     std::map<uint32_t, value> properties;
     std::vector<value> gc_refs;
 };
-
-
-inline bool operator+(const value &a, const value &b) { return a.integer + b.integer; }
