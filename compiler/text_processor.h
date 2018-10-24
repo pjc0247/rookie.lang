@@ -582,7 +582,9 @@ private:
                 stoken.type = stoken_type::st_end_arr;
             }   
         }
-        else if (token.type == token_type::ident) {
+        else if (token.type == token_type::ident ||
+            token.type == token_type::literal) {
+
             _mark_as_parsed(stoken);
             bool pushed = false;
 
