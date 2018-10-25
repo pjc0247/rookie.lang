@@ -4,7 +4,7 @@ rookie
 [![Build Status](https://travis-ci.org/pjc0247/rookie.lang.svg?branch=master)](https://travis-ci.org/pjc0247/rookie.lang)
 
 __[ONLINE PLAYGROUND](https://pjc0247.github.io/try-rookie/)__<br>
-__[LANGUAGE DOCUMENTATION (incomplete)](https://rookielang.github.io)__
+__[LANGUAGE DOCUMENTATION](https://rookielang.github.io)__
 
 Concept
 ----
