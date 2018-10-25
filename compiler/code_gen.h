@@ -600,8 +600,13 @@ private:
             emitter.emit(opcode::op_ldthis);
             emitter.emit(opcode::op_ldprop, sig2hash(node->ident, 1));
         }
-        else
-            emitter.emit(opcode::op_ldloc, lookup.index);
+        else {
+            if (lookup.type == lookup_type::not_exist) {
+                ctx.push_error(codegen_error(L"Unassigned local variable: " + node->ident));
+            }
+            else 
+                emitter.emit(opcode::op_ldloc, lookup.index);
+        }
     }
     void emit_literal(literal_node *node) {
         if (node->literal_type == literal_type::integer)
