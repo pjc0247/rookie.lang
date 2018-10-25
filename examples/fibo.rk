@@ -1,4 +1,4 @@
-// fibo.rky
+// fibo.rk
 class example_fibo {
     @main
     def main() {
