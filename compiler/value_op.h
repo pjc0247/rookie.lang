@@ -1,9 +1,34 @@
 #pragma once
 
-#include "value_object.h"
+inline value operator+(const value &a, const value &b) {
+    return value::mkinteger(a.integer + b.integer);
+}
+inline value operator-(const value &a, const value &b) {
+    return value::mkinteger(a.integer - b.integer);
+}
+inline value operator*(const value &a, const value &b) {
+    return value::mkinteger(a.integer * b.integer);
+}
+inline value operator/(const value &a, const value &b) {
+    return value::mkinteger(a.integer / b.integer);
+}
 
-inline value operator+(const value &a, const value &b);
-inline value operator-(const value &a, const value &b);
-inline value operator*(const value &a, const value &b);
-inline value operator/(const value &a, const value &b);
+inline bool operator==(const value& lhs, const void *rhs) {
+    if (lhs.type == value_type::null) return true;
+    return false;
+}
+inline bool operator==(const value& lhs, const value& rhs) {
+    if (lhs.type != rhs.type)
+        return false;
 
+    if (lhs.type == value_type::integer)
+        return lhs.integer == rhs.integer;
+    if (lhs.type == value_type::boolean)
+        return lhs.integer == rhs.integer;
+    if (lhs.type == value_type::string)
+        return lhs.str == rhs.str;
+    if (lhs.type == value_type::object)
+        return lhs.objref == rhs.objref;
+
+    throw rkexception("unimplemented operator");
+}

@@ -160,6 +160,7 @@
     <ClInclude Include="..\libs\dictionary.h" />
     <ClInclude Include="..\libs\gc.h" />
     <ClInclude Include="..\libs\integer.h" />
+    <ClInclude Include="..\libs\math.h" />
     <ClInclude Include="..\libs\object.h" />
     <ClInclude Include="..\libs\stdlib.h" />
     <ClInclude Include="..\libs\string.h" />
@@ -222,7 +223,6 @@
     </ClCompile>
     <ClCompile Include="syntax.cpp" />
     <ClCompile Include="value.cpp" />
-    <ClCompile Include="value_op.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ast\string_interpolation.h" />

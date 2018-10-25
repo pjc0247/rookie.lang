@@ -17,7 +17,6 @@
     </ClCompile>
     <ClCompile Include="binding.cpp" />
     <ClCompile Include="runner.cpp" />
-    <ClCompile Include="value_op.cpp" />
     <ClCompile Include="value.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +105,9 @@
     </ClInclude>
     <ClInclude Include="value_op.h" />
     <ClInclude Include="..\libs\integer.h">
+      <Filter>libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\math.h">
       <Filter>libs</Filter>
     </ClInclude>
   </ItemGroup>

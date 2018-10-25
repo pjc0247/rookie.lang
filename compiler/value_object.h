@@ -150,6 +150,9 @@ const value rknull = value(value_type::null);
 class object {
 public:
 
+    __forceinline void set_property(uint32_t keyhash, const value &v) {
+        properties[keyhash] = v;
+    }
     __forceinline const value &get_property(uint32_t keyhash) {
         auto it = properties.find(keyhash);
         if (it == properties.end())
@@ -165,22 +168,4 @@ public:
     std::vector<value> gc_refs;
 };
 
-inline bool operator==(const value& lhs, const void *rhs) {
-    if (lhs.type == value_type::null) return true;
-    return false;
-}
-inline bool operator==(const value& lhs, const value& rhs) {
-    if (lhs.type != rhs.type)
-        return false;
-
-    if (lhs.type == value_type::integer)
-        return lhs.integer == rhs.integer;
-    if (lhs.type == value_type::boolean)
-        return lhs.integer == rhs.integer;
-    if (lhs.type == value_type::string)
-        return lhs.str == rhs.str;
-    if (lhs.type == value_type::object)
-        return lhs.objref == rhs.objref;
-
-    throw rkexception("unimplemented operator");
-}
+#include "value_op.h"
