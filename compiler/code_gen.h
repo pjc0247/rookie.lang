@@ -259,7 +259,7 @@ public:
         pdb *_p = new pdb();
         pdb &p = *_p;
         std::vector<pdb_signature> sigs;
-
+        
         for (auto &func : bindings.get_functions()) {
             sigs.push_back(pdb_signature(sig2hash(func.first), func.first.c_str()));
         }

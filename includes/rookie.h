@@ -39,3 +39,5 @@
 #define CONSTEXPR constexpr
 #define THREAD_LOCAL thread_local
 #endif
+
+#include "special_name.h"

@@ -11,10 +11,10 @@ public:
     static void import(binding &b) {
         auto type = type_builder(L"array");
 
-        type.method(L"new", create_array);
+        type.method(rk_new, create_array);
 
-        method(type, L"__getitem__", &rkarray::get);
-        method(type, L"__setitem__", &rkarray::set);
+        method(type, rk_getitem, &rkarray::get);
+        method(type, rk_setitem, &rkarray::set);
 
         method(type, L"at", &rkarray::get);
         method(type, L"push", &rkarray::push);

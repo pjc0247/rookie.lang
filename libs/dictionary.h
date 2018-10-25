@@ -14,10 +14,10 @@ public:
     static void import(binding &b) {
         auto type = type_builder(L"dictionary");
 
-        type.method(L"new", create_array);
+        type.method(rk_new, create_array);
 
-        method(type, L"__getitem__", &rkdictionary::get);
-        method(type, L"__setitem__", &rkdictionary::set);
+        method(type, rk_getitem, &rkdictionary::get);
+        method(type, rk_setitem, &rkdictionary::set);
         method(type, L"size", &rkdictionary::size);
         method(type, L"contains", &rkdictionary::contains);
         method(type, L"remove", &rkdictionary::remove);
