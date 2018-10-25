@@ -3,6 +3,9 @@
 #include "value_object.h"
 #include "binding.h"
 
+#include "libs/array.h"
+#include "libs/dictionary.h"
+
 #include "runner.h"
 
 #define _invalid_stackitem \

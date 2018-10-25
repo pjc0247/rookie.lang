@@ -5,19 +5,18 @@
 #include <deque>
 #include <exception>
 
-#include "program.h"
 #include "errors.h"
 
 #include "gc.h"
 #include "debugger.h"
-#include "exe_context.h"
 
-#include "libs/array.h"
-#include "libs/dictionary.h"
+struct program;
+struct instruction;
 
 struct value;
 class object;
 class binding;
+class exe_context;
 
 enum class runtime_typekind {
     tk_systype,
