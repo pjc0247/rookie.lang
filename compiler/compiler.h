@@ -18,6 +18,8 @@
 #include "ast/newdic.h"
 #include "ast/string_interpolation.h"
 
+#include "validator/syntax_validator.h"
+
 #define rky_no_optimization (1 << 0)
 
 class compiler {
@@ -121,6 +123,9 @@ public:
         }
 
         auto root = ast_transformed(ctx, src, out.errors);
+        auto validator = new syntax_validator(ctx);
+        validator->transform(root);
+
         auto cg = code_gen(ctx, syscalls);
 
 #if _DEBUG

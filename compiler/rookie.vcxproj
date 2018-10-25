@@ -155,6 +155,7 @@
   <ItemGroup>
     <ClInclude Include="..\backends\p2wast.h" />
     <ClInclude Include="..\includes\rookie.h" />
+    <ClInclude Include="..\includes\special_name.h" />
     <ClInclude Include="..\libs\array.h" />
     <ClInclude Include="..\libs\debugger.h" />
     <ClInclude Include="..\libs\dictionary.h" />
@@ -200,6 +201,7 @@
     <ClInclude Include="token.h" />
     <ClInclude Include="tree_builder.h" />
     <ClInclude Include="type_attr.h" />
+    <ClInclude Include="validator\syntax_validator.h" />
     <ClInclude Include="value_object.h" />
     <ClInclude Include="value_op.h" />
     <ClInclude Include="vnode_transformer.h" />

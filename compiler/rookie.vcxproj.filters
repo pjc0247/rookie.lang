@@ -110,6 +110,10 @@
     <ClInclude Include="..\libs\math.h">
       <Filter>libs</Filter>
     </ClInclude>
+    <ClInclude Include="..\includes\special_name.h" />
+    <ClInclude Include="validator\syntax_validator.h">
+      <Filter>validator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">
@@ -126,6 +130,9 @@
     </Filter>
     <Filter Include="includes">
       <UniqueIdentifier>{1a7adbd0-7f2b-40f8-a697-98885db2b37e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="validator">
+      <UniqueIdentifier>{41a40755-b256-4cf3-a709-c5377c7a472e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
