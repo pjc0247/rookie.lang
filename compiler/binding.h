@@ -31,6 +31,9 @@
 #define rkchar(v) v.character
 #define rkbool(v) (v.integer == 1 ? true : false)
 
+#define int2rk(v) value::mkinteger(v)
+#define rk2int(v) v.integer
+
 typedef std::map<std::wstring, std::function<void(stack_provider&)>> bindmap;
 
 class type_builder {
@@ -48,6 +51,14 @@ public:
 
         _bind(static_methods, signature, [function](stack_provider &sp) {
             sp.push(function());
+        });
+        return *this;
+    }
+    type_builder &static_method(const std::wstring &signature,
+        const std::function<value(value&)> &function) {
+
+        _bind(static_methods, signature, [function](stack_provider &sp) {
+            sp.replace<0>(function(sp.get(0)));
         });
         return *this;
     }
@@ -242,6 +253,13 @@ public:
 
         type.static_method(name, [function]() {
             return stdinvoke(function);
+        });
+    }
+    static void static_method(type_builder &type,
+        const wchar_t *name, value(*function)(value&)) {
+
+        type.static_method(name, [function](value &a) {
+            return stdinvoke(function, a);
         });
     }
 
