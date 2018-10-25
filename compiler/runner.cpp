@@ -27,7 +27,8 @@ runner::runner(const program &p, ::binding &binding) :
     p(p), binding(binding),
     dbger(nullptr),
     callee_ptr(nullptr),
-    gc(*this) {
+    gc(*this),
+    sp(stack) {
 
     build_runtime_data();
 }
@@ -48,8 +49,6 @@ void runner::execute(program_entry *_entry) {
 
     push_callframe(*_entry);
 
-    stack_provider sp(stack);
-
     exectx = new exe_context(*this, sp);
 
     if (dbger) dbger->on_begin_program(*this, p);
@@ -66,59 +65,79 @@ void runner::execute(program_entry *_entry) {
         if (pc >= p.header.code_len)
             throw invalid_program_exception("unexpected end of program.");
 
-        auto inst = p.code[pc++];
+        inst = p.code[pc++];
 
         if (dbger) dbger->on_pre_exec(*this, inst);
 
-        if (inst.opcode == opcode::op_nop);
-        else if (inst.opcode == opcode::op_ldi)
-            stack.push_back(value::mkinteger(inst.operand));
-        else if (inst.opcode == opcode::op_ldstr) {
-            // [TODO] Performance consideration:
-            stack.push_back(value::mkstring(p.rdata + inst.operand));
+        switch (inst.opcode) {
+        case opcode::op_nop:
+            break;
+        case opcode::op_ldi:
+            push(int2rk(inst.i32));
+            break;
+        case opcode::op_ldstr:
+            // FIX: Performance
+            push(value::mkstring(p.rdata + inst.operand));
             _newobj_systype(sighash_string, sp);
-        }
-        else if (inst.opcode == opcode::op_ldnull)
-            push(value::null());
-        else if (inst.opcode == opcode::op_ldtrue)
+            break;
+        case opcode::op_ldnull:
+            push(rknull);
+            break;
+        case opcode::op_ldtrue:
             push(value::_true());
-        else if (inst.opcode == opcode::op_ldfalse)
+            break;
+        case opcode::op_ldfalse:
             push(value::_false());
+            break;
+        case opcode::op_ldthis:
+            push(stack[bp - 1]);
+            break;
 
-        else if (inst.opcode == opcode::op_ldthis)
-            stack.push_back(stack[bp - 1]);
+        case opcode::op_ldloc:
+            push(get_local(inst.operand));
+            break;
+        case opcode::op_stloc:
+            stack[bp + inst.operand] = top();
+            pop();
+            break;
+        case opcode::op_ldprop:
+            op_ldprop();
+            break;
+        case opcode::op_stprop:
+            op_stprop();
+            break;
 
-        else if (inst.opcode == opcode::op_dup)
-            push(stack.back());
+        case opcode::op_dup:
+            push(top());
+            break;
+        case opcode::op_pop:
+            pop();
+            break;
+        case opcode::op_eqtype:
+            op_eqtype();
+            break;
 
-        else if (inst.opcode == opcode::op_pop)
-            stack.pop_back();
-        else if (inst.opcode == opcode::op_dup)
-            stack.push_back(stack.back());
-
-        else if (inst.opcode == opcode::op_eqtype) {
-            _pop2_int(left, right);
-
-            auto type = get_type(left);
-
-            if (type.sighash == right.uinteger)
-                push(value::mkboolean(true));
-            else {
-                for (auto hash : type.parents) {
-                    if (right.uinteger == hash) {
-                        push(value::mkboolean(true));
-                        goto end_loop;
-                    }
-                }
-
-                push(value::mkboolean(false));
-            }
-        }
-        else if (inst.opcode == opcode::op_eq) {
+        case opcode::op_eq: {
             _pop2_int(left, right);
             push(value::mkboolean(left.integer == right.integer));
+            break;
         }
-        else if (inst.opcode == opcode::op_l) {
+        case opcode::op_add:
+            op_add();
+            break;
+
+        case opcode::op_newobj:
+            op_newobj();
+            break;
+        case opcode::op_newarr:
+            op_newarr();
+            break;
+        case opcode::op_newdic:
+            op_newdic();
+            break;
+        }
+
+        if (inst.opcode == opcode::op_l) {
             _pop2_int(left, right);
             push(value::mkboolean(left.integer > right.integer));
         }
@@ -135,18 +154,6 @@ void runner::execute(program_entry *_entry) {
             push(value::mkboolean(left.integer <= right.integer));
         }
 
-        else if (inst.opcode == opcode::op_add) {
-            _pop2_int(left, right);
-
-            if (left.type == value_type::integer) {
-                left.integer += right.integer;
-                push(left);
-            }
-            else if (is_rkstr(left)) {
-                auto str = new rkstring(rkwstr(left) + rkwstr(right));
-                push(_initobj_systype(sighash_string, str));
-            }
-        }
         else if (inst.opcode == opcode::op_sub) {
             _pop2_int(left, right);
             left.integer -= right.integer;
@@ -162,57 +169,6 @@ void runner::execute(program_entry *_entry) {
             _pop2_int(left, right);
             left.integer *= right.integer;
             push(left);
-        }
-
-        else if (inst.opcode == opcode::op_newobj) {
-#if _RK_STRICT_CHECK
-            if (types.find(inst.operand) == types.end())
-                throw invalid_program_exception("No such type");
-#endif
-
-            // FIXME
-
-            if (types[inst.operand].typekind == runtime_typekind::tk_programtype) {
-                auto objref = new rkscriptobject();
-                push(value::mkobjref(objref));
-
-                objref->vtable = &types[inst.operand].vtable.table;
-                objref->sighash = inst.operand;
-
-                gc.add_object(objref);
-            }
-            else {
-                // FIXME
-                auto newcall = types[inst.operand].vtable.table[sighash_new];
-
-                if (newcall.type == call_type::ct_syscall_direct) {
-                    syscall(newcall.entry, sp);
-                    auto obj = stack[stack.size() - 1];
-                    obj.objref->vtable = &types[inst.operand].vtable.table;
-                    obj.objref->sighash = inst.operand;
-                    gc.add_object(obj.objref);
-                }
-                else
-                    throw invalid_access_exception("invalid calltype for .new");
-            }
-        }
-        else if (inst.opcode == opcode::op_newarr) {
-            set_rkctx(exectx);
-            auto aryref = new rkarray(inst.operand);
-            // FIXME
-            aryref->vtable = &types[sighash_array].vtable.table;
-            push(value::mkobjref(aryref));
-
-            gc.add_object(aryref);
-        }
-        else if (inst.opcode == opcode::op_newdic) {
-            set_rkctx(exectx);
-            auto aryref = new rkdictionary(inst.operand);
-            // FIXME
-            aryref->vtable = &types[sighash_dictionary].vtable.table;
-            push(value::mkobjref(aryref));
-
-            gc.add_object(aryref);
         }
 
         else if (inst.opcode == opcode::op_setcallee)
@@ -259,30 +215,6 @@ void runner::execute(program_entry *_entry) {
             if (callstack.empty()) break;
         }
 
-        else if (inst.opcode == opcode::op_ldloc)
-            stack.push_back(get_local(inst.operand));
-        else if (inst.opcode == opcode::op_stloc) {
-            stack[bp + inst.operand] = stack.back();
-            stack.pop_back();
-        }
-        else if (inst.opcode == opcode::op_ldprop) {
-            auto obj = pop();
-
-            if (obj.type != value_type::object)
-                throw invalid_program_exception("target is not an object");
-
-            push(obj.objref->get_property(inst.operand));
-        }
-        else if (inst.opcode == opcode::op_stprop) {
-            auto obj = pop();
-            auto value = pop();
-
-            if (obj.type != value_type::object)
-                throw invalid_program_exception("target is not a object");
-
-            obj.objref->properties[inst.operand] = value;
-        }
-
         else if (inst.opcode == opcode::op_jmp_true) {
             if (pop().integer != 0)
                 pc = inst.operand;
@@ -292,8 +224,8 @@ void runner::execute(program_entry *_entry) {
                 pc = inst.operand;
         }
 
-        else
-            throw invalid_program_exception("unknown instruction.");
+        //else
+        //    throw invalid_program_exception("unknown instruction.");
 
     end_loop:
         continue;
@@ -304,6 +236,105 @@ void runner::execute(program_entry *_entry) {
     }
 
     delete exectx;
+}
+
+void runner::op_eqtype() {
+    _pop2_int(left, right);
+
+    auto type = get_type(left);
+
+    if (type.sighash == right.uinteger)
+        push(value::mkboolean(true));
+    else {
+        for (auto hash : type.parents) {
+            if (right.uinteger == hash) {
+                push(value::mkboolean(true));
+                return;
+            }
+        }
+
+        push(value::mkboolean(false));
+    }
+}
+void runner::op_add() {
+    _pop2_int(left, right);
+
+    if (left.type == value_type::integer) {
+        left.integer += right.integer;
+        push(left);
+    }
+    else if (is_rkstr(left)) {
+        auto str = new rkstring(rkwstr(left) + rkwstr(right));
+        push(_initobj_systype(sighash_string, str));
+    }
+}
+void runner::op_newobj() {
+#if _RK_STRICT_CHECK
+    if (types.find(inst.operand) == types.end())
+        throw invalid_program_exception("No such type");
+#endif
+
+    // FIXME
+
+    if (types[inst.operand].typekind == runtime_typekind::tk_programtype) {
+        auto objref = new rkscriptobject();
+        push(value::mkobjref(objref));
+
+        objref->vtable = &types[inst.operand].vtable.table;
+        objref->sighash = inst.operand;
+
+        gc.add_object(objref);
+    }
+    else {
+        // FIXME
+        auto newcall = types[inst.operand].vtable.table[sighash_new];
+
+        if (newcall.type == call_type::ct_syscall_direct) {
+            syscall(newcall.entry, sp);
+            auto obj = stack[stack.size() - 1];
+            obj.objref->vtable = &types[inst.operand].vtable.table;
+            obj.objref->sighash = inst.operand;
+            gc.add_object(obj.objref);
+        }
+        else
+            throw invalid_access_exception("invalid calltype for .new");
+    }
+}
+void runner::op_newarr() {
+    set_rkctx(exectx);
+    auto aryref = new rkarray(inst.operand);
+    // FIXME
+    aryref->vtable = &types[sighash_array].vtable.table;
+    push(value::mkobjref(aryref));
+
+    gc.add_object(aryref);
+}
+void runner::op_newdic() {
+    set_rkctx(exectx);
+    auto aryref = new rkdictionary(inst.operand);
+    // FIXME
+    aryref->vtable = &types[sighash_dictionary].vtable.table;
+    push(value::mkobjref(aryref));
+
+    gc.add_object(aryref);
+}
+
+void runner::op_ldprop() {
+    auto obj = pop();
+
+    if (obj.type != value_type::object)
+        throw invalid_program_exception("target is not an object");
+
+    push(obj.objref->get_property(inst.operand));
+}
+void runner::op_stprop() {
+    auto obj = pop();
+    auto value = pop();
+
+    if (obj.type != value_type::object)
+        throw invalid_program_exception("target is not a object");
+
+    obj.objref->properties[inst.operand] = value;
 }
 
 __forceinline

@@ -59,6 +59,17 @@ private:
     void load_all_programtypes();
     void load_programtype(uint32_t sighash);
 
+    void op_eqtype();
+
+    void op_add();
+
+    void op_newobj();
+    void op_newarr();
+    void op_newdic();
+
+    void op_ldprop();
+    void op_stprop();
+
     value get_local(int n);
     runtime_typedata get_type(const value &v);
     runtime_typedata get_type(uint32_t sighash);
@@ -84,6 +95,9 @@ private:
 
     gc gc;
     debugger *dbger;
+
+    instruction inst;
+    stack_provider sp;
 
     // REGISTERS
     program_entry *current_entry;

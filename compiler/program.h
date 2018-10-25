@@ -113,6 +113,9 @@ struct instruction {
         int32_t i32;
     };
 
+    instruction() :
+        opcode(opcode::op_nop), i32(0) {
+    }
     instruction(opcode_t _o, uint32_t operand) :
         opcode((uint8_t)_o), operand(operand) {
     }
