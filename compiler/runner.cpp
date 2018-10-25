@@ -68,7 +68,9 @@ void runner::execute(program_entry *_entry) {
         if (pc >= p.header.code_len)
             throw invalid_program_exception("unexpected end of program.");
 
+        // Prepare for next execution
         inst = p.code[pc++];
+        errflag = false;
 
         if (dbger) dbger->on_pre_exec(*this, inst);
 
@@ -138,7 +140,23 @@ void runner::execute(program_entry *_entry) {
         case opcode::op_newdic:
             op_newdic();
             break;
+
+        case opcode::op_call:
+            programcall(inst.cs.index);
+            break;
+        case opcode::op_syscall:
+            syscall(inst.cs.index, sp);
+            break;
+        case opcode::op_vcall:
+            op_vcall();
+            break;
+
+        case opcode::op_setcallee:
+            callee_ptr = &stack.back();
+            break;
         }
+
+        if (errflag) goto error;
 
         if (inst.opcode == opcode::op_l) {
             _pop2_int(left, right);
@@ -174,38 +192,6 @@ void runner::execute(program_entry *_entry) {
             push(left);
         }
 
-        else if (inst.opcode == opcode::op_setcallee)
-            callee_ptr = &stack.back();
-
-        else if (inst.opcode == opcode::op_call)
-            programcall(inst.cs.index);
-        else if (inst.opcode == opcode::op_syscall)
-            syscall(inst.cs.index, sp);
-        else if (inst.opcode == opcode::op_vcall) {
-            auto sighash = inst.operand;
-            std::map<uint32_t, callinfo> *vtable;
-
-            if (callee_ptr->type == value_type::integer) {
-                vtable = &types[sighash_integer].vtable.table;
-                push(top());
-            }
-            else {
-                auto calleeobj = callee_ptr->objref;
-                vtable = calleeobj->vtable;
-            }
-
-            auto _callinfo = vtable->find(sighash);
-            if (_callinfo == vtable->end()) {
-                exception = rkexception("No such method");
-                goto error;
-            }
-
-            auto callinfo = (*_callinfo).second;
-            if (callinfo.type == call_type::ct_syscall_direct)
-                syscall(callinfo.entry, sp);
-            else if (callinfo.type == call_type::ct_programcall_direct)
-                programcall(callinfo.entry);
-        }
         else if (inst.opcode == opcode::op_ret) {
             auto ret = pop();
             auto callframe = pop_callframe(*current_entry);
@@ -320,6 +306,32 @@ void runner::op_newdic() {
     push(value::mkobjref(aryref));
 
     gc.add_object(aryref);
+}
+
+void runner::op_vcall() {
+    auto sighash = inst.operand;
+    std::map<uint32_t, callinfo> *vtable;
+
+    if (callee_ptr->type == value_type::integer) {
+        vtable = &types[sighash_integer].vtable.table;
+        push(top());
+    }
+    else {
+        auto calleeobj = callee_ptr->objref;
+        vtable = calleeobj->vtable;
+    }
+
+    auto _callinfo = vtable->find(sighash);
+    if (_callinfo == vtable->end()) {
+        exception = rkexception("No such method");
+        errflag = true;
+    }
+
+    auto callinfo = (*_callinfo).second;
+    if (callinfo.type == call_type::ct_syscall_direct)
+        syscall(callinfo.entry, sp);
+    else if (callinfo.type == call_type::ct_programcall_direct)
+        programcall(callinfo.entry);
 }
 
 void runner::op_ldprop() {

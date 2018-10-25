@@ -66,6 +66,8 @@ private:
     void op_newarr();
     void op_newdic();
 
+    void op_vcall();
+
     void op_ldprop();
     void op_stprop();
 
@@ -95,14 +97,16 @@ private:
     gc gc;
     debugger *dbger;
 
-    instruction inst;
-    stack_provider sp;
-
     // REGISTERS
-    program_entry *current_entry;
-    uint16_t pc; // program counter
-    uint16_t bp; // base stack pointer
-    value *callee_ptr; // .this
+    program_entry  *current_entry;
+    instruction     inst;
+    bool            errflag;
+    stack_provider  sp;
+                   
+    // REGISTERS   
+    uint16_t        pc; // program counter
+    uint16_t        bp; // base stack pointer
+    value          *callee_ptr; // .this
 
     rkexception exception;
 
