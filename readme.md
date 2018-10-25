@@ -10,7 +10,7 @@ Concept
 ----
 * Similar to C oriented languages (which means very intuitive)
 * Less confusing syntax, unlike modern languages.
-* Automated memory management with __Garbage Gollector__.
+* Automated memory management with built in __Garbage Gollector__.
 * Supports `OOP`.
 
 Usage
