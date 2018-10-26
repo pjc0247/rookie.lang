@@ -26,15 +26,26 @@
 
 #define _stacktop() stack[stack.size() - 1]
 
+struct primitive_cache {
+    runtime_typedata integer, string, object;
+    runtime_typedata array, dictionary;
+};
+
 runner::runner(const program &p, ::binding &binding) :
     p(p), binding(binding),
     dbger(nullptr),
     callee_ptr(nullptr),
+    ptype(nullptr),
     gc(*this),
     sp(stack) {
 
     build_runtime_data();
+    build_primitive_cache();
 }
+runner::~runner() {
+    delete ptype;
+}
+
 void runner::execute() {
     if (p.header.entry_len == 0)
         throw new std::invalid_argument("program does not have any entries.");
@@ -42,6 +53,8 @@ void runner::execute() {
     execute(&p.entries[p.header.main_entry]);
 }
 void runner::execute(program_entry *_entry) {
+    assert(_entry != nullptr);
+
 #ifdef RK_HALT_ON_LONG_EXECUTION
     halt_counter = 0;
 #endif
@@ -153,6 +166,9 @@ void runner::execute(program_entry *_entry) {
 
         case opcode::op_setcallee:
             callee_ptr = &stack.back();
+            break;
+
+        default:
             break;
         }
 
@@ -293,7 +309,7 @@ void runner::op_newarr() {
     set_rkctx(exectx);
     auto aryref = new rkarray(inst.operand);
     // FIXME
-    aryref->vtable = &types[sighash_array].vtable.table;
+    aryref->vtable = &ptype->array.vtable.table;
     push(value::mkobjref(aryref));
 
     gc.add_object(aryref);
@@ -302,7 +318,7 @@ void runner::op_newdic() {
     set_rkctx(exectx);
     auto aryref = new rkdictionary(inst.operand);
     // FIXME
-    aryref->vtable = &types[sighash_dictionary].vtable.table;
+    aryref->vtable = &ptype->dictionary.vtable.table;
     push(value::mkobjref(aryref));
 
     gc.add_object(aryref);
@@ -313,7 +329,7 @@ void runner::op_vcall() {
     std::map<uint32_t, callinfo> *vtable;
 
     if (callee_ptr->type == value_type::integer) {
-        vtable = &types[sighash_integer].vtable.table;
+        vtable = &ptype->integer.vtable.table;
         push(top());
     }
     else {
@@ -364,7 +380,7 @@ value runner::get_local(int n) {
 __forceinline
 runtime_typedata runner::get_type(const value &v) {
     if (v.type == value_type::integer)
-        return types[sighash_integer];
+        return ptype->integer;
     else
         return types[v.objref->sighash];
 }
@@ -465,6 +481,16 @@ void runner::build_runtime_data() {
 
     load_all_systypes();
     load_all_programtypes();
+}
+void runner::build_primitive_cache() {
+    assert(ptype == nullptr);
+
+    ptype = new primitive_cache();
+    ptype->integer = types[sighash_integer];
+    ptype->string = types[sighash_string];
+    ptype->object = types[sighash_object];
+    ptype->array = types[sighash_array];
+    ptype->dictionary = types[sighash_dictionary];
 }
 
 void runner::load_all_systypes() {

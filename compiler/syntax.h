@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <assert.h>
 
 #include "token.h"
 

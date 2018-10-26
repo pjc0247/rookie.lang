@@ -18,6 +18,8 @@ class object;
 class binding;
 class exe_context;
 
+struct primitive_cache;
+
 enum class runtime_typekind {
     tk_systype,
     tk_programtype
@@ -39,6 +41,7 @@ class runner {
     friend debugger;
 public:
     runner(const program &p, binding &binding);
+    virtual ~runner();
 
     runner &attach_debugger(debugger &_dbger) {
         dbger = &_dbger;
@@ -54,6 +57,8 @@ public:
 
 private:
     void build_runtime_data();
+    void build_primitive_cache();
+
     void load_all_systypes();
     void load_all_programtypes();
     void load_programtype(uint32_t sighash);
@@ -96,6 +101,8 @@ private:
 
     gc gc;
     debugger *dbger;
+
+    primitive_cache *ptype;
 
     // REGISTERS
     program_entry  *current_entry;
