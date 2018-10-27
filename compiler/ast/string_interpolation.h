@@ -29,8 +29,13 @@ protected:
                 auto id_node = new ident_node(stoken::empty(), new_node, match[1].str());
                 auto add_node = new op_node(stoken::empty(), new_node, L"+");
 
+                auto to_string_node = new callmember_node(stoken::empty(), new_node);
+
+                to_string_node->append(new ident_node(stoken::empty(), to_string_node, L"to_string"));
+                to_string_node->append(id_node);
+
                 add_node->append(str_node);
-                add_node->append(id_node);
+                add_node->append(to_string_node);
                 new_node->append(add_node);
 
                 searchStart += match.position() + match.length();
