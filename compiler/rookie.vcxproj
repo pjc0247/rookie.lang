@@ -30,7 +30,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v141_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -163,6 +163,7 @@
     <ClInclude Include="..\libs\integer.h" />
     <ClInclude Include="..\libs\math.h" />
     <ClInclude Include="..\libs\object.h" />
+    <ClInclude Include="..\libs\type.h" />
     <ClInclude Include="..\libs\stdlib.h" />
     <ClInclude Include="..\libs\string.h" />
     <ClInclude Include="..\thirdparty\argagg.hpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="ast\ast_reflection.h" />
     <ClInclude Include="ast\callmember.h" />
     <ClInclude Include="ast\callnewobj.h" />
+    <ClInclude Include="ast\classfield.h" />
     <ClInclude Include="ast\endlpop.h" />
     <ClInclude Include="ast\newdic.h" />
     <ClInclude Include="ast\syntax_travler.h" />
@@ -187,6 +189,7 @@
     <ClInclude Include="compiler.h" />
     <ClInclude Include="errors.h" />
     <ClInclude Include="ir_optimiser.h" />
+    <ClInclude Include="object.h" />
     <ClInclude Include="optimiser.h" />
     <ClInclude Include="program.h" />
     <ClInclude Include="program_io.h" />
@@ -202,7 +205,7 @@
     <ClInclude Include="tree_builder.h" />
     <ClInclude Include="type_attr.h" />
     <ClInclude Include="validator\syntax_validator.h" />
-    <ClInclude Include="value_object.h" />
+    <ClInclude Include="value.h" />
     <ClInclude Include="value_op.h" />
     <ClInclude Include="vnode_transformer.h" />
   </ItemGroup>

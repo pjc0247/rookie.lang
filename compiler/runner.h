@@ -28,6 +28,7 @@ struct runtime_typedata {
     std::wstring name;
     uint32_t sighash;
 
+    std::map<uint32_t, value> fields;
     std::vector<uint32_t> parents;
 
     runtime_typekind typekind;

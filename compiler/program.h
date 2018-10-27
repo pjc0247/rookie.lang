@@ -27,14 +27,17 @@ typedef enum opcode : unsigned char {
     op_dup,
     op_pop,
     op_ldthis,
+    op_ldtype,
     op_ldloc, op_stloc,
     op_ldprop, op_stprop,
+    op_ldfld, op_stfld,
     op_setcallee,
 
     op_ldi,
     op_ldstr, op_ldnull,
     op_ldtrue, op_ldfalse,
 
+    op_jmp,
     op_jmp_true, op_jmp_false,
 
     op_endenum // not a real opcode, indicates last num
@@ -63,16 +66,20 @@ inline const wchar_t *to_string(opcode type) {
     case op_dup: return L"op_dup";
     case op_pop: return L"op_pop";
     case op_ldthis: return L"op_ldthis";
+    case op_ldtype: return L"op_ldtype";
     case op_ldloc: return L"op_ldloc";
     case op_stloc: return L"op_stloc";
     case op_ldprop: return L"op_ldprop";
     case op_stprop: return L"op_stprop";
+    case op_ldfld: return L"op_ldfld";
+    case op_stfld: return L"op_stfld";
     case op_setcallee: return L"op_setcallee";
     case op_ldi: return L"op_ldi";
     case op_ldstr: return L"op_ldstr";
     case op_ldnull: return L"op_ldnull";
     case op_ldtrue: return L"op_ldtrue";
     case op_ldfalse: return L"op_ldfalse";
+    case op_jmp: return L"op_jmp";
     case op_jmp_true: return L"op_jmp_true";
     case op_jmp_false: return L"op_jmp_false";
 

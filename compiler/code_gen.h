@@ -131,6 +131,7 @@ public:
         instructions.push_back(instruction(opcode, cs));
         instruction_indexes.push_back(codeindex);
     }
+    // Don't know exact callsite yet, but will be resolved later.
     void emit_defer(opcode_t opcode, const std::wstring &signature) {
         auto cs = callsite(callsite_lookup::cs_method, 1, 0);
         instructions.push_back(instruction(opcode, cs));
@@ -179,6 +180,18 @@ public:
         entry.locals = method->locals.size();
         entries.push_back(entry);
     }
+    void begin_bootstrap() {
+        assert(entries.size() == 0);
+
+        program_entry entry;
+        memset(&entry, 0, sizeof(program_entry));
+        swprintf(entry.signature, sizeof(entry.signature), L"_rkboot");
+        entry.entry = get_cursor();
+        entry.params = 0;
+        entry.locals = 0;
+        entries.push_back(entry);
+    }
+
     void fin_method() {
         auto &last_entry = entries[entries.size() - 1];
         last_entry.codesize = get_cursor() - last_entry.entry;
@@ -202,13 +215,16 @@ public:
         p.header.types_len = types.size();
 
         p.header.main_entry = 0;
+
+        auto jmp_entry = 0;
         for (int i = 0; i < entries.size(); i++) {
             auto sig = main_node->declaring_class()->ident_str() + L"::" + main_node->ident_str();
             if (sig == entries[i].signature) {
-                p.header.main_entry = i;
+                jmp_entry = i;
                 break;
             }
         }
+        modify_operand(entries[1].entry - 1, entries[jmp_entry].entry);
 
         auto rdata = spool.fin();
 
@@ -394,6 +410,7 @@ public:
         else if (!(m[0]->attr & method_attr::method_static))
             ctx.push_error(codegen_error(L"`main` is not a static method."));
 
+        emit_bootstrap(root);
         emit(root);
 
         return emitter.fin(m[0]);
@@ -411,6 +428,19 @@ private:
         emit_##syntax_name (dynamic_cast<syntax_name##_node*>(node)); \
         break
 
+    void emit_bootstrap(syntax_node *node) {
+        emitter.begin_bootstrap();
+
+        for (auto klass : astr::all_classes(node)) {
+            for (auto field : klass->fields) {
+                emitter.emit(opcode::op_ldtype, sig2hash(klass->ident_str()));
+                emit(field->children[1]);
+                emitter.emit(opcode::op_stfld, sig2hash(field->ident_str()));
+            }
+        }
+
+        emitter.emit(opcode::op_jmp, 0);
+    }
     void emit(syntax_node *node) {
         if (node == nullptr) return;
 
@@ -423,6 +453,7 @@ private:
         switch (node->type) {
             _route(root);
             _route(class);
+            _route(field);
             _route(method);
             _route(pop);
             _route(callmember);
@@ -459,6 +490,9 @@ private:
 
         for (int i = 1; i < node->children.size(); i++)
             emit(node->children[i]);
+    }
+    void emit_field(field_node *node) {
+
     }
     void emit_method(method_node *node) {
         current_method = node;
@@ -652,8 +686,12 @@ private:
             if (lookup.type == lookup_type::not_exist) {
                 ctx.push_error(codegen_error(L"Unassigned local variable: " + node->ident));
             }
-            else 
+            else if (lookup.type == lookup_type::var_local)
                 emitter.emit(opcode::op_ldloc, lookup.index);
+            else if (lookup.type == lookup_type::var_field) {
+                emitter.emit(opcode::op_ldtype, sig2hash(current_class->ident_str()));
+                emitter.emit(opcode::op_ldfld, sig2hash(node->ident));
+            }
         }
     }
     void emit_literal(literal_node *node) {

@@ -9,6 +9,7 @@
 #include "libs/gc.h"
 #include "libs/object.h"
 #include "libs/math.h"
+#include "libs/type.h"
 
 #include "binding.h"
 
@@ -24,6 +25,7 @@ binding binding::default_binding() {
     b.import<rkdebugger>();
     b.import<rkscriptobject>();
     b.import<rkmath>();
+    b.import<rktype>();
 
     return b;
 }

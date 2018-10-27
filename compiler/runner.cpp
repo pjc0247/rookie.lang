@@ -5,6 +5,7 @@
 
 #include "libs/array.h"
 #include "libs/dictionary.h"
+#include "libs/type.h"
 
 #include "runner.h"
 
@@ -189,6 +190,25 @@ void runner::execute(program_entry *_entry) {
             push(value::mkboolean(left.integer <= right.integer));
         }
 
+        else if (inst.opcode == opcode::op_ldtype) {
+            push(value::mkobjref(new rktype(inst.operand)));
+        }
+        else if (inst.opcode == opcode::op_stfld) {
+            auto value = pop();
+            auto type = pop();
+
+            types[((rktype*)type.objref)->sighash]
+                .fields[inst.operand] = value;
+        }
+        else if (inst.opcode == opcode::op_ldfld) {
+            auto type = pop();
+
+            auto value = types[((rktype*)type.objref)->sighash]
+                .fields[inst.operand];
+
+            push(value);
+        }
+
         else if (inst.opcode == opcode::op_sub) {
             _pop2_int(left, right);
             left.integer -= right.integer;
@@ -218,6 +238,9 @@ void runner::execute(program_entry *_entry) {
             if (callstack.empty()) break;
         }
 
+        else if (inst.opcode == opcode::op_jmp) {
+            pc = inst.operand;
+        }
         else if (inst.opcode == opcode::op_jmp_true) {
             if (pop().integer != 0)
                 pc = inst.operand;

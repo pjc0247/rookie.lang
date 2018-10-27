@@ -565,8 +565,10 @@ public:
 protected:
     virtual void on_complete() {
         auto ident = dynamic_cast<ident_node*>(left());
-        if (ident != nullptr)
-            declaring_method()->push_local(ident->ident);
+        auto method = declaring_method();
+
+        if (ident != nullptr && method != nullptr)
+            method->push_local(ident->ident);
     }
 };
 

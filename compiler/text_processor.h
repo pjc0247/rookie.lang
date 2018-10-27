@@ -294,8 +294,10 @@ public:
 
             rklog("%S / %d / %d / %d\n", token.raw.c_str(), token.type, token.priority, depth);
 
-            if (token.type == token_type::left_bracket)
+            if (token.type == token_type::left_bracket) {
+                flush_until_priority(INT_MIN);
                 depth--;
+            }
             else if (token.type == token_type::right_bracket)
                 depth++;
 
@@ -448,7 +450,17 @@ private:
     void sexp_class(token &token) {
         stoken stoken(token);
 
-        if (token.type == token_type::annotation) {
+        if (token.type == token_type::semicolon) {
+            _mark_as_parsed(stoken);
+            flush_until_priority(token.priority);
+            stoken = parse(token);
+        }
+        else if (token.type == token_type::op) {
+            _mark_as_parsed(stoken);
+            flush_until_priority(token.priority);
+            stack.push_back(token);
+        }
+        else if (token.type == token_type::annotation) {
             _mark_as_parsed(stoken);
             next_is_at = true;
         }
@@ -478,6 +490,9 @@ private:
             stack.push_back(token.preparsed(stoken_type::st_begin_param));
             stoken.type = stoken_type::st_end_param;
         }
+        else if (token.type == token_type::literal) {
+            stoken.type = stoken_type::st_literal;
+        }
         else if (token.type == token_type::ident) {
             _mark_as_parsed(stoken);
 
@@ -502,8 +517,11 @@ private:
         else if (token.type == token_type::right_bracket)
             stoken.type = stoken_type::st_end_block;
         else if (token.type == token_type::left_bracket ||
-            token.type == token_type::right_bracket)
+            token.type == token_type::right_bracket) {
             _mark_as_parsed(stoken);
+
+            printf("QWER\n");
+        }
 
         if (stoken.type == stoken_type::none)
             ctx.push_error(unexpected_token_error(token));
