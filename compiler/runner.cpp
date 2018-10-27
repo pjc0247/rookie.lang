@@ -135,11 +135,9 @@ void runner::execute(program_entry *_entry) {
             op_eqtype();
             break;
 
-        case opcode::op_eq: {
-            _pop2_int(left, right);
-            push(value::mkboolean(left.integer == right.integer));
+        case opcode::op_eq:
+            op_eq();
             break;
-        }
         case opcode::op_add:
             op_add();
             break;
@@ -261,6 +259,15 @@ void runner::op_eqtype() {
         push(value::mkboolean(false));
     }
 }
+void runner::op_eq() {
+    _pop2_int(left, right);
+
+    if (left.type == right.type)
+        push(value::mkboolean(left.uinteger == right.uinteger));
+    else
+        push(value::_false());
+}
+
 void runner::op_add() {
     _pop2_int(left, right);
 

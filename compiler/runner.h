@@ -64,6 +64,7 @@ private:
     void load_programtype(uint32_t sighash);
 
     void op_eqtype();
+    void op_eq();
 
     void op_add();
 
