@@ -131,7 +131,8 @@ public:
         instructions.push_back(instruction(opcode, cs));
         instruction_indexes.push_back(codeindex);
     }
-    void emit_defer(opcode_t opcode, const callsite &cs, const std::wstring &signature) {
+    void emit_defer(opcode_t opcode, const std::wstring &signature) {
+        auto cs = callsite(callsite_lookup::cs_method, 1, 0);
         instructions.push_back(instruction(opcode, cs));
         instruction_indexes.push_back(codeindex);
 
@@ -508,7 +509,6 @@ private:
 
         if (m != nullptr) {
             emitter.emit_defer(opcode::op_call,
-                callsite(callsite_lookup::cs_method, 1, 0),
                 m->declaring_class()->ident_str() + L"::" + m->ident_str());
         }
         else
@@ -536,7 +536,6 @@ private:
                 lookup.method->attr & method_attr::method_static) {
 
                 emitter.emit_defer(opcode::op_call,
-                    callsite(callsite_lookup::cs_method, 1, 0),
                     node->declaring_class()->ident_str() + L"::" + node->ident_str());
             }
             else {
@@ -565,7 +564,6 @@ private:
         }
         else {
             emitter.emit_defer(opcode::op_call,
-                callsite(callsite_lookup::cs_method, 1, 0),
                 callee_name + L"::" + node->ident_str());
         }
     }
