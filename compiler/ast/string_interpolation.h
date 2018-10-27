@@ -25,11 +25,13 @@ protected:
                 auto left = l->str.substr(offset, match.position());
                 auto right = l->str.substr(match.position(), match.length());
 
+                // LEFT
                 auto str_node = new literal_node(stoken::empty(), new_node, left);
-                auto id_node = new ident_node(stoken::empty(), new_node, match[1].str());
-                auto add_node = new op_node(stoken::empty(), new_node, L"+");
-
+                // RIGHT
                 auto to_string_node = new callmember_node(stoken::empty(), new_node);
+                auto id_node = new ident_node(stoken::empty(), new_node, match[1].str());
+                // .strconcat
+                auto add_node = new op_node(stoken::empty(), new_node, L"+");
 
                 to_string_node->append(new ident_node(stoken::empty(), to_string_node, L"to_string"));
                 to_string_node->append(id_node);
@@ -41,6 +43,15 @@ protected:
                 searchStart += match.position() + match.length();
                 offset += match.position() + match.length();
             }
+
+            if (offset != l->str.size()) {
+                auto left = l->str.substr(offset);
+                auto str_node = new literal_node(stoken::empty(), new_node, left);
+                new_node->append(str_node);
+            }
+
+            if (new_node->children.size() % 2 == 1)
+                new_node->append(new literal_node(stoken::empty(), new_node, L""));
 
             return new_node;
         }
