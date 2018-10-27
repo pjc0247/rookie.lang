@@ -266,6 +266,11 @@ void runner::execute(program_entry *_entry) {
 }
 
 void runner::op_eqtype() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  LEFT
+     *  RIGHT
+     *  OP_EQTYPE
+     */
     _pop2_int(left, right);
 
     auto type = get_type(left);
@@ -284,6 +289,11 @@ void runner::op_eqtype() {
     }
 }
 void runner::op_eq() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  LEFT
+     *  RIGHT
+     *  OP_EQ
+     */
     _pop2_int(left, right);
 
     if (left.type == right.type)
@@ -293,6 +303,11 @@ void runner::op_eq() {
 }
 
 void runner::op_add() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  LEFT
+     *  RIGHT
+     *  OP_ADD          
+     */
     _pop2_int(left, right);
 
     if (left.type == value_type::integer) {
@@ -305,6 +320,10 @@ void runner::op_add() {
     }
 }
 void runner::op_newobj() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  ARGS (0..n)
+     *  OP_NEWOBJ          SIGHASH
+     */
 #if _RK_STRICT_CHECK
     if (types.find(inst.operand) == types.end())
         throw invalid_program_exception("No such type");
@@ -337,6 +356,11 @@ void runner::op_newobj() {
     }
 }
 void runner::op_newarr() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  KEY   (0..n)
+     *  VALUE (0..n)
+     *  OP_NEWARR          INTEGER
+     */
     set_rkctx(exectx);
     auto aryref = new rkarray(inst.operand);
     // FIXME
@@ -346,6 +370,11 @@ void runner::op_newarr() {
     gc.add_object(aryref);
 }
 void runner::op_newdic() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  KEY   (0..n)
+     *  VALUE (0..n)
+     *  OP_NEWDIC          INTEGER
+     */
     set_rkctx(exectx);
     auto aryref = new rkdictionary(inst.operand);
     // FIXME
@@ -356,6 +385,11 @@ void runner::op_newdic() {
 }
 
 void runner::op_vcall() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  THIS(object)
+     *  ARGS (0..n)
+     *  OP_LDVCALL
+     */
     auto sighash = inst.operand;
     std::map<uint32_t, callinfo> *vtable;
 
@@ -383,6 +417,10 @@ void runner::op_vcall() {
 }
 
 void runner::op_ldprop() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  THIS(object)
+     *  OP_LDPROP          SIGHASH
+     */
     auto obj = pop();
 
     if (obj.type != value_type::object)
@@ -391,6 +429,11 @@ void runner::op_ldprop() {
     push(obj.objref->get_property(inst.operand));
 }
 void runner::op_stprop() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  VALUE
+     *  .THIS(object)
+     *  OP_STPROP          SIGHASH
+     */
     auto obj = pop();
     auto value = pop();
 
@@ -400,6 +443,10 @@ void runner::op_stprop() {
     obj.objref->properties[inst.operand] = value;
 }
 void runner::op_ldfld() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  TYPE
+     *  OP_LDFLD           SIGHASH
+     */
     auto type = pop();
     auto value = rk2obj(type, rktype*)->rtype
         .fields[inst.operand];
@@ -407,6 +454,11 @@ void runner::op_ldfld() {
     push(value);
 }
 void runner::op_stfld() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  TYPE
+     *  VALUE
+     *  OP_STFLD           SIGHASH
+     */
     auto value = pop();
     auto type = pop();
 
