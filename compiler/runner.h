@@ -19,6 +19,7 @@ class binding;
 class exe_context;
 
 struct primitive_cache;
+struct type_cache;
 
 enum class runtime_typekind {
     tk_systype,
@@ -59,6 +60,7 @@ public:
 private:
     void build_runtime_data();
     void build_primitive_cache();
+    void build_type_cache();
 
     void load_all_systypes();
     void load_all_programtypes();
@@ -105,6 +107,7 @@ private:
     debugger *dbger;
 
     primitive_cache *ptype;
+    type_cache      *typecache;
 
     // REGISTERS
     program_entry  *current_entry;

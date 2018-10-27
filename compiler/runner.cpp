@@ -31,20 +31,28 @@ struct primitive_cache {
     runtime_typedata integer, string, object;
     runtime_typedata array, dictionary;
 };
+struct type_cache {
+    std::map<uint32_t, rktype*> table;
+};
 
 runner::runner(const program &p, ::binding &binding) :
     p(p), binding(binding),
     dbger(nullptr),
     callee_ptr(nullptr),
-    ptype(nullptr),
+    ptype(nullptr), typecache(nullptr),
     gc(*this),
     sp(stack) {
 
     build_runtime_data();
     build_primitive_cache();
+    build_type_cache();
 }
 runner::~runner() {
     delete ptype;
+
+    for (auto t : typecache->table)
+        delete t.second;
+    delete typecache;
 }
 
 void runner::execute() {
@@ -191,19 +199,19 @@ void runner::execute(program_entry *_entry) {
         }
 
         else if (inst.opcode == opcode::op_ldtype) {
-            push(value::mkobjref(new rktype(inst.operand)));
+            push(obj2rk(typecache->table[inst.operand]));
         }
         else if (inst.opcode == opcode::op_stfld) {
             auto value = pop();
             auto type = pop();
 
-            types[((rktype*)type.objref)->sighash]
+            rk2obj(type, rktype*)->rtype
                 .fields[inst.operand] = value;
         }
         else if (inst.opcode == opcode::op_ldfld) {
             auto type = pop();
 
-            auto value = types[((rktype*)type.objref)->sighash]
+            auto value = rk2obj(type, rktype*)->rtype
                 .fields[inst.operand];
 
             push(value);
@@ -522,6 +530,16 @@ void runner::build_primitive_cache() {
     ptype->object = types[sighash_object];
     ptype->array = types[sighash_array];
     ptype->dictionary = types[sighash_dictionary];
+}
+void runner::build_type_cache() {
+    assert(typecache == nullptr);
+
+    typecache = new type_cache();
+
+    for (auto &type : types) {
+        typecache->table[type.first] =
+            new rktype(type.first, type.second);
+    }
 }
 
 void runner::load_all_systypes() {

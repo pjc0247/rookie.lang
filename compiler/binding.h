@@ -33,6 +33,9 @@
 #define int2rk(v) value::mkinteger(v)
 #define rk2int(v) v.integer
 
+#define obj2rk(v) value::mkobjref(v)
+#define rk2obj(v, type) ((type)v.objref)
+
 typedef std::map<std::wstring, std::function<void(stack_provider&)>> bindmap;
 
 class type_builder {
