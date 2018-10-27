@@ -50,8 +50,7 @@ private:
     std::map<std::wstring, int> lookup;
     std::vector<callinfo> table;
 };
-struct calltable {
-    std::map<uint32_t, callinfo> table;
+struct calltable : public std::map<uint32_t, callinfo> {
 };
 class stack_provider;
 struct syscalltable {

@@ -285,19 +285,19 @@ void runner::op_newobj() {
         auto objref = new rkscriptobject();
         push(value::mkobjref(objref));
 
-        objref->vtable = &types[inst.operand].vtable.table;
+        objref->vtable = &types[inst.operand].vtable;
         objref->sighash = inst.operand;
 
         gc.add_object(objref);
     }
     else {
         // FIXME
-        auto newcall = types[inst.operand].vtable.table[sighash_new];
+        auto newcall = types[inst.operand].vtable[sighash_new];
 
         if (newcall.type == call_type::ct_syscall_direct) {
             syscall(newcall.entry, sp);
             auto obj = stack[stack.size() - 1];
-            obj.objref->vtable = &types[inst.operand].vtable.table;
+            obj.objref->vtable = &types[inst.operand].vtable;
             obj.objref->sighash = inst.operand;
             gc.add_object(obj.objref);
         }
@@ -309,7 +309,7 @@ void runner::op_newarr() {
     set_rkctx(exectx);
     auto aryref = new rkarray(inst.operand);
     // FIXME
-    aryref->vtable = &ptype->array.vtable.table;
+    aryref->vtable = &ptype->array.vtable;
     push(value::mkobjref(aryref));
 
     gc.add_object(aryref);
@@ -318,7 +318,7 @@ void runner::op_newdic() {
     set_rkctx(exectx);
     auto aryref = new rkdictionary(inst.operand);
     // FIXME
-    aryref->vtable = &ptype->dictionary.vtable.table;
+    aryref->vtable = &ptype->dictionary.vtable;
     push(value::mkobjref(aryref));
 
     gc.add_object(aryref);
@@ -329,7 +329,7 @@ void runner::op_vcall() {
     std::map<uint32_t, callinfo> *vtable;
 
     if (callee_ptr->type == value_type::integer) {
-        vtable = &ptype->integer.vtable.table;
+        vtable = &ptype->integer.vtable;
         push(top());
     }
     else {
@@ -417,7 +417,7 @@ void runner::_vcall(int sighash, stack_provider &sp) {
 }
 // internal use only.
 void runner::_newobj_systype(int sighash, stack_provider &sp) {
-    auto newcall = types[sighash].vtable.table[sighash_new];
+    auto newcall = types[sighash].vtable[sighash_new];
 
 #if _RK_STRICT_CHECK
     if (newcall.type != call_type::ct_syscall_direct)
@@ -426,14 +426,14 @@ void runner::_newobj_systype(int sighash, stack_provider &sp) {
 
     syscall(newcall.entry, sp);
     auto obj = _stacktop();
-    obj.objref->vtable = &types[sighash].vtable.table;
+    obj.objref->vtable = &types[sighash].vtable;
     obj.objref->sighash = sighash;
 
     gc.add_object(obj.objref);
 }
 value runner::_initobj_systype(int sighash, object *objref) {
     auto obj = value::mkobjref(objref);
-    obj.objref->vtable = &types[sighash].vtable.table;
+    obj.objref->vtable = &types[sighash].vtable;
     obj.objref->sighash = sighash;
 
     gc.add_object(obj.objref);
@@ -505,8 +505,8 @@ void runner::load_all_systypes() {
             auto sighash = sig2hash(method.first);
             syscalls.table.push_back(method.second);
 
-            vtable.table[sighash].type = call_type::ct_syscall_direct;
-            vtable.table[sighash].entry = syscalls.table.size() - 1;
+            vtable[sighash].type = call_type::ct_syscall_direct;
+            vtable[sighash].entry = syscalls.table.size() - 1;
         }
 
         runtime_typedata tdata;
@@ -542,9 +542,9 @@ void runner::load_programtype(uint32_t sighash) {
         calltable vtable;
 
         if (p.types[i].parents_len == 0) {
-            auto basevtable = types[sighash_object].vtable.table;
+            auto basevtable = types[sighash_object].vtable;
             for (auto &method : basevtable) {
-                vtable.table[method.first] = method.second;
+                vtable[method.first] = method.second;
             }
 
             tdata.parents.push_back(sighash_object);
@@ -555,8 +555,8 @@ void runner::load_programtype(uint32_t sighash) {
 
                 load_programtype(parent_hash);
 
-                for (auto &method : types[parent_hash].vtable.table) {
-                    vtable.table[method.first] = method.second;
+                for (auto &method : types[parent_hash].vtable) {
+                    vtable[method.first] = method.second;
                 }
 
                 tdata.parents.push_back(parent_hash);
@@ -570,8 +570,8 @@ void runner::load_programtype(uint32_t sighash) {
             auto method = type.methods[j];
             auto methodhash = sig2hash(method.name);
 
-            vtable.table[methodhash].type = call_type::ct_programcall_direct;
-            vtable.table[methodhash].entry = method.entry;
+            vtable[methodhash].type = call_type::ct_programcall_direct;
+            vtable[methodhash].entry = method.entry;
         }
         tdata.vtable = vtable;
         tdata.name = type.name;
