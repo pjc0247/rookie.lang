@@ -127,11 +127,18 @@ void runner::execute(program_entry *_entry) {
             stack[bp + inst.operand] = top();
             pop();
             break;
+
         case opcode::op_ldprop:
             op_ldprop();
             break;
         case opcode::op_stprop:
             op_stprop();
+            break;
+        case opcode::op_ldfld:
+            op_ldfld();
+            break;
+        case opcode::op_stfld:
+            op_stfld();
             break;
 
         case opcode::op_dup:
@@ -201,21 +208,7 @@ void runner::execute(program_entry *_entry) {
         else if (inst.opcode == opcode::op_ldtype) {
             push(obj2rk(typecache->table[inst.operand]));
         }
-        else if (inst.opcode == opcode::op_stfld) {
-            auto value = pop();
-            auto type = pop();
-
-            rk2obj(type, rktype*)->rtype
-                .fields[inst.operand] = value;
-        }
-        else if (inst.opcode == opcode::op_ldfld) {
-            auto type = pop();
-
-            auto value = rk2obj(type, rktype*)->rtype
-                .fields[inst.operand];
-
-            push(value);
-        }
+        
 
         else if (inst.opcode == opcode::op_sub) {
             _pop2_int(left, right);
@@ -405,6 +398,20 @@ void runner::op_stprop() {
         throw invalid_program_exception("target is not a object");
 
     obj.objref->properties[inst.operand] = value;
+}
+void runner::op_ldfld() {
+    auto type = pop();
+    auto value = rk2obj(type, rktype*)->rtype
+        .fields[inst.operand];
+
+    push(value);
+}
+void runner::op_stfld() {
+    auto value = pop();
+    auto type = pop();
+
+    rk2obj(type, rktype*)->rtype
+        .fields[inst.operand] = value;
 }
 
 __forceinline

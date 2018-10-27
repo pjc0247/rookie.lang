@@ -79,6 +79,8 @@ private:
 
     void op_ldprop();
     void op_stprop();
+    void op_ldfld();
+    void op_stfld();
 
     value get_local(int n);
     runtime_typedata get_type(const value &v);
