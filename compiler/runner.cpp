@@ -342,12 +342,13 @@ void runner::op_vcall() {
         exception = rkexception("No such method");
         errflag = true;
     }
-
-    auto callinfo = (*_callinfo).second;
-    if (callinfo.type == call_type::ct_syscall_direct)
-        syscall(callinfo.entry, sp);
-    else if (callinfo.type == call_type::ct_programcall_direct)
-        programcall(callinfo.entry);
+    else {
+        auto callinfo = (*_callinfo).second;
+        if (callinfo.type == call_type::ct_syscall_direct)
+            syscall(callinfo.entry, sp);
+        else if (callinfo.type == call_type::ct_programcall_direct)
+            programcall(callinfo.entry);
+    }
 }
 
 void runner::op_ldprop() {
