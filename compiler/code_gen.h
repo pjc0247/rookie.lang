@@ -349,7 +349,8 @@ public:
         emitter(ctx) {
     }
 
-    program *generate(root_node *root) {
+    program *generate(root_node *_root) {
+        root = _root;
         auto classes = astr::all_classes(ctx.root_node);
 
         for (auto _class : ctx.bindings.get_types()) {
@@ -469,9 +470,58 @@ private:
         emitter.emit(opcode::op_ret);
         emitter.fin_method();
     }
+
+    void emit_callsuper(call_node *node) {
+        auto method_name = node->declaring_method()->ident_str();
+        auto parents = node->declaring_class()->parents();
+
+        std::deque<class_node*> p;
+        method_node *m = nullptr;
+
+        if (parents != nullptr) {
+            for (auto _parent_ident : parents->children) {
+                auto parent_ident = (ident_node*)_parent_ident;
+                p.push_back(astr::find_class(root, parent_ident->ident));
+            }
+        }
+
+        while (p.empty() == false) {
+            auto c = p.back();
+            p.pop_back();
+
+            for (auto method : c->methods) {
+                if (method->ident_str() == method_name) {
+                    m = method;
+                    goto found;
+                }
+            }
+
+            if (c->parents() == nullptr)
+                continue;
+
+            for (auto _parent_ident : c->parents()->children) {
+                auto parent_ident = (ident_node*)_parent_ident;
+                p.push_back(astr::find_class(root, parent_ident->ident));
+            }
+        }
+    found:
+
+        if (m != nullptr) {
+            emitter.emit_defer(opcode::op_call,
+                callsite(callsite_lookup::cs_method, 1, 0),
+                m->declaring_class()->ident_str() + L"::" + m->ident_str());
+        }
+        else
+            ctx.push_error(codegen_error(method_name + L" doesn't have a super method."));
+    }
     void emit_call(call_node *node) {
         for (auto it = node->begin_args(); it != node->end_args(); ++it)
             emit(*it);
+
+        if (node->ident_str() == L"super") {
+            emit_callsuper(node);
+            return;
+        }
 
         auto lookup = scope.lookup_method(node->ident_str());
 
@@ -723,6 +773,7 @@ private:
     scope scope;
     program_builder emitter;
 
+    root_node *root;
     class_node *current_class;
     method_node *current_method;    
 };
