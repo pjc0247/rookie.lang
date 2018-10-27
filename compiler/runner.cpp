@@ -190,19 +190,19 @@ void runner::execute(program_entry *_entry) {
 
         if (inst.opcode == opcode::op_l) {
             _pop2_int(left, right);
-            push(value::mkboolean(left.integer > right.integer));
+            push(value::mkboolean(left.integer < right.integer));
         }
         else if (inst.opcode == opcode::op_g) {
             _pop2_int(left, right);
-            push(value::mkboolean(left.integer < right.integer));
+            push(value::mkboolean(left.integer > right.integer));
         }
         else if (inst.opcode == opcode::op_le) {
             _pop2_int(left, right);
-            push(value::mkboolean(left.integer >= right.integer));
+            push(value::mkboolean(left.integer <= right.integer));
         }
         else if (inst.opcode == opcode::op_ge) {
             _pop2_int(left, right);
-            push(value::mkboolean(left.integer <= right.integer));
+            push(value::mkboolean(left.integer >= right.integer));
         }
 
         else if (inst.opcode == opcode::op_ldtype) {
@@ -259,6 +259,9 @@ void runner::execute(program_entry *_entry) {
     error:
         printf("[EXCEPTION]\n");
         printf("%s\n", exception.what());
+
+        assert(0);
+
         break;
     }
 

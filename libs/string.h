@@ -13,6 +13,8 @@ public:
 
         type.method(L"new", create_instance2);
 
+        method(type, rk_getitem, &rkstring::at);
+
         method(type, L"at", &rkstring::at);
         method(type, L"length", &rkstring::length);
 
