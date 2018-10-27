@@ -5,7 +5,6 @@
 #include <deque>
 #include <functional>
 
-#include "value_object.h"
 #include "stack_provider.h"
 #include "exe_context.h"
 

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 
 #include "string.h"
+#include "sig2hash.h"
+
 #include "object.h"
 
 value rkscriptobject::set_property(value &key, value &value) {

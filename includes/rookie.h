@@ -41,3 +41,6 @@
 #endif
 
 #include "special_name.h"
+
+#include "value.h"
+#include "object.h"

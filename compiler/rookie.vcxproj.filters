@@ -35,7 +35,6 @@
     <ClInclude Include="text_processor.h" />
     <ClInclude Include="token.h" />
     <ClInclude Include="tree_builder.h" />
-    <ClInclude Include="value_object.h" />
     <ClInclude Include="vnode_transformer.h" />
     <ClInclude Include="..\thirdparty\argagg.hpp">
       <Filter>thirdparty</Filter>
@@ -114,6 +113,8 @@
     <ClInclude Include="validator\syntax_validator.h">
       <Filter>validator</Filter>
     </ClInclude>
+    <ClInclude Include="object.h" />
+    <ClInclude Include="value.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

@@ -2,6 +2,7 @@
 
 #include "binding.h"
 
+#include "sig2hash.h"
 #include "string.h"
 
 _rookie_library(rkstdlib)

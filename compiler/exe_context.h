@@ -2,7 +2,6 @@
 
 #include <string>
 
-#include "value_object.h"
 #include "stack_provider.h"
 #include "debugger.h"
 #include "gc.h"

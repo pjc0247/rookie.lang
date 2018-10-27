@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
 #include "binding.h"
+#include "sig2hash.h"
 #include "runner.h"
-#include "value_object.h"
 
 #include "exe_context.h"
 

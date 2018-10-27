@@ -5,7 +5,6 @@
 #include <map>
 
 #include "binding.h"
-#include "value_object.h"
 #include "string.h"
 #include "object.h"
 

@@ -2,8 +2,6 @@
 
 #include <deque>
 
-#include "value_object.h"
-
 class stack_provider {
 public:
     stack_provider(std::deque<value> &stack) :

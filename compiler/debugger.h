@@ -1,6 +1,5 @@
 #pragma once
 
-#include "value_object.h"
 #include "stack_provider.h"
 
 #include "dbg.h"

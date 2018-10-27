@@ -2,7 +2,7 @@
 
 #include "libs/string.h"
 
-#include "value_object.h"
+#include "value.h"
 
 value::value() :
     type(value_type::empty) {
