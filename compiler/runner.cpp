@@ -313,9 +313,8 @@ void runner::op_add() {
      *  RIGHT
      *  OP_ADD          
      */
-    //_pop2_int(left, right);
     auto right = pop();
-    auto left = top();
+    auto left  = top();
 
     if (left.type == value_type::integer) {
         left.integer += right.integer;
@@ -434,6 +433,7 @@ void runner::op_ret() {
 
     push(ret);
 
+    // End of the program.
     if (callstack.empty()) 
         endflag = true;
 }
@@ -579,11 +579,11 @@ void runner::replace_top(const value &v) {
 
 void runner::push_callframe(program_entry &entry) {
     callstack.push_back(callframe(pc, bp, current_entry));
-    for (int i = 0; i < entry.locals - entry.params; i++)
+    for (uint16_t i = 0; i < entry.locals - entry.params; i++)
         stack.push_back(value());
 }
 callframe runner::pop_callframe(program_entry &entry) {
-    for (int i = 0; i < entry.locals; i++)
+    for (uint16_t i = 0; i < entry.locals; i++)
         stack.pop_back();
 
     auto callframe = callstack.back();
