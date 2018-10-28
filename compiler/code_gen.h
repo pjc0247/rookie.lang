@@ -152,6 +152,9 @@ public:
     void modify_operand(int i, int operand) {
         instructions[i].operand = operand;
     }
+    void modify_operand(int i, const callsite &cs) {
+        instructions[i].cs = cs;
+    }
 
     void emit_class(class_node *_class) {
         current_class = _class;
@@ -224,7 +227,7 @@ public:
                 break;
             }
         }
-        modify_operand(entries[1].entry - 1, entries[jmp_entry].entry);
+        modify_operand(entries[1].entry - 1, callsite(callsite_lookup::cs_method, jmp_entry));
 
         auto rdata = spool.fin();
 
@@ -439,7 +442,8 @@ private:
             }
         }
 
-        emitter.emit(opcode::op_jmp, 0);
+        emitter.emit(opcode::op_call, 0);
+        emitter.fin_method();
     }
     void emit(syntax_node *node) {
         if (node == nullptr) return;
