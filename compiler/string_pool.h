@@ -6,7 +6,7 @@
 
 class string_pool {
 public:
-    int get_ptr(const std::wstring &str) {
+    uint32_t get_ptr(const std::wstring &str) {
         if (instruction_indexes.find(str) != instruction_indexes.end())
             return instruction_indexes[str];
         return append(str);
@@ -27,8 +27,11 @@ public:
         printf("\r\n===end_string_pool====\r\n");
     }
 private:
-    int append(const std::wstring &str) {
-        auto ptr = pool.size();
+    uint32_t append(const std::wstring &str) {
+        if (str.length() == 0)
+            return;
+
+        uint32_t ptr = pool.size();
         pool.insert(pool.end(), str.begin(), str.end());
         pool.insert(pool.end(), 0);
         instruction_indexes[str] = ptr;
