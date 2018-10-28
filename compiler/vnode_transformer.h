@@ -13,7 +13,7 @@ private:
         if (node->type == syntax_type::syn_standalone_op)
             node = standalone_op((standalone_op_node*)node);
 
-        for (int i = 0; i < node->children.size(); i++)
+        for (uint32_t i = 0; i < node->children.size(); i++)
             node->children[i] = _transform(node->children[i]);
 
         return node;

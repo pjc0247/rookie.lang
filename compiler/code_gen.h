@@ -224,7 +224,7 @@ public:
         p.header.main_entry = 0;
 
         auto jmp_entry = 0;
-        for (int i = 0; i < entries.size(); i++) {
+        for (uint32_t i = 0; i < entries.size(); i++) {
             auto sig = main_node->declaring_class()->ident_str() + L"::" + main_node->ident_str();
             if (sig == entries[i].signature) {
                 jmp_entry = i;
@@ -243,7 +243,7 @@ public:
                 p.types[i].methods_len = type.methods.size();
                 p.types[i].methods = (methoddata*)malloc(sizeof(methoddata) * type.methods.size());
                 
-                for (int j = 0; j < type.methods.size(); j++) {
+                for (uint32_t j = 0; j < type.methods.size(); j++) {
                     auto method = type.methods[j];
 
                     wcscpy(p.types[i].methods[j].name, method.name.c_str());
@@ -310,7 +310,7 @@ public:
 
         p.inst_data = new pdb_instruction[instructions.size()];
         p.inst_data_len = instructions.size();
-        for (int i = 0; i < instructions.size(); i++) {
+        for (uint32_t i = 0; i < instructions.size(); i++) {
             p.inst_data[i].codeindex = instruction_indexes[i];
         }
 
@@ -342,7 +342,7 @@ private:
     }
 
     int find_entry(const std::wstring &signature) {
-        for (int i = 0; i<entries.size(); i++) {
+        for (uint32_t i = 0; i<entries.size(); i++) {
             if (signature == entries[i].signature)
                 return i;
         }
@@ -487,7 +487,7 @@ private:
     }
 
     void emit_root(root_node *node) {
-        for (int i = 0; i < node->children.size(); i++)
+        for (uint32_t i = 0; i < node->children.size(); i++)
             emit(node->children[i]);
     }
     void emit_pop(pop_node *pop) {

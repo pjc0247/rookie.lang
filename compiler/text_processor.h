@@ -776,7 +776,6 @@ private:
         auto token = stack.back();
         stack.pop_back();
         auto p = parse(token);
-        rklog(" pop_and_parse %s %d\n", to_string(p.type), stack.size());
         return p;
     }
 

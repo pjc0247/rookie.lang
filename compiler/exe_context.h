@@ -6,8 +6,8 @@
 #include "debugger.h"
 #include "gc.h"
 
-class runner;
-class value;
+class  runner;
+struct value;
 
 class exe_context {
 public:

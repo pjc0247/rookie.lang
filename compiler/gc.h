@@ -10,7 +10,7 @@
 
 const uint32_t gc_grow_size = 50;
 
-struct runner;
+class  runner;
 struct gc_context {
     std::set<object*> marks;
 };
