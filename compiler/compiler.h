@@ -8,6 +8,7 @@
 #include "tree_builder.h"
 #include "vnode_transformer.h"
 
+#include "code_gen.h"
 #include "optimiser.h"
 
 #include "ast/annotation.h"

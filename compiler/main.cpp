@@ -4,13 +4,9 @@
 #include <string>
 #include <vector>
 
-#include "code_gen.h"
-#include "compiler.h"
 #include "backends/p2wast.h"
-#include "program_io.h"
-#include "runner.h"
 #include "fileio.h"
-#include "debugger.h"
+#include "rookie.h"
 
 #include "thirdparty/argagg.hpp"
 

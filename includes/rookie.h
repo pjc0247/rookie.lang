@@ -44,3 +44,9 @@
 
 #include "value.h"
 #include "object.h"
+
+#include "compilation.h"
+#include "compiler.h"
+#include "runner.h"
+
+#include "sig2hash.h"
