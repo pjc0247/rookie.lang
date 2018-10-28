@@ -143,8 +143,8 @@ struct value {
     static value mkstring2(const wchar_t *str);
 };
 
-const value rknull = value(value_type::null);
-const value rkfalse = value::_false();
-const value rktrue = value::_true();
+const value rknull   = value(value_type::null);
+const value rkfalse  = value::_false();
+const value rktrue   = value::_true();
 
 #include "value_op.h"
