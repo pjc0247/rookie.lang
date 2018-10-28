@@ -10,6 +10,7 @@
 #include "binding.h"
 #include "errors.h"
 #include "type_attr.h"
+#include "ir_optimiser.h"
 
 #include "ast/ast_reflection.h"
 
@@ -206,6 +207,9 @@ public:
 
     program *fin(method_node *main_node) {
         resolve_defered_calls();
+
+        //auto iro = ir_optimiser(instructions);
+        //instructions = iro.transform();
 
         program *_p = new program();
         program &p = *_p;
@@ -656,6 +660,7 @@ private:
     void emit_block(block_node *node) {
         for (auto child : node->children)
             emit(child);
+        emitter.emit(opcode::op_nop);
     }
     void emit_this(this_node *node) {
         if (current_method->attr & method_attr::method_static)
@@ -809,6 +814,7 @@ private:
         emitter.emit(opcode::op_jmp_true, cursor);
     }
     void emit_while(while_node *node) {
+        emitter.emit(opcode::op_nop);
         auto cond = emitter.get_cursor();
         emit(node->cond());
         auto jmp_false = emitter.get_cursor();
