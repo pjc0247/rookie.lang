@@ -791,8 +791,8 @@ private:
 private:
     compile_context &ctx;
 
-    int cursor;
-    int depth;
+    uint32_t cursor;
+    uint32_t depth;
 
     bool next_is_at;
     bool has_inherit_list;

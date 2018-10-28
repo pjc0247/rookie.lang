@@ -64,8 +64,8 @@ enum class value_type : char {
     integer, character, string, object, array
 };
 
-typedef struct object;
-typedef struct program_entry;
+class object;
+struct program_entry;
 
 struct callframe {
     program_entry *entry;

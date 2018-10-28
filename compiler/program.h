@@ -181,20 +181,20 @@ struct program {
         wprintf(L"  * codesize: %d\n", header.code_len);
 
         wprintf(L"  [types]\n");
-        for (int i = 0; i < header.types_len; i++) {
+        for (uint32_t i = 0; i < header.types_len; i++) {
             wprintf(L"    [%s]\n", types[i].name);
 
-            for (int j = 0; j < types[i].methods_len; j++) {
+            for (uint32_t j = 0; j < types[i].methods_len; j++) {
                 wprintf(L"      * %s\n", types[i].methods[j].name);
             } 
         }
 
-        for (int i = 0; i < header.entry_len; i++) {
+        for (uint32_t i = 0; i < header.entry_len; i++) {
             wprintf(L"  [%s, %d]\n", entries[i].signature, entries[i].entry);
             wprintf(L"    * params: %d\n", entries[i].params);
             wprintf(L"    * locals: %d\n", entries[i].locals);
             wprintf(L"    * body\n");
-            for (int j = entries[i].entry; j < entries[i].entry + entries[i].codesize; j++) {
+            for (uint32_t j = entries[i].entry; j < entries[i].entry + entries[i].codesize; j++) {
                 wprintf(L"      %s, %d\n", to_string((opcode)code[j].opcode), code[j].operand);
             }
         }
