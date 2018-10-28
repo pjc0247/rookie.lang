@@ -1,3 +1,7 @@
+/*  c_interface.h
+
+    A set of C style methods to export.
+ */
 #pragma once
 
 struct program;

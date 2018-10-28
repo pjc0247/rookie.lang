@@ -1,3 +1,7 @@
+/*  text_processer.h
+
+    Rookie's Lexer and S-exper.
+ */
 #pragma once
 
 #include <string>

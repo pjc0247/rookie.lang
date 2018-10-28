@@ -1,3 +1,8 @@
+/*  fileio.h
+
+    Provides most simplist form of
+    file input/output methods.
+ */
 #pragma once
 
 #include <stdio.h>

@@ -1,4 +1,9 @@
-﻿#pragma once
+﻿/*  runner.h
+    
+    A Standard implementation of Rookie::VM
+    (Without JIT)
+ */
+#pragma once
 
 #include <string>
 #include <map>
@@ -14,9 +19,9 @@ struct program;
 struct instruction;
 
 struct value;
-class object;
-class binding;
-class exe_context;
+class  object;
+class  binding;
+class  exe_context;
 
 struct primitive_cache;
 struct type_cache;

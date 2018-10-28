@@ -1,3 +1,7 @@
+/*  stack_provider.h
+
+    Provides wrapping methods for runtime stack.
+ */
 #pragma once
 
 #include <deque>

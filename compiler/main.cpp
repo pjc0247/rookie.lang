@@ -10,6 +10,7 @@
 
 #include "thirdparty/argagg.hpp"
 
+// Copmpiles given string into a program.
 program *compile(const std::wstring &filepath) {
 #ifndef RK_ENV_WEB
     wchar_t *buf = fileio::read_string(filepath);

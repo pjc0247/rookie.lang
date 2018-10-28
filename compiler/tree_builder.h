@@ -1,3 +1,7 @@
+/*  tree_builder.h
+
+    Builds an AST tree from S-Expressions.
+ */
 #pragma once
 
 #include <vector>

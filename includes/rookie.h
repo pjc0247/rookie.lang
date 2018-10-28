@@ -1,3 +1,8 @@
+/*  rookie.h
+    The Rookie programming language
+    
+    https://rookielang.github.io/
+ */
 #pragma once
 
 #include <stdio.h>

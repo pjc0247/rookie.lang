@@ -1,3 +1,8 @@
+/*  gc.h
+
+    A Garbage collector impl
+    with Mark & Sweep.
+ */
 #pragma once
 
 #include <set>
