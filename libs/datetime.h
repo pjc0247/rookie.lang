@@ -12,7 +12,12 @@ public:
 
         static_method(type, L"now", now);
 
+        method(type, L"year", &rkdatetime::year);
         method(type, L"month", &rkdatetime::month);
+        method(type, L"day", &rkdatetime::day);
+        method(type, L"hour", &rkdatetime::hour);
+        method(type, L"minute", &rkdatetime::hour);
+        method(type, L"second", &rkdatetime::second);
 
         b.add_type(type);
     }
@@ -27,8 +32,23 @@ public:
         return obj2rk(date_time, L"datetime");
     }
 
+    value year() {
+        return int2rk(time.tm_year);
+    }
     value month() {
         return int2rk(time.tm_mon);
+    }
+    value day() {
+        return int2rk(time.tm_mday);
+    }
+    value hour() {
+        return int2rk(time.tm_hour);
+    }
+    value minute() {
+        return int2rk(time.tm_min);
+    }
+    value second() {
+        return int2rk(time.tm_sec);
     }
 
 private:
