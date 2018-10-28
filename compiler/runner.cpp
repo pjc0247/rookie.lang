@@ -299,8 +299,18 @@ void runner::op_eq() {
      */
     _pop2_int(left, right);
 
-    if (left.type == right.type)
-        push(value::mkboolean(left.uinteger == right.uinteger));
+    if (left.type == right.type) {
+        if (left.uinteger == right.uinteger)
+            push(value::_true());
+        else if(left.type == value_type::object) {
+            push(left);
+            callee_ptr = &left;
+            push(right);
+            _vcall(sighash_equal, sp);
+        }
+        else 
+            push(value::_false());
+    }
     else
         push(value::_false());
 }

@@ -10,6 +10,7 @@ CONSTEXPR unsigned int sig2hash_c(const wchar_t str[]);
     const unsigned int sighash_##name = sig2hash_c(L ## #name)
 
 _predefined_hash(new);
+_predefined_hash(equal);
 
 _predefined_hash(object);
 _predefined_hash(array);

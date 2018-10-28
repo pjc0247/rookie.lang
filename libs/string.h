@@ -18,6 +18,8 @@ public:
         method(type, L"at", &rkstring::at);
         method(type, L"length", &rkstring::length);
 
+        method(type, L"equal", &rkstring::equal);
+
         method(type, L"append", &rkstring::append);
         method(type, L"to_string", &rkstring::to_string);
 
@@ -40,6 +42,9 @@ public:
     }
     value length() {
         return value::mkinteger(str.size());
+    }
+    value equal(value &v) {
+        return value::mkboolean(str == (rk2obj(v, rkstring*)->str));
     }
     value append(value &other) {
         auto appended = (str + rkwstr(other));
