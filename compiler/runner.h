@@ -76,6 +76,7 @@ private:
     void op_newdic();
 
     void op_vcall();
+    void op_ret();
 
     void op_ldprop();
     void op_stprop();
@@ -115,6 +116,7 @@ private:
     program_entry  *current_entry;
     instruction     inst;
     bool            errflag;
+    bool            endflag;
     stack_provider  sp;
                    
     // REGISTERS   

@@ -71,6 +71,8 @@ void runner::execute(program_entry *_entry) {
     current_entry = _entry;
     pc = _entry->entry;
     bp = 0;
+    endflag = false;
+    errflag = false;
 
     push_callframe(*_entry);
 
@@ -78,7 +80,7 @@ void runner::execute(program_entry *_entry) {
 
     if (dbger) dbger->on_begin_program(*this, p);
 
-    while (true) {
+    while (!endflag) {
 #ifdef RK_HALT_ON_LONG_EXECUTION
         halt_counter++;
         if (halt_counter >= 10000) {
@@ -177,9 +179,24 @@ void runner::execute(program_entry *_entry) {
         case opcode::op_vcall:
             op_vcall();
             break;
+        case opcode::op_ret:
+            op_ret();
+            break;
 
         case opcode::op_setcallee:
             callee_ptr = &stack.back();
+            break;
+
+        case opcode::op_jmp:
+            pc = inst.operand;
+            break;
+        case opcode::op_jmp_true:
+            if (pop().integer != 0)
+                pc = inst.operand;
+            break;
+        case opcode::op_jmp_false:
+            if (pop().integer == 0)
+                pc = inst.operand;
             break;
 
         default:
@@ -225,30 +242,6 @@ void runner::execute(program_entry *_entry) {
             _pop2_int(left, right);
             left.integer *= right.integer;
             push(left);
-        }
-
-        else if (inst.opcode == opcode::op_ret) {
-            auto ret = pop();
-            auto callframe = pop_callframe(*current_entry);
-            pc = callframe.pc;
-            bp = callframe.bp;
-            current_entry = callframe.entry;
-
-            push(ret);
-
-            if (callstack.empty()) break;
-        }
-
-        else if (inst.opcode == opcode::op_jmp) {
-            pc = inst.operand;
-        }
-        else if (inst.opcode == opcode::op_jmp_true) {
-            if (pop().integer != 0)
-                pc = inst.operand;
-        }
-        else if (inst.opcode == opcode::op_jmp_false) {
-            if (pop().integer == 0)
-                pc = inst.operand;
         }
 
         //else
@@ -427,6 +420,18 @@ void runner::op_vcall() {
         else if (callinfo.type == call_type::ct_programcall_direct)
             programcall(callinfo.entry);
     }
+}
+void runner::op_ret() {
+    auto ret = pop();
+    auto callframe = pop_callframe(*current_entry);
+    pc = callframe.pc;
+    bp = callframe.bp;
+    current_entry = callframe.entry;
+
+    push(ret);
+
+    if (callstack.empty()) 
+        endflag = true;
 }
 
 void runner::op_ldprop() {
