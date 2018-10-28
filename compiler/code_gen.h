@@ -478,6 +478,7 @@ private:
             _route(assignment);
             _route(if);
             _route(for);
+            _route(while);
         }
     }
 
@@ -806,6 +807,15 @@ private:
         emit(node->increment());
         emit(node->cond());
         emitter.emit(opcode::op_jmp_true, cursor);
+    }
+    void emit_while(while_node *node) {
+        auto cond = emitter.get_cursor();
+        emit(node->cond());
+        auto jmp_false = emitter.get_cursor();
+        emitter.emit(opcode::op_jmp_false, 0);
+        emit(node->body());
+        emitter.emit(opcode::op_jmp, cond);
+        emitter.modify_operand(jmp_false, emitter.get_cursor());
     }
 
 private:

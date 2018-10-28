@@ -160,6 +160,7 @@ private:
         rules.push_back(lexer_token(L"static", token_type::keyword));
         rules.push_back(lexer_token(L"if", token_type::keyword, -9000));
         rules.push_back(lexer_token(L"for", token_type::keyword, -10000));
+        rules.push_back(lexer_token(L"while", token_type::keyword, -10000));
         rules.push_back(lexer_token(L"return", token_type::keyword, -9000));
         rules.push_back(lexer_token(L"null", token_type::keyword));
 
@@ -649,7 +650,8 @@ private:
             //   KEYWORD (LINE);  // if (code)
             if (token.raw == L"return" ||
                 token.raw == L"if" ||
-                token.raw == L"for") {
+                token.raw == L"for" ||
+                token.raw == L"while") {
 
                 flush_single_line();
             }
@@ -709,6 +711,8 @@ private:
             stoken.type = stoken_type::st_if;
         else if (token.raw == L"for")
             stoken.type = stoken_type::st_for;
+        else if (token.raw == L"while")
+            stoken.type = stoken_type::st_while;
         else if (token.raw == L"return")
             stoken.type = stoken_type::st_return;
         else if (token.raw == L"this")

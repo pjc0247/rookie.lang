@@ -41,6 +41,7 @@ enum class syntax_type {
 
     syn_if,
     syn_for,
+    syn_while,
     syn_return,
 
     syn_try, syn_catch, syn_finally
@@ -629,5 +630,20 @@ public:
     }
     syntax_node *body() const {
         return children[3];
+    }
+};
+class while_node : public syntax_node {
+public:
+    while_node(const stoken &token, syntax_node *parent) :
+        syntax_node(token, parent) {
+        capacity = 2;
+        type = syntax_type::syn_while;
+    }
+
+    syntax_node *cond() const {
+        return children[0];
+    }
+    syntax_node *body() const {
+        return children[1];
     }
 };
