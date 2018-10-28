@@ -422,6 +422,9 @@ void runner::op_vcall() {
     }
 }
 void runner::op_ret() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  OP_RET
+     */
     auto ret = pop();
     auto callframe = pop_callframe(*current_entry);
     pc = callframe.pc;
