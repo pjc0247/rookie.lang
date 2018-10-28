@@ -93,6 +93,7 @@ private:
     value &top();
     value pop();
     void  push(const value &v);
+    void  replace_top(const value &v);
 
     void push_callframe(program_entry &entry);
     callframe pop_callframe(program_entry &entry);

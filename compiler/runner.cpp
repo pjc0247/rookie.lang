@@ -313,15 +313,17 @@ void runner::op_add() {
      *  RIGHT
      *  OP_ADD          
      */
-    _pop2_int(left, right);
+    //_pop2_int(left, right);
+    auto right = pop();
+    auto left = top();
 
     if (left.type == value_type::integer) {
         left.integer += right.integer;
-        push(left);
+        replace_top(left);
     }
     else if (is_rkstr(left)) {
         auto str = new rkstring(rkwstr(left) + rkwstr(right));
-        push(_initobj_systype(sighash_string, str));
+        replace_top(_initobj_systype(sighash_string, str));
     }
 }
 void runner::op_newobj() {
@@ -571,6 +573,10 @@ value runner::pop() {
 void runner::push(const value &v) {
     stack.push_back(v);
 }
+void runner::replace_top(const value &v) {
+    stack.emplace_back(v);
+}
+
 void runner::push_callframe(program_entry &entry) {
     callstack.push_back(callframe(pc, bp, current_entry));
     for (int i = 0; i < entry.locals - entry.params; i++)
