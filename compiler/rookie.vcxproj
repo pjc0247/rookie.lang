@@ -178,6 +178,7 @@
     <ClInclude Include="ast\newdic.h" />
     <ClInclude Include="ast\syntax_travler.h" />
     <ClInclude Include="binding.h" />
+    <ClInclude Include="call.h" />
     <ClInclude Include="code_gen.h" />
     <ClInclude Include="conout.h" />
     <ClInclude Include="dbg.h" />

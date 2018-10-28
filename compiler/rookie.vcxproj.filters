@@ -124,6 +124,7 @@
     <ClInclude Include="..\libs\datetime.h">
       <Filter>libs</Filter>
     </ClInclude>
+    <ClInclude Include="call.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

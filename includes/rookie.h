@@ -44,6 +44,7 @@
 
 #include "value.h"
 #include "object.h"
+#include "call.h"
 
 #include "compilation.h"
 #include "compiler.h"
