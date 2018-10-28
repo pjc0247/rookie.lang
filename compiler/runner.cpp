@@ -113,10 +113,10 @@ void runner::execute(program_entry *_entry) {
             push(rknull);
             break;
         case opcode::op_ldtrue:
-            push(value::_true());
+            push(rktrue);
             break;
         case opcode::op_ldfalse:
-            push(value::_false());
+            push(rkfalse);
             break;
         case opcode::op_ldthis:
             push(stack[bp - 1]);
@@ -271,16 +271,16 @@ void runner::op_eqtype() {
     auto type = get_type(left);
 
     if (type.sighash == right.uinteger)
-        push(value::mkboolean(true));
+        push(rktrue);
     else {
         for (auto hash : type.parents) {
             if (right.uinteger == hash) {
-                push(value::mkboolean(true));
+                push(rktrue);
                 return;
             }
         }
 
-        push(value::mkboolean(false));
+        push(rkfalse);
     }
 }
 void runner::op_eq() {
@@ -293,7 +293,7 @@ void runner::op_eq() {
 
     if (left.type == right.type) {
         if (left.uinteger == right.uinteger)
-            push(value::_true());
+            push(rktrue);
         else if(left.type == value_type::object) {
             push(left);
             callee_ptr = &left;
@@ -301,10 +301,10 @@ void runner::op_eq() {
             _vcall(sighash_equal, sp);
         }
         else 
-            push(value::_false());
+            push(rkfalse);
     }
     else
-        push(value::_false());
+        push(rkfalse);
 }
 
 void runner::op_add() {
