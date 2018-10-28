@@ -20,7 +20,7 @@ protected:
     syntax_node *_visit(syntax_node *node) {
         auto ret = visit(node);
 
-        for (int i = 0; i < node->children.size(); i++) {
+        for (uint32_t i = 0; i < node->children.size(); i++) {
             auto child = node->children[i];
             node->children[i] = _visit(child);
 

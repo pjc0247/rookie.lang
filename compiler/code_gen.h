@@ -493,7 +493,7 @@ private:
         scope.set_class(node);
         emitter.emit_class(node);
 
-        for (int i = 1; i < node->children.size(); i++)
+        for (uint32_t i = 1; i < node->children.size(); i++)
             emit(node->children[i]);
     }
     void emit_field(field_node *node) {

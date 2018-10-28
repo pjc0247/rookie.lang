@@ -63,7 +63,7 @@ void debugger::on_pre_exec(runner &r, const instruction &inst) {
             if (quote == 0) {
                 for (auto &kw : keywords) {
                     bool match = true;
-                    for (int j = i; j < i + kw.size(); j++) {
+                    for (uint32_t j = i; j < i + kw.size(); j++) {
                         if (ch != kw[j - i]) {
                             match = false;
                             break;

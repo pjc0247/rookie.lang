@@ -4,7 +4,6 @@ struct program;
 struct pdb;
 
 struct rkcc;
-struct rktype;
 
 extern "C" {
     void rk_exec(const char *code);

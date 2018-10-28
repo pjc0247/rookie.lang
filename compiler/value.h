@@ -144,5 +144,7 @@ struct value {
 };
 
 const value rknull = value(value_type::null);
+const value rkfalse = value::_false();
+const value rktrue = value::_true();
 
 #include "value_op.h"

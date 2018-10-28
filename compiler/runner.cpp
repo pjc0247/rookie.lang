@@ -247,7 +247,6 @@ void runner::execute(program_entry *_entry) {
         //else
         //    throw invalid_program_exception("unknown instruction.");
 
-    end_loop:
         continue;
     error:
         printf("[EXCEPTION]\n");
@@ -680,7 +679,7 @@ void runner::load_programtype(uint32_t sighash) {
         }
         // Inherit from parents
         else {
-            for (int j = 0; j < p.types[i].parents_len; j++) {
+            for (uint32_t j = 0; j < p.types[i].parents_len; j++) {
                 uint32_t parent_hash = p.types[i].parents[j];
 
                 load_programtype(parent_hash);

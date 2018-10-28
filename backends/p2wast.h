@@ -12,37 +12,37 @@
 class rope {
 public:
     virtual ~rope() {
-        for (const char *ptr : allocs)
+        for (const wchar_t *ptr : allocs)
             delete[] ptr;
     }
 
-    void append(const char *str) {
+    void append(const wchar_t *str) {
         ropes.push_back(str);
     }
-    void append_fmt(const char * format, ...) {
-        char *buffer = new char[256];
+    void append_fmt(const wchar_t *format, ...) {
+        wchar_t *buffer = new wchar_t[256];
         va_list args;
         va_start(args, format);
-        vsprintf(buffer, format, args);
+        vswprintf(buffer, 256, format, args);
         va_end(args);
 
         allocs.push_back(buffer);
         append(buffer);
     }
-    void append(char c) {
-        auto buf = new char[2] { c, 0 };
+    void append(wchar_t c) {
+        auto buf = new wchar_t[2] { c, 0 };
         allocs.push_back(buf);
         append(buf);
     }
 
-    void read(const std::function<void(const char *)> &callback) {
-        for (const char *chunk : ropes)
+    void read(const std::function<void(const wchar_t *)> &callback) {
+        for (const wchar_t *chunk : ropes)
             callback(chunk);
     }
 
 private:
-    std::list<const char*> allocs;
-    std::list<const char*> ropes;
+    std::list<const wchar_t*> allocs;
+    std::list<const wchar_t*> ropes;
 };
 
 // Converts rookie program into WebAssemblyTextFormat.
@@ -52,32 +52,32 @@ public:
         emit_program(p);
     }
     void dump() {
-        out.read([](const char *chunk) {
-            printf("%s", chunk);
+        out.read([](const wchar_t *chunk) {
+            printf("%S", chunk);
         });
     }
 
 private:
     void emit_program(const program &p) {
-        out.append("(module \r\n");
-        out.append("(memory 1)\r\n");
-        out.append("(export \"rdata\" memory)\r\n");
+        out.append(L"(module \r\n");
+        out.append(L"(memory 1)\r\n");
+        out.append(L"(export \"rdata\" memory)\r\n");
 
-        out.append("(data (i32.const 0) \"");
-        for (int i = 0; i < p.header.rdata_len; i++)
+        out.append(L"(data (i32.const 0) \"");
+        for (uint32_t i = 0; i < p.header.rdata_len; i++)
             out.append(p.rdata[i]);
-        out.append("\")\r\n");
+        out.append(L"\")\r\n");
 
-        for (int i = 0; i < p.header.entry_len; i++)
+        for (uint32_t i = 0; i < p.header.entry_len; i++)
             emit_entry(p, p.entries[i]);
 
-        out.append(")");
+        out.append(L")");
     }
     void emit_entry(const program &p, const program_entry &entry) {
-        out.append_fmt("(func $%s ", entry.signature);
+        out.append_fmt(L"(func $%s ", entry.signature);
 
-        for (int i = 0; i < entry.params; i++)
-            out.append(" (param i32) ");
+        for (uint32_t i = 0; i < entry.params; i++)
+            out.append(L" (param i32) ");
 
         /*
         if (entry.ret != ptype::t_none) {
@@ -87,17 +87,17 @@ private:
                 out.append(" (result i32) ");
         }
         */
-        out.append("\r\n");
+        out.append(L"\r\n");
         emit_body(p, entry);
-        out.append(")\r\n");
-        out.append_fmt("(export \"%s\" (func $%s)\n",
+        out.append(L")\r\n");
+        out.append_fmt(L"(export \"%s\" (func $%s)\n",
             entry.signature, entry.signature);
     }
 
     void emit_body(const program &p, const program_entry &entry) {
         int stackdepth = 0;
 
-        for (int i = entry.entry; i < entry.entry + entry.codesize; i++) {
+        for (uint32_t i = entry.entry; i < entry.entry + entry.codesize; i++) {
             auto &inst = p.code[i];
 
             if (inst.opcode == opcode::op_nop)
@@ -137,7 +137,7 @@ private:
                 istack.pop();
                 emit_instruction(p, front);
 
-                out.append("\r\n");
+                out.append(L"\r\n");
 
                 if (istack.empty() == false)
                     printf("BUG COMPILER \n");
@@ -150,53 +150,53 @@ private:
     void emit_instruction(const program &p, const instruction &inst, int depth = 0) {
         for (int i = 0; i < depth * 2; i++)
             out.append(' ');
-        out.append("\n (");
+        out.append(L"\n (");
 
         if (inst.opcode == opcode::op_ldi)
-            out.append_fmt("i32.const %d", inst.operand);
+            out.append_fmt(L"i32.const %d", inst.operand);
         else if (inst.opcode == opcode::op_ldloc)
-            out.append_fmt("get_local %d", inst.operand);
+            out.append_fmt(L"get_local %d", inst.operand);
 
         // uses 1 stackitem
         else if (inst.opcode == opcode::op_ret)
             _emit_front();
         else if (inst.opcode == opcode::op_stloc) {
-            out.append_fmt("set_local %d", inst.operand);
+            out.append_fmt(L"set_local %d", inst.operand);
             _emit_front();
         }
 
         // uses 2 stackitems
         else if (inst.opcode == opcode::op_g) {
-            out.append("i32.gt_s ");
+            out.append(L"i32.gt_s ");
             _emit_front(); _emit_front();
         }
 
         else if (inst.opcode == opcode::op_add) {
-            out.append("i32.add ");
+            out.append(L"i32.add ");
             _emit_front(); _emit_front();
         }
         else if (inst.opcode == opcode::op_sub) {
-            out.append("i32.sub ");
+            out.append(L"i32.sub ");
             _emit_front(); _emit_front();
         }
         else if (inst.opcode == opcode::op_div) {
-            out.append("i32.div ");
+            out.append(L"i32.div ");
             _emit_front(); _emit_front();
         }
         else if (inst.opcode == opcode::op_mul) {
-            out.append("i32.mul ");
+            out.append(L"i32.mul ");
             _emit_front(); _emit_front();
         }
 
         else if (inst.opcode == opcode::op_call) {
-            out.append_fmt("call ");
+            out.append_fmt(L"call ");
         }
 
         else {
-            out.append_fmt(";; missing instruction, %s \n", to_string((opcode_t)inst.opcode));
+            out.append_fmt(L";; missing instruction, %s \n", to_string((opcode_t)inst.opcode));
         }
 
-        out.append(")");
+        out.append(L")");
     }
 
 private:
