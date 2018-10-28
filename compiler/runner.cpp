@@ -669,6 +669,7 @@ void runner::load_programtype(uint32_t sighash) {
 
         calltable vtable;
 
+        // Inherit from `object`
         if (p.types[i].parents_len == 0) {
             auto basevtable = types[sighash_object].vtable;
             for (auto &method : basevtable) {
@@ -677,6 +678,7 @@ void runner::load_programtype(uint32_t sighash) {
 
             tdata.parents.push_back(sighash_object);
         }
+        // Inherit from parents
         else {
             for (int j = 0; j < p.types[i].parents_len; j++) {
                 uint32_t parent_hash = p.types[i].parents[j];

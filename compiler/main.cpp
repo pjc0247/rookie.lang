@@ -57,7 +57,6 @@ program *compile(const std::wstring &filepath) {
 }
 
 int main(int argc, char **argv) {
-    printf("%d\n", sig2hash(rk_getitem));
 #ifdef RK_ENV_WEB
     printf("[rookie::webenv].\n");
 #endif
