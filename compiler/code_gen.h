@@ -334,8 +334,6 @@ private:
                     if (eidx == -1)
                         ctx.push_error(codegen_error(L"Unresolved name: " + method_name));
                     inst.cs.index = eidx;
-
-                    end_loop :;
                 }
             }
         }
