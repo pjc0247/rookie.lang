@@ -157,6 +157,7 @@
     <ClInclude Include="..\includes\rookie.h" />
     <ClInclude Include="..\includes\special_name.h" />
     <ClInclude Include="..\libs\array.h" />
+    <ClInclude Include="..\libs\datetime.h" />
     <ClInclude Include="..\libs\debugger.h" />
     <ClInclude Include="..\libs\dictionary.h" />
     <ClInclude Include="..\libs\gc.h" />

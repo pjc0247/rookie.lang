@@ -19,6 +19,10 @@ exe_context::exe_context(runner &r, stack_provider &sp) :
     r(r), sp(sp) {
 }
 
+value exe_context::init_obj(uint32_t sighash, object *obj) {
+    return r._initobj_systype(sighash, obj);
+}
+
 template <>
 value exe_context::newobj(const std::wstring &name) {
     push_newobj(name);

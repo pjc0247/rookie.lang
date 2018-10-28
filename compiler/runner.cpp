@@ -206,7 +206,7 @@ void runner::execute(program_entry *_entry) {
         }
 
         else if (inst.opcode == opcode::op_ldtype) {
-            push(obj2rk(typecache->table[inst.operand]));
+            push(value::mkobjref(typecache->table[inst.operand]));
         }
         
 

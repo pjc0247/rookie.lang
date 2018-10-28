@@ -10,6 +10,7 @@
 #include "libs/object.h"
 #include "libs/math.h"
 #include "libs/type.h"
+#include "libs/datetime.h"
 
 #include "binding.h"
 
@@ -26,6 +27,7 @@ binding binding::default_binding() {
     b.import<rkscriptobject>();
     b.import<rkmath>();
     b.import<rktype>();
+    b.import<rkdatetime>();
 
     return b;
 }

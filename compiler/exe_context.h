@@ -13,6 +13,8 @@ class exe_context {
 public:
     exe_context(runner &r, stack_provider &sp);
 
+    value init_obj(uint32_t sighash, object *obj);
+
     template<typename... ArgTypes>
     value newobj(const std::wstring &name, ArgTypes... args);
     template<typename T, typename... ArgTypes>
