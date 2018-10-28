@@ -25,6 +25,8 @@ public:
 
     void push_newobj(const std::wstring &name);
 
+    value &get_this();
+    value call(value &obj, uint32_t sighash);
     value call(value &obj, const std::wstring &name);
 
     value next_param();

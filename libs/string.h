@@ -17,6 +17,7 @@ public:
 
         method(type, L"at", &rkstring::at);
         method(type, L"length", &rkstring::length);
+        method(type, L"length2", &rkstring::length2);
 
         method(type, L"equal", &rkstring::equal);
 
@@ -42,6 +43,10 @@ public:
     }
     value length() {
         return value::mkinteger(str.size());
+    }
+    value length2() {
+        return rkvcall(rkthis, L"length");
+        //return value::mkinteger(str.size());
     }
     value equal(value &v) {
         return value::mkboolean(str == (rk2obj(v, rkstring*)->str));

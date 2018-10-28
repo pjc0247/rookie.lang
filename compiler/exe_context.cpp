@@ -32,6 +32,14 @@ void exe_context::push_newobj(const std::wstring &name) {
     r._newobj_systype(sig2hash(name), sp);
 }
 
+value &exe_context::get_this() {
+    return *r.callee_ptr;
+}
+value exe_context::call(value &obj, uint32_t sighash) {
+    sp.push(obj);
+    r._vcall(sighash, sp);
+    return sp.pop();
+}
 value exe_context::call(value &obj, const std::wstring &name) {
     sp.push(obj);
     r._vcall(sig2hash(name), sp);

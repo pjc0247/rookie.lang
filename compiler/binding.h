@@ -36,6 +36,9 @@
 #define obj2rk(v, name) (rkctx()->init_obj(sig2hash_c(name), v))
 #define rk2obj(v, type) ((type)v.objref)
 
+#define rkthis (rkctx()->get_this())
+#define rkvcall(obj, name) (rkctx()->call(obj, sig2hash_c(name)))
+
 typedef std::map<std::wstring, std::function<void(stack_provider&)>> bindmap;
 
 class type_builder {
