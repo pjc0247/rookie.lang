@@ -227,7 +227,7 @@ public:
                 break;
             }
         }
-        modify_operand(entries[1].entry - 1, callsite(callsite_lookup::cs_method, jmp_entry));
+        modify_operand(entries[1].entry - 2, callsite(callsite_lookup::cs_method, jmp_entry));
 
         auto rdata = spool.fin();
 
@@ -443,6 +443,7 @@ private:
         }
 
         emitter.emit(opcode::op_call, 0);
+        emitter.emit(opcode::op_ret);
         emitter.fin_method();
     }
     void emit(syntax_node *node) {
