@@ -16,6 +16,8 @@ CONSTEXPR uint32_t sig2hash_c(const wchar_t str[]) {
 #define _predefined_hash(name) \
     const unsigned int sighash_##name = sig2hash_c(L ## #name)
 
+#pragma warning(push)  
+#pragma warning(disable : 4307) // overflows 
 _predefined_hash(new);
 _predefined_hash(equal);
 
@@ -24,3 +26,4 @@ _predefined_hash(array);
 _predefined_hash(dictionary);
 _predefined_hash(string);
 _predefined_hash(integer);
+#pragma warning(pop)  
