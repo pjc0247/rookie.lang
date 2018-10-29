@@ -355,6 +355,32 @@ private:
         }
         */
 
+        // foo[1] -> [1]foo
+        for (auto it = std::next(tokens.begin()); it != tokens.end(); ++it) {
+            if ((*it).type == token_type::left_sq_bracket &&
+                ((*std::prev(it)).type == token_type::ident ||
+                (*std::prev(it)).type == token_type::keyword)) {
+
+                int depth = 0;
+                for (auto it2 = it; it2 != tokens.end(); ++it2) {
+                    if ((*it2).type == token_type::left_sq_bracket)
+                        depth += 1;
+                    else if ((*it2).type == token_type::right_sq_bracket) {
+                        depth -= 1;
+
+                        if (depth == 0) {
+                            auto inserted = tokens.insert(std::next(it2), *std::prev(it));
+                            tokens.erase(std::prev(it));
+
+                            //(*inserted).priority = -10000;
+
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         // foo(1, 2, 3) -> (1, 2, 3)foo
         for (auto it = std::next(tokens.begin()); it != tokens.end(); ++it) {
             if ((*it).type == token_type::left_paren &&
@@ -378,32 +404,6 @@ private:
 
                             if (modify_p)
                                 (*inserted).priority = std::min(-6000, (*inserted).priority);
-
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        // foo[1] -> [1]foo
-        for (auto it = std::next(tokens.begin()); it != tokens.end(); ++it) {
-            if ((*it).type == token_type::left_sq_bracket &&
-                ((*std::prev(it)).type == token_type::ident ||
-                (*std::prev(it)).type == token_type::keyword)) {
-
-                int depth = 0;
-                for (auto it2 = it; it2 != tokens.end(); ++it2) {
-                    if ((*it2).type == token_type::left_sq_bracket)
-                        depth += 1;
-                    else if ((*it2).type == token_type::right_sq_bracket) {
-                        depth -= 1;
-
-                        if (depth == 0) {
-                            auto inserted = tokens.insert(std::next(it2), *std::prev(it));
-                            tokens.erase(std::prev(it));
-
-                            //(*inserted).priority = -10000;
 
                             break;
                         }
