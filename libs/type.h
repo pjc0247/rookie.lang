@@ -26,7 +26,7 @@ public:
     }
 
     value fields() {
-        auto ary = new rkarray(0);
+        auto ary = new rkarray();
         for (auto field : rtype.fields) {
             auto v = int2rk(field.first);
             ary->push(v);

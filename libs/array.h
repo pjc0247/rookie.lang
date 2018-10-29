@@ -23,13 +23,15 @@ public:
         b.add_type(type);
     }
 
+    rkarray() {
+    }
     rkarray(int n) {
         for (int i = 0; i < n; i++) {
             value v = rkctx()->next_param();
             push(v);
         }
     }
-
+    
     value static create_array(value &idx) {
         return value::mkobjref(new rkarray(0));
     }
