@@ -250,10 +250,13 @@ void runner::execute(program_entry *_entry) {
         printf("[EXCEPTION]\n");
         printf("%s\n", exception.what());
 
-        assert(0);
-
         break;
     }
+
+#if _DEBUG
+    if (stack.size() > 0)
+        printf("STACK SIZE : %d\n", stack.size());
+#endif
 
     delete exectx;
 }
