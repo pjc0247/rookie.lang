@@ -36,7 +36,7 @@
 
 /* Some specifiers cannot be used in em++. */
 #ifdef RK_ENV_WEB
-#define CONSTEXPR
+#define CONSTEXPR constexpr
 #define THREAD_LOCAL
 
 #define _wfopen(a, b) nullptr
