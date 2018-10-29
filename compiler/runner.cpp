@@ -386,13 +386,13 @@ void runner::op_newdic() {
      *  OP_NEWDIC          INTEGER
      */
     set_rkctx(exectx);
-    auto aryref = new rkdictionary(inst.operand);
+    auto dicref = new rkdictionary(inst.operand);
     // FIXME
-    aryref->vtable = &ptype->dictionary.vtable;
-    aryref->sighash = sighash_dictionary;
-    push(value::mkobjref(aryref));
+    dicref->vtable = &ptype->dictionary.vtable;
+    dicref->sighash = sighash_dictionary;
+    push(value::mkobjref(dicref));
 
-    gc.add_object(aryref);
+    gc.add_object(dicref);
 }
 
 void runner::op_vcall() {
