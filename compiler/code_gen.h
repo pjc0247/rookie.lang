@@ -805,11 +805,12 @@ private:
     }
     void emit_for(for_node *node) {
         emit(node->init());
-        auto cursor = emitter.get_cursor();
+        emit(node->cond());
+        int jmp = emitter.emit(opcode::op_jmp_false);
         emit(node->body());
         emit(node->increment());
-        emit(node->cond());
-        emitter.emit(opcode::op_jmp_true, cursor);
+        emitter.emit(opcode::op_nop);
+        emitter.modify_operand(jmp, emitter.get_cursor() - 1);
     }
     void emit_while(while_node *node) {
         emitter.emit(opcode::op_nop);
