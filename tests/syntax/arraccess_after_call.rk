@@ -10,7 +10,7 @@ class foo {
     }
 }
 
-class comment_test {
+class arraccess_after_call_test {
     @main
     static def main() {
         foo.new().hello();
