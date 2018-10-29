@@ -11,6 +11,7 @@
 #include "libs/math.h"
 #include "libs/type.h"
 #include "libs/datetime.h"
+#include "libs/reflection.h"
 
 #include "binding.h"
 
@@ -28,6 +29,7 @@ binding binding::default_binding() {
     b.import<rkmath>();
     b.import<rktype>();
     b.import<rkdatetime>();
+    b.import<rkreflection>();
 
     return b;
 }

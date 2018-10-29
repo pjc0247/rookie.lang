@@ -9,11 +9,14 @@
 class  runner;
 struct value;
 
+class  rktype;
+
 class exe_context {
 public:
     exe_context(runner &r, stack_provider &sp);
 
     value init_obj(uint32_t sighash, object *obj);
+    value init_obj_nogc(uint32_t sighash, object *obj);
 
     template<typename... ArgTypes>
     value newobj(const std::wstring &name, ArgTypes... args);
@@ -24,6 +27,8 @@ public:
     }
 
     void push_newobj(const std::wstring &name);
+
+    rktype *get_type(const std::wstring &name);
 
     value &get_this();
     value call(value &obj, uint32_t sighash);

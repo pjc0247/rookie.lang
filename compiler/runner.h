@@ -61,6 +61,7 @@ public:
     void  _vcall(int sighash, stack_provider &sp);
     void  _newobj_systype(int sighash, stack_provider &sp);
     value _initobj_systype(int sighash, object *objref);
+    value _initobj_systype_nogc(int sighash, object *objref);
 
 private:
     void build_runtime_data();
@@ -91,6 +92,7 @@ private:
     value get_local(int n);
     runtime_typedata get_type(const value &v);
     runtime_typedata get_type(uint32_t sighash);
+    rktype *get_rktype(uint32_t sighash);
 
     void syscall(int index, stack_provider &sp);
     void programcall(int index);

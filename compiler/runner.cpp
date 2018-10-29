@@ -121,6 +121,9 @@ void runner::execute(program_entry *_entry) {
         case opcode::op_ldthis:
             push(stack[bp - 1]);
             break;
+        case opcode::op_ldtype:
+            push(value::mkobjref(typecache->table[inst.operand]));
+            break;
 
         case opcode::op_ldloc:
             push(get_local(inst.operand));
@@ -221,11 +224,6 @@ void runner::execute(program_entry *_entry) {
             _pop2_int(left, right);
             push(value::mkboolean(left.integer >= right.integer));
         }
-
-        else if (inst.opcode == opcode::op_ldtype) {
-            push(value::mkobjref(typecache->table[inst.operand]));
-        }
-        
 
         else if (inst.opcode == opcode::op_sub) {
             _pop2_int(left, right);
@@ -508,6 +506,12 @@ __forceinline
 runtime_typedata runner::get_type(uint32_t sighash) {
     return types[sighash];
 }
+rktype *runner::get_rktype(uint32_t sighash) {
+    auto it = typecache->table.find(sighash);
+    if (it == typecache->table.end())
+        return nullptr;
+    return (*it).second;
+}
 
 __forceinline
 void runner::syscall(int index, stack_provider &sp) {
@@ -556,6 +560,13 @@ value runner::_initobj_systype(int sighash, object *objref) {
     obj.objref->sighash = sighash;
 
     gc.add_object(obj.objref);
+
+    return obj;
+}
+value runner::_initobj_systype_nogc(int sighash, object *objref) {
+    auto obj = value::mkobjref(objref);
+    obj.objref->vtable = &types[sighash].vtable;
+    obj.objref->sighash = sighash;
 
     return obj;
 }

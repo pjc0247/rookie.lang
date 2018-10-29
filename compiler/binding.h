@@ -34,6 +34,7 @@
 #define rk2int(v) v.integer
 
 #define obj2rk(v, name) (rkctx()->init_obj(sig2hash_c(name), v))
+#define obj2rk_nogc(v, name) (rkctx()->init_obj_nogc(sig2hash_c(name), v))
 #define rk2obj(v, type) ((type)v.objref)
 
 #define rkthis (rkctx()->get_this())

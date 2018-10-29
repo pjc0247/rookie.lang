@@ -22,6 +22,9 @@ exe_context::exe_context(runner &r, stack_provider &sp) :
 value exe_context::init_obj(uint32_t sighash, object *obj) {
     return r._initobj_systype(sighash, obj);
 }
+value exe_context::init_obj_nogc(uint32_t sighash, object *obj) {
+    return r._initobj_systype_nogc(sighash, obj);
+}
 
 template <>
 value exe_context::newobj(const std::wstring &name) {
@@ -30,6 +33,10 @@ value exe_context::newobj(const std::wstring &name) {
 }
 void exe_context::push_newobj(const std::wstring &name) {
     r._newobj_systype(sig2hash(name), sp);
+}
+
+rktype *exe_context::get_type(const std::wstring &name) {
+    return r.get_rktype(sig2hash(name));
 }
 
 value &exe_context::get_this() {

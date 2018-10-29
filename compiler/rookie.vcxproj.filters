@@ -125,6 +125,9 @@
       <Filter>libs</Filter>
     </ClInclude>
     <ClInclude Include="call.h" />
+    <ClInclude Include="..\libs\reflection.h">
+      <Filter>libs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

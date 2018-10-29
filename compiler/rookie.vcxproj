@@ -30,7 +30,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -164,6 +164,7 @@
     <ClInclude Include="..\libs\integer.h" />
     <ClInclude Include="..\libs\math.h" />
     <ClInclude Include="..\libs\object.h" />
+    <ClInclude Include="..\libs\reflection.h" />
     <ClInclude Include="..\libs\type.h" />
     <ClInclude Include="..\libs\stdlib.h" />
     <ClInclude Include="..\libs\string.h" />
