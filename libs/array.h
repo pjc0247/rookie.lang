@@ -4,6 +4,7 @@
 
 #include "binding.h"
 #include "object.h"
+#include "string.h"
 
 class rkarray : public rkobject<rkarray> {
 public:
@@ -14,6 +15,7 @@ public:
 
         method(type, rk_id_getitem, &rkarray::get);
         method(type, rk_id_setitem, &rkarray::set);
+        method(type, rk_id_tostring, &rkarray::to_string);
 
         method(type, L"at", &rkarray::get);
         method(type, L"push", &rkarray::push);
@@ -42,6 +44,20 @@ public:
     value set(value_cref idx, value_cref v) {
         ary[rkint(idx)] = v;
         return rknull;
+    }
+    value to_string() {
+        std::wstring str;
+
+        str += L"[";
+        for (auto it = ary.begin(); it != ary.end(); ++it) {
+            if (it != ary.begin())
+                str += L", ";
+
+            str += rk_towstring(*it);
+        }
+        str += L"]";
+
+        return value::mkstring2(str.c_str());
     }
 
     value push(value_cref v) {

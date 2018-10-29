@@ -50,9 +50,9 @@ public:
         std::wstring str;
 
         str += L"{";
-        for (auto v : dic) {
-            auto key = v.first;
-            auto value = v.second;
+        for (auto &v : dic) {
+            auto &key = v.first;
+            auto &value = v.second;
 
             if (v != *dic.begin())
                 str += L", ";
