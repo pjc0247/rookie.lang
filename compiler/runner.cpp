@@ -321,6 +321,12 @@ void runner::op_add() {
         auto str = new rkstring(rkwstr(left) + rkwstr(right));
         replace_top(_initobj_systype(sighash_string, str));
     }
+    else {
+        push(left);
+        callee_ptr = &left;
+        push(right);
+        _vcall(sig2hash(L"__add__"), sp);
+    }
 }
 void runner::op_newobj() {
     // [STACK-LAYOUT   |   OPERAND]
@@ -368,6 +374,7 @@ void runner::op_newarr() {
     auto aryref = new rkarray(inst.operand);
     // FIXME
     aryref->vtable = &ptype->array.vtable;
+    aryref->sighash = sighash_array;
     push(value::mkobjref(aryref));
 
     gc.add_object(aryref);
@@ -382,6 +389,7 @@ void runner::op_newdic() {
     auto aryref = new rkdictionary(inst.operand);
     // FIXME
     aryref->vtable = &ptype->dictionary.vtable;
+    aryref->sighash = sighash_dictionary;
     push(value::mkobjref(aryref));
 
     gc.add_object(aryref);

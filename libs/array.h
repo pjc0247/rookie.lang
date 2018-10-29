@@ -17,6 +17,8 @@ public:
         method(type, rk_id_setitem, &rkarray::set);
         method(type, rk_id_tostring, &rkarray::to_string);
 
+        method(type, L"__add__", &rkarray::op_add);
+
         method(type, L"at", &rkarray::get);
         method(type, L"push", &rkarray::push);
         method(type, L"remove", &rkarray::remove);
@@ -59,6 +61,24 @@ public:
         str += L"]";
 
         return str2rk(str);
+    }
+
+    value op_add(value_cref other) {
+        auto new_ary = new rkarray();
+
+        // FIXME
+        if (other.objref->sighash == sig2hash(L"array")) {
+            auto other_ary = rk2obj(other, rkarray*);
+
+            new_ary->ary.insert(
+                new_ary->ary.end(),
+                ary.begin(), ary.end());
+            new_ary->ary.insert(
+                new_ary->ary.end(),
+                other_ary->ary.begin(), other_ary->ary.end());
+        }
+
+        return obj2rk(new_ary, L"array");
     }
 
     value push(value_cref v) {
