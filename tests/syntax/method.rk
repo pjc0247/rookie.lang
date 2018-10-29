@@ -1,0 +1,15 @@
+class dog {
+    def kind() {
+        puts("animal");
+    }
+}
+class anchovy {
+    def kind() {
+        puts("fish");
+    }
+}
+
+// animal
+dog.new().kind();
+// fish
+anchovy.new().kind();
