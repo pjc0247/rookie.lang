@@ -20,6 +20,7 @@ public:
         method(type, L"at", &rkarray::get);
         method(type, L"push", &rkarray::push);
         method(type, L"remove", &rkarray::remove);
+        method(type, L"remove_at", &rkarray::remove);
         method(type, L"length", &rkarray::length);
 
         b.add_type(type);
@@ -70,8 +71,12 @@ public:
             ary.end());
         return rknull;
     }
+    value remove_at(value_cref v) {
+        ary.erase(ary.begin() + rk2int(v));
+        return rknull;
+    }
     value length() {
-        return value::mkinteger(ary.size());
+        return int2rk(ary.size());
     }
 
 private:
