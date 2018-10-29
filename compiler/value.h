@@ -89,6 +89,7 @@ struct value {
         return v;
     }
     static value mkstring2(const wchar_t *str);
+    static value mkstring2(const std::wstring &str);
 };
 
 const value rknull   = value(value_type::null);

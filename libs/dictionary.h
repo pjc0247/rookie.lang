@@ -62,7 +62,7 @@ public:
         }
         str += L"}";
 
-        return value::mkstring2(str.c_str());
+        return str2rk(str);
     }
     
     value size() {
