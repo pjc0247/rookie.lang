@@ -10,7 +10,7 @@ value rkscriptobject::set_property(value_cref key, value_cref value) {
     this->properties[sig2hash(_key)] = value;
     return rknull;
 }
-value rkscriptobject::get_property(value_cref &key) {
+value rkscriptobject::get_property(value_cref key) {
     auto _key = rkwstr(key);
     return this->properties[sig2hash(_key)];
 }
