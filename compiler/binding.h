@@ -20,6 +20,8 @@
 #define _rookie_function(name, body) \
     b.function(name, [] body );
 
+#define rk_towstring(x) rkwstr(rkctx()->call(value, rk_id_tostring))
+
 #define is_rkint(v) v.type == value_type::integer
 #define is_rkstr(v) (v.type == value_type::object && v.objref->sighash == sighash_string)
 #define is_rkchar(v) v.type == value_type::character

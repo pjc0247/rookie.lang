@@ -13,11 +13,11 @@ public:
     static void import(binding &b) {
         auto type = type_builder(L"dictionary");
 
-        type.method(rk_new, create_array);
+        type.method(rk_id_new, create_array);
 
-        method(type, rk_getitem, &rkdictionary::get);
-        method(type, rk_setitem, &rkdictionary::set);
-        method(type, rk_tostring, &rkdictionary::to_string);
+        method(type, rk_id_getitem, &rkdictionary::get);
+        method(type, rk_id_setitem, &rkdictionary::set);
+        method(type, rk_id_tostring, &rkdictionary::to_string);
         method(type, L"size", &rkdictionary::size);
         method(type, L"contains", &rkdictionary::contains);
         method(type, L"remove", &rkdictionary::remove);
@@ -58,7 +58,7 @@ public:
                 str += L", ";
 
             str += key + L" : ";
-            str += rkwstr(rkctx()->call(value, rk_tostring));
+            str += rk_towstring(value);
         }
         str += L"}";
 

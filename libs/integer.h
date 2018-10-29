@@ -11,7 +11,7 @@ public:
     static void import(binding &b) {
         auto type = type_builder(L"integer");
 
-        method(type, rk_tostring, &rkinteger::to_string);
+        method(type, rk_id_tostring, &rkinteger::to_string);
 
         b.add_type(type);
     }
