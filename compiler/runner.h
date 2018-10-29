@@ -58,6 +58,7 @@ public:
     void execute();
     void execute(program_entry *_entry);
 
+    void set_callee_as_top();
     void  _vcall(int sighash, stack_provider &sp);
     void  _newobj_systype(int sighash, stack_provider &sp);
     value _initobj_systype(int sighash, object *objref);

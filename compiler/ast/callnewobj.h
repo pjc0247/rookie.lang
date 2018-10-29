@@ -11,7 +11,7 @@ protected:
     virtual syntax_node *visit(syntax_node *node) {
         if (is_transformable(node)) {
             auto call_node = (callmember_node*)node;
-            auto new_node = new newobj_node(node->s_token(), node->parent);
+            auto new_node = new newobj_node(node->s_token());
 
             // ARGS
             for (auto it = call_node->begin_args(); it != call_node->end_args(); ++it)

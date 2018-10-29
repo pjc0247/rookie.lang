@@ -394,30 +394,7 @@ void runner::op_vcall() {
      *  ARGS (0..n)
      *  OP_LDVCALL
      */
-    auto sighash = inst.operand;
-    std::map<uint32_t, callinfo> *vtable;
-
-    if (callee_ptr->type == value_type::integer) {
-        vtable = &ptype->integer.vtable;
-        push(top());
-    }
-    else {
-        auto calleeobj = callee_ptr->objref;
-        vtable = calleeobj->vtable;
-    }
-
-    auto _callinfo = vtable->find(sighash);
-    if (_callinfo == vtable->end()) {
-        exception = rkexception("No such method");
-        errflag = true;
-    }
-    else {
-        auto callinfo = (*_callinfo).second;
-        if (callinfo.type == call_type::ct_syscall_direct)
-            syscall(callinfo.entry, sp);
-        else if (callinfo.type == call_type::ct_programcall_direct)
-            programcall(callinfo.entry);
-    }
+    _vcall(inst.operand, sp);
 }
 void runner::op_ret() {
     // [STACK-LAYOUT   |   OPERAND]
@@ -528,15 +505,38 @@ void runner::programcall(int index) {
     current_entry = &entry;
 }
 
+void runner::set_callee_as_top() {
+    if (stack.size() == 0)
+        throw rkexception("stack.empty");
+
+    callee_ptr = &stack[stack.size() - 1];
+}
+
 // Performs vcall, internal use only.
 void runner::_vcall(int sighash, stack_provider &sp) {
-    auto calleeobj = callee_ptr->objref;
+    std::map<uint32_t, callinfo> *vtable;
 
-    auto callinfo = calleeobj->vtable->at(sighash);
-    if (callinfo.type == call_type::ct_syscall_direct)
-        syscall(callinfo.entry, sp);
-    else if (callinfo.type == call_type::ct_programcall_direct)
-        programcall(callinfo.entry);
+    if (callee_ptr->type == value_type::integer) {
+        vtable = &ptype->integer.vtable;
+        push(top());
+    }
+    else {
+        auto calleeobj = callee_ptr->objref;
+        vtable = calleeobj->vtable;
+    }
+
+    auto _callinfo = vtable->find(sighash);
+    if (_callinfo == vtable->end()) {
+        exception = rkexception("No such method");
+        errflag = true;
+    }
+    else {
+        auto callinfo = (*_callinfo).second;
+        if (callinfo.type == call_type::ct_syscall_direct)
+            syscall(callinfo.entry, sp);
+        else if (callinfo.type == call_type::ct_programcall_direct)
+            programcall(callinfo.entry);
+    }
 }
 // internal use only.
 void runner::_newobj_systype(int sighash, stack_provider &sp) {

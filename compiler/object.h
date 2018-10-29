@@ -8,7 +8,6 @@
 
 class object {
 public:
-
     __forceinline void set_property(uint32_t keyhash, const value &v) {
         properties[keyhash] = v;
     }

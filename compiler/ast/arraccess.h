@@ -10,9 +10,9 @@ protected:
     }
     virtual syntax_node *visit(syntax_node *node) {
         if (is_transformable(node)) {
-            auto new_node = new callmember_node(node->s_token(), node->parent);
+            auto new_node = new callmember_node(node->s_token());
             auto arr_node = (arraccess_node*)node->children[0];
-            auto at = new ident_node(node->s_token(), new_node, L"__setitem__");
+            auto at = new ident_node(node->s_token(), rk_setitem);
 
             // METHOD_NAME
             new_node->append(at);
@@ -36,8 +36,8 @@ protected:
     }
     virtual syntax_node *visit(syntax_node *node) {
         if (is_transformable(node)) {
-            auto new_node = new callmember_node(node->s_token(), node->parent);
-            auto at = new ident_node(node->s_token(), new_node, L"__getitem__");
+            auto new_node = new callmember_node(node->s_token());
+            auto at = new ident_node(node->s_token(), rk_getitem);
 
             // METHOD_NAME
             new_node->append(at);

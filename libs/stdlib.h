@@ -2,6 +2,7 @@
 
 #include "binding.h"
 
+#include "exe_context.h"
 #include "sig2hash.h"
 #include "string.h"
 
@@ -37,6 +38,9 @@ _rookie_function(L"puts", (value_cref v) {
     }
     else if (is_rkchar(v))
         wprintf(L"%c\n", rkchar(v));
+
+    else {
+    }
 
     return rknull;
 });

@@ -18,7 +18,7 @@ protected:
             auto left = (ident_node*)node->children[0];
             auto right = (call_node*)node->children[1];
 
-            auto new_node = new callmember_node(right->s_token(), node->parent);
+            auto new_node = new callmember_node(right->s_token());
             // METHOD_NAME
             new_node->append(right->ident());
             // .this

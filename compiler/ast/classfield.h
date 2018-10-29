@@ -10,7 +10,7 @@ protected:
     }
     virtual syntax_node *visit(syntax_node *node) {
         if (is_transformable(node)) {
-            auto new_node = new field_node(node->s_token(), node->parent);
+            auto new_node = new field_node(node->s_token());
 
             new_node->append(node->children[0]);
             new_node->append(node->children[1]);

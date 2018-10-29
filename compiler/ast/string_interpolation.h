@@ -12,7 +12,7 @@ protected:
     }
     virtual syntax_node *visit(syntax_node *node) {
         if (is_transformable(node)) {
-            auto new_node = new op_node(node->s_token(), node->parent, L"+");
+            auto new_node = new op_node(node->s_token(), L"+");
             auto l = (literal_node*)node;
 
             auto r = std::wregex(L"\\{\\{([a-zA-Z_0_9@]+)\\}\\}");
@@ -26,14 +26,14 @@ protected:
                 auto right = l->str.substr(match.position(), match.length());
 
                 // LEFT
-                auto str_node = new literal_node(stoken::empty(), new_node, left);
+                auto str_node = new literal_node(stoken::empty(), left);
                 // RIGHT
-                auto to_string_node = new callmember_node(stoken::empty(), new_node);
-                auto id_node = new ident_node(stoken::empty(), new_node, match[1].str());
+                auto to_string_node = new callmember_node(stoken::empty());
+                auto id_node = new ident_node(stoken::empty(), match[1].str());
                 // .strconcat
-                auto add_node = new op_node(stoken::empty(), new_node, L"+");
+                auto add_node = new op_node(stoken::empty(), L"+");
 
-                to_string_node->append(new ident_node(stoken::empty(), to_string_node, L"to_string"));
+                to_string_node->append(new ident_node(stoken::empty(), L"to_string"));
                 to_string_node->append(id_node);
 
                 add_node->append(str_node);
@@ -46,12 +46,12 @@ protected:
 
             if (offset != l->str.size()) {
                 auto left = l->str.substr(offset);
-                auto str_node = new literal_node(stoken::empty(), new_node, left);
+                auto str_node = new literal_node(stoken::empty(), left);
                 new_node->append(str_node);
             }
 
             if (new_node->children.size() % 2 == 1)
-                new_node->append(new literal_node(stoken::empty(), new_node, L""));
+                new_node->append(new literal_node(stoken::empty(), L""));
 
             return new_node;
         }

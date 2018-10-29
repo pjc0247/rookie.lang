@@ -17,6 +17,7 @@ public:
 
         method(type, rk_getitem, &rkdictionary::get);
         method(type, rk_setitem, &rkdictionary::set);
+        method(type, rk_tostring, &rkdictionary::to_string);
         method(type, L"size", &rkdictionary::size);
         method(type, L"contains", &rkdictionary::contains);
         method(type, L"remove", &rkdictionary::remove);
@@ -37,31 +38,49 @@ public:
     }
 
     value get(value_cref key) {
-        auto h = sig2hash(rkwstr(key));
+        auto h = rkwstr(key);
         return dic[h];
     }
     value set(value_cref key, value_cref v) {
-        auto h = sig2hash(rkwstr(key));
+        auto h = rkwstr(key);
         dic[h] = v;
         return rknull;
+    }
+    value to_string() {
+        std::wstring str;
+
+        str += L"{";
+        for (auto v : dic) {
+            auto key = v.first;
+            auto value = v.second;
+
+            if (v != *dic.begin())
+                str += L", ";
+
+            str += key + L" : ";
+            str += rkwstr(rkctx()->call(value, rk_tostring));
+        }
+        str += L"}";
+
+        return value::mkstring2(str.c_str());
     }
     
     value size() {
         return value::mkinteger(dic.size());
     }
     value contains(value_cref key) {
-        auto h = sig2hash(rkwstr(key));
+        auto h = rkwstr(key);
         if (dic.find(h) == dic.end())
             return value::_false();
         return value::_true();
     }
     value remove(value_cref key) {
-        auto h = sig2hash(rkwstr(key));
+        auto h = rkwstr(key);
         if (dic.erase(h))
             return value::_true();
         return value::_false();
     }
 
 private:
-    std::map<uint32_t, value> dic;
+    std::map<std::wstring, value> dic;
 };

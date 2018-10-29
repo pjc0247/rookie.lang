@@ -44,11 +44,13 @@ value &exe_context::get_this() {
 }
 value exe_context::call(value &obj, uint32_t sighash) {
     sp.push(obj);
+    r.set_callee_as_top();
     r._vcall(sighash, sp);
     return sp.pop();
 }
 value exe_context::call(value &obj, const std::wstring &name) {
     sp.push(obj);
+    r.set_callee_as_top();
     r._vcall(sig2hash(name), sp);
     return sp.pop();
 }

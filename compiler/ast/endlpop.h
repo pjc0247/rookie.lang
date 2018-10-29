@@ -57,7 +57,7 @@ protected:
 
         if (node->type == syntax_type::syn_endl) {
             if (depth >= 1) {
-                auto pop = new pop_node(node->s_token(), node->parent);
+                auto pop = new pop_node(node->s_token());
                 node = pop;
             }
             else

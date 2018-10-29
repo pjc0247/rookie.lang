@@ -27,13 +27,17 @@ protected:
             if (child != node->children[i])
                 changes++;
 
-            // remove
+            // `return nullptr;` means 'erase me'
             if (node->children[i] == nullptr) {
                 node->children.erase(
                     std::find(node->children.begin(), node->children.end(),
                     node->children[i]));
 
                 i--;
+            }
+            // Make sure new_node always has a parent.
+            else {
+                node->children[i]->parent = node;
             }
         }
 
