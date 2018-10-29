@@ -22,6 +22,9 @@ _rookie_function(L"print", (value_cref v) {
         wprintf(L"%s\n", rkcstr(v));
     else if (is_rkchar(v))
         wprintf(L"%c\n", rkchar(v));
+    else {
+        printf("%S\n", rk_towstring(v).c_str());
+    }
 
     return rknull;
 });
@@ -40,6 +43,7 @@ _rookie_function(L"puts", (value_cref v) {
         wprintf(L"%c\n", rkchar(v));
 
     else {
+        printf("%S\n", rk_towstring(v).c_str());
     }
 
     return rknull;
