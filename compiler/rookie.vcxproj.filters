@@ -128,6 +128,9 @@
     <ClInclude Include="..\libs\reflection.h">
       <Filter>libs</Filter>
     </ClInclude>
+    <ClInclude Include="ir\dup.h">
+      <Filter>ir</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">
@@ -147,6 +150,9 @@
     </Filter>
     <Filter Include="validator">
       <UniqueIdentifier>{41a40755-b256-4cf3-a709-c5377c7a472e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ir">
+      <UniqueIdentifier>{a169987d-1dbf-4e0b-9b66-529b827bd7e3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
