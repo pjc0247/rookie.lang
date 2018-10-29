@@ -25,6 +25,6 @@ public:
     value all_properties() {
         return value::mkinteger(1);
     }
-    value set_property(value &key, value &value);
-    value get_property(value &key);
+    value set_property(value_cref key, value_cref value);
+    value get_property(value_cref key);
 };

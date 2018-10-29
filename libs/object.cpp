@@ -5,12 +5,12 @@
 
 #include "object.h"
 
-value rkscriptobject::set_property(value &key, value &value) {
+value rkscriptobject::set_property(value_cref key, value_cref value) {
     auto _key = rkwstr(key);
     this->properties[sig2hash(_key)] = value;
     return rknull;
 }
-value rkscriptobject::get_property(value &key) {
+value rkscriptobject::get_property(value_cref &key) {
     auto _key = rkwstr(key);
     return this->properties[sig2hash(_key)];
 }

@@ -32,22 +32,23 @@ public:
         }
     }
     
-    value static create_array(value &idx) {
+    value static create_array(const value &idx) {
         return value::mkobjref(new rkarray(0));
     }
 
-    value get(value &idx) {
+    value get(value_cref idx) {
         return ary[rkint(idx)];
     }
-    value set(value &idx, value &v) {
+    value set(value_cref idx, value_cref v) {
         ary[rkint(idx)] = v;
         return rknull;
     }
-    value push(value &v) {
+
+    value push(value_cref v) {
         ary.push_back(v);
         return rknull;
     }
-    value remove(value &v) {
+    value remove(value_cref v) {
         ary.erase(std::remove(
             ary.begin(), ary.end(), v),
             ary.end());

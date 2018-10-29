@@ -16,7 +16,7 @@ public:
         b.add_type(type);
     }
 
-    value to_string(value &n) {
+    value to_string(value_cref n) {
         return value::mkstring2(std::to_wstring(rkint(n)).c_str());
     }
 };

@@ -15,7 +15,7 @@ public:
         b.add_type(type);
     }
 
-    static value abs(value &v) {
+    static value abs(value_cref v) {
         return int2rk(std::abs(rk2int(v)));
     }
 };

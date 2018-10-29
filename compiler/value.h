@@ -95,4 +95,6 @@ const value rknull   = value(value_type::null);
 const value rkfalse  = value::_false();
 const value rktrue   = value::_true();
 
+typedef const value & value_cref;
+
 #include "value_op.h"

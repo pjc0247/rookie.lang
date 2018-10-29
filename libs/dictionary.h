@@ -32,15 +32,15 @@ public:
         }
     }
 
-    value static create_array(value &idx) {
+    value static create_array(value_cref idx) {
         return value::mkobjref(new rkdictionary(0));
     }
 
-    value get(value &key) {
+    value get(value_cref key) {
         auto h = sig2hash(rkwstr(key));
         return dic[h];
     }
-    value set(value &key, value &v) {
+    value set(value_cref key, value_cref v) {
         auto h = sig2hash(rkwstr(key));
         dic[h] = v;
         return rknull;
@@ -49,13 +49,13 @@ public:
     value size() {
         return value::mkinteger(dic.size());
     }
-    value contains(value &key) {
+    value contains(value_cref key) {
         auto h = sig2hash(rkwstr(key));
         if (dic.find(h) == dic.end())
             return value::_false();
         return value::_true();
     }
-    value remove(value &key) {
+    value remove(value_cref key) {
         auto h = sig2hash(rkwstr(key));
         if (dic.erase(h))
             return value::_true();

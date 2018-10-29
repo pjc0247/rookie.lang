@@ -33,12 +33,12 @@ public:
         str(str) {
     }
 
-    static value create_instance2(value &str) {
+    static value create_instance2(value_cref str) {
         auto ptr = new rkstring();
         ptr->str = str.str;
         return value::mkobjref(ptr);
     }
-    value at(value &idx) {
+    value at(value_cref idx) {
         return value::mkchar(str[rkint(idx)]);
     }
     value length() {
@@ -48,10 +48,10 @@ public:
         return rkvcall(rkthis, L"length");
         //return value::mkinteger(str.size());
     }
-    value equal(value &v) {
+    value equal(value_cref v) {
         return value::mkboolean(str == (rk2obj(v, rkstring*)->str));
     }
-    value append(value &other) {
+    value append(value_cref other) {
         auto appended = (str + rkwstr(other));
         auto r = value::mkstring(appended.c_str());
         return rkctx()->newobj(L"string", r);

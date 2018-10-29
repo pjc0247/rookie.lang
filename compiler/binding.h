@@ -61,7 +61,7 @@ public:
         return *this;
     }
     type_builder &static_method(const std::wstring &signature,
-        const std::function<value(value&)> &function) {
+        const std::function<value(value_cref)> &function) {
 
         _bind(static_methods, signature, [function](stack_provider &sp) {
             sp.replace<0>(function(sp.get(0)));
@@ -78,7 +78,7 @@ public:
         return *this;
     }
     type_builder &method(const std::wstring &signature,
-        const std::function<value(value&)> &function) {
+        const std::function<value(value_cref)> &function) {
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<0>(function(sp.get(0)));
@@ -86,7 +86,7 @@ public:
         return *this;
     }
     type_builder &method(const std::wstring &signature,
-        const std::function<value(value&, value&)> &function) {
+        const std::function<value(value_cref, value_cref)> &function) {
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<1>(function(sp.get(1), sp.get(0)));
@@ -95,7 +95,7 @@ public:
         return *this;
     }
     type_builder &method(const std::wstring &signature,
-        const std::function<value(value&, value&, value&)> &function) {
+        const std::function<value(value_cref, value_cref, value_cref)> &function) {
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<2>(function(sp.get(2), sp.get(1), sp.get(0)));
@@ -104,7 +104,7 @@ public:
         return *this;
     }
     type_builder &method(const std::wstring &signature,
-        const std::function<value(value&, value&, value&, value&)> &function) {
+        const std::function<value(value_cref, value_cref, value_cref, value_cref)> &function) {
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<3>(function(sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
@@ -113,7 +113,7 @@ public:
         return *this;
     }
     type_builder &method(const std::wstring &signature,
-        const std::function<value(value&, value&, value&, value&, value&)> &function) {
+        const std::function<value(value_cref, value_cref, value_cref, value_cref, value_cref)> &function) {
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<4>(function(sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
@@ -122,7 +122,7 @@ public:
         return *this;
     }
     type_builder &method(const std::wstring &signature,
-        const std::function<value(value&, value&, value&, value&, value&, value&)> &function) {
+        const std::function<value(value_cref, value_cref, value_cref, value_cref, value_cref, value_cref)> &function) {
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<5>(function(sp.get(5), sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
@@ -131,7 +131,7 @@ public:
         return *this;
     }
     type_builder &method(const std::wstring &signature,
-        const std::function<value(value&, value&, value&, value&, value&, value&, value&)> &function) {
+        const std::function<value(value_cref, value_cref, value_cref, value_cref, value_cref, value_cref, value_cref)> &function) {
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<6>(function(sp.get(6), sp.get(5), sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
@@ -172,14 +172,14 @@ public:
         });
     }
     void function(const std::wstring &signature,
-        const std::function<value(value&)> &function) {
+        const std::function<value(value_cref)> &function) {
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<0>(function(sp.get(0)));
         });
     }
     void function(const std::wstring &signature,
-        const std::function<value(value&,value&)> &function) {
+        const std::function<value(value_cref,value_cref)> &function) {
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<1>(function(sp.get(1), sp.get(0)));
@@ -187,7 +187,7 @@ public:
         });
     }
     void function(const std::wstring &signature,
-        const std::function<value(value&, value&, value&)> &function) {
+        const std::function<value(value_cref, value_cref, value_cref)> &function) {
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<2>(function(sp.get(2), sp.get(1), sp.get(0)));
@@ -195,7 +195,7 @@ public:
         });
     }
     void function(const std::wstring &signature,
-        const std::function<value(value&, value&, value&, value&)> &function) {
+        const std::function<value(value_cref, value_cref, value_cref, value_cref)> &function) {
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<3>(function(sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
@@ -203,7 +203,7 @@ public:
         });
     }
     void function(const std::wstring &signature,
-        const std::function<value(value&, value&, value&, value&, value&)> &function) {
+        const std::function<value(value_cref, value_cref, value_cref, value_cref, value_cref)> &function) {
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<4>(function(sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
@@ -211,7 +211,7 @@ public:
         });
     }
     void function(const std::wstring &signature,
-        const std::function<value(value&, value&, value&, value&, value&, value&)> &function) {
+        const std::function<value(value_cref, value_cref, value_cref, value_cref, value_cref, value_cref)> &function) {
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<5>(function(sp.get(5), sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
@@ -219,7 +219,7 @@ public:
         });
     }
     void function(const std::wstring &signature,
-        const std::function<value(value&, value&, value&, value&, value&, value&, value&)> &function) {
+        const std::function<value(value_cref, value_cref, value_cref, value_cref, value_cref, value_cref, value_cref)> &function) {
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<6>(function(sp.get(6), sp.get(5), sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
@@ -262,9 +262,9 @@ public:
         });
     }
     static void static_method(type_builder &type,
-        const wchar_t *name, value(*function)(value&)) {
+        const wchar_t *name, value(*function)(value_cref)) {
 
-        type.static_method(name, [function](value &a) {
+        type.static_method(name, [function](value_cref a) {
             return stdinvoke(function, a);
         });
     }
@@ -272,55 +272,55 @@ public:
     static void method(type_builder &type,
         const wchar_t *name, value(T::*function)()) {
 
-        type.method(name, [function](value &_this) {
+        type.method(name, [function](value_cref _this) {
             auto obj = ((T*)_this.objref);
             return stdinvoke(function, obj);
         });
     }
     static void method(type_builder &type,
-        const wchar_t *name, value(T::*function)(value&)) {
+        const wchar_t *name, value(T::*function)(value_cref)) {
 
-        type.method(name, [function](value &_this, value &a) {
+        type.method(name, [function](value_cref _this, value_cref a) {
             auto obj = ((T*)_this.objref);
             return stdinvoke(function, obj, a);
         });
     }
     static void method(type_builder &type,
-        const wchar_t *name, value(T::*function)(value&, value&)) {
+        const wchar_t *name, value(T::*function)(value_cref, value_cref)) {
 
-        type.method(name, [function](value &_this, value &a, value &b) {
+        type.method(name, [function](value_cref _this, value_cref a, value_cref b) {
             auto obj = ((T*)_this.objref);
             return stdinvoke(function, obj, a, b);
         });
     }
     static void method(type_builder &type,
-        const wchar_t *name, value(T::*function)(value&, value&, value&)) {
+        const wchar_t *name, value(T::*function)(value_cref, value_cref, value_cref)) {
 
-        type.method(name, [function](value &_this, value &a, value &b, value &c) {
+        type.method(name, [function](value_cref _this, value_cref a, value_cref b, value_cref c) {
             auto obj = ((T*)_this.objref);
             return stdinvoke(function, obj, a, b, c);
         });
     }
     static void method(type_builder &type,
-        const wchar_t *name, value(T::*function)(value&, value&, value&, value&)) {
+        const wchar_t *name, value(T::*function)(value_cref, value_cref, value_cref, value_cref)) {
 
-        type.method(name, [function](value &_this, value &a, value &b, value &c, value &d) {
+        type.method(name, [function](value_cref _this, value_cref a, value_cref b, value_cref c, value_cref d) {
             auto obj = ((T*)_this.objref);
             return stdinvoke(function, obj, a, b, c, d);
         });
     }
     static void method(type_builder &type,
-        const wchar_t *name, value(T::*function)(value&, value&, value&, value&, value&)) {
+        const wchar_t *name, value(T::*function)(value_cref, value_cref, value_cref, value_cref, value_cref)) {
 
-        type.method(name, [function](value &_this, value &a, value &b, value &c, value &d, value &e) {
+        type.method(name, [function](value_cref _this, value_cref a, value_cref b, value_cref c, value_cref d, value_cref e) {
             auto obj = ((T*)_this.objref);
             return stdinvoke(function, obj, a, b, c, d, e);
         });
     }
     static void method(type_builder &type,
-        const wchar_t *name, value(T::*function)(value&, value&, value&, value&, value&, value&)) {
+        const wchar_t *name, value(T::*function)(value_cref, value_cref, value_cref, value_cref, value_cref, value_cref)) {
 
-        type.method(name, [function](value &_this, value &a, value &b, value &c, value &d, value &e, value &f) {
+        type.method(name, [function](value_cref _this, value_cref a, value_cref b, value_cref c, value_cref d, value_cref e, value_cref f) {
             auto obj = ((T*)_this.objref);
             return stdinvoke(function, obj, a, b, c, d, e, f);
         });

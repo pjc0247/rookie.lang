@@ -16,7 +16,7 @@ public:
         b.add_type(type);
     }
 
-    static value get_type(value &name) {
+    static value get_type(value_cref name) {
         return obj2rk_nogc(rkctx()->get_type(rkwstr(name)), L"type");
     }
 };

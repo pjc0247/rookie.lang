@@ -28,8 +28,7 @@ public:
     value fields() {
         auto ary = new rkarray();
         for (auto field : rtype.fields) {
-            auto v = int2rk(field.first);
-            ary->push(v);
+            ary->push(int2rk(field.first));
         }
         
         return obj2rk(ary, L"array");
