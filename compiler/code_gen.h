@@ -724,12 +724,12 @@ private:
         emitter.emit(opcode::op_newobj, sig2hash(node->ident_str()));
     }
     void emit_newarr(newarr_node *node) {
-        for (uint32_t i=node->children.size()-1; i>=0;i--)
+        for (int i=node->children.size()-1; i>=0;i--)
             emit(node->children[i]);
         emitter.emit(opcode::op_newarr, node->children.size());
     }
     void emit_newdic(newdic_node *node) {
-        for (uint32_t i=0;i<node->children.size();i+=2) {
+        for (int i=0;i<node->children.size();i+=2) {
             auto key = (ident_node*)node->children[i];
             emitter.emit(opcode::op_ldstr, key->ident);
             emit(node->children[i + 1]);
