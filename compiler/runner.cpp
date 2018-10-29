@@ -20,12 +20,8 @@
         b.type != value_type::integer) \
         _invalid_stackitem;
 
-#define _pop1_int(a) \
-    autoa = pop(); 
 #define _pop2_int(a, b) \
     auto b = pop(); auto a = pop(); 
-
-#define _stacktop() stack[stack.size() - 1]
 
 struct primitive_cache {
     runtime_typedata integer, string, object;
@@ -551,7 +547,7 @@ void runner::_newobj_systype(int sighash, stack_provider &sp) {
 #endif
 
     syscall(newcall.entry, sp);
-    auto obj = _stacktop();
+    auto obj = top();
     obj.objref->vtable = &types[sighash].vtable;
     obj.objref->sighash = sighash;
 
