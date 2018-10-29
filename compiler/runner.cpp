@@ -660,6 +660,9 @@ void runner::load_all_systypes() {
         // TODO
         tdata.parents.push_back(sighash_object);
 
+        tdata.reflection = new reflection_typedata();
+        tdata.reflection->name = tdata.name;
+
         types[typesighash] = tdata;
     }
 }
@@ -684,12 +687,16 @@ void runner::load_programtype(uint32_t sighash) {
 
         calltable vtable;
 
+        tdata.reflection = new reflection_typedata();
+
         // Inherit from `object`
         if (p.types[i].parents_len == 0) {
             auto basevtable = types[sighash_object].vtable;
             for (auto &method : basevtable) {
                 vtable[method.first] = method.second;
             }
+
+            tdata.reflection->parents.push_back(types[sighash_object].reflection);
 
             tdata.parents.push_back(sighash_object);
         }
@@ -703,6 +710,8 @@ void runner::load_programtype(uint32_t sighash) {
                 for (auto &method : types[parent_hash].vtable) {
                     vtable[method.first] = method.second;
                 }
+
+                tdata.reflection->parents.push_back(types[parent_hash].reflection);
 
                 tdata.parents.push_back(parent_hash);
                 for (auto parent : types[parent_hash].parents) {
@@ -721,6 +730,8 @@ void runner::load_programtype(uint32_t sighash) {
         tdata.vtable = vtable;
         tdata.name = type.name;
         tdata.sighash = sighash;
+
+        tdata.reflection->name = type.name;
 
         types[sig2hash(type.name)] = tdata;
     }

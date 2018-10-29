@@ -15,7 +15,9 @@ public:
     static void import(binding &b) {
         auto type = type_builder(L"type");
 
+        method(type, rk_id_tostring, &rktype::to_string);
         method(type, L"fields", &rktype::fields);
+        method(type, L"ancestors", &rktype::ancestors);
 
         b.add_type(type);
     }
@@ -25,12 +27,25 @@ public:
         rtype(rtype) {
     }
 
+    value to_string() {
+        std::wstring str;
+        str = L"<#type " + rtype.name + L">";
+        return str2rk(str);
+    }
     value fields() {
         auto ary = new rkarray();
         for (auto field : rtype.fields) {
             ary->push(int2rk(field.first));
         }
         
+        return obj2rk(ary, L"array");
+    }
+    value ancestors() {
+        auto ary = new rkarray();
+        for (auto p : rtype.reflection->parents) {
+            ary->push(str2rk(p->name));
+        }
+
         return obj2rk(ary, L"array");
     }
 

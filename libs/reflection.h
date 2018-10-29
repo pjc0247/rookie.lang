@@ -17,6 +17,7 @@ public:
     }
 
     static value get_type(value_cref name) {
-        return obj2rk_nogc(rkctx()->get_type(rkwstr(name)), L"type");
+        auto a =  obj2rk_nogc(rkctx()->get_type(rkwstr(name)), L"type");
+        return a;
     }
 };

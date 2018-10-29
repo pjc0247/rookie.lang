@@ -26,6 +26,9 @@ class  exe_context;
 struct primitive_cache;
 struct type_cache;
 
+struct reflection_typedata;
+struct runtime_typedata;
+
 enum class runtime_typekind {
     tk_systype,
     tk_programtype
@@ -40,6 +43,14 @@ struct runtime_typedata {
     runtime_typekind typekind;
 
     calltable vtable;
+
+    reflection_typedata *reflection;
+};
+struct reflection_typedata {
+    std::wstring name;
+
+    std::vector<reflection_typedata*> parents;
+    std::vector<std::wstring> fields;
 };
 
 class runner {
