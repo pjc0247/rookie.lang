@@ -162,6 +162,7 @@
     <ClInclude Include="..\libs\dictionary.h" />
     <ClInclude Include="..\libs\gc.h" />
     <ClInclude Include="..\libs\integer.h" />
+    <ClInclude Include="..\libs\iterator.h" />
     <ClInclude Include="..\libs\math.h" />
     <ClInclude Include="..\libs\object.h" />
     <ClInclude Include="..\libs\reflection.h" />
@@ -176,6 +177,7 @@
     <ClInclude Include="ast\callnewobj.h" />
     <ClInclude Include="ast\classfield.h" />
     <ClInclude Include="ast\endlpop.h" />
+    <ClInclude Include="ast\foreach.h" />
     <ClInclude Include="ast\newdic.h" />
     <ClInclude Include="ast\syntax_travler.h" />
     <ClInclude Include="binding.h" />

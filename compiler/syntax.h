@@ -40,7 +40,7 @@ enum class syntax_type {
     syn_op, syn_standalone_op,
 
     syn_if,
-    syn_for,
+    syn_for, syn_foreach,
     syn_while,
     syn_return,
 
@@ -101,6 +101,10 @@ public:
     }
     method_node *declaring_method() const {
         return (method_node*)find_upward_until(syntax_type::syn_method);
+    }
+
+    void force_complete() {
+        on_complete();
     }
 
     void dump(int depth = 0);
@@ -623,6 +627,33 @@ public:
     }
     syntax_node *body() const {
         return children[3];
+    }
+};
+class foreach_node : public syntax_node {
+public:
+    foreach_node(const stoken &token) :
+        syntax_node(token) {
+        capacity = 3;
+        type = syntax_type::syn_foreach;
+    }
+
+    ident_node *left() const {
+        return (ident_node*)children[0];
+    }
+    syntax_node *right() const {
+        return children[1];
+    }
+    syntax_node *body() const {
+        return children[2];
+    }
+
+public: 
+    virtual void on_complete() {
+        auto ident = left()->ident;
+        auto method = declaring_method();
+
+        if (method != nullptr)
+            method->push_local(ident);
     }
 };
 class while_node : public syntax_node {

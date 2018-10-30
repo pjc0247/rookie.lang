@@ -167,6 +167,7 @@ private:
         rules.push_back(lexer_token(L"while", token_type::keyword, -10000));
         rules.push_back(lexer_token(L"return", token_type::keyword, -9000));
         rules.push_back(lexer_token(L"null", token_type::keyword));
+        rules.push_back(lexer_token(L"in", token_type::keyword));
 
         rules.push_back(lexer_token(L"try", token_type::keyword));
         rules.push_back(lexer_token(L"catch", token_type::keyword));
@@ -657,6 +658,9 @@ private:
                 token.raw == L"for" ||
                 token.raw == L"while") {
 
+                flush_single_line();
+            }
+            else if (token.raw == L"in") {
                 flush_single_line();
             }
             stack.push_back(token);

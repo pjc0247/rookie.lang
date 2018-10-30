@@ -6,6 +6,8 @@
 #include "object.h"
 #include "string.h"
 
+#include "iterator.h"
+
 class rkarray : public rkobject<rkarray> {
 public:
     static void import(binding &b) {
@@ -21,9 +23,12 @@ public:
 
         method(type, L"at", &rkarray::get);
         method(type, L"push", &rkarray::push);
+        method(type, L"clear", &rkarray::clear);
         method(type, L"remove", &rkarray::remove);
         method(type, L"remove_at", &rkarray::remove);
         method(type, L"length", &rkarray::length);
+
+        method(type, L"get_iterator", &rkarray::get_iterator);
 
         b.add_type(type);
     }
@@ -85,6 +90,10 @@ public:
         ary.push_back(v);
         return rknull;
     }
+    value clear() {
+        ary.clear();
+        return rknull;
+    }
     value remove(value_cref v) {
         ary.erase(std::remove(
             ary.begin(), ary.end(), v),
@@ -97,6 +106,11 @@ public:
     }
     value length() {
         return int2rk(ary.size());
+    }
+
+    value get_iterator() {
+        auto it = new rkiterator(ary);
+        return obj2rk(it, L"iterator");
     }
 
 private:

@@ -480,6 +480,7 @@ private:
             _route(assignment);
             _route(if);
             _route(for);
+            _route(foreach);
             _route(while);
         }
     }
@@ -811,6 +812,22 @@ private:
         emit(node->increment());
         emitter.emit(opcode::op_nop);
         emitter.modify_operand(jmp, emitter.get_cursor() - 1);
+    }
+    void emit_foreach(foreach_node *node) {
+        auto lookup = scope.lookup_variable(node->left()->ident);
+
+        emit(node->right());
+        emitter.emit(opcode::op_setcallee);
+        emitter.emit(opcode::op_vcall, sig2hash(L"get_iterator"));
+        auto jmpsite = emitter.emit(opcode::op_dup);
+        emitter.emit(opcode::op_vcall, sig2hash(L"current"));
+        emitter.emit(opcode::op_stloc, lookup.index);
+
+        emit(node->body());
+
+        emitter.emit(opcode::op_dup);
+        emitter.emit(opcode::op_vcall, sig2hash(L"move_next"));
+        emitter.emit(opcode::op_jmp_true, jmpsite);
     }
     void emit_while(while_node *node) {
         emitter.emit(opcode::op_nop);

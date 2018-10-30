@@ -19,6 +19,7 @@
 #include "ast/newdic.h"
 #include "ast/string_interpolation.h"
 #include "ast/classfield.h"
+#include "ast/foreach.h"
 
 #include "validator/syntax_validator.h"
 
@@ -172,6 +173,7 @@ private:
          .transformer<newdic_transformer>()
          .transformer<string_interpolation_transformer>()
          .transformer<classfield_transformer>()
+         .transformer<foreach_transformer>()
          .transformer<arr_setitem_transformer>()
          .transformer<arr_getitem_transformer>();
         return c;

@@ -131,6 +131,12 @@
     <ClInclude Include="ir\dup.h">
       <Filter>ir</Filter>
     </ClInclude>
+    <ClInclude Include="..\libs\iterator.h">
+      <Filter>libs</Filter>
+    </ClInclude>
+    <ClInclude Include="ast\foreach.h">
+      <Filter>ast</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

@@ -20,6 +20,7 @@ public:
         method(type, rk_id_tostring, &rkdictionary::to_string);
         method(type, L"size", &rkdictionary::size);
         method(type, L"contains", &rkdictionary::contains);
+        method(type, L"clear", &rkdictionary::clear);
         method(type, L"remove", &rkdictionary::remove);
 
         b.add_type(type);
@@ -73,6 +74,10 @@ public:
         if (dic.find(h) == dic.end())
             return value::_false();
         return value::_true();
+    }
+    value clear() {
+        dic.clear();
+        return rknull;
     }
     value remove(value_cref key) {
         auto h = rkwstr(key);

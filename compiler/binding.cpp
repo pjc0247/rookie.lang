@@ -12,6 +12,7 @@
 #include "libs/type.h"
 #include "libs/datetime.h"
 #include "libs/reflection.h"
+#include "libs/iterator.h"
 
 #include "binding.h"
 
@@ -30,6 +31,7 @@ binding binding::default_binding() {
     b.import<rktype>();
     b.import<rkdatetime>();
     b.import<rkreflection>();
+    b.import<rkiterator>();
 
     return b;
 }

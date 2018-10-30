@@ -24,8 +24,9 @@ protected:
             auto child = node->children[i];
             node->children[i] = _visit(child);
 
-            if (child != node->children[i])
+            if (child != node->children[i]) {
                 changes++;
+            }
 
             // `return nullptr;` means 'erase me'
             if (node->children[i] == nullptr) {
@@ -38,6 +39,10 @@ protected:
             // Make sure new_node always has a parent.
             else {
                 node->children[i]->parent = node;
+
+                if (child != node->children[i]) {
+                    node->children[i]->force_complete();
+                }
             }
         }
 
