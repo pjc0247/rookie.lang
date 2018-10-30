@@ -23,7 +23,12 @@ void rk_exec(const char *code) {
 
     auto out = rc.compile(str2wstr(code), opts);
     if (out.errors.empty()) {
-        runner(*out.program, b).execute();
+        runner(*out.program, b)
+            .execute();
+    }
+    else {
+        for (auto er : out.errors)
+            printf("%S\r\n", er.message.c_str());
     }
 }
 
