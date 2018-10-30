@@ -1,0 +1,10 @@
+class while_test {
+    @main
+    static def main() {
+        i = 5;
+        while(i > 0) {
+            puts(i);
+            i --;
+        }
+    }
+}
