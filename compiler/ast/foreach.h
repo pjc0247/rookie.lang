@@ -10,14 +10,9 @@ protected:
     }
     virtual syntax_node *visit(syntax_node *node) {
         if (is_transformable(node)) {
-            auto left = (ident_node*)node->children[0];
-            auto right = (call_node*)node->children[1];
-            auto block = (call_node*)node->children[2];
-
             auto new_node = new foreach_node(node->s_token());
-            new_node->append(left);
-            new_node->append(right);
-            new_node->append(block);
+            for (auto child : node->children)
+                new_node->append(child);
 
             return new_node;
         }
