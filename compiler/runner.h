@@ -68,6 +68,7 @@ public:
 
     void execute();
     void execute(program_entry *_entry);
+    void run_entry(program_entry *_entry);
 
     void  set_callee_as_top();
     void  _vcall(int sighash, stack_provider &sp);

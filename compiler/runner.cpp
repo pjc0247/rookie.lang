@@ -76,7 +76,20 @@ void runner::execute(program_entry *_entry) {
 
     if (dbger) dbger->on_begin_program(*this, p);
 
-    while (!endflag) {
+    run_entry(_entry);
+
+#if _DEBUG
+    if (stack.size() > 0)
+        printf("STACK SIZE : %d\n", stack.size());
+#endif
+
+    delete exectx;
+}
+void runner::run_entry(program_entry *_entry) {
+    int ss = stack.size();
+    int depth = callstack.size();
+
+    while (!endflag && callstack.size() >= depth) {
 #ifdef RK_HALT_ON_LONG_EXECUTION
         halt_counter++;
         if (halt_counter >= 10000) {
@@ -248,13 +261,6 @@ void runner::execute(program_entry *_entry) {
 
         break;
     }
-
-#if _DEBUG
-    if (stack.size() > 0)
-        printf("STACK SIZE : %d\n", stack.size());
-#endif
-
-    delete exectx;
 }
 
 void runner::op_eqtype() {
@@ -347,6 +353,14 @@ void runner::op_newobj() {
         objref->vtable = &types[inst.operand].vtable;
         objref->sighash = inst.operand;
 
+        if (objref->vtable->find(sighash__ctor) !=
+            objref->vtable->end()) {
+
+            set_callee_as_top();
+            _vcall(sighash__ctor, sp);
+            pop();
+        }
+
         gc.add_object(objref);
     }
     else {
@@ -414,10 +428,6 @@ void runner::op_ret() {
     current_entry = callframe.entry;
 
     push(ret);
-
-    // End of the program.
-    if (callstack.empty()) 
-        endflag = true;
 }
 
 void runner::op_ldprop() {
@@ -510,6 +520,8 @@ void runner::programcall(int index) {
     pc = entry.entry;
     bp = stacksize - entry.params;
     current_entry = &entry;
+
+    run_entry(current_entry);
 }
 
 void runner::set_callee_as_top() {
@@ -534,7 +546,7 @@ void runner::_vcall(int sighash, stack_provider &sp) {
 
     auto _callinfo = vtable->find(sighash);
     if (_callinfo == vtable->end()) {
-        exception = rkexception("No such method");
+        exception = rkexception("No such method: ");
         errflag = true;
     }
     else {
@@ -592,7 +604,7 @@ void runner::push(const value &v) {
     stack.push_back(v);
 }
 void runner::replace_top(const value &v) {
-    stack.emplace_back(v);
+    stack[stack.size()-1] = v;
 }
 
 void runner::push_callframe(program_entry &entry) {

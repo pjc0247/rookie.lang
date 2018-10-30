@@ -19,6 +19,7 @@ CONSTEXPR uint32_t sig2hash_c(const wchar_t str[]) {
 #pragma warning(push)  
 #pragma warning(disable : 4307) // overflows 
 _predefined_hash(new);
+_predefined_hash(_ctor);
 _predefined_hash(equal);
 
 _predefined_hash(object);
