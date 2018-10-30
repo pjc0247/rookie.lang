@@ -1,0 +1,29 @@
+class myary_iter {
+    def _ctor() {
+        @v = 1;
+    }
+
+    def current() {
+        return @v;
+    }
+    def move_next() {
+        @v ++;
+        return @v < 5;
+    }
+}
+class myary {
+    def get_iterator() {
+        return myary_iter.new();
+    }
+}
+
+class custom_iterator {
+    @main
+    static def main() {
+        a = myary.new();
+        
+        for (k in a){ 
+            puts (k);
+        }
+    }
+}
