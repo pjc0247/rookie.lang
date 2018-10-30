@@ -54,6 +54,10 @@ program *compile(const std::wstring &filepath) {
 }
 
 int main(int argc, char **argv) {
+    //rk_exec(wstr2str(fileio::read_string(L"testcode.rk")).c_str());
+
+    //return 1;
+
 #ifdef RK_ENV_WEB
     printf("[rookie::webenv].\n");
 #endif

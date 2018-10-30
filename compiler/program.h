@@ -190,12 +190,12 @@ struct program {
         }
 
         for (uint32_t i = 0; i < header.entry_len; i++) {
-            wprintf(L"  [%s, %d]\n", entries[i].signature, entries[i].entry);
-            wprintf(L"    * params: %d\n", entries[i].params);
-            wprintf(L"    * locals: %d\n", entries[i].locals);
-            wprintf(L"    * body\n");
+            printf("  [%S, %d]\n", entries[i].signature, entries[i].entry);
+            printf("    * params: %d\n", entries[i].params);
+            printf("    * locals: %d\n", entries[i].locals);
+            printf("    * body\n");
             for (uint32_t j = entries[i].entry; j < entries[i].entry + entries[i].codesize; j++) {
-                wprintf(L"      %s, %d\n", to_string((opcode)code[j].opcode), code[j].operand);
+                printf("      %S, %d\n", to_string((opcode)code[j].opcode), code[j].operand);
             }
         }
     }

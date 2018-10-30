@@ -5,3 +5,4 @@ struct IUnknown; // Workaround for "combaseapi.h(229): error C2187: syntax error
 #include "rookie.h"
 
 std::wstring str2wstr(const char* text);
+std::string  wstr2str(const wchar_t* text);

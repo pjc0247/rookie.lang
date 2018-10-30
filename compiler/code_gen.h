@@ -178,7 +178,7 @@ public:
 
         program_entry entry;
         memset(&entry, 0, sizeof(program_entry));
-        swprintf(entry.signature, sizeof(entry.signature), L"%s::%s", current_class->ident_str().c_str(), method->ident_str().c_str());
+        swprintf(entry.signature, sizeof(entry.signature), L"%ls::%ls", current_class->ident_str().c_str(), method->ident_str().c_str());
         entry.entry = get_cursor();
         entry.params = method->params()->children.size();
         entry.locals = method->locals.size();
