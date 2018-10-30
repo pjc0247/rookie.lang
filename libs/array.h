@@ -109,7 +109,7 @@ public:
     }
 
     value get_iterator() {
-        auto it = new rkiterator(ary);
+        auto it = new rkarray_iterator(ary);
         return obj2rk(it, L"iterator");
     }
 

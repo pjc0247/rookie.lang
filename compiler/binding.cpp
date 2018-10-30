@@ -31,7 +31,8 @@ binding binding::default_binding() {
     b.import<rktype>();
     b.import<rkdatetime>();
     b.import<rkreflection>();
-    b.import<rkiterator>();
+    b.import<rkarray_iterator>();
+    b.import<rkdictionary_iterator>();
 
     return b;
 }

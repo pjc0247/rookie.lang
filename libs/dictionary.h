@@ -8,6 +8,8 @@
 #include "string.h"
 #include "object.h"
 
+#include "iterator.h"
+
 class rkdictionary : public rkobject<rkdictionary> {
 public:
     static void import(binding &b) {
@@ -22,6 +24,8 @@ public:
         method(type, L"contains", &rkdictionary::contains);
         method(type, L"clear", &rkdictionary::clear);
         method(type, L"remove", &rkdictionary::remove);
+
+        method(type, L"get_iterator", &rkdictionary::get_iterator);
 
         b.add_type(type);
     }
@@ -84,6 +88,11 @@ public:
         if (dic.erase(h))
             return value::_true();
         return value::_false();
+    }
+
+    value get_iterator() {
+        auto it = new rkdictionary_iterator(dic);
+        return obj2rk(it, L"dictionary_iterator");
     }
 
 private:
