@@ -39,7 +39,7 @@ void debugger::on_pre_exec(runner &r, const instruction &inst) {
     int cnt = -1;
 
     std::vector<std::wstring> keywords({
-        L"for", L"if", L"class", L"def", L"static", L"this"
+        L"for", L"if", L"class", L"def", L"static", L"this", L"in"
     });
 
     con::setColor(CON_LIGHTGRAY);
@@ -64,20 +64,19 @@ void debugger::on_pre_exec(runner &r, const instruction &inst) {
                 for (auto &kw : keywords) {
                     bool match = true;
                     for (uint32_t j = i; j < i + kw.size(); j++) {
-                        if (ch != kw[j - i]) {
+                        if (pdb._pdb.code[j] != kw[j - i]) {
                             match = false;
                             break;
                         }
                     }
 
                     if (match) {
-                        con::setColor(CON_LIGHTCYAN);
                         cnt = kw.size();
                         break;
                     }
                 }
 
-                if (cnt > 0);
+                if (cnt > 0) con::setColor(CON_LIGHTCYAN);
                 else if (ch == '(') con::setColor(CON_DARKGRAY);
                 else if (ch == ')') con::setColor(CON_DARKGRAY);
                 else if (ch >= '0' && ch <= '9') con::setColor(CON_LIGHTGREEN);
