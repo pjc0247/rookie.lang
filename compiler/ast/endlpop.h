@@ -38,7 +38,7 @@ protected:
             node->type == syntax_type::syn_call ||
             node->type == syntax_type::syn_callmember) {
 
-            depth -= node->children.size();
+            depth -= node->children.size() - 1;
             depth++;
         }
         else if (node->type == syntax_type::syn_newarr ||
