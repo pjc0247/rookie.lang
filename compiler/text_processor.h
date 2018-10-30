@@ -281,7 +281,7 @@ public:
 
 #if _DEBUG
         for (auto &token : _tokens)
-            rklog("%S ", token.raw.c_str());
+            rklog("%ls ", token.raw.c_str());
         rklog("\n\n\r\n");
 #endif
 
@@ -289,7 +289,7 @@ public:
 
 #if _DEBUG
         for (auto &token : tokens)
-            rklog("%S ", token.raw.c_str());
+            rklog("%ls ", token.raw.c_str());
         rklog("\n\n");
 #endif
 
@@ -571,8 +571,9 @@ private:
             _mark_as_parsed(stoken);
         }
         else if (token.type == token_type::right_bracket) {
+            flush_single_line();
             if (prev_token().raw == L")")
-                stack.push_back(::token(token).preparsed(stoken_type::nothing));
+                stack.push_back(::token(token));
             else
                 result.push_back(parse(token));
             depth++;

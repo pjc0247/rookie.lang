@@ -31,7 +31,9 @@ protected:
     virtual syntax_node *visit(syntax_node *node) {
         rklog("%s, %d\n", typeid(*node).name(), depth);
 
-        if (node->type == syntax_type::syn_ident ||
+        if (node->type == syntax_type::syn_block)
+            depth = 0;
+        else if (node->type == syntax_type::syn_ident ||
             node->type == syntax_type::syn_literal)
             depth++;
         else if (
