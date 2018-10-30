@@ -806,12 +806,16 @@ private:
     }
     void emit_for(for_node *node) {
         emit(node->init());
-        emit(node->cond());
-        int jmp = emitter.emit(opcode::op_jmp_false);
+        int jmp = emitter.emit(opcode::op_jmp);
+        int body = emitter.get_cursor();
         emit(node->body());
         emit(node->increment());
         emitter.emit(opcode::op_nop);
-        emitter.modify_operand(jmp, emitter.get_cursor() - 1);
+        int cond = emitter.get_cursor();
+        emit(node->cond());
+        emitter.emit(opcode::op_jmp_true, body);
+
+        emitter.modify_operand(jmp, cond);
     }
     void emit_foreach(foreach_node *node) {
         emit(node->right());

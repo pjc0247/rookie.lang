@@ -38,7 +38,7 @@ protected:
             node->type == syntax_type::syn_call ||
             node->type == syntax_type::syn_callmember) {
 
-            depth -= node->children.size() - 1;
+            depth -= node->children.size();
             depth++;
         }
         else if (node->type == syntax_type::syn_newarr ||
@@ -47,12 +47,13 @@ protected:
             depth -= node->children.size();
         }
         else if (
-            node->type == syntax_type::syn_memberaccess ||
             node->type == syntax_type::syn_assignment ||
             node->type == syntax_type::syn_op) {
             depth -= 2;
         }
-        else if (node->type == syntax_type::syn_return)
+        else if (
+            node->type == syntax_type::syn_memberaccess ||
+            node->type == syntax_type::syn_return)
             depth --;
 
         if (node->type == syntax_type::syn_endl) {
