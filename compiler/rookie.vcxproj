@@ -163,6 +163,7 @@
     <ClInclude Include="..\libs\gc.h" />
     <ClInclude Include="..\libs\integer.h" />
     <ClInclude Include="..\libs\iterator.h" />
+    <ClInclude Include="..\libs\kvpair.h" />
     <ClInclude Include="..\libs\math.h" />
     <ClInclude Include="..\libs\object.h" />
     <ClInclude Include="..\libs\reflection.h" />

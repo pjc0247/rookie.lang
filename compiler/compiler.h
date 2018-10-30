@@ -67,6 +67,9 @@ public:
 
         auto root = tree_builder(ctx).build(stokens);
 
+        auto validator = new syntax_validator(ctx);
+        validator->transform(root);
+
         return root;
     }
     // Builds a AST-tree, fully transformed
@@ -76,6 +79,9 @@ public:
 
         auto root = ast_raw(ctx, src, errors);
         
+        if (ctx.errors.empty() == false)
+            return root;
+
 #if _DEBUG
         root->dump();
 #endif
@@ -126,10 +132,10 @@ public:
         }
 
         auto root = ast_transformed(ctx, src, out.errors);
-        auto validator = new syntax_validator(ctx);
-        validator->transform(root);
-
         auto cg = code_gen(ctx, syscalls);
+
+        if (ctx.errors.empty() == false)
+            goto fin;
 
 #if _DEBUG
         root->dump();
@@ -139,6 +145,7 @@ public:
         if (opts.generate_pdb)
             out.pdb = cg.generate_pdb(binding);
 
+fin:
         delete root;
 
         if (ctx.errors.empty() == false)

@@ -12,6 +12,9 @@ public:
 
     virtual syntax_node *visit(syntax_node *node) {
         switch (node->type) {
+        case syntax_type::syn_method:
+            syn_method((method_node*)node);
+            break;
         case syntax_type::syn_op:
             syn_op((op_node*)node);
             break;
@@ -21,6 +24,11 @@ public:
     }
 
 private:
+    void syn_method(method_node *method) {
+        if (method->children[1]->type != syntax_type::syn_params) {
+            ctx.push_error(syntax_error(method, L"Wrong method definition."));
+        }
+    }
     void syn_op(op_node *op) {
         if (is_math_op(op) &&
             (is_bool(op->left()) || is_bool(op->right())))

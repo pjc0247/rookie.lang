@@ -775,8 +775,8 @@ private:
         if (ident != nullptr) {
             auto lookup = scope.lookup_variable(ident->ident);
             if (lookup.type == lookup_type::not_exist) {
-                ctx.push_error(undefined_variable_error(ident->token()));
-                return;
+                //ctx.push_error(undefined_variable_error(ident->token()));
+                //return;
             }
 
             if (ident->ident[0] == L'@') {
@@ -814,18 +814,44 @@ private:
         emitter.modify_operand(jmp, emitter.get_cursor() - 1);
     }
     void emit_foreach(foreach_node *node) {
-        auto lookup = scope.lookup_variable(node->left()->ident);
-
         emit(node->right());
         emitter.emit(opcode::op_setcallee);
         emitter.emit(opcode::op_vcall, sig2hash(L"get_iterator"));
+
         auto jmpsite = emitter.emit(opcode::op_dup);
+        emitter.emit(opcode::op_setcallee);
         emitter.emit(opcode::op_vcall, sig2hash(L"current"));
-        emitter.emit(opcode::op_stloc, lookup.index);
+
+        // Most common foreach with 1 variable
+        //    for (item : ary) { }
+        if (node->children.size() == 3) {
+            auto ident = ((ident_node*)node->children[0])->ident;
+            auto lookup = scope.lookup_variable(ident);
+            emitter.emit(opcode::op_stloc, lookup.index);
+        }
+        // More then 2 variables
+        //    for (key, value : dictionary) { }
+        else {
+            for (auto it = std::next(node->begin_vars()); it != node->end_vars(); ++it) {
+                emitter.emit(opcode::op_dup);
+            }
+            int i = 0;
+            for (auto it = node->begin_vars(); it != node->end_vars(); ++it) {
+                auto ident = ((ident_node*)*it)->ident;
+                auto lookup = scope.lookup_variable(ident);
+                emitter.emit(opcode::op_setcallee);
+                emitter.emit(opcode::op_ldi, i);
+                emitter.emit(opcode::op_vcall, sig2hash(rk_id_getitem));
+                emitter.emit(opcode::op_stloc, lookup.index);
+
+                ++i;
+            }
+        }
 
         emit(node->body());
 
         emitter.emit(opcode::op_dup);
+        emitter.emit(opcode::op_setcallee);
         emitter.emit(opcode::op_vcall, sig2hash(L"move_next"));
         emitter.emit(opcode::op_jmp_true, jmpsite);
     }

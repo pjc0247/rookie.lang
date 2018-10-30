@@ -640,20 +640,31 @@ public:
     ident_node *left() const {
         return (ident_node*)children[0];
     }
+
+    std::deque<syntax_node*>::iterator begin_vars() {
+        return children.begin();
+    }
+    std::deque<syntax_node*>::iterator end_vars() {
+        return children.end() - 2;
+    }
+
     syntax_node *right() const {
-        return children[1];
+        return children[children.size() - 2];
     }
     syntax_node *body() const {
-        return children[2];
+        return children[children.size() - 1];
     }
 
 public: 
     virtual void on_complete() {
-        auto ident = left()->ident;
         auto method = declaring_method();
 
-        if (method != nullptr)
-            method->push_local(ident);
+        if (method != nullptr) {
+            for (auto it = begin_vars(); it != end_vars(); ++it) {
+                auto ident = ((ident_node*)*it)->ident;
+                method->push_local(ident);
+            }
+        }
     }
 };
 class while_node : public syntax_node {

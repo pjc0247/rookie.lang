@@ -68,6 +68,10 @@ public:
     rkexception(const char *msg) {
         this->msg = std::string(msg);
     }
+    rkexception(const std::string &str) {
+        this->msg = str;
+    }
+
     virtual char const *what() const noexcept { return msg.c_str(); }
 private:
     std::string msg;

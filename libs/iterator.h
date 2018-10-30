@@ -1,10 +1,32 @@
 #pragma once
 
 #include <string>
-#include <algorithm>
+#include <functional>
 
 #include "binding.h"
 #include "object.h"
+#include "kvpair.h"
+
+class rkyield_iterator : public rkobject<rkyield_iterator> {
+public:
+    static void import(binding &b) {
+        auto type = type_builder(L"yield_iterator");
+
+        method(type, L"current", &rkyield_iterator::current);
+        method(type, L"move_next", &rkyield_iterator::move_next);
+
+        b.add_type(type);
+    }
+
+    rkyield_iterator(const std::function<void()> &func) {
+
+    }
+
+    value current() {
+    }
+    value move_next() {
+    }
+};
 
 class rkarray_iterator : public rkobject<rkarray_iterator> {
 public:
@@ -52,7 +74,8 @@ public:
     }
 
     value current() {
-        return (*it).second;
+        auto k = new rkkvpair(str2rk((*it).first), (*it).second);
+        return obj2rk(k, L"kvpair");
     }
     value move_next() {
         ++it;

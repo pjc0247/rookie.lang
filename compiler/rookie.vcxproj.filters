@@ -137,6 +137,9 @@
     <ClInclude Include="ast\foreach.h">
       <Filter>ast</Filter>
     </ClInclude>
+    <ClInclude Include="..\libs\kvpair.h">
+      <Filter>libs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">
