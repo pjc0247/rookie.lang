@@ -1,11 +1,12 @@
 EMCC = /home/choochoo/emsdk/emscripten/incoming/emcc
+LIBS := $(wildcard ./libs/*.cpp)
 SRCS := $(wildcard ./compiler/*.cpp)
 
 all:
 	export EMCC_DEBUG=1
 
 	mkdir -p www
-	$(EMCC) -Os -std=c++17 $(SRCS) -I. -Icompiler -Iincludes \
+	$(EMCC) -Os -std=c++17 $(SRCS) $(LIBS) -I. -Icompiler -Iincludes \
 		-o www/rklang.html -Wc++11-extensions \
 		-s WASM=1 \
 		-s NO_FILESYSTEM=1 \
