@@ -612,7 +612,6 @@ class for_node : public syntax_node {
 public:
     for_node(const stoken &token) :
         syntax_node(token) {
-        capacity = 4;
         type = syntax_type::syn_for;
     }
 
