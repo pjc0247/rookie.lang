@@ -17,12 +17,11 @@ protected:
     virtual syntax_node *visit(syntax_node *node) {
         return node;
     }
-    syntax_node *_visit(syntax_node *node) {
-        auto ret = visit(node);
-
+    void _visit(syntax_node *node) {
         for (uint32_t i = 0; i < node->children.size(); i++) {
             auto child = node->children[i];
-            node->children[i] = _visit(child);
+
+            node->children[i] = visit(child);
 
             if (child != node->children[i]) {
                 changes++;
@@ -45,8 +44,10 @@ protected:
                 }
             }
         }
-
-        return ret;
+        for (uint32_t i = 0; i < node->children.size(); i++) {
+            auto child = node->children[i];
+            _visit(child);
+        }
     }
 
 protected:
