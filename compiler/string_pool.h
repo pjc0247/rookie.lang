@@ -28,9 +28,6 @@ public:
     }
 private:
     uint32_t append(const std::wstring &str) {
-        if (str.length() == 0)
-            return pool.size();
-
         uint32_t ptr = pool.size();
         pool.insert(pool.end(), str.begin(), str.end());
         pool.insert(pool.end(), 0);

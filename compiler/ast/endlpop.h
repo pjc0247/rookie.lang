@@ -31,8 +31,27 @@ protected:
     virtual syntax_node *visit(syntax_node *node) {
         rklog("%s, %d\n", typeid(*node).name(), depth);
 
-        if (node->type == syntax_type::syn_block)
+        if (node->type == syntax_type::syn_block) {
             depth = 0;
+
+            for (auto it = node->children.begin();it!=node->children.end();++it) {
+                auto child = *it;
+
+                if (child->type == syntax_type::syn_endl) {
+                    auto prev = *std::prev(it);
+
+                    if (prev->type == syntax_type::syn_call ||
+                        prev->type == syntax_type::syn_callmember) {
+
+                        auto pop = new pop_node(node->s_token());
+                        pop->parent = node;
+                        *it = pop;
+                    }
+                }
+            }
+        }
+
+        /*
         else if (node->type == syntax_type::syn_ident ||
             node->type == syntax_type::syn_literal)
             depth++;
@@ -68,6 +87,7 @@ protected:
 
             depth = 0;
         }
+        */
 
         return node;
     }
