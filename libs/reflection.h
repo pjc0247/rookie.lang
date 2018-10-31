@@ -8,6 +8,8 @@
 
 class rkreflection : public rkobject<rkreflection> {
 public:
+    TYPENAME(L"reflection")
+
     static void import(binding &b) {
         auto type = type_builder(L"reflection");
 

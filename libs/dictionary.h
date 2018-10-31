@@ -12,6 +12,8 @@
 
 class rkdictionary : public rkobject<rkdictionary> {
 public:
+    TYPENAME(L"dictionary")
+
     static void import(binding &b) {
         auto type = type_builder(L"dictionary");
 
@@ -92,7 +94,7 @@ public:
 
     value get_iterator() {
         auto it = new rkdictionary_iterator(dic);
-        return obj2rk(it, L"dictionary_iterator");
+        return obj2rk(it);
     }
 
 private:

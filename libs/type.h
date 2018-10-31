@@ -12,6 +12,8 @@
 
 class rktype : public rkobject<rktype> {
 public:
+    TYPENAME(L"type")
+
     static void import(binding &b) {
         auto type = type_builder(L"type");
 
@@ -38,7 +40,7 @@ public:
             ary->push(int2rk(field.first));
         }
         
-        return obj2rk(ary, L"array");
+        return obj2rk(ary);
     }
     value ancestors() {
         auto ary = new rkarray();
@@ -46,7 +48,7 @@ public:
             ary->push(str2rk(p->name));
         }
 
-        return obj2rk(ary, L"array");
+        return obj2rk(ary);
     }
 
 public:

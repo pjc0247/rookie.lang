@@ -6,8 +6,13 @@
 #include "value.h"
 #include "call.h"
 
+#define TYPENAME(n) \
+    virtual const wchar_t *type_name() { return n; }
+
 class object {
 public:
+    virtual const wchar_t *type_name() { return L"object"; }
+
     __forceinline void set_property(uint32_t keyhash, const value &v) {
         properties[keyhash] = v;
     }
@@ -19,6 +24,8 @@ public:
     }
 
 public:
+    const wchar_t *name_ptr;
+
     int sighash;
 
     std::map<uint32_t, callinfo> *vtable;

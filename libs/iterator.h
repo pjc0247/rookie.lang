@@ -9,6 +9,8 @@
 
 class rkyield_iterator : public rkobject<rkyield_iterator> {
 public:
+    TYPENAME(L"yield_iterator");
+
     static void import(binding &b) {
         auto type = type_builder(L"yield_iterator");
 
@@ -30,6 +32,8 @@ public:
 
 class rkarray_iterator : public rkobject<rkarray_iterator> {
 public:
+    TYPENAME(L"array_iterator");
+
     static void import(binding &b) {
         auto type = type_builder(L"array_iterator");
 
@@ -58,6 +62,8 @@ private:
 
 class rkdictionary_iterator : public rkobject<rkdictionary_iterator> {
 public:
+    TYPENAME(L"dictionary_iterator");
+
     static void import(binding &b) {
         auto type = type_builder(L"dictionary_iterator");
 
@@ -75,7 +81,7 @@ public:
 
     value current() {
         auto k = new rkkvpair(str2rk((*it).first), (*it).second);
-        return obj2rk(k, L"kvpair");
+        return obj2rk(k);
     }
     value move_next() {
         ++it;

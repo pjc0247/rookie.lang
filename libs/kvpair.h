@@ -8,6 +8,8 @@
 
 class rkkvpair : public rkobject<rkkvpair> {
 public:
+    TYPENAME(L"kvpair")
+
     static void import(binding &b) {
         auto type = type_builder(L"kvpair");
 

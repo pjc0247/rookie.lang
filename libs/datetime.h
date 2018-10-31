@@ -7,6 +7,8 @@
 
 class rkdatetime : public rkobject<rkdatetime> {
 public:
+    TYPENAME(L"datetime")
+
     static void import(binding &b) {
         auto type = type_builder(L"datetime");
 
@@ -29,7 +31,7 @@ public:
         time_t tt = std::chrono::system_clock::to_time_t(n);
         date_time->time = *localtime(&tt);
         
-        return obj2rk(date_time, L"datetime");
+        return obj2rk(date_time);
     }
 
     value year() {

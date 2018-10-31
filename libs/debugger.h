@@ -8,6 +8,8 @@
 
 class rkdebugger : public rkobject<rkdebugger> {
 public:
+    TYPENAME(L"debugger")
+
     static void import(binding &b) {
         auto type = type_builder(L"debugger");
 

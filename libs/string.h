@@ -8,6 +8,8 @@
 
 class rkstring : public rkobject<rkstring> {
 public:
+    TYPENAME(L"string")
+
     static void import(binding &b) {
         auto type = type_builder(L"string");
 

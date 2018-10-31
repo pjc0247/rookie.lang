@@ -7,6 +7,8 @@
 
 class rkgc : public rkobject<rkgc> {
 public:
+    TYPENAME(L"gc")
+
     static void import(binding &b) {
         auto type = type_builder(L"gc");
 

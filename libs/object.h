@@ -4,12 +4,6 @@
 
 #include "binding.h"
 
-template <typename T>
-class rkobject : public rkobjectbase<T> {
-public:
-    
-};
-
 class rkscriptobject : public rkobject<rkscriptobject> {
 public:
     static void import(binding &b) {

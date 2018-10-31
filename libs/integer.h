@@ -8,6 +8,8 @@
 
 class rkinteger : public rkobject<rkinteger> {
 public:
+    TYPENAME(L"integer")
+
     static void import(binding &b) {
         auto type = type_builder(L"integer");
 

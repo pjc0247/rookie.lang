@@ -525,8 +525,6 @@ private:
         else if (token.type == token_type::left_bracket ||
             token.type == token_type::right_bracket) {
             _mark_as_parsed(stoken);
-
-            printf("QWER\n");
         }
 
         if (stoken.type == stoken_type::none)
@@ -551,9 +549,9 @@ private:
             next_is_at = true;
         }
         else if (token.type == token_type::op) {
+            _mark_as_parsed(stoken);
             flush_until_priority(token.priority);
             stack.push_back(token);
-            _mark_as_parsed(stoken);
         }
         else if (token.type == token_type::left_paren) {
             flush_until_type(token_type::right_paren);
@@ -564,21 +562,20 @@ private:
             stack.push_back(token);
         }
         else if (token.type == token_type::left_bracket) {
+            _mark_as_parsed(stoken);
             flush_until_type(token_type::right_bracket);
             result.push_back(parse(token));
             depth--;
-
-            _mark_as_parsed(stoken);
         }
         else if (token.type == token_type::right_bracket) {
+            _mark_as_parsed(stoken);
+
             flush_single_line();
             if (prev_token().raw == L")")
                 stack.push_back(::token(token));
             else
                 result.push_back(parse(token));
             depth++;
-
-            _mark_as_parsed(stoken);
         }
         else if (token.type == token_type::left_sq_bracket) {
             _mark_as_parsed(stoken);
@@ -778,6 +775,9 @@ private:
     }
 
     stoken pop_and_parse() {
+        if (stack.empty())
+            return stoken::empty();
+
         auto token = stack.back();
         stack.pop_back();
         auto p = parse(token);

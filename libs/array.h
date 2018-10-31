@@ -10,6 +10,8 @@
 
 class rkarray : public rkobject<rkarray> {
 public:
+    TYPENAME(L"array")
+
     static void import(binding &b) {
         auto type = type_builder(L"array");
 
@@ -83,7 +85,7 @@ public:
                 other_ary->ary.begin(), other_ary->ary.end());
         }
 
-        return obj2rk(new_ary, L"array");
+        return obj2rk(new_ary);
     }
 
     value push(value_cref v) {
@@ -110,7 +112,7 @@ public:
 
     value get_iterator() {
         auto it = new rkarray_iterator(ary);
-        return obj2rk(it, L"iterator");
+        return obj2rk(it);
     }
 
 private:
