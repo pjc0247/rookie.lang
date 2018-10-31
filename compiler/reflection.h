@@ -1,6 +1,7 @@
 #pragma once
 
-#include "value_object.h"
+#include "value.h"
+#include "object.h"
 
 #define rktype(name) sig2hash(name)
 
