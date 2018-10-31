@@ -25,10 +25,12 @@ public:
     }
 
     static value read_text(value_cref filename) {
+#ifndef RK_ENV_WEB
         std::wifstream t(rkwstr(filename));
         std::wstringstream buffer;
         buffer << t.rdbuf();
         return str2rk(buffer.str());
+#endif
     }
     static value write_text(value_cref filename) {
         return rknull;
