@@ -265,8 +265,6 @@ void runner::run_entry(program_entry *_entry) {
         //else
         //    throw invalid_program_exception("unknown instruction.");
 
-        printf("ss %d\n", stack.size());
-
         continue;
     error:
         printf("[EXCEPTION]\n");
