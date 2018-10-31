@@ -5,6 +5,7 @@ SRCS := $(wildcard ./compiler/*.cpp)
 all:
 	mkdir -p www
 	$(EMCC) -Os -std=c++17 $(SRCS) $(LIBS) -I. -Icompiler -Iincludes \
+		-g4 \
 		-o www/rklang.js -Wc++11-extensions \
 		-s WASM=1 \
 		-s NO_FILESYSTEM=1 \
