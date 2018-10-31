@@ -1,21 +1,25 @@
-class foo {
-    def hello() {
-        print("HJELLO2");
-    }
-    def basdf(){
-        print("QWER");
-    }
-}
-
-class bar :foo {
-    
-}
-
-class comment_test {
+class dict_test {
     @main
     static def main() {
-        bar.new().basdf();
+        person = {
+            name : "Jinwoo",
+            age  : 21,
+            hobby: ["Game", "AVR", "Buying Thinkpad X1"]
+        };
+
+        for (k,v in person) {
+            puts (k);
+            puts (v);
+            
+            if (v is array) {
+                print_ary(v);
+            }
+        } 
     }
-
-
+    
+    static def print_ary(ary) {
+        for (k in ary) {
+            puts (k);
+        }
+    }
 }

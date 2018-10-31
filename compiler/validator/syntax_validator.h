@@ -18,6 +18,9 @@ public:
         case syntax_type::syn_method:
             syn_method((method_node*)node);
             break;
+        case syntax_type::syn_ident:
+            syn_ident((ident_node*)node);
+            break;
         case syntax_type::syn_op:
             syn_op((op_node*)node);
             break;
@@ -39,6 +42,14 @@ private:
     void syn_method(method_node *method) {
         if (method->children[1]->type != syntax_type::syn_params) {
             ctx.push_error(syntax_error(method, L"Wrong method definition."));
+        }
+    }
+    void syn_ident(ident_node *id) {
+        auto method = id->declaring_method();
+        if (method && method->attr & method_attr::method_static) {
+            if (id->ident[0] == L'@') {
+                ctx.push_error(syntax_error(method, L"`@` is not allowed in static method."));
+            }
         }
     }
     void syn_op(op_node *op) {

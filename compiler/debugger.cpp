@@ -130,6 +130,8 @@ void debugger::dumpstack() {
             printf("%8s, %15s", "BOOL", item.integer == 1 ? "true" : "false");
         else if (item.type == value_type::null)
             printf("%8s, ", "NULL");
+        else if (item.type == value_type::empty)
+            printf("%8s, ", "EMPTY");
         else if (item.type == value_type::object)
             printf("%8s, %15S", "OBJECT", pdb.get_name(item.objref->sighash).c_str());
         

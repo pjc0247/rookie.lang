@@ -14,6 +14,7 @@
 #include "libs/reflection.h"
 #include "libs/kvpair.h"
 #include "libs/iterator.h"
+#include "libs/file.h"
 
 #include "binding.h"
 
@@ -35,6 +36,7 @@ binding binding::default_binding() {
     b.import<rkarray_iterator>();
     b.import<rkdictionary_iterator>();
     b.import<rkkvpair>();
+    b.import<rkfile>();
 
     return b;
 }

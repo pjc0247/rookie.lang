@@ -160,6 +160,7 @@
     <ClInclude Include="..\libs\datetime.h" />
     <ClInclude Include="..\libs\debugger.h" />
     <ClInclude Include="..\libs\dictionary.h" />
+    <ClInclude Include="..\libs\file.h" />
     <ClInclude Include="..\libs\gc.h" />
     <ClInclude Include="..\libs\integer.h" />
     <ClInclude Include="..\libs\iterator.h" />
@@ -220,12 +221,14 @@
     <ClCompile Include="..\backends\p2wast.cpp" />
     <ClCompile Include="..\libs\object.cpp" />
     <ClCompile Include="binding.cpp" />
+    <ClCompile Include="compiler.cpp" />
     <ClCompile Include="debugger.cpp" />
     <ClCompile Include="exe_context.cpp" />
     <ClCompile Include="c_interface.cpp" />
     <ClCompile Include="gc.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="runner.cpp" />
+    <ClCompile Include="sexper.cpp" />
     <ClCompile Include="sig2hash.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -234,6 +237,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="syntax.cpp" />
+    <ClCompile Include="lexer.cpp" />
     <ClCompile Include="value.cpp" />
   </ItemGroup>
   <ItemGroup>

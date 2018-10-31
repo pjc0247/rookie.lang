@@ -79,8 +79,11 @@ void runner::execute(program_entry *_entry) {
     run_entry(_entry);
 
 #if _DEBUG
-    if (stack.size() > 0)
+    if (stack.size() > 1) {
         printf("STACK SIZE : %d\n", stack.size());
+
+        dbger->dumpstack();
+    }
 #endif
 
     delete exectx;
@@ -121,6 +124,9 @@ void runner::run_entry(program_entry *_entry) {
         case opcode::op_ldnull:
             push(rknull);
             break;
+        case opcode::op_ldempty:
+            push(rkempty);
+            break;
         case opcode::op_ldtrue:
             push(rktrue);
             break;
@@ -139,6 +145,11 @@ void runner::run_entry(program_entry *_entry) {
             break;
         case opcode::op_stloc:
             stack[bp + inst.operand] = top();
+
+#if _DEBUG
+            stack[bp + inst.operand].ld_pc = pc;
+#endif
+
             pop();
             break;
 
@@ -254,10 +265,14 @@ void runner::run_entry(program_entry *_entry) {
         //else
         //    throw invalid_program_exception("unknown instruction.");
 
+        printf("ss %d\n", stack.size());
+
         continue;
     error:
         printf("[EXCEPTION]\n");
         printf("%s\n", exception.what());
+
+        assert(0);
 
         break;
     }
@@ -548,6 +563,8 @@ void runner::_vcall(int sighash, stack_provider &sp) {
     if (_callinfo == vtable->end()) {
         exception = rkexception("No such method: ");
         errflag = true;
+
+        assert(0);
     }
     else {
         auto callinfo = (*_callinfo).second;
@@ -602,6 +619,10 @@ value runner::pop() {
 }
 void runner::push(const value &v) {
     stack.push_back(v);
+
+#if _DEBUG
+    top().ld_pc = pc;
+#endif
 }
 void runner::replace_top(const value &v) {
     stack[stack.size()-1] = v;
@@ -610,7 +631,7 @@ void runner::replace_top(const value &v) {
 void runner::push_callframe(program_entry &entry) {
     callstack.push_back(callframe(pc, bp, current_entry));
     for (uint16_t i = 0; i < entry.locals - entry.params; i++)
-        stack.push_back(value());
+        stack.push_back(value::empty());
 }
 callframe runner::pop_callframe(program_entry &entry) {
     for (uint16_t i = 0; i < entry.locals; i++)

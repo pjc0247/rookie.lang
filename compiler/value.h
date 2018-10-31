@@ -37,9 +37,19 @@ struct value {
         const wchar_t *str;
     };
 
+#if _DEBUG
+    uint32_t ld_pc;
+#endif
+
     value();
     value(value_type type);
 
+    static value empty() {
+        value v;
+        v.type = value_type::empty;
+        v.objref = nullptr;
+        return v;
+    }
     static value null() {
         value v;
         v.type = value_type::null;
@@ -93,6 +103,7 @@ struct value {
 };
 
 const value rknull   = value(value_type::null);
+const value rkempty  = value::empty();
 const value rkfalse  = value::_false();
 const value rktrue   = value::_true();
 

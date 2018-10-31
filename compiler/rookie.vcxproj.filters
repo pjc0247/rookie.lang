@@ -18,6 +18,9 @@
     <ClCompile Include="binding.cpp" />
     <ClCompile Include="runner.cpp" />
     <ClCompile Include="value.cpp" />
+    <ClCompile Include="compiler.cpp" />
+    <ClCompile Include="lexer.cpp" />
+    <ClCompile Include="sexper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binding.h" />
@@ -138,6 +141,9 @@
       <Filter>ast</Filter>
     </ClInclude>
     <ClInclude Include="..\libs\kvpair.h">
+      <Filter>libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\file.h">
       <Filter>libs</Filter>
     </ClInclude>
   </ItemGroup>
