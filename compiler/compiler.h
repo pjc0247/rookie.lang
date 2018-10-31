@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "compilation.h"
+#include "ast/syntax_travler.h"
 
 #define rky_no_optimization (1 << 0)
 
