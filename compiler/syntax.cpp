@@ -2,7 +2,9 @@
 #include "syntax.h"
 
 bool syntax_node::is_complete() const {
-    return capacity > 0 ? children.size() >= capacity : false;
+    if (capacity > 0)
+        return children.size() >= capacity;
+    return false;
 }
 syntax_node *syntax_node::nearest_incomplete_node() {
     syntax_node *current = parent;

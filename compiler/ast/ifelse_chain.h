@@ -19,9 +19,10 @@ protected:
 
                         if (child2->type == syntax_type::syn_else) {
                             child->append(child2);
-
                             node->remove(child2);
                         }
+                        else
+                            break;
                     }
                 }
             }

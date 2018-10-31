@@ -36,8 +36,10 @@ public:
             auto &token = stokens->at(cursor);
 
             //_ending_expression(st_end_block);
-            if (token.type == stoken_type::st_end_block)
-                current = current->parent->parent;
+            if (token.type == stoken_type::st_end_block) {
+                current = current->parent;
+                current = current->nearest_incomplete_node();
+            }
             _ending_expression(st_end_param);
             _ending_expression(st_end_call);
             _ending_expression(st_end_arr);
