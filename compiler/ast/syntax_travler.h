@@ -43,9 +43,7 @@ protected:
                     node->children[i]->force_complete();
                 }
             }
-        }
-        for (uint32_t i = 0; i < node->children.size(); i++) {
-            auto child = node->children[i];
+
             _visit(child);
         }
     }
