@@ -1,0 +1,21 @@
+class callpadding_test {
+    @main
+    static def main() {
+        // 1
+        // null
+        foo(1); 
+
+        // 1
+        // 2
+        foo(1, 2);
+
+        // null
+        // null
+        foo();
+    }
+
+    static def foo(a, b) {
+        puts (a);
+        puts (b);
+    }
+}
