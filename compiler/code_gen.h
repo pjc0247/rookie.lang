@@ -515,6 +515,16 @@ private:
         emitter.fin_method();
     }
 
+    void emit_callpadding(call_node *caller, method_node *callee) {
+        if (callee == nullptr) return;
+
+        auto params_required = callee->params()->children.size();
+        auto params_given = (caller->children.size() - 1);
+        auto arg_diff = params_required - params_given;
+
+        for (int i = 0; i < arg_diff; i++)
+            emitter.emit(opcode::op_ldempty);
+    }
     void emit_callsuper(call_node *node) {
         auto method_name = node->declaring_method()->ident_str();
         auto parents = node->declaring_class()->parents();
@@ -567,7 +577,7 @@ private:
         }
 
         auto lookup = scope.lookup_method(node->ident_str());
-
+        
         //if (lookup.type == lookup_type::not_exist) {
             //ctx.push_error(undeclared_method_error(node->token(), node->ident_str()));
         //    return;
@@ -578,12 +588,15 @@ private:
             if (lookup.method != nullptr &&
                 lookup.method->attr & method_attr::method_static) {
 
+                emit_callpadding(node, lookup.method);
                 emitter.emit_defer(opcode::op_call,
                     node->declaring_class()->ident_str() + L"::" + node->ident_str());
             }
             else {
                 if (current_method->attr & method_attr::method_static)
                     ctx.push_error(codegen_error(L"Cannot call non-static method inside static-method."));
+
+                emit_callpadding(node, lookup.method);
                 emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()));
             }
         }
@@ -648,6 +661,7 @@ private:
             else if (lookup.type == lookup_type::mtd_method)
                 
         }*/
+        emit_callpadding(node, lookup.method);
         emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()));
     }
     void emit_return(return_node *node) {
@@ -833,7 +847,7 @@ private:
             auto lookup = scope.lookup_variable(ident);
             emitter.emit(opcode::op_stloc, lookup.index);
         }
-        // More then 2 variables
+        // More than 2 variables
         //    for (key, value : dictionary) { }
         else {
             for (auto it = std::next(node->begin_vars()); it != node->end_vars(); ++it) {
