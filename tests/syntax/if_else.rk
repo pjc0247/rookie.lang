@@ -1,0 +1,14 @@
+class if_else_test {
+    @main
+    static def main() {
+        a = 10;
+        if (a > 10) { puts("FAIL"); }
+        else { puts("PASS"); }
+
+        a = 3;
+        if (a > 10) { puts("FAIL"); }
+        else if (a > 5) { puts("FAIL"); }
+        else { puts("PASS"); }
+    }
+}
+   
