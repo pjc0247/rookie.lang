@@ -50,7 +50,7 @@ enum class stoken_type {
     st_begin_inherit, st_end_inherit,
     st_defmethod,
     st_static,
-    st_if, st_for, st_while,
+    st_if, st_else, st_for, st_while,
     st_return,
 
     st_try, st_catch, st_finally,

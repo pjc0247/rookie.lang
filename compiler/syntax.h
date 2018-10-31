@@ -39,7 +39,7 @@ enum class syntax_type {
     syn_assignment,
     syn_op, syn_standalone_op,
 
-    syn_if,
+    syn_if, syn_else,
     syn_for, syn_foreach,
     syn_while,
     syn_return,
@@ -65,6 +65,11 @@ public:
     bool is_complete() const;
     syntax_node *nearest_incomplete_node();
 
+    void remove(syntax_node *node) {
+        children.erase(
+            std::find(children.begin(), children.end(),
+            node));
+    }
     syntax_node *append(syntax_node *node, bool fire_oncomplete=true) {
         // 'endl' only can be accepted in block_node.
         if (node->type == syntax_type::syn_endl) {
@@ -597,7 +602,6 @@ public:
     if_node(const stoken &token) :
         syntax_node(token) {
 
-        capacity = 2;
         type = syntax_type::syn_if;
     }
 
@@ -607,7 +611,28 @@ public:
     syntax_node *then() const {
         return children[1];
     }
+
+    std::deque<syntax_node*>::iterator begin_else() {
+        return children.begin() + 2;
+    }
+    std::deque<syntax_node*>::iterator end_else() {
+        return children.end();
+    }
 };
+class else_node : public syntax_node {
+public:
+    else_node(const stoken &token) :
+        syntax_node(token) {
+
+        capacity = 1;
+        type = syntax_type::syn_else;
+    }
+
+    syntax_node *then() const {
+        return children[0];
+    }
+};
+
 class for_node : public syntax_node {
 public:
     for_node(const stoken &token) :

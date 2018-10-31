@@ -180,6 +180,7 @@
     <ClInclude Include="ast\classfield.h" />
     <ClInclude Include="ast\endlpop.h" />
     <ClInclude Include="ast\foreach.h" />
+    <ClInclude Include="ast\ifelse_chain.h" />
     <ClInclude Include="ast\newdic.h" />
     <ClInclude Include="ast\syntax_travler.h" />
     <ClInclude Include="binding.h" />

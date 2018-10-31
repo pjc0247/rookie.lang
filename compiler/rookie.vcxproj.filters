@@ -146,6 +146,9 @@
     <ClInclude Include="..\libs\file.h">
       <Filter>libs</Filter>
     </ClInclude>
+    <ClInclude Include="ast\ifelse_chain.h">
+      <Filter>ast</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

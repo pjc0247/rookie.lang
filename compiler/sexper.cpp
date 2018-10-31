@@ -449,6 +449,8 @@ void sexper::parse_keyword(const token &token, stoken &stoken) {
         stoken.type = stoken_type::st_defmethod;
     else if (token.raw == L"if")
         stoken.type = stoken_type::st_if;
+    else if (token.raw == L"else")
+        stoken.type = stoken_type::st_else;
     else if (token.raw == L"for")
         stoken.type = stoken_type::st_for;
     else if (token.raw == L"while")

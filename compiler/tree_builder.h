@@ -88,6 +88,8 @@ public:
 
             else if (token.type == stoken_type::st_if)
                 append_and_replace(_if(token));
+            else if (token.type == stoken_type::st_else)
+                append_and_replace(_else(token));
             else if (token.type == stoken_type::st_for)
                 append_and_replace(_for(token));
             else if (token.type == stoken_type::st_while)
@@ -198,6 +200,10 @@ private:
     }
     if_node *_if(const stoken &token) {
         auto node = new if_node(token);
+        return node;
+    }
+    else_node *_else(const stoken &token) {
+        auto node = new else_node(token);
         return node;
     }
     for_node *_for(const stoken &token) {

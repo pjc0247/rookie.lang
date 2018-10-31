@@ -145,6 +145,7 @@ void lexer::init_rules() {
     rules.push_back(lexer_token(L"def", token_type::keyword));
     rules.push_back(lexer_token(L"static", token_type::keyword));
     rules.push_back(lexer_token(L"if", token_type::keyword, -9000));
+    rules.push_back(lexer_token(L"else", token_type::keyword, -9000));
     rules.push_back(lexer_token(L"for", token_type::keyword, -10000));
     rules.push_back(lexer_token(L"while", token_type::keyword, -10000));
     rules.push_back(lexer_token(L"return", token_type::keyword, -9000));

@@ -479,6 +479,7 @@ private:
             _route(op);
             _route(assignment);
             _route(if);
+            _route(else);
             _route(for);
             _route(foreach);
             _route(while);
@@ -816,7 +817,17 @@ private:
         emit(node->cond());
         int jmp = emitter.emit(opcode::op_jmp_false);
         emit(node->then());
+        int end_then = emitter.emit(opcode::op_jmp);
+
         emitter.modify_operand(jmp, emitter.get_cursor());
+        for (auto it = node->begin_else(); it != node->end_else(); ++it) {
+            emit(*it);
+        }
+
+        emitter.modify_operand(end_then, emitter.get_cursor());
+    }
+    void emit_else(else_node *node) {
+        emit(node->then());
     }
     void emit_for(for_node *node) {
         emit(node->init());

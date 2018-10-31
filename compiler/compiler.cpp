@@ -16,6 +16,7 @@
 #include "ast/string_interpolation.h"
 #include "ast/classfield.h"
 #include "ast/foreach.h"
+#include "ast/ifelse_chain.h"
 
 #include "validator/syntax_validator.h"
 
@@ -153,6 +154,7 @@ compiler &compiler::include_essential_passes(compiler &c) {
      .transformer<string_interpolation_transformer>()
      .transformer<classfield_transformer>()
      .transformer<foreach_transformer>()
+     .transformer<ifelse_chain_transformer>()
      .transformer<arr_setitem_transformer>()
      .transformer<arr_getitem_transformer>();
     return c;
