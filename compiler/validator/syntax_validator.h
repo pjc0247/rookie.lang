@@ -12,6 +12,9 @@ public:
 
     virtual syntax_node *visit(syntax_node *node) {
         switch (node->type) {
+        case syntax_type::syn_class:
+            syn_class((class_node*)node);
+            break;
         case syntax_type::syn_method:
             syn_method((method_node*)node);
             break;
@@ -24,6 +27,15 @@ public:
     }
 
 private:
+    void syn_class(class_node *klass) {
+        for (int i = 1; i < klass->children.size();i++) {
+            auto child = klass->children[i];
+
+            if (child->type == syntax_type::syn_ident) {
+                ctx.push_error(syntax_error(child, L"Unexpectd identifier."));
+            }
+        }
+    }
     void syn_method(method_node *method) {
         if (method->children[1]->type != syntax_type::syn_params) {
             ctx.push_error(syntax_error(method, L"Wrong method definition."));
