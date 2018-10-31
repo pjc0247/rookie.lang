@@ -19,7 +19,7 @@ _rookie_function(L"print", (value_cref v) {
     else if (is_rkint(v))
         printf("%d\n", rkint(v));
     else if (is_rkstr(v))
-        wprintf(L"%s\n", rkcstr(v));
+        printf("%ls\n", rkcstr(v));
     else if (is_rkchar(v))
         wprintf(L"%c\n", rkchar(v));
     else {
@@ -37,7 +37,7 @@ _rookie_function(L"puts", (value_cref v) {
     else if (is_rkint(v))
         printf("%d\n", rkint(v));
     else if (is_rkstr(v)) {
-        wprintf(L"%s\n", rkcstr(v));
+        printf("%ls\n", rkcstr(v));
     }
     else if (is_rkchar(v))
         wprintf(L"%c\n", rkchar(v));
