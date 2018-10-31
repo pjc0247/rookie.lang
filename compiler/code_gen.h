@@ -872,6 +872,7 @@ private:
         emitter.emit(opcode::op_setcallee);
         emitter.emit(opcode::op_vcall, sig2hash(L"move_next"));
         emitter.emit(opcode::op_jmp_true, jmpsite);
+        emitter.emit(opcode::op_pop);
     }
     void emit_while(while_node *node) {
         emitter.emit(opcode::op_nop);
