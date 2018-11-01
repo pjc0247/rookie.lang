@@ -10,24 +10,6 @@
 //      - pop(1 + 2);
 class endlpop_transformer : public syntax_traveler {
 protected:
-    virtual int transform(root_node *root) {
-        for (auto klass : root->children) {
-            if (klass->type != syntax_type::syn_class)
-                continue;
-
-            for (auto method : klass->children) {
-                if (method->type != syntax_type::syn_method)
-                    continue;
-
-                auto mn = (method_node*)method;
-
-                depth = 0;
-                _visit(mn->body());
-            }
-        }
-
-        return changes;
-    }
     virtual syntax_node *visit(syntax_node *node) {
         rklog("%s, %d\n", typeid(*node).name(), depth);
 
