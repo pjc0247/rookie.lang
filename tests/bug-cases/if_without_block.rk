@@ -1,0 +1,9 @@
+class if_without_block_test {
+    @main
+    static def main() {
+        if (5 > 1) puts("PASS");
+        if (1 > 5) puts("FAIL");
+        if (5 > 1) puts("PASS");
+        if (1 > 5) puts("FAIL");
+    }
+}
