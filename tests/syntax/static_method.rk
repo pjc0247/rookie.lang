@@ -9,7 +9,13 @@ class anchovy {
     }
 }
 
-// animal
-dog.kind();
-// fish
-anchovy.kind();
+class callstatic_test {
+    @main
+    static def main() {
+        // animal
+        dog.kind();
+
+        // fish
+        anchovy.kind();
+    }
+}
