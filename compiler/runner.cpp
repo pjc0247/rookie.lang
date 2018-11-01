@@ -265,6 +265,8 @@ void runner::run_entry(program_entry *_entry) {
         //else
         //    throw invalid_program_exception("unknown instruction.");
 
+        //printf("ss %d\n", stack.size());
+
         continue;
     error:
         printf("[EXCEPTION]\n");
@@ -568,8 +570,10 @@ void runner::_vcall(int sighash, stack_provider &sp) {
         auto callinfo = (*_callinfo).second;
         if (callinfo.type == call_type::ct_syscall_direct)
             syscall(callinfo.entry, sp);
-        else if (callinfo.type == call_type::ct_programcall_direct)
+        else if (callinfo.type == call_type::ct_programcall_direct) {
             programcall(callinfo.entry);
+            pop();
+        }
     }
 }
 // internal use only.
