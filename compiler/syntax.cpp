@@ -31,13 +31,12 @@ syntax_node *syntax_node::nearest_incomplete_node() {
 }
 
 syntax_node *syntax_node::append(syntax_node *node, bool fire_oncomplete) {
-    if (nth_block_or_single > 0 &&
+    if (nth_block_or_single >= 0 &&
         children.size() == nth_block_or_single &&
         node->type != syntax_type::syn_block) {
 
         auto block = new block_node(node->s_token());
         block->append(node);
-        //block->append(new endl_node(node->s_token()));
         node = block;
 
         block->capacity = 2;

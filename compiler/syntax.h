@@ -606,6 +606,7 @@ public:
         syntax_node(token) {
 
         capacity = 1;
+        nth_block_or_single = 0;
         type = syntax_type::syn_else;
     }
 
