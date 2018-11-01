@@ -135,6 +135,7 @@ public:
     // Don't know exact callsite yet, but will be resolved later.
     void emit_defer(opcode_t opcode, const std::wstring &signature) {
         auto cs = callsite(callsite_lookup::cs_method, 1, 0);
+        cs.index = defered_calls.size();
         instructions.push_back(instruction(opcode, cs));
         instruction_indexes.push_back(codeindex);
 
@@ -334,6 +335,8 @@ private:
                     if (eidx == -1)
                         ctx.push_error(codegen_error(L"Unresolved name: " + method_name));
                     inst.cs.index = eidx;
+
+                    rklog("Resolve %S %d\n", method_name.c_str(), eidx);
                 }
             }
         }
