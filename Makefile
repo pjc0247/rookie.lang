@@ -7,8 +7,10 @@ all:
 
 	mkdir -p www
 	$(EMCC) -O2 -std=c++17 $(SRCS) $(LIBS) -I. -Icompiler -Iincludes \
+		-g4 \
 		-o www/rklang.html -Wc++11-extensions \
 		-s WASM=1 \
+		-s "BINARYEN_TRAP_MODE='clamp'" \
 		-s NO_FILESYSTEM=1 \
 		-s ERROR_ON_UNDEFINED_SYMBOLS=0 \
 		-s DISABLE_EXCEPTION_CATCHING=0 \

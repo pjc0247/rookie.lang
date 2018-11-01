@@ -172,7 +172,9 @@ public:
     }
 
     void add_reference(syntax_node *node) {
+#ifndef __EMSCRIPTEN__
         flatten_children.insert(node);
+#endif
     }
 
 private:
