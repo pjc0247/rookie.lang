@@ -386,6 +386,7 @@ void sexper::sexp_methodbody(const token &token) {
         //   KEYWORD (LINE);  // if (code)
         if (token.raw == L"return" ||
             token.raw == L"if" ||
+            token.raw == L"else" ||
             token.raw == L"for" ||
             token.raw == L"while") {
 

@@ -87,6 +87,7 @@ inline const wchar_t *to_string(stoken_type type) {
     case stoken_type::st_annotation: return L"st_annotation";
     case stoken_type::st_return: return L"st_return";
     case stoken_type::st_if: return L"st_if";
+    case stoken_type::st_else: return L"st_else";
     case stoken_type::st_for: return L"st_for";
     case stoken_type::st_arraccess: return L"st_arraccess";
     case stoken_type::st_begin_arr: return L"st_begin_arr";

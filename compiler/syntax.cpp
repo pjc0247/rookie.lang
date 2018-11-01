@@ -37,10 +37,10 @@ syntax_node *syntax_node::append(syntax_node *node, bool fire_oncomplete) {
 
         auto block = new block_node(node->s_token());
         block->append(node);
-        block->append(new endl_node(node->s_token()));
+        //block->append(new endl_node(node->s_token()));
         node = block;
 
-        block->capacity = 1;
+        block->capacity = 2;
     }
 
     // 'endl' only can be accepted in block_node.
