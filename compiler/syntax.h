@@ -54,13 +54,7 @@ class params_node;
 
 class syntax_node {
 public:
-    syntax_node(const stoken &token) :
-        source(token),
-        type(syntax_type::syn_none),
-        capacity(-1), nth_block_or_single(-1),
-        is_virtual(false) {
-        
-    }
+    syntax_node(const stoken &token);
 
     bool is_complete() const;
     syntax_node *nearest_incomplete_node();

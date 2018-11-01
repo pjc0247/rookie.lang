@@ -65,7 +65,7 @@ public:
                 str += L", ";
 
             str += key + L" : ";
-            str += rk_towstring(value);
+            str += rk_call_tostring(value);
         }
         str += L"}";
 

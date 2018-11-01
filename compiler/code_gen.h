@@ -358,10 +358,10 @@ private:
     class_node *current_class;
 
     std::vector<program_entry> entries;
-    std::vector<instruction> instructions;
-    std::vector<unsigned int> instruction_indexes;
+    std::vector<instruction>   instructions;
+    std::vector<unsigned int>  instruction_indexes;
 
-    std::vector<std::wstring> defered_calls;
+    std::vector<std::wstring>  defered_calls;
 
     unsigned int codeindex;
 };
@@ -412,7 +412,7 @@ public:
 
         auto m = astr::find_method_with_annotation(root, L"main");
         if (m.size() == 0)
-            ctx.push_error(codegen_error(L"No entry for `main`"));
+            ctx.push_error(codegen_error(L"No entrypoint found."));
         else if (m.size() >= 2)
             ctx.push_error(codegen_error(L"More than 2 entries for `main`"));
         else if (!(m[0]->attr & method_attr::method_static))

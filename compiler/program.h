@@ -1,6 +1,6 @@
 #pragma once
 
-#define rooke_max_signature 24
+#define rooke_max_signature 32
 #define rookie_max_params 7
 
 typedef enum ptype : unsigned char {

@@ -22,8 +22,8 @@ public:
     rkkvpair(value_cref key, value_cref value) {
         k = key; v = value;
 
-        set_property(sig2hash_c(L"key"), key);
-        set_property(sig2hash_c(L"value"), value);
+        set_property(rkid(L"key"), key);
+        set_property(rkid(L"value"), value);
     }
 
     value get(value_cref key) {
@@ -32,7 +32,7 @@ public:
         // TODO: EXCEPTION
     }
     value to_string() {
-        return str2rk(L"<#kvpair key: " + rk_towstring(k) + L", value: " + rk_towstring(v) + L">");
+        return str2rk(L"<#kvpair key: " + rk_call_tostring(k) + L", value: " + rk_call_tostring(v) + L">");
     }
 
 private:

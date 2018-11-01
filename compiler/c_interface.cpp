@@ -64,3 +64,10 @@ void rk_free_pdb(pdb *p) {
 
     delete p;
 }
+
+value rk_integer(int n) {
+    return value::mkinteger(n);
+}
+value rk_string(const char *str) {
+    return str2rk(str2wstr(str));
+}

@@ -63,7 +63,7 @@ public:
             if (it != ary.begin())
                 str += L", ";
 
-            str += rk_towstring(*it);
+            str += rk_call_tostring(*it);
         }
         str += L"]";
 

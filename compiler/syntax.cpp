@@ -1,6 +1,13 @@
 #include "stdafx.h"
 #include "syntax.h"
 
+syntax_node::syntax_node(const stoken &token) :
+    source(token),
+    type(syntax_type::syn_none),
+    capacity(-1), nth_block_or_single(-1),
+    is_virtual(false) {
+
+}
 bool syntax_node::is_complete() const {
     if (capacity > 0)
         return children.size() >= capacity;

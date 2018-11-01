@@ -35,6 +35,9 @@ public:
         for (cursor=0; cursor<stokens->size(); cursor++) {
             auto &token = stokens->at(cursor);
 
+            if (current->is_complete())
+                current = current->nearest_incomplete_node();
+
             //_ending_expression(st_end_block);
             if (token.type == stoken_type::st_end_block) {
                 current = current->parent;
