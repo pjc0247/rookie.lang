@@ -54,8 +54,8 @@ std::vector<token> lexer::lex(const std::wstring &_src) {
 
             if (rule.raw == L"-" &&
                 (last_meaningful_ch == L'(' ||
-                    last_meaningful_ch == L',' ||
-                    last_meaningful_ch == L'='))
+                 last_meaningful_ch == L',' ||
+                 last_meaningful_ch == L'='))
                 continue;
             if (rule.type == token_type::keyword &&
                 is_ident_acceptible(src[head - 1]))
@@ -128,6 +128,12 @@ std::vector<token> lexer::lex(const std::wstring &_src) {
             result.begin(), result.end(),
             [](token &t) { return t.type == token_type::none; }),
         result.end());
+
+    for (int i = 0; i < result.size(); ++i) {
+        if (result[i].raw == L"is")
+            result[i].type = token_type::op;
+    }
+
     return result;
 }
 
@@ -162,7 +168,7 @@ void lexer::init_rules() {
     rules.push_back(lexer_token(L"++", token_type::op));
     rules.push_back(lexer_token(L"--", token_type::op));
 
-    rules.push_back(lexer_token(L"is", token_type::op));
+    rules.push_back(lexer_token(L"is", token_type::keyword));
     rules.push_back(lexer_token(L"+", token_type::op, -5001));
     rules.push_back(lexer_token(L"-", token_type::op, -5001));
     rules.push_back(lexer_token(L"*", token_type::op, -5000));
