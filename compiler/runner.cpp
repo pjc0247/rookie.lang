@@ -572,6 +572,7 @@ void runner::_vcall(int sighash, stack_provider &sp) {
             syscall(callinfo.entry, sp);
         else if (callinfo.type == call_type::ct_programcall_direct) {
             programcall(callinfo.entry);
+            stack[stack.size() - 2] = stack[stack.size() - 1];
             pop();
         }
     }
