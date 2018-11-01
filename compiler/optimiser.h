@@ -33,13 +33,13 @@ protected:
                 else if (op == L"/")
                     _node->integer = left->integer / right->integer;
                 else if (op == L">")
-                    _node->integer = left->integer > right->integer;
+                    return new bool_node(node->s_token(), left->integer > right->integer);
                 else if (op == L"<")
-                    _node->integer = left->integer < right->integer;
+                    return new bool_node(node->s_token(), left->integer < right->integer);
                 else if (op == L">=")
-                    _node->integer = left->integer >= right->integer;
+                    return new bool_node(node->s_token(), left->integer >= right->integer);
                 else if (op == L"<=")
-                    _node->integer = left->integer <= right->integer;
+                    return new bool_node(node->s_token(), left->integer <= right->integer);
                 // unimplemented op, stash current works
                 else
                     return node;
