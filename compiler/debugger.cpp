@@ -60,7 +60,7 @@ void debugger::on_pre_exec(runner &r, const instruction &inst) {
                 quote ^= 1;
             }
 
-            if (quote == 0) {
+            if (quote == 0 && (i > 0 && pdb._pdb.code[i-1] == ' ')) {
                 for (auto &kw : keywords) {
                     bool match = true;
                     for (uint32_t j = i; j < i + kw.size(); j++) {
