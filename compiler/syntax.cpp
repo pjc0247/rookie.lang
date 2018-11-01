@@ -44,6 +44,10 @@ syntax_node *syntax_node::append(syntax_node *node, bool fire_oncomplete) {
 
     node->parent = this;
     children.push_back(node);
+    if (root != nullptr) {
+        node->root = root;
+        root->add_reference(node);
+    }
 
     if (fire_oncomplete && is_complete()) {
         on_complete();

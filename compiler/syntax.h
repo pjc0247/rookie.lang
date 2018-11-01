@@ -3,7 +3,7 @@
 #include <deque>
 #include <string>
 #include <vector>
-#include <list>
+#include <set>
 #include <assert.h>
 
 #include "token.h"
@@ -118,6 +118,7 @@ public:
 
     syntax_type type;
 
+    root_node *root;
     syntax_node *parent;
     std::deque<syntax_node*> children;
     uint32_t capacity;
@@ -168,6 +169,7 @@ public:
     root_node() :
         syntax_node(stoken(::token())) {
 
+        root = this;
         type = syntax_type::syn_root;
     }
     virtual ~root_node() {
@@ -176,11 +178,11 @@ public:
     }
 
     void add_reference(syntax_node *node) {
-        flatten_children.push_back(node);
+        flatten_children.insert(node);
     }
 
 private:
-    std::list<syntax_node*> flatten_children;
+    std::set<syntax_node*> flatten_children;
 };
 
 class block_node : public syntax_node {
