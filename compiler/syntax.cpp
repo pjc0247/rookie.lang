@@ -4,6 +4,7 @@
 bool syntax_node::is_complete() const {
     if (capacity > 0)
         return children.size() >= capacity;
+
     return false;
 }
 syntax_node *syntax_node::nearest_incomplete_node() {
@@ -20,6 +21,35 @@ syntax_node *syntax_node::nearest_incomplete_node() {
         else
             return current;
     }
+}
+
+syntax_node *syntax_node::append(syntax_node *node, bool fire_oncomplete) {
+    if (nth_block_or_single > 0 &&
+        children.size() == nth_block_or_single &&
+        node->type != syntax_type::syn_block) {
+
+        auto block = new block_node(node->s_token());
+        block->append(node);
+        block->append(new endl_node(node->s_token()));
+        node = block;
+
+        block->capacity = 1;
+    }
+
+    // 'endl' only can be accepted in block_node.
+    if (node->type == syntax_type::syn_endl) {
+        if (type != syntax_type::syn_block)
+            return this;
+    }
+
+    node->parent = this;
+    children.push_back(node);
+
+    if (fire_oncomplete && is_complete()) {
+        on_complete();
+        return nearest_incomplete_node();
+    }
+    return this;
 }
 
 void syntax_node::dump(int depth) {

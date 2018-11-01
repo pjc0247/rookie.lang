@@ -57,7 +57,7 @@ public:
     syntax_node(const stoken &token) :
         source(token),
         type(syntax_type::syn_none),
-        capacity(-1),
+        capacity(-1), nth_block_or_single(-1),
         is_virtual(false) {
         
     }
@@ -70,22 +70,8 @@ public:
             std::find(children.begin(), children.end(),
             node));
     }
-    syntax_node *append(syntax_node *node, bool fire_oncomplete=true) {
-        // 'endl' only can be accepted in block_node.
-        if (node->type == syntax_type::syn_endl) {
-            if (type != syntax_type::syn_block)
-                return this;
-        }
+    syntax_node *append(syntax_node *node, bool fire_oncomplete = true);
 
-        node->parent = this;
-        children.push_back(node);
-
-        if (fire_oncomplete && is_complete()) {
-            on_complete();
-            return nearest_incomplete_node();
-        }
-        return this;
-    }
     syntax_node *pop() {
         if (children.size() == 0) return nullptr;
 
@@ -114,12 +100,8 @@ public:
 
     void dump(int depth = 0);
 
-    virtual void on_validate() { }
-
 protected:
     virtual void on_complete() { }
-
-    //compile_context &ctx() const;
 
     syntax_node *find_upward_until(syntax_type type) const {
         syntax_node *current = parent;
@@ -139,6 +121,7 @@ public:
     syntax_node *parent;
     std::deque<syntax_node*> children;
     uint32_t capacity;
+    uint32_t nth_block_or_single;
 
     bool is_virtual;
 };
@@ -602,6 +585,8 @@ public:
     if_node(const stoken &token) :
         syntax_node(token) {
 
+        capacity = 2;
+        nth_block_or_single = 1;
         type = syntax_type::syn_if;
     }
 
@@ -637,6 +622,7 @@ class for_node : public syntax_node {
 public:
     for_node(const stoken &token) :
         syntax_node(token) {
+
         type = syntax_type::syn_for;
     }
 
