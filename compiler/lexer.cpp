@@ -174,7 +174,7 @@ void lexer::init_rules() {
     rules.push_back(lexer_token(L"<", token_type::op, -5002));
     rules.push_back(lexer_token(L">", token_type::op, -5002));
 
-    rules.push_back(lexer_token(L"=", token_type::op, -6000));
+    rules.push_back(lexer_token(L"=", token_type::op, -7000));
 
     rules.push_back(lexer_token(L"(", token_type::left_paren, -2000));
     rules.push_back(lexer_token(L")", token_type::right_paren, -2000));
