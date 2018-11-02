@@ -53,6 +53,16 @@ struct reflection_typedata {
     std::vector<std::wstring> fields;
 };
 
+struct callframe {
+    program_entry *entry;
+    short pc;
+    short bp;
+
+    callframe(short pc, short bp, program_entry *entry) :
+        pc(pc), bp(bp), entry(entry) {
+    }
+};
+
 class runner {
     friend gc;
     friend exe_context;

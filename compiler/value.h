@@ -15,16 +15,6 @@ enum class value_type : char {
 class object;
 struct program_entry;
 
-struct callframe {
-    program_entry *entry;
-    short pc;
-    short bp;
-
-    callframe(short pc, short bp, program_entry *entry) :
-        pc(pc), bp(bp), entry(entry) {
-    }
-};
-
 struct value {
     value_type type;
 
