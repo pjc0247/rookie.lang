@@ -52,6 +52,16 @@ public:
         current_method = node;
     }
 
+    bool is_typename(const std::wstring &ident) {
+        for (auto _type : ctx.types) {
+            auto type = _type.second;
+
+            if (type.name == ident)
+                return true;
+        }
+        return false;
+    }
+
     lookup_result lookup_method(const std::wstring &ident) {
         lookup_result result;
 
@@ -696,7 +706,17 @@ private:
         else
             emit(node->children[0]);
 
-        emitter.emit(opcode::op_ldprop, sig2hash(node->property_name()));
+        do {
+            if (node->children[0]->type == syntax_type::syn_ident) {
+                auto id = ((ident_node*)node->children[0])->ident;
+
+                if (scope.is_typename(id)) {
+                    emitter.emit(opcode::op_ldfld, sig2hash(node->property_name()));
+                    break;
+                }
+            }
+            emitter.emit(opcode::op_ldprop, sig2hash(node->property_name()));
+        } while (false);
     }
     void emit_ident(ident_node *node) {
         if (node->ident == L"this") {
@@ -714,6 +734,8 @@ private:
             if (lookup.type == lookup_type::not_exist) {
                 ctx.push_error(codegen_error(L"Unassigned local variable: " + node->ident));
             }
+            else if (lookup.type == lookup_type::var_typename)
+                emitter.emit(opcode::op_ldtype, sig2hash(node->ident));
             else if (lookup.type == lookup_type::var_local)
                 emitter.emit(opcode::op_ldloc, lookup.index);
             else if (lookup.type == lookup_type::var_field) {
