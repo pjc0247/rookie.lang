@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 #include "backends/p2wast.h"
 #include "fileio.h"
@@ -94,6 +95,14 @@ int main(int argc, char **argv) {
         program *p = nullptr;
         for (auto path : args.pos) {
             p = compile(str2wstr(path));
+
+            auto dir = std::experimental::filesystem::path(path).parent_path();
+
+            if (dir != L"") {
+                std::experimental::filesystem::current_path(
+                    dir
+                );
+            }
 
             // compiling from multiple 
             // sources is not implemented yet.
