@@ -214,6 +214,11 @@ void sexper::sexp_class(token &token) {
         if (token.raw == L"static")
             stoken.type = stoken_type::st_static;
 
+        else if (token.raw == L"true")
+            stoken.type = stoken_type::st_true;
+        else if (token.raw == L"false")
+            stoken.type = stoken_type::st_false;
+
         // Method decorator token
         if (token.raw == L"static" &&
             prev_token().raw != L"def") {
