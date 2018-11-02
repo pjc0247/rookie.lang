@@ -58,7 +58,7 @@ public:
         name(name) {
 
         method(L"to_string", [name]() {
-            return value::mkstring(name.c_str());
+            return value::mkstring2(name);
         });
     }
 
