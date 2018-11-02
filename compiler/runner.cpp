@@ -376,6 +376,9 @@ void runner::op_newobj() {
             pop();
         }
 
+        // FIXME
+        push(value::mkobjref(objref));
+
         gc.add_object(objref);
     }
     else {
@@ -570,11 +573,11 @@ void runner::_vcall(int sighash, stack_provider &sp) {
         auto callinfo = (*_callinfo).second;
         if (callinfo.type == call_type::ct_syscall_direct)
             syscall(callinfo.entry, sp);
-        else if (callinfo.type == call_type::ct_programcall_direct) {
+        else if (callinfo.type == call_type::ct_programcall_direct)
             programcall(callinfo.entry);
-            stack[stack.size() - 2] = stack[stack.size() - 1];
-            pop();
-        }
+
+        stack[stack.size() - 2] = stack[stack.size() - 1];
+        pop();
     }
 }
 // internal use only.
@@ -611,6 +614,8 @@ value runner::_initobj_systype_nogc(int sighash, object *objref) {
 }
 
 value &runner::top() {
+    if (stack.empty())
+        throw invalid_program_exception("stack underflow");
     return stack.back();
 }
 value runner::pop() {
