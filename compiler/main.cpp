@@ -11,6 +11,12 @@
 
 #include "thirdparty/argagg.hpp"
 
+#ifdef _MSC_VER
+#define fs std::experimental::filesystem
+#else
+#define fs std::filesytem
+#endif
+
 // Copmpiles given string into a program.
 program *compile(const std::wstring &filepath) {
 #ifndef RK_ENV_WEB
@@ -96,13 +102,10 @@ int main(int argc, char **argv) {
         for (auto path : args.pos) {
             p = compile(str2wstr(path));
 
-            auto dir = std::experimental::filesystem::path(path).parent_path();
+            auto dir = fs::path(path).parent_path();
 
-            if (dir != L"") {
-                std::experimental::filesystem::current_path(
-                    dir
-                );
-            }
+            if (dir != L"")
+                fs::current_path(dir);
 
             // compiling from multiple 
             // sources is not implemented yet.
