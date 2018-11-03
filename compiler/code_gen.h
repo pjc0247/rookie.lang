@@ -431,6 +431,8 @@ public:
         emit_bootstrap(root);
         emit(root);
 
+        if (m.size() == 0)
+            return nullptr;
         return emitter.fin(m[0]);
     }
     pdb *generate_pdb(binding &bindings) {
