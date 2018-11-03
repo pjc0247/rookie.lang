@@ -1,0 +1,11 @@
+class start_end_test {
+    @main
+    static def main() {
+        a = "Hello World";
+
+        if (a.starts_with("Hello"))
+            puts ("PASS");
+        if (a.starts_with("Hello World l") == false)
+            puts ("PASS");
+    }
+}
