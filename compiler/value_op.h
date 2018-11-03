@@ -14,7 +14,9 @@ inline value operator/(const value &a, const value &b) {
 }
 
 inline bool operator==(const value& lhs, const void *rhs) {
-    if (lhs.type == value_type::null) return true;
+    if (rhs == nullptr &&
+        (lhs.type == value_type::null || lhs.type == value_type::empty))
+        return true;
     return false;
 }
 inline bool operator==(const value& lhs, const value& rhs) {
