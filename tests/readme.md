@@ -9,7 +9,8 @@ How to write a test
 
 ### Ordinary test
 
-Make sure you prepared pair of `.rk` and `.rk.exp`. `.rk.exp` file should contains the output of the execution.
+Make sure you prepared pair of `.rk` and `.rk.exp`.<br>
+`.rk.exp` file should contains the output of the execution.
 
 ### Invalid test
 
