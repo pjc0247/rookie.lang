@@ -328,7 +328,7 @@ void sexper::sexp_methodbody(const token &token) {
         _mark_as_parsed(stoken);
 
         if (prev_token().type == token_type::ident ||
-            prev_token().type == token_type::right_paren) {
+            prev_token().type == token_type::left_paren) {
 
             stack.push_back(::token(token)
                 .for_stackdelim()
