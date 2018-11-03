@@ -160,8 +160,8 @@ void lexer::init_rules() {
 
     rules.push_back(lexer_token(L"try", token_type::keyword));
     rules.push_back(lexer_token(L"catch", token_type::keyword));
-    rules.push_back(lexer_token(L"true", token_type::keyword));
-    rules.push_back(lexer_token(L"false", token_type::keyword));
+    rules.push_back(lexer_token(L"true", token_type::literal));
+    rules.push_back(lexer_token(L"false", token_type::literal));
     //rules.push_back(lexer_token(L"this", token_type::keyword));
     //rules.push_back(lexer_token("new", token_type::keyword));
 

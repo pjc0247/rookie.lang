@@ -24,7 +24,7 @@
     auto b = pop(); auto a = pop(); 
 
 struct primitive_cache {
-    runtime_typedata integer, string, object;
+    runtime_typedata integer, string, object, boolean;
     runtime_typedata array, dictionary;
 };
 struct type_cache {
@@ -557,6 +557,10 @@ void runner::_vcall(int sighash, stack_provider &sp) {
         vtable = &ptype->integer.vtable;
         push(top());
     }
+    else if (callee_ptr->type == value_type::boolean) {
+        vtable = &ptype->boolean.vtable;
+        push(top());
+    }
     else {
         auto calleeobj = callee_ptr->objref;
         vtable = calleeobj->vtable;
@@ -674,6 +678,7 @@ void runner::build_primitive_cache() {
     ptype->object = types[sighash_object];
     ptype->array = types[sighash_array];
     ptype->dictionary = types[sighash_dictionary];
+    ptype->boolean = types[sighash_boolean];
 }
 void runner::build_type_cache() {
     assert(typecache == nullptr);

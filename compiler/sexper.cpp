@@ -425,7 +425,12 @@ stoken sexper::parse(const token &token) {
         stoken.type = stoken_type::st_end_block;
     }
     else if (token.type == token_type::literal) {
-        stoken.type = stoken_type::st_literal;
+        if (token.raw == L"true")
+            stoken.type = stoken_type::st_true;
+        else if (token.raw == L"false")
+            stoken.type = stoken_type::st_false;
+        else
+            stoken.type = stoken_type::st_literal;
     }
     else if (token.type == token_type::ident) {
         stoken.type = stoken_type::ident;
@@ -467,11 +472,6 @@ void sexper::parse_keyword(const token &token, stoken &stoken) {
         stoken.type = stoken_type::st_this;
     else if (token.raw == L"null")
         stoken.type = stoken_type::st_null;
-
-    else if (token.raw == L"true")
-        stoken.type = stoken_type::st_true;
-    else if (token.raw == L"false")
-        stoken.type = stoken_type::st_false;
 }
 
 void sexper::flush_single_line() {

@@ -15,6 +15,7 @@
 #include "libs/kvpair.h"
 #include "libs/iterator.h"
 #include "libs/file.h"
+#include "libs/boolean.h"
 
 #include "binding.h"
 
@@ -37,6 +38,7 @@ binding binding::default_binding() {
     b.import<rkdictionary_iterator>();
     b.import<rkkvpair>();
     b.import<rkfile>();
+    b.import<rkboolean>();
 
     return b;
 }

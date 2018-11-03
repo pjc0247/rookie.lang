@@ -27,4 +27,5 @@ _predefined_hash(array);
 _predefined_hash(dictionary);
 _predefined_hash(string);
 _predefined_hash(integer);
+_predefined_hash(boolean);
 #pragma warning(pop)  
