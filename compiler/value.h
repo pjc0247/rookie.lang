@@ -31,9 +31,6 @@ struct value {
     uint32_t ld_pc;
 #endif
 
-    value();
-    value(value_type type);
-
     static value empty() {
         value v;
         v.type = value_type::empty;
@@ -92,7 +89,7 @@ struct value {
     static value mkstring2(const std::wstring &str);
 };
 
-const value rknull   = value(value_type::null);
+const value rknull   = value::null();
 const value rkempty  = value::empty();
 const value rkfalse  = value::_false();
 const value rktrue   = value::_true();
