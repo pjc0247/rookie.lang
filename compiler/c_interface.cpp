@@ -53,16 +53,24 @@ void rk_free_cc(rkcc *cc) {
 void rk_free_program(program *p) {
     if (p == nullptr) return;
 
-    delete p;
+    for (uint32_t i = 0; i < p->header.types_len;i++)
+        free(p->types[i].methods);
+
+    free(p->types);
+    free((void*)p->rdata);
+    free(p->entries);
+    free(p->code);
+
+    free(p);
 }
 void rk_free_pdb(pdb *p) {
     if (p == nullptr) return;
 
-    delete[] p->code;
-    delete[] p->inst_data;
-    delete[] p->sigtable;
+    free(p->code);
+    free(p->inst_data);
+    free(p->sigtable);
 
-    delete p;
+    free(p);
 }
 
 value rk_integer(int n) {
