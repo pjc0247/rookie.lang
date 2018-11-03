@@ -19,6 +19,8 @@ public:
 
         method(type, L"at", &rkstring::at);
         method(type, L"length", &rkstring::length);
+        method(type, L"starts_with", &rkstring::starts_with);
+        method(type, L"ends_with", &rkstring::ends_with);
 
         method(type, L"equal", &rkstring::equal);
 
@@ -44,6 +46,29 @@ public:
     }
     value length() {
         return value::mkinteger(str.size());
+    }
+    value starts_with(value_cref other) {
+        auto wstr = rkwstr(other);
+        if (wstr.length() > str.length())
+            return rkfalse;
+        for (int i = 0; i < wstr.length(); i++) {
+            if (wstr[i] != str[i])
+                return rkfalse;
+        }
+        return rktrue;
+    }
+    value ends_with(value_cref other) {
+        auto wstr = rkwstr(other);
+        auto strlen = str.length();
+        auto wstrlen = wstr.length();
+
+        if (wstrlen > strlen)
+            return rkfalse;
+        for (int i = 0; i < wstrlen; i++) {
+            if (wstr[wstrlen - i - 1] != str[strlen - i - 1])
+                return rkfalse;
+        }
+        return rktrue;
     }
     value equal(value_cref v) {
         return value::mkboolean(str == (rk2obj(v, rkstring*)->str));
