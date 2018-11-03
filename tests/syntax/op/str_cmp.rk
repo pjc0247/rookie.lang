@@ -1,0 +1,11 @@
+class strcmp_test {
+
+    @main
+    static def main() {
+        puts ("aaa" == "aaa");
+        puts ("aaa" == "aa");
+
+        puts ("한글" == "한글");
+        puts ("한글" == "한2글");
+    }
+}

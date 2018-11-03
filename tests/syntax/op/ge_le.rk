@@ -1,0 +1,16 @@
+class ge_le_test{
+
+    @main
+    static def main() {
+
+        puts (1 >= 1);
+        puts (1 >= 0);
+        puts (0 >= 0);
+        puts (0 >= 1);
+
+        puts (1 <= 1);
+        puts (1 <= 0);
+        puts (0 <= 0);
+        puts (0 <= 1);
+    }
+}
