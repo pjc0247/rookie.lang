@@ -4,6 +4,62 @@
 
 #include "text_processor.h"
 
+static std::vector<lexer_token> rules{
+    lexer_token(L"\n", token_type::none),
+    lexer_token(L" ", token_type::none),
+    lexer_token(L"\t", token_type::none),
+
+    lexer_token(L"//", token_type::none),
+
+    lexer_token(L"include", token_type::keyword),
+
+    lexer_token(L"@", token_type::annotation),
+    lexer_token(L"class", token_type::keyword),
+    lexer_token(L"def", token_type::keyword),
+    lexer_token(L"static", token_type::keyword),
+    lexer_token(L"if", token_type::keyword, -9000),
+    lexer_token(L"else", token_type::keyword, -9000),
+    lexer_token(L"for", token_type::keyword, -10000),
+    lexer_token(L"while", token_type::keyword, -10000),
+    lexer_token(L"return", token_type::keyword, -9000),
+    lexer_token(L"null", token_type::keyword),
+    lexer_token(L"in", token_type::keyword),
+
+    lexer_token(L"try", token_type::keyword),
+    lexer_token(L"catch", token_type::keyword),
+    lexer_token(L"true", token_type::literal),
+    lexer_token(L"false", token_type::literal),
+
+    lexer_token(L"++", token_type::op),
+    lexer_token(L"--", token_type::op),
+
+    lexer_token(L"is", token_type::keyword),
+    lexer_token(L"+", token_type::op, -5001),
+    lexer_token(L"-", token_type::op, -5001),
+    lexer_token(L"*", token_type::op, -5000),
+    lexer_token(L"/", token_type::op, -5000),
+
+    lexer_token(L"==", token_type::op, -5002),
+    lexer_token(L"<=", token_type::op, 1),
+    lexer_token(L">=", token_type::op, 1),
+    lexer_token(L"<", token_type::op, -5002),
+    lexer_token(L">", token_type::op, -5002),
+
+    lexer_token(L"=", token_type::op, -7000),
+
+    lexer_token(L"(", token_type::left_paren, -2000),
+    lexer_token(L")", token_type::right_paren, -2000),
+    lexer_token(L"{", token_type::left_bracket),
+    lexer_token(L"}", token_type::right_bracket, -99999),
+    lexer_token(L"[", token_type::left_sq_bracket, -900),
+    lexer_token(L"]", token_type::right_sq_bracket, -900),
+
+    lexer_token(L".", token_type::dot, -3000),
+    lexer_token(L",", token_type::comma, -1000),
+    lexer_token(L":", token_type::colon, -1000),
+    lexer_token(L";", token_type::semicolon, -9999)
+};
+
 lexer_token::lexer_token(const std::wstring &raw, token_type type, int priority) :
     raw(raw), type(type), priority(priority) {
 }
@@ -11,7 +67,6 @@ lexer_token::lexer_token(const std::wstring &raw, token_type type, int priority)
 lexer::lexer(compile_context &ctx) :
     ctx(ctx) {
     spool = &ctx.code;
-    init_rules();
 }
 
 std::vector<token> lexer::lex(const std::wstring &_src) {
@@ -135,64 +190,6 @@ std::vector<token> lexer::lex(const std::wstring &_src) {
     }
 
     return result;
-}
-
-void lexer::init_rules() {
-    rules.push_back(lexer_token(L"\n", token_type::none));
-    rules.push_back(lexer_token(L" ", token_type::none));
-    rules.push_back(lexer_token(L"\t", token_type::none));
-
-    rules.push_back(lexer_token(L"//", token_type::none));
-
-    rules.push_back(lexer_token(L"include", token_type::keyword));
-
-    rules.push_back(lexer_token(L"@", token_type::annotation));
-    rules.push_back(lexer_token(L"class", token_type::keyword));
-    rules.push_back(lexer_token(L"def", token_type::keyword));
-    rules.push_back(lexer_token(L"static", token_type::keyword));
-    rules.push_back(lexer_token(L"if", token_type::keyword, -9000));
-    rules.push_back(lexer_token(L"else", token_type::keyword, -9000));
-    rules.push_back(lexer_token(L"for", token_type::keyword, -10000));
-    rules.push_back(lexer_token(L"while", token_type::keyword, -10000));
-    rules.push_back(lexer_token(L"return", token_type::keyword, -9000));
-    rules.push_back(lexer_token(L"null", token_type::keyword));
-    rules.push_back(lexer_token(L"in", token_type::keyword));
-
-    rules.push_back(lexer_token(L"try", token_type::keyword));
-    rules.push_back(lexer_token(L"catch", token_type::keyword));
-    rules.push_back(lexer_token(L"true", token_type::literal));
-    rules.push_back(lexer_token(L"false", token_type::literal));
-    //rules.push_back(lexer_token(L"this", token_type::keyword));
-    //rules.push_back(lexer_token("new", token_type::keyword));
-
-    rules.push_back(lexer_token(L"++", token_type::op));
-    rules.push_back(lexer_token(L"--", token_type::op));
-
-    rules.push_back(lexer_token(L"is", token_type::keyword));
-    rules.push_back(lexer_token(L"+", token_type::op, -5001));
-    rules.push_back(lexer_token(L"-", token_type::op, -5001));
-    rules.push_back(lexer_token(L"*", token_type::op, -5000));
-    rules.push_back(lexer_token(L"/", token_type::op, -5000));
-
-    rules.push_back(lexer_token(L"==", token_type::op, -5002));
-    rules.push_back(lexer_token(L"<=", token_type::op, 1));
-    rules.push_back(lexer_token(L">=", token_type::op, 1));
-    rules.push_back(lexer_token(L"<", token_type::op, -5002));
-    rules.push_back(lexer_token(L">", token_type::op, -5002));
-
-    rules.push_back(lexer_token(L"=", token_type::op, -7000));
-
-    rules.push_back(lexer_token(L"(", token_type::left_paren, -2000));
-    rules.push_back(lexer_token(L")", token_type::right_paren, -2000));
-    rules.push_back(lexer_token(L"{", token_type::left_bracket));
-    rules.push_back(lexer_token(L"}", token_type::right_bracket, -99999));
-    rules.push_back(lexer_token(L"[", token_type::left_sq_bracket, -900));
-    rules.push_back(lexer_token(L"]", token_type::right_sq_bracket, -900));
-
-    rules.push_back(lexer_token(L".", token_type::dot, -3000));
-    rules.push_back(lexer_token(L",", token_type::comma, -1000));
-    rules.push_back(lexer_token(L":", token_type::colon, -1000));
-    rules.push_back(lexer_token(L";", token_type::semicolon, -9999));
 }
 
 token lexer::parse(const std::wstring &raw) {

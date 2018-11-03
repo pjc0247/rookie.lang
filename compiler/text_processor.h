@@ -26,8 +26,6 @@ public:
     std::vector<token> lex(const std::wstring &_src);
 
 private:
-    void init_rules();
-
     bool is_ignorable(wchar_t c);
     bool is_number(wchar_t c);
     bool is_ident_acceptible(wchar_t c);
@@ -36,8 +34,6 @@ private:
 
 private:
     compile_context &ctx;
-
-    std::vector<lexer_token> rules;
 
     string_pool *spool;
 };
