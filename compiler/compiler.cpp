@@ -19,6 +19,7 @@
 #include "ast/ifelse_chain.h"
 
 #include "validator/syntax_validator.h"
+#include "validator/duplicated_name.h"
 
 #include "compiler.h"
 
@@ -59,6 +60,8 @@ root_node *compiler::ast_raw(
 
     auto validator = new syntax_validator(ctx);
     validator->transform(root);
+    auto dup_name_validator = new duplicated_name_validator(ctx);
+    dup_name_validator->transform(root);
 
     return root;
 }
