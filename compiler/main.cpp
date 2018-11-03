@@ -3,7 +3,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <filesystem>
 
 #include "backends/p2wast.h"
 #include "fileio.h"
@@ -12,8 +11,10 @@
 #include "thirdparty/argagg.hpp"
 
 #ifdef _MSC_VER
+#include <filesystem>
 #define fs std::experimental::filesystem
 #else
+#include <experimental/filesystem>
 #define fs std::filesytem
 #endif
 
