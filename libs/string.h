@@ -13,7 +13,7 @@ public:
     static void import(binding &b) {
         auto type = type_builder(L"string");
 
-        type.method(L"new", create_instance2);
+        type.method(L"new", create_instance);
 
         method(type, rk_id_getitem, &rkstring::at);
 
@@ -36,10 +36,10 @@ public:
         str(str) {
     }
 
-    static value create_instance2(value_cref str) {
+    static value create_instance(value_cref str) {
         auto ptr = new rkstring();
         ptr->str = str.str;
-        return value::mkobjref(ptr);
+        return obj2rk(ptr);
     }
     value at(value_cref idx) {
         return value::mkchar(str[rkint(idx)]);
