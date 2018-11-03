@@ -3,12 +3,6 @@
 #define rooke_max_signature 32
 #define rookie_max_params 7
 
-typedef enum ptype : unsigned char {
-    t_none,
-    t_integer,
-    t_string,
-    t_object
-};
 typedef enum opcode : unsigned char {
     op_nop = 0,
 
