@@ -1,0 +1,14 @@
+class foo {
+    def _ctor() {
+        puts ("PASS");
+    }
+}
+
+class member_var_test {
+    @main
+    static def main() {
+        a = foo.new();
+        a = foo.new();
+        a = foo.new();
+    }
+}

@@ -1,0 +1,10 @@
+// MUST NOT execute a body
+// if condition is false initially
+class for_test {
+	@main
+    static def main() {
+        for (i=0;i<-1;i++)
+            puts ("FAIL");
+        puts ("PASS");
+    }
+}

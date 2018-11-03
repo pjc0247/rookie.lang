@@ -1,0 +1,14 @@
+class foo {
+    A = 1;
+    B = true;
+    C = "Hello";
+}
+
+class field_test {
+    @main
+    static def main() {
+        puts (foo.A);
+        puts (foo.B);
+        puts (foo.C);
+    }
+}

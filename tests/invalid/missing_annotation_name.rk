@@ -1,0 +1,11 @@
+class nested_class_test {
+    @main
+    static def main() {
+
+    }
+
+    @
+    static def foo() {
+        
+    }
+}

@@ -1,0 +1,29 @@
+class foo {
+
+}
+
+class obj_count_test {
+    @main
+    static def main() {
+        a = foo.new();
+        b = foo.new();
+        c = foo.new();
+
+        // 3
+        puts (gc.object_count());   
+
+        gc.collect();
+
+        // 3
+        puts (gc.object_count());   
+
+        a = null;
+        b = null;
+        c = null;
+
+        gc.collect();
+
+        // 0
+        puts (gc.object_count());   
+    }
+}

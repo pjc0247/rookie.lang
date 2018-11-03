@@ -1,7 +1,12 @@
 class for_test {
     @main
     static def main() {
-        for (i=0;i<5;i++)
+        for (i=0;i<5;i++) {
             puts(i);
+        }
+
+        for (i=5;i>0;i--) {
+            puts(i);
+        }
     }
 }

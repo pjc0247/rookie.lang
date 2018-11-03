@@ -1,0 +1,8 @@
+class read_text_test {
+    @main
+    static def main() {
+        a = file.read_text("input.txt");
+
+        puts (a == "Hello World!");
+    }
+}

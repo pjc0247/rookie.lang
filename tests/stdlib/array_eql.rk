@@ -1,0 +1,13 @@
+class ary_eql_test {
+    @main
+    static def main() {
+        a = [1,2,3,4];
+        b = [1,2,3,4];
+
+        if (a == b) puts ("PASS");
+
+        a = [1,2,3];
+
+        if (a != b) puts ("PASS");
+    }
+}

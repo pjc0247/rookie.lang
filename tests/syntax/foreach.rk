@@ -1,0 +1,11 @@
+class foreach_test {
+    @main
+    static def main() {
+        a = [1,2,3,4];
+
+        for(n in a) {
+            puts (n);
+        }
+    }
+}
+   

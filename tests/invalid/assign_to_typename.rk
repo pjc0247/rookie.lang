@@ -1,0 +1,6 @@
+class assign_to_typename_test {
+    @main
+    static def main() {
+        array = 1;
+    }
+}
