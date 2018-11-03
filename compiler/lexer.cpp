@@ -40,8 +40,8 @@ static std::vector<lexer_token> rules{
     lexer_token(L"/", token_type::op, -5000),
 
     lexer_token(L"==", token_type::op, -5002),
-    lexer_token(L"<=", token_type::op, 1),
-    lexer_token(L">=", token_type::op, 1),
+    lexer_token(L"<=", token_type::op, -5002),
+    lexer_token(L">=", token_type::op, -5002),
     lexer_token(L"<", token_type::op, -5002),
     lexer_token(L">", token_type::op, -5002),
 
