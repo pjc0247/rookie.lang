@@ -8,7 +8,7 @@ __[LANGUAGE DOCUMENTATION](https://rookielang.github.io)__
 
 Concept
 ----
-* Similar to C oriented languages (which means very intuitive)
+* Similar to C and Ruby (which means very intuitive)
 * Less confusing syntax, unlike modern languages.
 * Automated memory management with built in __Garbage Gollector__.
 * Supports `OOP`.
