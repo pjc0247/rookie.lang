@@ -618,6 +618,9 @@ private:
                 if (current_method->attr & method_attr::method_static)
                     ctx.push_error(codegen_error(L"Cannot call non-static method inside static-method."));
 
+                emitter.emit(opcode::op_ldthis);
+                emitter.emit(opcode::op_setcallee);
+
                 emit_callpadding(node, lookup.method);
                 emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()));
             }
