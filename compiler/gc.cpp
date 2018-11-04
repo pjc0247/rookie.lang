@@ -33,12 +33,16 @@ void gc::remove_object(object *objref) {
 void gc::collect() {
     gc_context ctx;
 
+    rklog("[GC] before : %d\n", all_objects.size());
+
     // MARK
     for (auto &v : r.stack)
         mark(v, ctx);
 
     // SWEEP
     sweep(ctx);
+
+    rklog("[GC] after : %d\n", all_objects.size());
 }
 
 int gc::object_count() {
