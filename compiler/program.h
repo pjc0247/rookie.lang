@@ -116,7 +116,7 @@ struct instruction {
         // encodings
         callsite cs;
         int32_t  i32;
-        float_t  f32;
+        float    f32;
     };
 
     instruction() :
