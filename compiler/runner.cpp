@@ -377,10 +377,9 @@ void runner::op_newobj() {
             set_callee_as_top();
             _vcall(sighash__ctor, sp);
             pop();
-        }
 
-        // FIXME
-        push(value::mkobjref(objref));
+            push(value::mkobjref(objref));
+        }
 
         gc.add_object(objref);
     }
