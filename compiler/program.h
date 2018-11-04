@@ -27,7 +27,7 @@ typedef enum opcode : unsigned char {
     op_ldfld, op_stfld,
     op_setcallee,
 
-    op_ldi,
+    op_ldi, op_ldf,
     op_ldstr,
     op_ldnull,
     op_ldempty,
@@ -71,6 +71,7 @@ inline const wchar_t *to_string(opcode type) {
     case op_stfld: return L"op_stfld";
     case op_setcallee: return L"op_setcallee";
     case op_ldi: return L"op_ldi";
+    case op_ldf: return L"op_ldf";
     case op_ldstr: return L"op_ldstr";
     case op_ldempty: return L"op_ldempty";
     case op_ldnull: return L"op_ldnull";
@@ -115,6 +116,7 @@ struct instruction {
         // encodings
         callsite cs;
         int32_t  i32;
+        float_t  f32;
     };
 
     instruction() :

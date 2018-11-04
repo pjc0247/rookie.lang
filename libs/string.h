@@ -39,6 +39,7 @@ public:
     static value create_instance(value_cref str) {
         auto ptr = new rkstring();
         ptr->str = str.str;
+
         return obj2rk(ptr);
     }
     value at(value_cref idx) {

@@ -27,6 +27,7 @@
 #define rk_call_tostring(x) rk_call_tostring_w(x)
 
 #define is_rkint(v) v.type == value_type::integer
+#define is_rkdecimal(v) v.type == value_type::decimal
 #define is_rkstr(v) (v.type == value_type::object && v.objref->sighash == sighash_string)
 #define is_rkchar(v) v.type == value_type::character
 #define is_rkbool(v) v.type == value_type::boolean
@@ -38,6 +39,9 @@
 
 #define int2rk(v) value::mkinteger(v)
 #define rk2int(v) v.integer
+
+#define float2rk(v) value::mkdecimal(v)
+#define rk2float(v) v.decimal
 
 #define str2rk(v) value::mkstring2(v)
 

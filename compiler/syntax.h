@@ -204,6 +204,11 @@ public:
         literal_type = literal_type::integer;
         integer = n;
     }
+    literal_node(const stoken &token, float f) :
+        literal_node(token) {
+        literal_type = literal_type::decimal;
+        decimal = f;
+    }
     literal_node(const stoken &token, const std::wstring &_str) :
         literal_node(token) {
         literal_type = literal_type::string;
@@ -214,6 +219,7 @@ public:
     literal_type literal_type;
 
     int integer;
+    float decimal;
     std::wstring str;
 };
 class ident_node : public syntax_node {

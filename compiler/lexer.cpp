@@ -119,6 +119,10 @@ std::vector<token> lexer::lex(const std::wstring &_src) {
                 is_ident_acceptible(src[head + rule.raw.length()]))
                 continue;
 
+            if (rule.type == token_type::dot &&
+                is_number(src[head-1]) && is_number(src[head+1]))
+                continue;
+
             if (head != tail) {
                 auto t = parse(src.substr(tail, head - tail));
                 t.line = line;
@@ -212,6 +216,10 @@ token lexer::parse(const std::wstring &raw) {
     else if (std::regex_match(raw, std::wregex(L"-?[0-9]+"))) {
         t.type = token_type::literal;
         t.literal_type = literal_type::integer;
+    }
+    else if (std::regex_match(raw, std::wregex(L"-?[0-9]+\\.[0-9]+"))) {
+        t.type = token_type::literal;
+        t.literal_type = literal_type::decimal;
     }
     else if (std::regex_match(raw, std::wregex(L"[a-zA-Z_]+[a-zA-Z0-9_]*"))) {
         t.type = token_type::ident;

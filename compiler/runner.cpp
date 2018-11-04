@@ -116,6 +116,9 @@ void runner::run_entry(program_entry *_entry) {
         case opcode::op_ldi:
             push(int2rk(inst.i32));
             break;
+        case opcode::op_ldf:
+            push(float2rk(inst.f32));
+            break;
         case opcode::op_ldstr:
             // FIX: Performance
             push(value::mkstring(p.rdata + inst.operand));

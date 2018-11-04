@@ -30,7 +30,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v141_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -157,6 +157,7 @@
     <ClInclude Include="..\includes\rookie.h" />
     <ClInclude Include="..\includes\special_name.h" />
     <ClInclude Include="..\libs\array.h" />
+    <ClInclude Include="..\libs\boolean.h" />
     <ClInclude Include="..\libs\datetime.h" />
     <ClInclude Include="..\libs\debugger.h" />
     <ClInclude Include="..\libs\dictionary.h" />
@@ -213,6 +214,7 @@
     <ClInclude Include="token.h" />
     <ClInclude Include="tree_builder.h" />
     <ClInclude Include="type_attr.h" />
+    <ClInclude Include="validator\duplicated_name.h" />
     <ClInclude Include="validator\syntax_validator.h" />
     <ClInclude Include="value.h" />
     <ClInclude Include="value_op.h" />

@@ -155,6 +155,12 @@ public:
         instructions.push_back(instruction(opcode, operand));
         instruction_indexes.push_back(codeindex);
     }
+    void emit_f(opcode_t opcode, float operand) {
+        auto inst = instruction(opcode, operand);
+        inst.f32 = operand;
+        instructions.push_back(inst);
+        instruction_indexes.push_back(codeindex);
+    }
     int emit(opcode_t opcode) {
         instructions.push_back(instruction(opcode, 0));
         instruction_indexes.push_back(codeindex);
@@ -749,6 +755,8 @@ private:
     void emit_literal(literal_node *node) {
         if (node->literal_type == literal_type::integer)
             emitter.emit(opcode::op_ldi, node->integer);
+        else if (node->literal_type == literal_type::decimal)
+            emitter.emit_f(opcode::op_ldf, node->decimal);
         else if (node->literal_type == literal_type::string)
             emitter.emit(opcode::op_ldstr, node->str);
     }

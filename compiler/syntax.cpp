@@ -72,6 +72,8 @@ void syntax_node::dump(int depth) {
         auto ln = (literal_node*)this;
         if (ln->literal_type == literal_type::integer)
             printf("literal (%d)\n", ((literal_node*)this)->integer);
+        else if (ln->literal_type == literal_type::decimal)
+            printf("literal (%f)\n", ((literal_node*)this)->decimal);
         else
             wprintf(L"literal (%s)\n", ((literal_node*)this)->str.c_str());
     }

@@ -18,6 +18,8 @@ _rookie_function(L"print", (value_cref v) {
         printf("%s\n", rkbool(v) ? "true" : "false");
     else if (is_rkint(v))
         printf("%d\n", rkint(v));
+    else if (is_rkdecimal(v))
+        printf("%f\n", rk2float(v));
     else if (is_rkstr(v))
         printf("%ls\n", rkcstr(v));
     else if (is_rkchar(v))
@@ -36,6 +38,8 @@ _rookie_function(L"puts", (value_cref v) {
         printf("%s\n", rkbool(v) ? "true" : "false");
     else if (is_rkint(v))
         printf("%d\n", rkint(v));
+    else if (is_rkdecimal(v))
+        printf("%f\n", rk2float(v));
     else if (is_rkstr(v)) {
         printf("%ls\n", rkcstr(v));
     }

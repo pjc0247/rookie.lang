@@ -1,18 +1,8 @@
-class foo {
-    def ary(){
-        return [1,2,3,4];
-    }
-    def hello() {
-        puts (ary()[0]);
-        puts (ary()[1]);
-        puts (ary()[2]);
-        puts (ary()[3]);
-    }
-}
+class strcmp_test {
 
-class arraccess_after_call_test {
     @main
     static def main() {
-        foo.new().hello();
+        a = 1234.54;
+        puts (a);
     }
 }

@@ -9,7 +9,7 @@ enum class value_type : char {
     empty,
     null,
     boolean,
-    integer, character, string, object, array
+    integer, decimal, character, string, object, array
 };
 
 class object;
@@ -25,6 +25,8 @@ struct value {
         unsigned int uinteger;
         wchar_t character;
         const wchar_t *str;
+
+        float decimal;
     };
 
 #if _DEBUG
@@ -71,6 +73,12 @@ struct value {
         value v;
         v.type = value_type::integer;
         v.integer = n;
+        return v;
+    }
+    static value mkdecimal(float f) {
+        value v;
+        v.type = value_type::decimal;
+        v.decimal = f;
         return v;
     }
     static value mkchar(wchar_t c) {
