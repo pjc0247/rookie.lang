@@ -607,7 +607,6 @@ void runner::_vcall(int sighash, stack_provider &sp) {
         assert(0);
     }
     else {
-        printf("ss %d\n", stack.size());
         auto callinfo = (*_callinfo).second;
         if (callinfo.type == call_type::ct_syscall_direct)
             syscall(callinfo.entry, sp);
@@ -616,7 +615,6 @@ void runner::_vcall(int sighash, stack_provider &sp) {
             stack[stack.size() - 2] = stack[stack.size() - 1];
             pop();
         }
-        printf("ss %d\n", stack.size());
     }
 }
 // internal use only.

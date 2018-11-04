@@ -48,15 +48,15 @@ static std::vector<lexer_token> rules{
 
     lexer_token(L"=", token_type::op, -7000),
 
-    lexer_token(L"(", token_type::left_paren, -8000),
-    lexer_token(L")", token_type::right_paren, -8000),
+    lexer_token(L"(", token_type::left_paren, -2000),
+    lexer_token(L")", token_type::right_paren, -2000),
     lexer_token(L"{", token_type::left_bracket),
     lexer_token(L"}", token_type::right_bracket, -99999),
     lexer_token(L"[", token_type::left_sq_bracket, -900),
     lexer_token(L"]", token_type::right_sq_bracket, -900),
 
     lexer_token(L".", token_type::dot, -3000),
-    lexer_token(L",", token_type::comma, -7500),
+    lexer_token(L",", token_type::comma, -1000),
     lexer_token(L":", token_type::colon, -1000),
     lexer_token(L";", token_type::semicolon, -9999)
 };
