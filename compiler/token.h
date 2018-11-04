@@ -3,7 +3,7 @@
 #include <string>
 
 enum class literal_type {
-    integer, decimal,
+    integer, decimal, boolean,
     string,
     string_with_interpoloation
 };

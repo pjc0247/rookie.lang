@@ -753,7 +753,13 @@ private:
         }
     }
     void emit_literal(literal_node *node) {
-        if (node->literal_type == literal_type::integer)
+        if (node->literal_type == literal_type::boolean) {
+            if (node->integer == 1)
+                emitter.emit(opcode::op_ldtrue);
+            else
+                emitter.emit(opcode::op_ldfalse);
+        }
+        else if (node->literal_type == literal_type::integer)
             emitter.emit(opcode::op_ldi, node->integer);
         else if (node->literal_type == literal_type::decimal)
             emitter.emit_f(opcode::op_ldf, node->decimal);

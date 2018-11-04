@@ -240,6 +240,9 @@ private:
 
         node->literal_type = token.source.literal_type;
         switch (token.source.literal_type) {
+        case literal_type::boolean:
+            node->integer = token.raw == L"true" ? 1 : 0;
+            break;
         case literal_type::integer:
             node->integer = std::stoi(token.raw);
             break;

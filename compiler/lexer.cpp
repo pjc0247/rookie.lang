@@ -192,6 +192,10 @@ std::vector<token> lexer::lex(const std::wstring &_src) {
         if (result[i].raw == L"is")
             result[i].type = token_type::op;
     }
+    for (int i = 0; i < result.size(); ++i) {
+        if (result[i].raw == L"true" || result[i].raw == L"false")
+            result[i].literal_type = literal_type::boolean;
+    }
 
     return result;
 }
