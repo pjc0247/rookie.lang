@@ -97,6 +97,7 @@ private:
 
     void op_eqtype();
     void op_eq();
+    void op_neq();
 
     void op_add();
 

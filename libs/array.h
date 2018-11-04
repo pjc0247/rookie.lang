@@ -29,6 +29,7 @@ public:
         method(type, L"remove", &rkarray::remove);
         method(type, L"remove_at", &rkarray::remove);
         method(type, L"length", &rkarray::length);
+        method(type, L"equal", &rkarray::equal);
 
         method(type, L"get_iterator", &rkarray::get_iterator);
 
@@ -86,6 +87,19 @@ public:
         }
 
         return obj2rk(new_ary);
+    }
+    value equal(value_cref other) {
+        auto other_ary = rk2obj(other, rkarray*);
+
+        if (other_ary->ary.size() != ary.size())
+            return rkfalse;
+
+        for (int i=0;i<ary.size();i++) {
+            if (ary[i] != other_ary->ary[i])
+                return rkfalse;
+        }
+
+        return rktrue;
     }
 
     value push(value_cref v) {

@@ -34,3 +34,8 @@ inline bool operator==(const value& lhs, const value& rhs) {
 
     throw rkexception("unimplemented operator");
 }
+inline bool operator!=(const value& lhs, const value& rhs) {
+    if (lhs.type != rhs.type)
+        return true;
+    return !(lhs == rhs);
+}

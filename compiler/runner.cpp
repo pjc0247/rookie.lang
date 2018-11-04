@@ -182,6 +182,9 @@ void runner::run_entry(program_entry *_entry) {
         case opcode::op_eq:
             op_eq();
             break;
+        case opcode::op_neq:
+            op_neq();
+            break;
         case opcode::op_add:
             op_add();
             break;
@@ -326,6 +329,34 @@ void runner::op_eq() {
     }
     else
         push(rkfalse);
+}
+void runner::op_neq() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  LEFT
+     *  RIGHT
+     *  OP_NEQ
+     */
+    _pop2_int(left, right);
+
+    if (left.type == right.type) {
+        if (left.uinteger == right.uinteger)
+            push(rkfalse);
+        else if (left.type == value_type::object) {
+            push(left);
+            callee_ptr = &left;
+            push(right);
+            _vcall(sighash_equal, sp);
+
+            if (top() == rktrue)
+                replace_top(rkfalse);
+            else
+                replace_top(rktrue);
+        }
+        else
+            push(rktrue);
+    }
+    else
+        push(rktrue);
 }
 
 void runner::op_add() {
@@ -576,6 +607,7 @@ void runner::_vcall(int sighash, stack_provider &sp) {
         assert(0);
     }
     else {
+        printf("ss %d\n", stack.size());
         auto callinfo = (*_callinfo).second;
         if (callinfo.type == call_type::ct_syscall_direct)
             syscall(callinfo.entry, sp);
@@ -584,6 +616,7 @@ void runner::_vcall(int sighash, stack_provider &sp) {
             stack[stack.size() - 2] = stack[stack.size() - 1];
             pop();
         }
+        printf("ss %d\n", stack.size());
     }
 }
 // internal use only.
