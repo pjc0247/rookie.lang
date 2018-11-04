@@ -530,6 +530,23 @@ private:
         scope.set_method(node);
         emitter.emit_method(node);
 
+        for (auto p : node->params()->children) {
+            if (p->type == syntax_type::syn_assignment) {
+                auto id = (ident_node*)p->children[0];
+                auto lookup = scope.lookup_variable(id->ident);
+
+                emitter.emit(opcode::op_ldloc, lookup.index);
+                emitter.emit(opcode::op_ldempty);
+                emitter.emit(opcode::op_eq);
+                auto jmp_false = emitter.emit(opcode::op_jmp_false);
+
+                emit(p->children[1]);
+                emitter.emit(opcode::op_stloc, lookup.index);
+
+                emitter.modify_operand(jmp_false, emitter.get_cursor());
+            }
+        }
+
         emit(node->body());
 
         emitter.emit(opcode::op_ldnull);

@@ -325,6 +325,8 @@ protected:
 
         locals.clear();
         for (uint32_t i = 0; i < params()->children.size(); i++) {
+            if (params()->children[i]->type == syntax_type::syn_assignment)
+                push_local(((ident_node*)params()->children[i]->children[0])->ident);
             if (params()->children[i]->type == syntax_type::syn_ident)
                 push_local(((ident_node*)params()->children[i])->ident);
         }
