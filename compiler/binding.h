@@ -61,7 +61,7 @@ public:
     type_builder(const std::wstring &name) :
         name(name) {
 
-        method(L"to_string", [name]() {
+        method(L"to_string", [name](value_cref _this) {
             return value::mkstring2(name);
         });
     }
