@@ -18,7 +18,17 @@ public:
         b.add_type(type);
     }
 
-    value to_string(value_cref n) {
-        return value::mkstring2(std::to_wstring(rkint(n)).c_str());
+    rkinteger() {
+        n = 0;
     }
+    rkinteger(int n) :
+        n(n) {
+    }
+    
+    value to_string() {
+        return value::mkstring2(std::to_wstring(n).c_str());
+    }
+
+private:
+    int n;
 };

@@ -6,6 +6,7 @@
 #include "libs/array.h"
 #include "libs/dictionary.h"
 #include "libs/type.h"
+#include "libs/integer.h"
 
 #include "runner.h"
 
@@ -588,7 +589,10 @@ void runner::_vcall(int sighash, stack_provider &sp) {
 
     if (callee_ptr->type == value_type::integer) {
         vtable = &ptype->integer.vtable;
-        push(top());
+
+        set_rkctx(exectx);
+        auto rkint = new rkinteger(rk2int(top()));
+        replace_top(obj2rk(rkint));
     }
     else if (callee_ptr->type == value_type::boolean) {
         vtable = &ptype->boolean.vtable;
@@ -760,8 +764,8 @@ void runner::load_all_programtypes() {
 }
 void runner::load_programtype(uint32_t sighash) {
     // Already loaded
-    if (types.find(sighash) != types.end())
-        return;
+    //if (types.find(sighash) != types.end())
+    //    return;
 
     for (uint32_t i = 0; i < p.header.types_len; i++) {
         auto type = p.types[i];
@@ -770,9 +774,12 @@ void runner::load_programtype(uint32_t sighash) {
             continue;
 
         runtime_typedata tdata;
+        if (types.find(sighash) != types.end())
+            tdata = types[sighash];
+
         tdata.typekind = runtime_typekind::tk_programtype;
 
-        calltable vtable;
+        calltable &vtable = tdata.vtable;
 
         tdata.reflection = new reflection_typedata();
 
