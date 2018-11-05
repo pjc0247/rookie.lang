@@ -8,10 +8,7 @@ class runner;
 
 class debugger {
 public:
-    debugger(pdb &pdb) :
-        r(nullptr),
-        pdb(pdb) {
-    }
+    debugger(pdb &pdb);
 
     void on_begin_program(runner &r, const program &p);
     void on_pre_exec(runner &r, const instruction &inst);

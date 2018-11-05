@@ -3,6 +3,11 @@
 #include "conout.h"
 #include "runner.h"
 
+debugger::debugger(::pdb &pdb) :
+    r(nullptr),
+    pdb(pdb) {
+}
+
 void debugger::on_begin_program(runner &_r, const program &p) {
     con::setColor(CON_WHITE);
     rklog("[%3s] %15s    %12s    %s\n", "PC", "OPCODE", "OPERAND", "CODE");
