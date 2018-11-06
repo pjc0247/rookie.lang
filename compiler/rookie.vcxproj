@@ -30,7 +30,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -206,6 +206,7 @@
     <ClInclude Include="reflection.h" />
     <ClInclude Include="runner.h" />
     <ClInclude Include="sig2hash.h" />
+    <ClInclude Include="vstack.h" />
     <ClInclude Include="string_pool.h" />
     <ClInclude Include="stack_provider.h" />
     <ClInclude Include="stdafx.h" />

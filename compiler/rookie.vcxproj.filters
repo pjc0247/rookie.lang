@@ -155,6 +155,7 @@
     <ClInclude Include="validator\duplicated_name.h">
       <Filter>validator</Filter>
     </ClInclude>
+    <ClInclude Include="vstack.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">
