@@ -23,6 +23,9 @@ extern "C" {
     void rk_free_program(program *p);
     void rk_free_pdb(pdb *p);
 
+    value rk_empty();
+    value rk_null();
     value rk_integer(int n);
+    value rk_decimal(float f);
     value rk_string(const char *str);
 }

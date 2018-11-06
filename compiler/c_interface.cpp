@@ -73,8 +73,35 @@ void rk_free_pdb(pdb *p) {
     free(p);
 }
 
+value rk_empty() {
+    value v;
+    v.type = value_type::empty;
+    v.objref = nullptr;
+    return v;
+}
+value rk_null() {
+    value v;
+    v.type = value_type::null;
+    v.objref = nullptr;
+    return v;
+}
+value rk_boolean(bool b) {
+    value v;
+    v.type = value_type::boolean;
+    v.integer = b ? 1 : 0;
+    return v;
+}
 value rk_integer(int n) {
-    return value::mkinteger(n);
+    value v;
+    v.type = value_type::integer;
+    v.integer = n;
+    return v;
+}
+value rk_decimal(float f) {
+    value v;
+    v.type = value_type::decimal;
+    v.decimal = f;
+    return v;
 }
 value rk_string(const char *str) {
     return str2rk(str2wstr(str));
