@@ -654,6 +654,8 @@ void runner::_newobj_systype(int sighash, stack_provider &sp) {
     gc.add_object(obj.objref);
 }
 value runner::_initobj_systype(int sighash, object *objref) {
+    assert(objref != nullptr);
+
     auto obj = value::mkobjref(objref);
     obj.objref->vtable = &types[sighash].vtable;
     obj.objref->sighash = sighash;
@@ -663,6 +665,8 @@ value runner::_initobj_systype(int sighash, object *objref) {
     return obj;
 }
 value runner::_initobj_systype_nogc(int sighash, object *objref) {
+    assert(objref != nullptr);
+
     auto obj = value::mkobjref(objref);
     obj.objref->vtable = &types[sighash].vtable;
     obj.objref->sighash = sighash;
