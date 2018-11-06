@@ -1,3 +1,8 @@
+/*  vstack.h
+
+    Simple stack implementation without any safe checks.
+    About 3x faster than previous version with std::stack.
+*/
 #pragma once
 
 class vstack {
