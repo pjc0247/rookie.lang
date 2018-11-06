@@ -29,8 +29,12 @@ public:
 
     template <int N>
     __forceinline void drop() {
+#if RK_USE_STDSTACK
         stackref.pop_back();
         drop<N - 1>();
+#else
+        stackref.drop(N);
+#endif
     }
 
     template <int N>

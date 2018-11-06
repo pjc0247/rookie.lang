@@ -18,6 +18,9 @@ public:
     void pop_back() {
         ptr--;
     }
+    void drop(int n) {
+        ptr -= n;
+    }
     value &back() {
         return buf[ptr - 1];
     }
