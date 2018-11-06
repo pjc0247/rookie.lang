@@ -7,6 +7,7 @@
 #include "libs/dictionary.h"
 #include "libs/type.h"
 #include "libs/integer.h"
+#include "libs/boolean.h"
 
 #include "runner.h"
 
@@ -608,7 +609,10 @@ void runner::_vcall(int sighash, stack_provider &sp) {
     }
     else if (callee_ptr->type == value_type::boolean) {
         vtable = &ptype->boolean.vtable;
-        push(top());
+        
+        auto rkbool = new rkboolean(rk2int(top()));
+        auto v = _initobj_systype(sighash_boolean, rkbool);
+        replace_top(v);
     }
     else {
         auto calleeobj = callee_ptr->objref;

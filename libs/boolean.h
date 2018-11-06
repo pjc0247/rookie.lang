@@ -18,10 +18,19 @@ public:
         b.add_type(type);
     }
 
-    value to_string(value_cref n) {
-        if (n.integer)
+    rkboolean() {
+    }
+    rkboolean(bool v) :
+        v(v) {
+    }
+
+    value to_string() {
+        if (v)
             return str2rk(L"true");
         else
             return str2rk(L"false");
     }
+
+private:
+    bool v;
 };
