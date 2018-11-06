@@ -161,7 +161,12 @@ private:
 
     // STACKS
     std::deque<callframe> callstack;
+
+#if RK_USE_STDSTACK
+    std::deque<value> stack;
+#else
     vstack stack;
+#endif
 
 #ifdef RK_HALT_ON_LONG_EXECUTION
     int halt_counter;
