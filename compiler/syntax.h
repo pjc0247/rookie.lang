@@ -59,20 +59,9 @@ public:
     bool is_complete() const;
     syntax_node *nearest_incomplete_node();
 
-    void remove(syntax_node *node) {
-        children.erase(
-            std::find(children.begin(), children.end(),
-            node));
-    }
+    void remove(syntax_node *node);
     syntax_node *append(syntax_node *node, bool fire_oncomplete = true);
-
-    syntax_node *pop() {
-        if (children.size() == 0) return nullptr;
-
-        auto last = children[children.size() - 1];
-        children.pop_back();
-        return last;
-    }
+    syntax_node *pop();
 
     token &token() {
         return source.source;

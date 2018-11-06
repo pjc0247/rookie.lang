@@ -30,6 +30,11 @@ syntax_node *syntax_node::nearest_incomplete_node() {
     }
 }
 
+void syntax_node::remove(syntax_node *node) {
+    children.erase(
+        std::find(children.begin(), children.end(),
+            node));
+}
 syntax_node *syntax_node::append(syntax_node *node, bool fire_oncomplete) {
     if (nth_block_or_single >= 0 &&
         children.size() == nth_block_or_single &&
@@ -60,6 +65,13 @@ syntax_node *syntax_node::append(syntax_node *node, bool fire_oncomplete) {
         return nearest_incomplete_node();
     }
     return this;
+}
+syntax_node *syntax_node::pop() {
+    if (children.size() == 0) return nullptr;
+
+    auto last = children[children.size() - 1];
+    children.pop_back();
+    return last;
 }
 
 void syntax_node::dump(int depth) {
