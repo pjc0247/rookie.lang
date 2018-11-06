@@ -534,6 +534,8 @@ void runner::op_stfld() {
 
 __forceinline
 value runner::get_local(int n) {
+    assert(stack.size() > bp + n);
+
     auto v = stack[bp + n];
 #if _RK_STRICT_CHECK
     if (v.type == value_type::empty)
@@ -545,11 +547,15 @@ __forceinline
 runtime_typedata runner::get_type(const value &v) {
     if (v.type == value_type::integer)
         return ptype->integer;
+    else if (v.type == value_type::boolean)
+        return ptype->boolean;
     else
         return types[v.objref->sighash];
 }
 __forceinline
 runtime_typedata runner::get_type(uint32_t sighash) {
+    assert(types.find(sighash) != types.end());
+
     return types[sighash];
 }
 rktype *runner::get_rktype(uint32_t sighash) {
@@ -590,9 +596,9 @@ void runner::_vcall(int sighash, stack_provider &sp) {
     if (callee_ptr->type == value_type::integer) {
         vtable = &ptype->integer.vtable;
 
-        set_rkctx(exectx);
         auto rkint = new rkinteger(rk2int(top()));
-        replace_top(obj2rk(rkint));
+        auto v = _initobj_systype(sighash_integer, rkint);
+        replace_top(v);
     }
     else if (callee_ptr->type == value_type::boolean) {
         vtable = &ptype->boolean.vtable;
@@ -674,6 +680,8 @@ void runner::push(const value &v) {
 #endif
 }
 void runner::replace_top(const value &v) {
+    assert(stack.size() > 0);
+
     stack[stack.size()-1] = v;
 }
 
@@ -683,6 +691,8 @@ void runner::push_callframe(program_entry &entry) {
         stack.push_back(value::empty());
 }
 callframe runner::pop_callframe(program_entry &entry) {
+    assert(callstack.size() > 0);
+
     for (uint16_t i = 0; i < entry.locals; i++)
         stack.pop_back();
 
