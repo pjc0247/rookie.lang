@@ -567,11 +567,17 @@ rktype *runner::get_rktype(uint32_t sighash) {
 
 __forceinline
 void runner::syscall(int index, stack_provider &sp) {
+    assert(index >= 0);
+    assert(index < syscalls.table.size());
+
     set_rkctx(exectx);
     syscalls.table[index](sp);
 }
 __forceinline
 void runner::programcall(int index) {
+    assert(index >= 0);
+    assert(index < p.header.entry_len);
+
     auto &entry = p.entries[index];
     auto stacksize = stack.size();
     push_callframe(entry);
