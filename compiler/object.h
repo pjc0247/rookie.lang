@@ -26,9 +26,9 @@ public:
 public:
     const wchar_t *name_ptr;
 
-    int sighash;
+    uint32_t sighash;
 
     std::map<uint32_t, callinfo> *vtable;
-    std::map<uint32_t, value> properties;
-    std::vector<value> gc_refs;
+    std::map<uint32_t, value>    properties;
+    std::vector<value>           gc_refs;
 };
