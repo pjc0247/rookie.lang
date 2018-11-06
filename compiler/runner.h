@@ -22,6 +22,7 @@ struct value;
 class  object;
 class  binding;
 class  exe_context;
+class  vstack;
 
 struct primitive_cache;
 struct type_cache;
@@ -160,7 +161,7 @@ private:
 
     // STACKS
     std::deque<callframe> callstack;
-    std::deque<value> stack;
+    vstack stack;
 
 #ifdef RK_HALT_ON_LONG_EXECUTION
     int halt_counter;

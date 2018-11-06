@@ -6,16 +6,18 @@
 
 #include <deque>
 
+#include "vstack.h"
+
 class stack_provider {
 public:
-    stack_provider(std::deque<value> &stack) :
+    stack_provider(vstack &stack) :
         stackref(stack) {
     }
 
-    void push(const value &v) {
+    __forceinline void push(const value &v) {
         stackref.push_back(v);
     }
-    value pop() {
+    __forceinline value pop() {
         auto item = stackref.back();
         stackref.pop_back();
         return item;
@@ -37,7 +39,7 @@ public:
     }
 
 private:
-    std::deque<value> &stackref;
+    vstack &stackref;
 };
 
 template <>

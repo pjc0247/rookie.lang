@@ -36,8 +36,8 @@ void gc::collect() {
     rklog("[GC] before : %d\n", all_objects.size());
 
     // MARK
-    for (auto &v : r.stack)
-        mark(v, ctx);
+    for (int i=0;i<r.stack.size();i++)
+        mark(r.stack[i], ctx);
 
     // SWEEP
     sweep(ctx);
