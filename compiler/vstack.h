@@ -10,6 +10,9 @@ public:
     vstack() {
         buf = new value[1024];
     }
+    virtual ~vstack() {
+        delete[] buf;
+    }
 
     void push_back(const value &v) {
         buf[ptr] = v;
