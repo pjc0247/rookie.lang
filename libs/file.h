@@ -19,8 +19,6 @@ public:
         static_method(type, L"read_text", read_text);
         static_method(type, L"write_text", write_text);
 
-        static_method(type, L"hamsa", hamsa);
-
         b.add_type(type);
     }
 
@@ -33,11 +31,6 @@ public:
 #endif
     }
     static value write_text(value_cref filename) {
-        return rknull;
-    }
-    static value hamsa(value_cref src) {
-        rk_exec(wstr2str(rkwstr(src).c_str()).c_str());
-
         return rknull;
     }
 };
