@@ -97,6 +97,13 @@ public:
         return obj2rk(it);
     }
 
+    std::map<std::wstring, value>::iterator begin() {
+        return dic.begin();
+    }
+    std::map<std::wstring, value>::iterator end() {
+        return dic.end();
+    }
+
 private:
     std::map<std::wstring, value> dic;
 };
