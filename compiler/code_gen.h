@@ -843,6 +843,10 @@ private:
             emitter.emit(opcode::op_eq);
         else if (node->op == L"!=")
             emitter.emit(opcode::op_neq);
+        else if (node->op == L"&&")
+            emitter.emit(opcode::op_and);
+        else if (node->op == L"||")
+            emitter.emit(opcode::op_or);
         else if (node->op == L"is")
             emitter.emit(opcode::op_eqtype, sig2hash(node->right()->token().raw));
     }

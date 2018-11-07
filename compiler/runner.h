@@ -99,6 +99,9 @@ private:
     void op_eqtype();
     void op_eq();
     void op_neq();
+    void op_and();
+    void op_or();
+    void op_not();
 
     void op_add();
 

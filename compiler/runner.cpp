@@ -187,6 +187,16 @@ void runner::run_entry(program_entry *_entry) {
         case opcode::op_neq:
             op_neq();
             break;
+        case opcode::op_and:
+            op_and();
+            break;
+        case opcode::op_or:
+            op_or();
+            break;
+        case opcode::op_not:
+            op_not();
+            break;
+
         case opcode::op_add:
             op_add();
             break;
@@ -359,6 +369,37 @@ void runner::op_neq() {
     }
     else
         push(rktrue);
+}
+void runner::op_and() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  LEFT
+    *   RIGHT
+    *   OP_AND
+    */
+    auto right = pop();
+    auto left = top();
+
+    replace_top(int2rk(left.uinteger & right.uinteger));
+}
+void runner::op_or() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  LEFT
+    *   RIGHT
+    *   OP_OR
+    */
+    auto right = pop();
+    auto left = top();
+
+    replace_top(int2rk(left.uinteger | right.uinteger));
+}
+void runner::op_not() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  LEFT
+    *   OP_NOT
+    */
+    auto left = top();
+
+    replace_top(int2rk(!left.uinteger));
 }
 
 void runner::op_add() {
