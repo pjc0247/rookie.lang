@@ -156,6 +156,9 @@
       <Filter>validator</Filter>
     </ClInclude>
     <ClInclude Include="vstack.h" />
+    <ClInclude Include="..\libs\json.h">
+      <Filter>libs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

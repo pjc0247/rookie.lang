@@ -129,6 +129,13 @@ public:
         return obj2rk(it);
     }
 
+    std::vector<value>::iterator begin() {
+        return ary.begin();
+    }
+    std::vector<value>::iterator end() {
+        return ary.end();
+    }
+
 private:
     std::vector<value> ary;
 };

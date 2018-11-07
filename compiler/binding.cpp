@@ -16,6 +16,7 @@
 #include "libs/iterator.h"
 #include "libs/file.h"
 #include "libs/boolean.h"
+#include "libs/json.h"
 
 #include "binding.h"
 
@@ -39,6 +40,7 @@ binding binding::default_binding() {
     b.import<rkkvpair>();
     b.import<rkfile>();
     b.import<rkboolean>();
+    b.import<rkjson>();
 
     return b;
 }
