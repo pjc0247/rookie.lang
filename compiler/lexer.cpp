@@ -112,7 +112,8 @@ std::vector<token> lexer::lex(const std::wstring &_src) {
 
             if (rule.raw == L"-" &&
                 !(is_ident_acceptible(last_meaningful_ch) ||
-                 last_meaningful_ch == L')'))
+                 last_meaningful_ch == L')' ||
+                 last_meaningful_ch == L']'))
                 continue;
             if (rule.type == token_type::keyword &&
                 is_ident_acceptible(src[head - 1]))
