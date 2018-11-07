@@ -1,0 +1,38 @@
+class and_or_test{
+
+    @main
+    static def main() {
+        // AND
+        if (1 > 5 && 5 > 1) puts ("FAIL");
+        else puts ("PASS");
+
+        if (5 > 1 && 10 > -1) puts ("PASS");
+        else puts ("FAIL");
+
+        if (true && true) puts ("PASS");
+        else puts ("FAIL");
+
+        if (false && true) puts ("FAIL");
+        else puts ("PASS");
+
+        if (false && false) puts ("FAIL");
+        else puts ("PASS");
+
+
+        // OR 
+        if (1 > 5 || 5 > 1) puts ("PASS");
+        else puts ("FAIL");
+
+        if (5 > 1 || 10 > -1) puts ("PASS");
+        else puts ("FAIL");
+
+        if (true || true) puts ("PASS");
+        else puts ("FAIL");
+
+        if (false || true) puts ("PASS");
+        else puts ("FAIL");
+
+        if (false || false) puts ("FAIL");
+        else puts ("PASS");
+    }
+}
