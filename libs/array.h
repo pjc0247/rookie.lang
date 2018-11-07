@@ -12,129 +12,31 @@ class rkarray : public rkobject<rkarray> {
 public:
     TYPENAME(L"array")
 
-    static void import(binding &b) {
-        auto type = type_builder(L"array");
+    static void import(binding &b);
 
-        type.method(rk_id_new, create_array);
-
-        method(type, rk_id_getitem, &rkarray::get);
-        method(type, rk_id_setitem, &rkarray::set);
-        method(type, rk_id_tostring, &rkarray::to_string);
-
-        method(type, L"__add__", &rkarray::op_add);
-
-        method(type, L"at", &rkarray::get);
-        method(type, L"push", &rkarray::push);
-        method(type, L"clear", &rkarray::clear);
-        method(type, L"remove", &rkarray::remove);
-        method(type, L"remove_at", &rkarray::remove);
-        method(type, L"length", &rkarray::length);
-        method(type, L"equal", &rkarray::equal);
-
-        method(type, L"get_iterator", &rkarray::get_iterator);
-
-        b.add_type(type);
-    }
-
-    rkarray() {
-    }
-    rkarray(int n) {
-        for (int i = 0; i < n; i++) {
-            value v = rkctx()->next_param();
-            push(v);
-        }
-    }
+    rkarray();
+    rkarray(int n);
     
-    value static create_array(const value &idx) {
-        return value::mkobjref(new rkarray(0));
-    }
+    value static create_array(const value &idx);
 
-    value get(value_cref idx) {
-        return ary[rkint(idx)];
-    }
-    value set(value_cref idx, value_cref v) {
-        ary[rkint(idx)] = v;
-        return rknull;
-    }
-    value to_string() {
-        std::wstring str;
+    value get(value_cref idx);
+    value set(value_cref idx, value_cref v);
 
-        str += L"[";
-        for (auto it = ary.begin(); it != ary.end(); ++it) {
-            if (it != ary.begin())
-                str += L", ";
+    value to_string();
 
-            str += rk_call_tostring(*it);
-        }
-        str += L"]";
+    value op_add(value_cref other);
+    value equal(value_cref other);
 
-        return str2rk(str);
-    }
+    value push(value_cref v);
+    value clear();
+    value remove(value_cref v);
+    value remove_at(value_cref v);
+    value length();
 
-    value op_add(value_cref other) {
-        auto new_ary = new rkarray();
+    value get_iterator();
 
-        // FIXME
-        if (other.objref->sighash == sig2hash(L"array")) {
-            auto other_ary = rk2obj(other, rkarray*);
-
-            new_ary->ary.insert(
-                new_ary->ary.end(),
-                ary.begin(), ary.end());
-            new_ary->ary.insert(
-                new_ary->ary.end(),
-                other_ary->ary.begin(), other_ary->ary.end());
-        }
-
-        return obj2rk(new_ary);
-    }
-    value equal(value_cref other) {
-        auto other_ary = rk2obj(other, rkarray*);
-
-        if (other_ary->ary.size() != ary.size())
-            return rkfalse;
-
-        for (int i=0;i<ary.size();i++) {
-            if (ary[i] != other_ary->ary[i])
-                return rkfalse;
-        }
-
-        return rktrue;
-    }
-
-    value push(value_cref v) {
-        ary.push_back(v);
-        return rknull;
-    }
-    value clear() {
-        ary.clear();
-        return rknull;
-    }
-    value remove(value_cref v) {
-        ary.erase(std::remove(
-            ary.begin(), ary.end(), v),
-            ary.end());
-        return rknull;
-    }
-    value remove_at(value_cref v) {
-        ary.erase(ary.begin() + rk2int(v));
-        return rknull;
-    }
-    value length() {
-        return int2rk(ary.size());
-    }
-
-    value get_iterator() {
-        auto it = new rkarray_iterator(ary);
-        return obj2rk(it);
-    }
-
-    std::vector<value>::iterator begin() {
-        return ary.begin();
-    }
-    std::vector<value>::iterator end() {
-        return ary.end();
-    }
+    std::vector<value>::iterator begin();
+    std::vector<value>::iterator end();
 
 private:
     std::vector<value> ary;
