@@ -857,6 +857,7 @@ private:
         if (ident != nullptr) {
             auto lookup = scope.lookup_variable(ident->ident);
             if (lookup.type == lookup_type::not_exist) {
+                // Cannot be happend, maybe bug?
                 //ctx.push_error(undefined_variable_error(ident->token()));
                 //return;
             }
