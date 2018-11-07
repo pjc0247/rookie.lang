@@ -19,6 +19,7 @@ void rkarray::import(binding &b) {
     method(type, L"remove", &rkarray::remove);
     method(type, L"remove_at", &rkarray::remove);
     method(type, L"length", &rkarray::length);
+    method(type, L"reverse", &rkarray::reverse);
     method(type, L"equal", &rkarray::equal);
 
     method(type, L"get_iterator", &rkarray::get_iterator);
@@ -112,6 +113,14 @@ value rkarray::remove_at(value_cref v) {
 }
 value rkarray::length() {
     return int2rk(ary.size());
+}
+value rkarray::reverse() {
+    auto new_ary = new rkarray();
+
+    for (int i = ary.size() - 1; i >= 0; i--)
+        new_ary->push(ary[i]);
+
+    return obj2rk(new_ary);
 }
 
 value rkarray::get_iterator() {

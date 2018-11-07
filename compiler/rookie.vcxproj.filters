@@ -21,6 +21,12 @@
     <ClCompile Include="compiler.cpp" />
     <ClCompile Include="lexer.cpp" />
     <ClCompile Include="sexper.cpp" />
+    <ClCompile Include="..\libs\json.cpp">
+      <Filter>libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\array.cpp">
+      <Filter>libs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binding.h" />

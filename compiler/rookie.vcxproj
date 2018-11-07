@@ -224,6 +224,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\backends\p2wast.cpp" />
+    <ClCompile Include="..\libs\array.cpp" />
+    <ClCompile Include="..\libs\json.cpp" />
     <ClCompile Include="..\libs\object.cpp" />
     <ClCompile Include="binding.cpp" />
     <ClCompile Include="compiler.cpp" />

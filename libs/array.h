@@ -32,6 +32,7 @@ public:
     value remove(value_cref v);
     value remove_at(value_cref v);
     value length();
+    value reverse();
 
     value get_iterator();
 
