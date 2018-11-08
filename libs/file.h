@@ -28,9 +28,17 @@ public:
         std::wstringstream buffer;
         buffer << t.rdbuf();
         return str2rk(buffer.str());
+#else
+        return rknull;
 #endif
     }
-    static value write_text(value_cref filename) {
+    static value write_text(value_cref filename, value_cref obj) {
+#ifndef RK_ENV_WEB
+        auto content = rk_call_tostring_w(obj);
+
+        std::wofstream t(rkwstr(filename));
+        t.write << content;
+#endif
         return rknull;
     }
 };
