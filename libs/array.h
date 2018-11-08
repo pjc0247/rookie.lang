@@ -19,8 +19,8 @@ public:
     
     value static create_array(const value &idx);
 
-    value get(value_cref idx);
-    value set(value_cref idx, value_cref v);
+    value get(uint32_t idx);
+    value set(uint32_t idx, value_cref v);
 
     value to_string();
 
@@ -30,7 +30,7 @@ public:
     value push(value_cref v);
     value clear();
     value remove(value_cref v);
-    value remove_at(value_cref v);
+    value remove_at(uint32_t v);
     value length();
     value reverse();
 

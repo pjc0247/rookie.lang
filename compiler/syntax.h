@@ -50,6 +50,7 @@ class root_node;
 class class_node;
 class method_node;
 class params_node;
+class block_node;
 
 class syntax_node {
 public:
@@ -75,6 +76,9 @@ public:
     method_node *declaring_method() const {
         return (method_node*)find_upward_until(syntax_type::syn_method);
     }
+    block_node *nearest_block() const {
+        return (block_node*)find_upward_until(syntax_type::syn_block);
+    }
 
     void force_complete() {
         on_complete();
@@ -85,15 +89,7 @@ public:
 protected:
     virtual void on_complete() { }
 
-    syntax_node *find_upward_until(syntax_type type) const {
-        syntax_node *current = parent;
-        while (current != nullptr) {
-            if (current->type == type)
-                break;
-            current = current->parent;
-        }
-        return current;
-    }
+    syntax_node *find_upward_until(syntax_type type) const;
 
 public:
     stoken source;
@@ -103,6 +99,7 @@ public:
     root_node *root;
     syntax_node *parent;
     std::deque<syntax_node*> children;
+
     uint32_t capacity;
     uint32_t nth_block_or_single;
 
@@ -179,6 +176,12 @@ public:
     void push_front(syntax_node *node) {
         children.push_front(node);
     }
+
+    void push_local(const std::wstring &str);
+
+public:
+    std::vector<std::wstring> locals;
+
 };
 
 class literal_node : public syntax_node {
@@ -280,9 +283,12 @@ class method_node : public syntax_node {
 public:
     method_node(const stoken &token) :
         syntax_node(token) {
+
         attr = 0;
         capacity = 3;
         type = syntax_type::syn_method;
+
+        local_size = 0;
     }
 
     ident_node *ident() {
@@ -298,33 +304,29 @@ public:
         return (block_node*)children[2];
     }
 
-    void push_local(const std::wstring &str) {
-        if (locals.empty() ||
-            std::find(locals.begin(), locals.end(), str) == locals.end())
-            locals.push_back(str);
-    }
+    
     void push_annotation(annotation_node *node) {
         append(node, false);
     }
 
 protected:
     virtual void on_complete() {
-        auto prev_locals = locals;
+        auto prev_locals = body()->locals;
 
-        locals.clear();
+        body()->locals.clear();
         for (uint32_t i = 0; i < params()->children.size(); i++) {
             if (params()->children[i]->type == syntax_type::syn_assignment)
-                push_local(((ident_node*)params()->children[i]->children[0])->ident);
+                body()->push_local(((ident_node*)params()->children[i]->children[0])->ident);
             if (params()->children[i]->type == syntax_type::syn_ident)
-                push_local(((ident_node*)params()->children[i])->ident);
+                body()->push_local(((ident_node*)params()->children[i])->ident);
         }
 
         for (auto &ident : prev_locals)
-            push_local(ident);
+            body()->push_local(ident);
     }
 
 public:
-    std::vector<std::wstring> locals;
+    uint32_t local_size;
 
     unsigned int attr;
 };
@@ -453,7 +455,7 @@ class catch_node : public syntax_node {
 public:
     catch_node(const stoken &token) :
         syntax_node(token) {
-        capacity = 2;
+        capacity = 1;
         type = syntax_type::syn_catch;
     }
 
@@ -548,7 +550,7 @@ protected:
         auto method = declaring_method();
 
         if (ident != nullptr && method != nullptr)
-            method->push_local(ident->ident);
+            nearest_block()->push_local(ident->ident);
     }
 };
 
@@ -667,7 +669,7 @@ public:
         if (method != nullptr) {
             for (auto it = begin_vars(); it != end_vars(); ++it) {
                 auto ident = ((ident_node*)*it)->ident;
-                method->push_local(ident);
+                nearest_block()->push_local(ident);
             }
         }
     }

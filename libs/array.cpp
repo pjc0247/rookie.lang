@@ -40,11 +40,11 @@ value rkarray::create_array(const value &idx) {
     return value::mkobjref(new rkarray(0));
 }
 
-value rkarray::get(value_cref idx) {
-    return ary[rkint(idx)];
+value rkarray::get(uint32_t idx) {
+    return ary[idx];
 }
-value rkarray::set(value_cref idx, value_cref v) {
-    ary[rkint(idx)] = v;
+value rkarray::set(uint32_t idx, value_cref v) {
+    ary[idx] = v;
     return rknull;
 }
 value rkarray::to_string() {
@@ -107,8 +107,8 @@ value rkarray::remove(value_cref v) {
         ary.end());
     return rknull;
 }
-value rkarray::remove_at(value_cref v) {
-    ary.erase(ary.begin() + rk2int(v));
+value rkarray::remove_at(uint32_t v) {
+    ary.erase(ary.begin() + v);
     return rknull;
 }
 value rkarray::length() {

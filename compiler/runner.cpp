@@ -39,6 +39,7 @@ runner::runner(const program &p, ::binding &binding) :
     callee_ptr(nullptr),
     ptype(nullptr), typecache(nullptr),
     gc(*this),
+    exception(nullptr),
     sp(stack) {
 
     build_runtime_data();
@@ -285,14 +286,22 @@ void runner::run_entry(program_entry *_entry) {
 
         //printf("ss %d\n", stack.size());
 
+        if (exception != nullptr) {
+            goto error;
+        }
+
         continue;
     error:
         printf("[EXCEPTION]\n");
-        printf("%s\n", exception.what());
+        printf("%s\n", exception->what());
 
-        assert(0);
+        if (handle_exception()) {
 
-        break;
+        }
+        else 
+            assert(0);
+
+        exception = nullptr;
     }
 }
 
@@ -574,6 +583,33 @@ void runner::op_stfld() {
         .fields[inst.operand] = value;
 }
 
+bool runner::handle_exception() {
+    assert(exception != nullptr);
+
+    exception_handler *exh = nullptr;
+    int found = -1;
+    for (uint32_t i = 0; i < p.header.exception_handler_len; i++) {
+        exh = &p.exception_handlers[i];
+
+        if (exh->pc_begin <= pc && exh->pc_end > pc) {
+            found = i;
+        }
+        else {
+            if (found != -1) {
+                exh = &p.exception_handlers[found];
+            }
+            else
+                return false;
+        }
+    }
+
+    assert(exh != nullptr);
+
+    pc = exh->_catch;
+
+    return true;
+}
+
 __forceinline
 value runner::get_local(int n) {
     assert(stack.size() > bp + n);
@@ -662,10 +698,8 @@ void runner::_vcall(int sighash, stack_provider &sp) {
 
     auto _callinfo = vtable->find(sighash);
     if (_callinfo == vtable->end()) {
-        exception = rkexception("No such method: ");
+        exception = new rkexception("No such method: ");
         errflag = true;
-
-        assert(0);
     }
     else {
         auto callinfo = (*_callinfo).second;

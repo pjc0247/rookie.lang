@@ -42,8 +42,8 @@ public:
 
         return obj2rk(ptr);
     }
-    value at(value_cref idx) {
-        return value::mkchar(str[rkint(idx)]);
+    value at(uint32_t idx) {
+        return value::mkchar(str[idx]);
     }
     value length() {
         return value::mkinteger(str.size());

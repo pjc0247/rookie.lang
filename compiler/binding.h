@@ -149,6 +149,15 @@ public:
         });
         return *this;
     }
+    type_builder &static_method(const std::wstring &signature,
+        const std::function<value(value_cref, value_cref)> &function) {
+
+        _bind(static_methods, signature, [function](stack_provider &sp) {
+            sp.replace<1>(function(sp.get(1), sp.get(0)));
+            sp.drop<1>();
+        });
+        return *this;
+    }
 
     type_builder &method(const std::wstring &signature,
         const std::function<value()> &function) {

@@ -40,7 +40,7 @@ public:
 
             //_ending_expression(st_end_block);
             if (token.type == stoken_type::st_end_block) {
-                current = current->parent;
+                //current = current->parent;
                 current = current->nearest_incomplete_node();
             }
             _ending_expression(st_end_param);
@@ -101,6 +101,10 @@ public:
                 append_and_replace(_while(token));
             else if (token.type == stoken_type::st_return)
                 append_and_replace(_return(token));
+            else if (token.type == stoken_type::st_try)
+                append_and_replace(___try(token));
+            else if (token.type == stoken_type::st_catch)
+                append_and_replace(_catch(token));
 
             else if (token.type == stoken_type::op) {
                 append_and_replace(op(token));
@@ -217,6 +221,14 @@ private:
     }
     while_node *_while(const stoken &token) {
         auto node = new while_node(token);
+        return node;
+    }
+    try_node *___try(const stoken &token) {
+        auto node = new try_node(token);
+        return node;
+    }
+    catch_node *_catch(const stoken &token) {
+        auto node = new catch_node(token);
         return node;
     }
     this_node *_this(const stoken &token) {

@@ -37,7 +37,7 @@ public:
         auto content = rk_call_tostring_w(obj);
 
         std::wofstream t(rkwstr(filename));
-        t.write << content;
+        //t.write >> content;
 #endif
         return rknull;
     }

@@ -74,6 +74,16 @@ syntax_node *syntax_node::pop() {
     return last;
 }
 
+syntax_node *syntax_node::find_upward_until(syntax_type type) const {
+    syntax_node *current = parent;
+    while (current != nullptr) {
+        if (current->type == type)
+            break;
+        current = current->parent;
+    }
+    return current;
+}
+
 void syntax_node::dump(int depth) {
     for (int i = 0; i < depth * 2; i++)
         putchar(' ');
@@ -94,4 +104,14 @@ void syntax_node::dump(int depth) {
 
     for (auto child : children)
         child->dump(depth + 1);
+}
+
+
+void block_node::push_local(const std::wstring &str) {
+    if (locals.empty() ||
+        std::find(locals.begin(), locals.end(), str) == locals.end()) {
+
+        declaring_method()->local_size++;
+        locals.push_back(str);
+    }
 }

@@ -26,9 +26,9 @@ public:
         set_property(rkid(L"value"), value);
     }
 
-    value get(value_cref key) {
-        if (rk2int(key) == 0) return k;
-        if (rk2int(key) == 1) return v;
+    value get(uint32_t key) {
+        if (key == 0) return k;
+        if (key == 1) return v;
         // TODO: EXCEPTION
     }
     value to_string() {

@@ -122,6 +122,8 @@ private:
     runtime_typedata get_type(uint32_t sighash);
     rktype *get_rktype(uint32_t sighash);
 
+    bool handle_exception();
+
     void syscall(int index, stack_provider &sp);
     void programcall(int index);
 
@@ -160,7 +162,7 @@ private:
     uint16_t        bp; // base stack pointer
     value          *callee_ptr; // .this
 
-    rkexception exception;
+    rkexception *exception;
 
     // STACKS
     std::deque<callframe> callstack;

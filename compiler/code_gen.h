@@ -52,6 +52,13 @@ public:
         current_method = node;
     }
 
+    void push_block(block_node *node) {
+        scope_stack.push_back(node);
+    }
+    void pop_block() {
+        scope_stack.pop_back();
+    }
+
     bool is_typename(const std::wstring &ident) {
         for (auto _type : ctx.types) {
             auto type = _type.second;
@@ -96,12 +103,17 @@ public:
             }
         }
 
-        for (uint32_t i = 0; i<current_method->locals.size(); i++) {
-            if (current_method->locals[i] == ident) {
-                result.type = lookup_type::var_local;
-                result.index = i;
-                return result;
+        int offset = 0;
+        for (auto block : scope_stack) {
+            for (uint32_t i = 0; i<block->locals.size(); i++) {
+                if (block->locals[i] == ident) {
+                    result.type = lookup_type::var_local;
+                    result.index = i + offset;
+                    return result;
+                }
             }
+
+            offset += block->locals.size();
         }
 
         for (uint32_t i=0;i<current_class->fields.size();i++) {
@@ -123,12 +135,14 @@ private:
 
     class_node *current_class;
     method_node *current_method;
+
+    std::deque<block_node*> scope_stack;
 };
 
 class program_builder {
 public:
     program_builder(compile_context &ctx) :
-        ctx(ctx) {
+        ctx(ctx), ep(0) {
     }
 
     void set_codeindex(unsigned int index) {
@@ -198,7 +212,7 @@ public:
         swprintf(entry.signature, sizeof(entry.signature), L"%ls::%ls", current_class->ident_str().c_str(), method->ident_str().c_str());
         entry.entry = get_cursor();
         entry.params = method->params()->children.size();
-        entry.locals = method->locals.size();
+        entry.locals = method->local_size;
         entries.push_back(entry);
     }
     void begin_bootstrap() {
@@ -211,6 +225,27 @@ public:
         entry.params = 0;
         entry.locals = 0;
         entries.push_back(entry);
+    }
+
+    void begin_try() {
+        exception_handler eh;
+        eh.pc_begin = get_cursor();
+        exception_handlers.push_back(eh);
+        ep++;
+    }
+    void end_try() {
+        exception_handlers[ep-1].pc_end = get_cursor();
+        ep--;
+
+        // TODO
+        emit(opcode::op_jmp);
+    }
+    void begin_catch() {
+        exception_handlers[ep]._catch = get_cursor();
+    }
+    void end_catch() {
+        auto jmp_ptr = exception_handlers[ep]._catch - 1;
+        modify_operand(jmp_ptr, get_cursor());
     }
 
     void fin_method() {
@@ -236,6 +271,7 @@ public:
         p.header.code_len = instructions.size();
         p.header.rdata_len = spool.size();
         p.header.entry_len = entries.size();
+        p.header.exception_handler_len = exception_handlers.size();
         p.header.types_len = types.size();
 
         p.header.main_entry = 0;
@@ -279,6 +315,10 @@ public:
 
                 i++;
             }
+        }
+        if (exception_handlers.size() > 0) {
+            p.exception_handlers = (exception_handler*)malloc(sizeof(exception_handler) * exception_handlers.size());
+            memcpy((wchar_t*)p.exception_handlers, &exception_handlers[0], sizeof(exception_handler) * exception_handlers.size());
         }
         if (spool.size() > 0) {
             p.rdata = (wchar_t*)malloc(sizeof(wchar_t) * spool.size());
@@ -373,7 +413,10 @@ private:
 
     class_node *current_class;
 
+    uint32_t ep;
+
     std::vector<program_entry> entries;
+    std::vector<exception_handler> exception_handlers;
     std::vector<instruction>   instructions;
     std::vector<unsigned int>  instruction_indexes;
 
@@ -487,6 +530,8 @@ private:
             _route(callmember);
             _route(call);
             _route(return);
+            _route(try);
+            _route(catch);
             _route(block);
             _route(this);
             _route(memberaccess);
@@ -712,10 +757,24 @@ private:
             emit(val);
         emitter.emit(opcode::op_ret);
     }
+    void emit_try(try_node *node) {
+        emitter.begin_try();
+        emit(node->children[0]);
+        emitter.end_try();
+    }
+    void emit_catch(catch_node *node) {
+        emitter.begin_catch();
+        emit(node->children[0]);
+        emitter.end_catch();
+    }
     void emit_block(block_node *node) {
+        scope.push_block(node);
+
         for (auto child : node->children)
             emit(child);
         emitter.emit(opcode::op_nop);
+
+        scope.pop_block();
     }
     void emit_this(this_node *node) {
         if (current_method->attr & method_attr::method_static)
@@ -847,6 +906,8 @@ private:
             emitter.emit(opcode::op_and);
         else if (node->op == L"||")
             emitter.emit(opcode::op_or);
+        else if (node->op == L"!")
+            emitter.emit(opcode::op_not);
         else if (node->op == L"is")
             emitter.emit(opcode::op_eqtype, sig2hash(node->right()->token().raw));
     }

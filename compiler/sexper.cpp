@@ -470,6 +470,10 @@ void sexper::parse_keyword(const token &token, stoken &stoken) {
         stoken.type = stoken_type::st_return;
     else if (token.raw == L"this")
         stoken.type = stoken_type::st_this;
+    else if (token.raw == L"try")
+        stoken.type = stoken_type::st_try;
+    else if (token.raw == L"catch")
+        stoken.type = stoken_type::st_catch;
     else if (token.raw == L"null")
         stoken.type = stoken_type::st_null;
 }

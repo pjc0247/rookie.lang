@@ -156,6 +156,7 @@ struct program_header {
     uint32_t code_len;
     uint32_t rdata_len;
     uint32_t entry_len;
+    uint32_t exception_handler_len;
     uint32_t types_len;
     
     uint32_t main_entry;
@@ -170,13 +171,19 @@ struct program_entry {
     uint32_t codesize;
     uint16_t stacksize;
 };
+struct exception_handler {
+    uint32_t pc_begin, pc_end;
+    uint32_t _catch;
+};
+
 struct program {
     program_header  header;
 
-    program_entry   *entries;
-    instruction     *code;
-    const wchar_t   *rdata;
-    typedata        *types;
+    program_entry     *entries;
+    exception_handler *exception_handlers;
+    instruction       *code;
+    const wchar_t     *rdata;
+    typedata          *types;
 
     void dump() {
         wprintf(L"[rookie_program]\r\n");
