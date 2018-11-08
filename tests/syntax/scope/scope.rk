@@ -1,0 +1,24 @@
+class scope_test {
+
+    @main
+    static def main() {
+        a = 1;
+
+        puts (a);
+
+        {
+            b = 2;
+
+            puts (a);
+            puts (b);
+
+            {
+                c = 3;
+
+                puts (a);
+                puts (b);
+                puts (c);
+            }
+        }
+    }
+}

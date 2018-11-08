@@ -1,0 +1,14 @@
+class unscoped_access_test {
+
+    @main
+    static def main() {
+        a = 1234;
+
+        {
+            b = 1234;
+        }
+
+        // `b` is not valid here!
+        puts (b);
+    }
+}

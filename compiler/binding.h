@@ -10,6 +10,8 @@
 #include "stack_provider.h"
 #include "exe_context.h"
 
+class rkstring;
+
 #define _bind(b, signature, lambda) \
     b[signature] = lambda
 
@@ -55,6 +57,71 @@
 #define rkid(id) sig2hash_c(id)
 
 typedef std::map<std::wstring, std::function<void(stack_provider&)>> bindmap;
+
+class cvt {
+public:
+    template <typename T>
+    static
+    std::enable_if_t<std::is_same<value_cref, T>::value, T>
+        value_to_ctype(value_cref v) {
+        return v;
+    }
+    template <typename T>
+    static
+    std::enable_if_t<std::is_same<uint32_t, T>::value, T>
+    value_to_ctype(value_cref v) {
+        if (v.type == value_type::integer)
+            return v.uinteger;
+        handle_cast_failure<T>();
+    }
+    template <typename T>
+    static
+    std::enable_if_t<std::is_same<int32_t, T>::value, T>
+    value_to_ctype(value_cref v) {
+        if (v.type == value_type::integer)
+            return v.integer;
+        handle_cast_failure<T>();
+    }
+    template <typename T>
+    static
+    std::enable_if_t<std::is_same<float, T>::value, T>
+    value_to_ctype(value_cref v) {
+        if (v.type == value_type::decimal)
+            return v.decimal;
+        handle_cast_failure<T>();
+    }
+    template <typename T>
+    static
+    std::enable_if_t<std::is_same<bool, T>::value, T>
+    value_to_ctype(value_cref v) {
+        if (v.type == value_type::boolean)
+            return v.integer ? true : false;
+        handle_cast_failure<T>();
+    }
+    template <typename T>
+    static
+    std::enable_if_t<std::is_same<const std::wstring &, T>::value, T>
+    value_to_ctype(value_cref v) {
+        if (v.type == value_type::object) {
+            if (v.objref->sighash == sighash_string)
+                return rkwstr(v);
+        }
+        handle_cast_failure<T>();
+    }
+    template <typename T>
+    static
+    std::enable_if_t<std::is_base_of<object, T>::value, T>
+    value_to_ctype(value_cref v) {
+        if (v.type == value_type::object) {
+            return rk2obj(v, T);
+        }
+        handle_cast_failure<T>();
+    }
+    template <typename T>
+    static void handle_cast_failure() {
+        //typeid(T).name();
+    }
+};
 
 class type_builder {
 public:
@@ -281,11 +348,28 @@ public:
             return stdinvoke(function);
         });
     }
+    template <typename P1>
     static void static_method(type_builder &type,
-        const wchar_t *name, value(*function)(value_cref)) {
+        const wchar_t *name, value(*function)(P1)) {
 
         type.static_method(name, [function](value_cref a) {
-            return stdinvoke(function, a);
+            return stdinvoke(function, cvt::value_to_ctype<P1>(a));
+        });
+    }
+    template <typename P1, typename P2>
+    static void static_method(type_builder &type,
+        const wchar_t *name, value(*function)(P1, P2)) {
+
+        type.static_method(name, [function](value_cref a, value_cref b) {
+            return stdinvoke(function, cvt::value_to_ctype<P1>(a), cvt::value_to_ctype<P2>(b));
+        });
+    }
+    template <typename P1, typename P2, typename P3>
+    static void static_method(type_builder &type,
+        const wchar_t *name, value(*function)(P1, P2, P3)) {
+
+        type.static_method(name, [function](value_cref a, value_cref b, value_cref c) {
+            return stdinvoke(function, cvt::value_to_ctype<P1>(a), cvt::value_to_ctype<P2>(b), cvt::value_to_ctype<P3>(c));
         });
     }
 
@@ -297,52 +381,58 @@ public:
             return stdinvoke(function, obj);
         });
     }
+    template <typename P1>
     static void method(type_builder &type,
-        const wchar_t *name, value(T::*function)(value_cref)) {
+        const wchar_t *name, value(T::*function)(P1)) {
 
         type.method(name, [function](value_cref _this, value_cref a) {
             auto obj = ((T*)_this.objref);
-            return stdinvoke(function, obj, a);
+            return stdinvoke(function, obj, cvt::value_to_ctype<P1>(a));
         });
     }
+    template <typename P1, typename P2>
     static void method(type_builder &type,
-        const wchar_t *name, value(T::*function)(value_cref, value_cref)) {
+        const wchar_t *name, value(T::*function)(P1, P2)) {
 
         type.method(name, [function](value_cref _this, value_cref a, value_cref b) {
             auto obj = ((T*)_this.objref);
-            return stdinvoke(function, obj, a, b);
+            return stdinvoke(function, obj, cvt::value_to_ctype<P1>(a), cvt::value_to_ctype<P2>(b));
         });
     }
+    template <typename P1, typename P2, typename P3>
     static void method(type_builder &type,
-        const wchar_t *name, value(T::*function)(value_cref, value_cref, value_cref)) {
+        const wchar_t *name, value(T::*function)(P1, P2, P3)) {
 
         type.method(name, [function](value_cref _this, value_cref a, value_cref b, value_cref c) {
             auto obj = ((T*)_this.objref);
-            return stdinvoke(function, obj, a, b, c);
+            return stdinvoke(function, obj, cvt::value_to_ctype<P1>(a), cvt::value_to_ctype<P2>(b), cvt::value_to_ctype<P3>(c));
         });
     }
+    template <typename P1, typename P2, typename P3, typename P4>
     static void method(type_builder &type,
-        const wchar_t *name, value(T::*function)(value_cref, value_cref, value_cref, value_cref)) {
+        const wchar_t *name, value(T::*function)(P1, P2, P3, P4)) {
 
         type.method(name, [function](value_cref _this, value_cref a, value_cref b, value_cref c, value_cref d) {
             auto obj = ((T*)_this.objref);
-            return stdinvoke(function, obj, a, b, c, d);
+            return stdinvoke(function, obj, cvt::value_to_ctype<P1>(a), cvt::value_to_ctype<P2>(b), cvt::value_to_ctype<P3>(c), cvt::value_to_ctype<P4>(d));
         });
     }
+    template <typename P1, typename P2, typename P3, typename P4, typename P5>
     static void method(type_builder &type,
-        const wchar_t *name, value(T::*function)(value_cref, value_cref, value_cref, value_cref, value_cref)) {
+        const wchar_t *name, value(T::*function)(P1, P2, P3, P4, P5)) {
 
         type.method(name, [function](value_cref _this, value_cref a, value_cref b, value_cref c, value_cref d, value_cref e) {
             auto obj = ((T*)_this.objref);
-            return stdinvoke(function, obj, a, b, c, d, e);
+            return stdinvoke(function, obj, cvt::value_to_ctype<P1>(a), cvt::value_to_ctype<P2>(b), cvt::value_to_ctype<P3>(c), cvt::value_to_ctype<P4>(d), cvt::value_to_ctype<P5>(e));
         });
     }
+    template <typename P1, typename P2, typename P3, typename P4, typename P5, typename P6>
     static void method(type_builder &type,
-        const wchar_t *name, value(T::*function)(value_cref, value_cref, value_cref, value_cref, value_cref, value_cref)) {
+        const wchar_t *name, value(T::*function)(P1, P2, P3, P4, P5, P6)) {
 
         type.method(name, [function](value_cref _this, value_cref a, value_cref b, value_cref c, value_cref d, value_cref e, value_cref f) {
             auto obj = ((T*)_this.objref);
-            return stdinvoke(function, obj, a, b, c, d, e, f);
+            return stdinvoke(function, obj, cvt::value_to_ctype<P1>(a), cvt::value_to_ctype<P2>(b), cvt::value_to_ctype<P3>(c), cvt::value_to_ctype<P4>(d), cvt::value_to_ctype<P5>(e), cvt::value_to_ctype<P6>(f));
         });
     }
 };
