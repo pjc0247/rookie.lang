@@ -165,6 +165,9 @@
     <ClInclude Include="..\libs\json.h">
       <Filter>libs</Filter>
     </ClInclude>
+    <ClInclude Include="..\thirdparty\json.hpp">
+      <Filter>thirdparty</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

@@ -12,7 +12,7 @@ public:
     // AnyObject -> String
     static value stringify(value_cref obj);
     // String -> Object
-    static value parse();
+    static value parse(value_cref);
 
 private:
     static std::wstring _stringify(value_cref obj);

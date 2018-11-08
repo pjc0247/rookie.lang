@@ -1,9 +1,11 @@
 #include "stdafx.h"
 
-#include "sig2hash.h"
+#include "thirdparty/json.hpp"
 #include "array.h"
 
 #include "json.h"
+
+using json = nlohmann::json;
 
 void rkjson::import(binding &b) {
     auto type = type_builder(L"json");
@@ -18,8 +20,39 @@ value rkjson::stringify(value_cref obj) {
     auto wstr = _stringify(obj);
     return str2rk(wstr);
 }
-value rkjson::parse() {
-    return rknull;
+value _parse(json &j);
+value rkjson::parse(value_cref _str) {
+    auto str = rkwstr(_str);
+
+    auto j = json::parse(str);
+    return _parse(j);
+}
+value _parse(json &j) {
+    if (j.type() == json::value_t::null)
+        return rknull;
+    if (j.type() == json::value_t::number_integer)
+        return int2rk(j.get<int32_t>());
+    if (j.type() == json::value_t::number_unsigned)
+        return int2rk(j.get<uint32_t>());
+
+    if (j.type() == json::value_t::object) {
+        auto obj = new rkobject<object>();
+
+        for (auto &item : j.items()) {
+            obj->set_property(sig2hash(str2wstr(item.key().c_str())), _parse(item.value()));
+        }
+
+        return obj2rk(obj);
+    }
+    if (j.type() == json::value_t::array) {
+        auto ary = new rkarray();
+
+        for (auto &item : j) {
+            ary->push(_parse(item));
+        }
+
+        return obj2rk(ary);
+    }
 }
 
 std::wstring rkjson::_stringify(value_cref obj) {

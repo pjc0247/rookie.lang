@@ -63,6 +63,10 @@ struct callframe {
         pc(pc), bp(bp), entry(entry) {
     }
 };
+struct exception_frame {
+    exception_handler exh;
+    uint16_t bp;
+};
 
 class runner {
     friend gc;
@@ -166,6 +170,7 @@ private:
 
     // STACKS
     std::deque<callframe> callstack;
+    std::deque<exception_frame> exh_stack;
 
 #if RK_USE_STDSTACK
     std::deque<value> stack;
