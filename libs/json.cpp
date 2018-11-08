@@ -20,14 +20,7 @@ value rkjson::stringify(value_cref obj) {
     auto wstr = _stringify(obj);
     return str2rk(wstr);
 }
-value _parse(json &j);
-value rkjson::parse(value_cref _str) {
-    auto str = rkwstr(_str);
-
-    auto j = json::parse(str);
-    return _parse(j);
-}
-value _parse(json &j) {
+static value _parse(json &j) {
     if (j.type() == json::value_t::null)
         return rknull;
     if (j.type() == json::value_t::boolean)
@@ -57,6 +50,12 @@ value _parse(json &j) {
 
         return obj2rk(ary);
     }
+}
+value rkjson::parse(value_cref _str) {
+    auto str = rkwstr(_str);
+
+    auto j = json::parse(str);
+    return _parse(j);
 }
 
 std::wstring rkjson::_stringify(value_cref obj) {
