@@ -7,6 +7,7 @@
 
 #include "value.h"
 #include "object.h"
+#include "sig2hash.h"
 #include "stack_provider.h"
 #include "exe_context.h"
 
