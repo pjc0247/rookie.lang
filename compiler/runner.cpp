@@ -610,7 +610,7 @@ bool runner::handle_exception() {
 
     auto ex = _initobj_systype(
         sig2hash(L"exception"),
-        new rkexception());
+        new rkexception(exception));
     push(ex);
 
     return true;
