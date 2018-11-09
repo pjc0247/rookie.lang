@@ -5,7 +5,7 @@
 #include <vector>
 #include <functional>
 
-#include "syntax.h"
+#include "syntax/syntax_node.h"
 
 class astr {
 public:

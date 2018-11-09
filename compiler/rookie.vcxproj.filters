@@ -4,7 +4,6 @@
     <ClCompile Include="gc.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="syntax.cpp" />
     <ClCompile Include="sig2hash.cpp" />
     <ClCompile Include="exe_context.cpp" />
     <ClCompile Include="..\backends\p2wast.cpp">
@@ -27,6 +26,12 @@
     <ClCompile Include="..\libs\array.cpp">
       <Filter>libs</Filter>
     </ClCompile>
+    <ClCompile Include="syntax\syntax_node.cpp">
+      <Filter>syntax</Filter>
+    </ClCompile>
+    <ClCompile Include="syntax\basic_nodes.cpp">
+      <Filter>syntax</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binding.h" />
@@ -40,7 +45,6 @@
     <ClInclude Include="program_io.h" />
     <ClInclude Include="runner.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="syntax.h" />
     <ClInclude Include="text_processor.h" />
     <ClInclude Include="token.h" />
     <ClInclude Include="tree_builder.h" />
@@ -171,6 +175,9 @@
     <ClInclude Include="..\libs\exception.h">
       <Filter>libs</Filter>
     </ClInclude>
+    <ClInclude Include="syntax\syntax_node.h">
+      <Filter>syntax</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">
@@ -193,6 +200,9 @@
     </Filter>
     <Filter Include="ir">
       <UniqueIdentifier>{a169987d-1dbf-4e0b-9b66-529b827bd7e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="syntax">
+      <UniqueIdentifier>{d49a3f79-5c0f-44a8-8df0-19dcffcf7068}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

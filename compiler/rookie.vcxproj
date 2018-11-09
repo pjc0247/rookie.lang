@@ -209,11 +209,11 @@
     <ClInclude Include="reflection.h" />
     <ClInclude Include="runner.h" />
     <ClInclude Include="sig2hash.h" />
+    <ClInclude Include="syntax\syntax_node.h" />
     <ClInclude Include="vstack.h" />
     <ClInclude Include="string_pool.h" />
     <ClInclude Include="stack_provider.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="syntax.h" />
     <ClInclude Include="text_processor.h" />
     <ClInclude Include="token.h" />
     <ClInclude Include="tree_builder.h" />
@@ -245,8 +245,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="syntax.cpp" />
     <ClCompile Include="lexer.cpp" />
+    <ClCompile Include="syntax\basic_nodes.cpp" />
+    <ClCompile Include="syntax\syntax_node.cpp" />
     <ClCompile Include="value.cpp" />
   </ItemGroup>
   <ItemGroup>

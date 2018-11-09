@@ -4,7 +4,7 @@
 #include <exception>
 
 #include "token.h"
-#include "syntax.h"
+#include "syntax/syntax_node.h"
 
 struct compile_error {
     std::wstring message;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "syntax.h"
+#include "syntax/syntax_node.h"
 
 class syntax_traveler {
 public:

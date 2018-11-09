@@ -4,7 +4,7 @@
 #include <set>
 
 #include "string_pool.h"
-#include "syntax.h"
+#include "syntax/syntax_node.h"
 #include "program.h"
 #include "compilation.h"
 #include "binding.h"

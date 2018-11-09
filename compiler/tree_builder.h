@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "token.h"
-#include "syntax.h"
+#include "syntax/syntax_node.h"
 #include "compilation.h"
 #include "type_attr.h"
 

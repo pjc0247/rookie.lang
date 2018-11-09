@@ -5,7 +5,7 @@
 
 #include "string_pool.h"
 #include "token.h"
-#include "syntax.h"
+#include "syntax/syntax_node.h"
 #include "binding.h"
 #include "program.h"
 #include "errors.h"
