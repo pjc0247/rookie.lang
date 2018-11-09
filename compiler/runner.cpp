@@ -612,9 +612,11 @@ bool runner::handle_exception() {
 
     pc = exh->_catch;
 
+	auto rkex = new rkexception(exception);
     auto ex = _initobj_systype(
         sig2hash(L"exception"),
-        new rkexception(exception));
+        rkex);
+	rkex->set_callstack(callstack);
     push(ex);
 
     return true;
@@ -796,7 +798,7 @@ void runner::replace_top(const value &v) {
 }
 
 void runner::push_callframe(program_entry &entry) {
-    callstack.push_back(callframe(pc, bp, current_entry));
+    callstack.push_back(callframe(pc, bp, &entry));
     for (uint16_t i = 0; i < entry.locals - entry.params; i++)
         stack.push_back(value::empty());
 }
