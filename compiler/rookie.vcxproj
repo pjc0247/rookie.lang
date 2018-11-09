@@ -246,8 +246,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="lexer.cpp" />
-    <ClCompile Include="syntax\basic_nodes.cpp" />
+    <ClCompile Include="syntax\basic_node.cpp" />
+    <ClCompile Include="syntax\loop_node.cpp" />
+    <ClCompile Include="syntax\oop_fundamental_node.cpp" />
     <ClCompile Include="syntax\syntax_node.cpp" />
+    <ClCompile Include="syntax\try_catch_node.cpp" />
     <ClCompile Include="value.cpp" />
   </ItemGroup>
   <ItemGroup>

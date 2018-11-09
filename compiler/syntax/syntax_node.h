@@ -537,75 +537,32 @@ public:
 
 class for_node : public syntax_node {
 public:
-	for_node(const stoken &token) :
-		syntax_node(token) {
+	for_node(const stoken &token);
 
-		type = syntax_type::syn_for;
-	}
-
-	syntax_node *init() const {
-		return children[0];
-	}
-	syntax_node *cond() const {
-		return children[1];
-	}
-	syntax_node *increment() const {
-		return children[2];
-	}
-	syntax_node *body() const {
-		return children[3];
-	}
+	syntax_node *init() const;
+	syntax_node *cond() const;
+	syntax_node *increment() const;
+	syntax_node *body() const;
 };
 class foreach_node : public syntax_node {
 public:
-	foreach_node(const stoken &token) :
-		syntax_node(token) {
-		capacity = 3;
-		type = syntax_type::syn_foreach;
-	}
+	foreach_node(const stoken &token);
 
-	ident_node *left() const {
-		return (ident_node*)children[0];
-	}
+	ident_node *left() const;
 
-	std::deque<syntax_node*>::iterator begin_vars() {
-		return children.begin();
-	}
-	std::deque<syntax_node*>::iterator end_vars() {
-		return children.end() - 2;
-	}
+	std::deque<syntax_node*>::iterator begin_vars();
+	std::deque<syntax_node*>::iterator end_vars();
 
-	syntax_node *right() const {
-		return children[children.size() - 2];
-	}
-	syntax_node *body() const {
-		return children[children.size() - 1];
-	}
+	syntax_node *right() const;
+	syntax_node *body() const;
 
 public:
-	virtual void on_complete() {
-		auto method = declaring_method();
-
-		if (method != nullptr) {
-			for (auto it = begin_vars(); it != end_vars(); ++it) {
-				auto ident = ((ident_node*)*it)->ident;
-				nearest_block()->push_local(ident);
-			}
-		}
-	}
+	virtual void on_complete();
 };
 class while_node : public syntax_node {
 public:
-	while_node(const stoken &token) :
-		syntax_node(token) {
-		capacity = 2;
-		type = syntax_type::syn_while;
-	}
+	while_node(const stoken &token);
 
-	syntax_node *cond() const {
-		return children[0];
-	}
-	syntax_node *body() const {
-		return children[1];
-	}
+	syntax_node *cond() const;
+	syntax_node *body() const;
 };

@@ -29,7 +29,16 @@
     <ClCompile Include="syntax\syntax_node.cpp">
       <Filter>syntax</Filter>
     </ClCompile>
-    <ClCompile Include="syntax\basic_nodes.cpp">
+    <ClCompile Include="syntax\basic_node.cpp">
+      <Filter>syntax</Filter>
+    </ClCompile>
+    <ClCompile Include="syntax\oop_fundamental_node.cpp">
+      <Filter>syntax</Filter>
+    </ClCompile>
+    <ClCompile Include="syntax\try_catch_node.cpp">
+      <Filter>syntax</Filter>
+    </ClCompile>
+    <ClCompile Include="syntax\loop_node.cpp">
       <Filter>syntax</Filter>
     </ClCompile>
   </ItemGroup>
