@@ -421,13 +421,17 @@ void runner::op_add() {
     auto right = pop();
     auto left  = top();
 
-    if (left.type == value_type::integer) {
+	if (is_rkstr(left)) {
+		auto str = new rkstring(rkwstr(left) + rk_call_tostring_w(right));
+		replace_top(_initobj_systype(sighash_string, str));
+	}
+	else if (is_rkstr(right)) {
+		auto str = new rkstring(rk_call_tostring_w(left) + rkwstr(right));
+		replace_top(_initobj_systype(sighash_string, str));
+	}
+    else if (is_rkint(left) && is_rkint(right)) {
         left.integer += right.integer;
         replace_top(left);
-    }
-    else if (is_rkstr(left)) {
-        auto str = new rkstring(rkwstr(left) + rkwstr(right));
-        replace_top(_initobj_systype(sighash_string, str));
     }
     else {
         push(left);
