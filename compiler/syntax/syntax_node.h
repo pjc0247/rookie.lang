@@ -240,18 +240,11 @@ public:
 
 class params_node : public syntax_node {
 public:
-	params_node(const stoken &token) :
-		syntax_node(token) {
-		type = syntax_type::syn_params;
-	}
+	params_node(const stoken &token);
 };
 class annotation_node : public syntax_node {
 public:
-	annotation_node(const stoken &token) :
-		syntax_node(token) {
-		capacity = 1;
-		type = syntax_type::syn_annotation;
-	}
+	annotation_node(const stoken &token);
 
 	ident_node *ident() {
 		return (ident_node*)children[0];
@@ -262,15 +255,7 @@ public:
 };
 class method_node : public syntax_node {
 public:
-	method_node(const stoken &token) :
-		syntax_node(token) {
-
-		attr = 0;
-		capacity = 3;
-		type = syntax_type::syn_method;
-
-		local_size = 0;
-	}
+	method_node(const stoken &token);
 
 	ident_node *ident() {
 		return (ident_node*)children[0];
@@ -285,26 +270,10 @@ public:
 		return (block_node*)children[2];
 	}
 
-
-	void push_annotation(annotation_node *node) {
-		append(node, false);
-	}
+	void push_annotation(annotation_node *node);
 
 protected:
-	virtual void on_complete() {
-		auto prev_locals = body()->locals;
-
-		body()->locals.clear();
-		for (uint32_t i = 0; i < params()->children.size(); i++) {
-			if (params()->children[i]->type == syntax_type::syn_assignment)
-				body()->push_local(((ident_node*)params()->children[i]->children[0])->ident);
-			if (params()->children[i]->type == syntax_type::syn_ident)
-				body()->push_local(((ident_node*)params()->children[i])->ident);
-		}
-
-		for (auto &ident : prev_locals)
-			body()->push_local(ident);
-	}
+	virtual void on_complete();
 
 public:
 	uint32_t local_size;
@@ -313,11 +282,7 @@ public:
 };
 class field_node : public syntax_node {
 public:
-	field_node(const stoken &token) :
-		syntax_node(token) {
-		capacity = 1;
-		type = syntax_type::syn_field;
-	}
+	field_node(const stoken &token);
 
 	ident_node *ident() const {
 		return dynamic_cast<ident_node*>(children[0]);
@@ -329,25 +294,14 @@ public:
 
 class inherit_node : public syntax_node {
 public:
-	inherit_node(const stoken &token) :
-		syntax_node(token) {
-		type = syntax_type::syn_inherit;
-	}
+	inherit_node(const stoken &token);
 };
+
 class class_node : public syntax_node {
 public:
-	class_node(const stoken &token) :
-		syntax_node(token) {
-		attr = 0;
-		type = syntax_type::syn_class;
-	}
+	class_node(const stoken &token);
 
-	inherit_node *parents() const {
-		if (children.size() <= 1) return nullptr;
-		if (children[1]->type == syntax_type::syn_inherit)
-			return (inherit_node*)children[1];
-		return nullptr;
-	}
+	inherit_node *parents() const;
 
 	ident_node *ident() const {
 		return dynamic_cast<ident_node*>(children[0]);
@@ -422,43 +376,23 @@ public:
 
 class try_node : public syntax_node {
 public:
-	try_node(const stoken &token) :
-		syntax_node(token) {
-		capacity = 1;
-		type = syntax_type::syn_try;
-	}
+	try_node(const stoken &token);
 
-	block_node *block() {
-		return (block_node*)children[0];
-	}
+	block_node *block();
 };
 class catch_node : public syntax_node {
 public:
-	catch_node(const stoken &token) :
-		syntax_node(token) {
-		capacity = 2;
-		type = syntax_type::syn_catch;
-	}
+	catch_node(const stoken &token);
 
-	ident_node *exception() {
-		return (ident_node*)children[0];
-	}
-	block_node *block() {
-		return (block_node*)children[1];
-	}
+	ident_node *exception();
+	block_node *block();
 
 protected:
-	virtual void on_complete() {
-		block()->push_local(exception()->ident);
-	}
+	virtual void on_complete();
 };
 class finally_node : public syntax_node {
 public:
-	finally_node(const stoken &token) :
-		syntax_node(token) {
-		capacity = 1;
-		type = syntax_type::syn_finally;
-	}
+	finally_node(const stoken &token);
 };
 
 class label_node : public syntax_node {

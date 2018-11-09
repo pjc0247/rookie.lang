@@ -2,13 +2,14 @@
 
 #include "syntax_node.h"
 
+// ROOT_NODE
 root_node::root_node() :
 	syntax_node(stoken(::token())) {
 
 	root = this;
 	type = syntax_type::syn_root;
 }
-virtual root_node::~root_node() {
+root_node::~root_node() {
 	for (auto child : flatten_children)
 		delete child;
 }
@@ -19,6 +20,7 @@ void root_node::add_reference(syntax_node *node) {
 #endif
 }
 
+// BLOCK_NODE
 block_node::block_node(const stoken &token) :
 	syntax_node(token) {
 	type = syntax_type::syn_block;
