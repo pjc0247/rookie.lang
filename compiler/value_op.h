@@ -32,7 +32,7 @@ inline bool operator==(const value& lhs, const value& rhs) {
     if (lhs.type == value_type::object)
         return lhs.objref == rhs.objref;
 
-    throw rkexception("unimplemented operator");
+    throw base_exception("unimplemented operator");
 }
 inline bool operator!=(const value& lhs, const value& rhs) {
     if (lhs.type != rhs.type)

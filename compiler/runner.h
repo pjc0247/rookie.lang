@@ -166,7 +166,7 @@ private:
     uint16_t        bp; // base stack pointer
     value          *callee_ptr; // .this
 
-    rkexception *exception;
+    base_exception *exception;
 
     // STACKS
     std::deque<callframe> callstack;

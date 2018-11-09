@@ -57,7 +57,7 @@ program *compile(const std::wstring &filepath) {
 
     return out.program;
 #else
-    throw rkexception("Not supported");
+    throw base_exception("Not supported");
 #endif
 }
 
@@ -91,7 +91,7 @@ int main(int argc, char **argv) {
 #if _DEBUG
             args.pos.push_back("testcode.rk");
 #else
-            throw rkexception("No input provided.");
+            throw base_exception("No input provided.");
 #endif
         }
 
@@ -122,7 +122,7 @@ int main(int argc, char **argv) {
         return 0;
     }
 #ifndef _DEBUG
-    catch (rkexception e) {
+    catch (base_exception e) {
         std::cout << e.what() << std::endl;
     }
     catch (std::exception e) {

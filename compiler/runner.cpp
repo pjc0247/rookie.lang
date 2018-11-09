@@ -8,6 +8,7 @@
 #include "libs/type.h"
 #include "libs/integer.h"
 #include "libs/boolean.h"
+#include "libs/exception.h"
 
 #include "runner.h"
 
@@ -607,6 +608,11 @@ bool runner::handle_exception() {
 
     pc = exh->_catch;
 
+    auto ex = _initobj_systype(
+        sig2hash(L"exception"),
+        new rkexception());
+    push(ex);
+
     return true;
 }
 
@@ -649,7 +655,18 @@ void runner::syscall(int index, stack_provider &sp) {
     assert(index < syscalls.table.size());
 
     set_rkctx(exectx);
-    syscalls.table[index](sp);
+    try {
+        syscalls.table[index](sp);
+    }
+    catch (base_exception e) {
+        exception = new base_exception(e);
+    }
+    catch (const std::exception& ex) {
+        exception = new base_exception(ex.what());
+    }
+    catch (...) {
+        exception = new base_exception("Unknown exception");
+    }
 }
 __forceinline
 void runner::programcall(int index) {
@@ -668,7 +685,7 @@ void runner::programcall(int index) {
 
 void runner::set_callee_as_top() {
     if (stack.size() == 0)
-        throw rkexception("stack.empty");
+        throw base_exception("stack.empty");
 
     callee_ptr = &stack[stack.size() - 1];
 }
@@ -698,7 +715,7 @@ void runner::_vcall(int sighash, stack_provider &sp) {
 
     auto _callinfo = vtable->find(sighash);
     if (_callinfo == vtable->end()) {
-        exception = new rkexception("No such method: ");
+        exception = new base_exception("No such method: ");
         errflag = true;
     }
     else {

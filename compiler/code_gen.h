@@ -764,7 +764,13 @@ private:
     }
     void emit_catch(catch_node *node) {
         emitter.begin_catch();
-        emit(node->children[0]);
+
+        scope.push_block(node->block());
+        auto lookup = scope.lookup_variable(node->exception()->ident);
+        emitter.emit(opcode::op_stloc, lookup.index);
+        scope.pop_block();
+
+        emit(node->block());
         emitter.end_catch();
     }
     void emit_block(block_node *node) {

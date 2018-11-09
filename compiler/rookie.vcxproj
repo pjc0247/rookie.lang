@@ -161,6 +161,7 @@
     <ClInclude Include="..\libs\datetime.h" />
     <ClInclude Include="..\libs\debugger.h" />
     <ClInclude Include="..\libs\dictionary.h" />
+    <ClInclude Include="..\libs\exception.h" />
     <ClInclude Include="..\libs\file.h" />
     <ClInclude Include="..\libs\gc.h" />
     <ClInclude Include="..\libs\integer.h" />

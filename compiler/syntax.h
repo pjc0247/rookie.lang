@@ -455,15 +455,20 @@ class catch_node : public syntax_node {
 public:
     catch_node(const stoken &token) :
         syntax_node(token) {
-        capacity = 1;
+        capacity = 2;
         type = syntax_type::syn_catch;
     }
 
-    syntax_node *expression() {
-        return children[0];
+    ident_node *exception() {
+        return (ident_node*)children[0];
     }
     block_node *block() {
         return (block_node*)children[1];
+    }
+
+protected:
+    virtual void on_complete() {
+        block()->push_local(exception()->ident);
     }
 };
 class finally_node : public syntax_node {

@@ -17,6 +17,7 @@
 #include "libs/file.h"
 #include "libs/boolean.h"
 #include "libs/json.h"
+#include "libs/exception.h"
 
 #include "binding.h"
 
@@ -41,6 +42,7 @@ binding binding::default_binding() {
     b.import<rkfile>();
     b.import<rkboolean>();
     b.import<rkjson>();
+    b.import<rkexception>();
 
     return b;
 }
