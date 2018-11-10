@@ -182,6 +182,9 @@ std::vector<token> lexer::lex(const std::wstring &_src) {
         }
     }
 
+    if (inside_quote)
+        ctx.push_error(parsing_error(L"unpaired quote(\")"));
+
     if (head != tail) {
         auto t = parse(src.substr(tail, head - tail));
         t.line = line;
@@ -196,11 +199,11 @@ std::vector<token> lexer::lex(const std::wstring &_src) {
             [](token &t) { return t.type == token_type::none; }),
         result.end());
 
-    for (int i = 0; i < result.size(); ++i) {
+    for (uint32_t i = 0; i < result.size(); ++i) {
         if (result[i].raw == L"is")
             result[i].type = token_type::op;
     }
-    for (int i = 0; i < result.size(); ++i) {
+    for (uint32_t i = 0; i < result.size(); ++i) {
         if (result[i].raw == L"true" || result[i].raw == L"false")
             result[i].literal_type = literal_type::boolean;
     }

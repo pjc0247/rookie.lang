@@ -24,6 +24,10 @@
 
 #include "compiler.h"
 
+#define halt_if_error(x) \
+    if (ctx.errors.empty() == false) \
+        return x;
+
 compiler compiler::default_compiler(::binding &binding) {
     auto c = compiler(binding);
 
@@ -55,7 +59,9 @@ root_node *compiler::ast_raw(
     const std::wstring &src, std::vector<compile_error> &errors) {
 
     auto tokens = lexer(ctx).lex(src);
+    halt_if_error(nullptr);
     auto stokens = sexper(ctx).sexp(tokens);
+    halt_if_error(nullptr);
 
     auto root = tree_builder(ctx).build(stokens);
 
@@ -72,8 +78,7 @@ root_node *compiler::ast_transformed(
 
     auto root = ast_raw(ctx, src, errors);
 
-    if (ctx.errors.empty() == false)
-        return root;
+    halt_if_error(root);
 
 #if _DEBUG
     root->dump();
