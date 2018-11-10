@@ -43,18 +43,10 @@ runner::runner(const program &p, ::binding &binding) :
     exception(nullptr),
     sp(stack) {
 
+    build_lookup();
     build_runtime_data();
     build_primitive_cache();
     build_type_cache();
-
-    int offset = 0;
-    for (int i = 0; i < p.header.lookup_len; i++) {
-        if (p.lookups[i] == 0) {
-            auto id = std::wstring(p.lookups + offset);
-            id_pool[sig2hash(id)] = id;
-            offset = i + 1;
-        }
-    }
 }
 runner::~runner() {
     delete ptype;
@@ -828,6 +820,17 @@ callframe runner::pop_callframe(program_entry &entry) {
     return callframe;
 }
 
+void runner::build_lookup() {
+    // sighash -> string
+    int offset = 0;
+    for (int i = 0; i < p.header.lookup_len; i++) {
+        if (p.lookups[i] == 0) {
+            auto id = std::wstring(p.lookups + offset);
+            id_pool[sig2hash(id)] = id;
+            offset = i + 1;
+        }
+    }
+}
 void runner::build_runtime_data() {
     // SYS FUNCTIONS
     for (auto &b : binding.get_functions()) {

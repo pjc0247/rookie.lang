@@ -94,6 +94,7 @@ public:
     value _initobj_systype_nogc(int sighash, object *objref);
 
 private:
+    void build_lookup();
     void build_runtime_data();
     void build_primitive_cache();
     void build_type_cache();
