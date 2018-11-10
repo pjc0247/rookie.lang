@@ -2,6 +2,7 @@
 
 #include "conout.h"
 #include "runner.h"
+#include "stack_provider.h"
 
 debugger::debugger(::pdb &pdb) :
     r(nullptr),

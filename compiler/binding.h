@@ -124,8 +124,6 @@ public:
     }
     template <typename T>
     static void handle_cast_failure() {
-        //rkctx()->throw_exception(invalid_casting());
-        //typeid(T).name();
         throw_invalid_casting();
     }
     static void throw_invalid_casting();

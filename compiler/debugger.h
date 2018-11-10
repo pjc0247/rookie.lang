@@ -1,7 +1,5 @@
 #pragma once
 
-#include "stack_provider.h"
-
 #include "dbg.h"
 
 class runner;
