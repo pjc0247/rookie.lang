@@ -103,7 +103,7 @@ public:
     }
     template <typename T>
     static
-    std::enable_if_t<std::is_same<const std::wstring &, T>::value, T>
+    std::enable_if_t<std::is_same<const std::wstring &, T>::value, std::wstring>
     value_to_ctype(value_cref v) {
         if (v.type == value_type::object) {
             if (v.objref->sighash == sighash_string)
@@ -402,7 +402,8 @@ public:
 
         type.method(name, [function](value_cref _this, value_cref a) {
             auto obj = ((T*)_this.objref);
-            return stdinvoke(function, obj, cvt::value_to_ctype<P1>(a));
+            auto bb = cvt::value_to_ctype<P1>(a);
+            return stdinvoke(function, obj, bb);
         });
     }
     template <typename P1, typename P2>
