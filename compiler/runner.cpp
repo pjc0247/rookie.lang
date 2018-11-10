@@ -73,7 +73,6 @@ void runner::execute(program_entry *_entry) {
     pc = _entry->entry;
     bp = 0;
     endflag = false;
-    errflag = false;
 
     push_callframe(*_entry);
 
@@ -111,7 +110,6 @@ void runner::run_entry(program_entry *_entry) {
 
         // Prepare for next execution
         inst = p.code[pc++];
-        errflag = false;
 
         if (dbger) dbger->on_pre_exec(*this, inst);
 
@@ -246,8 +244,6 @@ void runner::run_entry(program_entry *_entry) {
         default:
             break;
         }
-
-        if (errflag) goto error;
 
         if (inst.opcode == opcode::op_l) {
             _pop2_int(left, right);
@@ -729,10 +725,8 @@ void runner::_vcall(int sighash, stack_provider &sp) {
     }
 
     auto _callinfo = vtable->find(sighash);
-    if (_callinfo == vtable->end()) {
+    if (_callinfo == vtable->end())
         exception = new rkexception(L"No such method: ");
-        errflag = true;
-    }
     else {
         auto callinfo = (*_callinfo).second;
         if (callinfo.type == call_type::ct_syscall_direct)

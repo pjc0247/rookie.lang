@@ -163,7 +163,6 @@ private:
     // REGISTERS
     program_entry  *current_entry;
     instruction     inst;
-    bool            errflag;
     bool            endflag;
     stack_provider  sp;
                    
