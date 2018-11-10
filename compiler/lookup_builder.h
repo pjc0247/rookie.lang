@@ -18,7 +18,12 @@ public:
 protected:
     virtual syntax_node *visit(syntax_node *node) {
         if (node->type == syntax_type::syn_ident) {
-            sp.get_ptr(((ident_node*)node)->ident);
+            auto id = ((ident_node*)node)->ident;
+
+            if (id.size() >= 1 && id[0] == '@')
+                sp.get_ptr(id.substr(1));
+            else
+                sp.get_ptr(id);
         }
 
         return node;
