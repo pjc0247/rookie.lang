@@ -126,6 +126,8 @@ private:
     void op_ldfld();
     void op_stfld();
 
+    void unhandled_exception();
+
     value get_local(int n);
     runtime_typedata get_type(const value &v);
     runtime_typedata get_type(uint32_t sighash);

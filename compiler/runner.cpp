@@ -2,6 +2,7 @@
 
 #include "binding.h"
 #include "sig2hash.h"
+#include "did_you_mean.h"
 
 #include "libs/array.h"
 #include "libs/dictionary.h"
@@ -294,8 +295,8 @@ void runner::run_entry(program_entry *_entry) {
 
         }
         else {
-            printf("[UNHANDLED EXCEPTION]\n");
-            printf("%S\n", exception->what().c_str());
+            unhandled_exception();
+
             assert(0);
         }
 
@@ -619,6 +620,24 @@ bool runner::handle_exception() {
 
     return true;
 }
+void runner::unhandled_exception() {
+    printf("[UNHANDLED EXCEPTION]\n");
+    printf("%S\n", exception->what().c_str());
+
+    if (typeid(*exception).name() == typeid(method_not_found_exception).name()) {
+        auto ex = (method_not_found_exception*)exception;
+        set_rkctx(exectx);
+        auto candidates = did_you_mean::find(
+            ex->given_name, types[callee_ptr->objref->sighash]);
+
+        if (candidates.size() > 0) {
+            printf("Did you mean?\n");
+            for (auto &c : candidates) {
+                printf("  * %S\n", c.id.c_str());
+            }
+        }
+    }
+}
 
 __forceinline
 value runner::get_local(int n) {
@@ -725,8 +744,10 @@ void runner::_vcall(int sighash, stack_provider &sp) {
     }
 
     auto _callinfo = vtable->find(sighash);
-    if (_callinfo == vtable->end())
-        exception = new rkexception(L"No such method: ");
+    if (_callinfo == vtable->end()) {
+        exception = new method_not_found_exception(
+            hash_to_string(sighash));
+    }
     else {
         auto callinfo = (*_callinfo).second;
         if (callinfo.type == call_type::ct_syscall_direct)

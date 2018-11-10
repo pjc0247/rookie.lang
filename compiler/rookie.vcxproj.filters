@@ -197,6 +197,7 @@
     <ClInclude Include="ast\op_and_assign.h">
       <Filter>ast</Filter>
     </ClInclude>
+    <ClInclude Include="did_you_mean.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

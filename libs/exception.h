@@ -56,3 +56,13 @@ public:
         rkexception("memory_overflow_exception") {
     }
 };
+class method_not_found_exception : public rkexception {
+public:
+    method_not_found_exception(const std::wstring &given_name) :
+        given_name(given_name),
+        rkexception(L"No such method: " + given_name) {
+    }
+
+public:
+    std::wstring given_name;
+};

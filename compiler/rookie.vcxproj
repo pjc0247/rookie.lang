@@ -194,6 +194,7 @@
     <ClInclude Include="conout.h" />
     <ClInclude Include="dbg.h" />
     <ClInclude Include="debugger.h" />
+    <ClInclude Include="did_you_mean.h" />
     <ClInclude Include="exe_context.h" />
     <ClInclude Include="c_interface.h" />
     <ClInclude Include="fileio.h" />
