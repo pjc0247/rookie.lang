@@ -11,6 +11,7 @@ public:
     }
     value set_property(const std::wstring &key, value_cref value);
     value get_property(const std::wstring &key);
+    value has_property(const std::wstring &key);
 
     value to_string();
 };

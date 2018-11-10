@@ -11,6 +11,7 @@ void rkscriptobject::import(binding &b) {
     method(type, L"properties", &rkscriptobject::all_properties);
     method(type, L"__set_prop", &rkscriptobject::set_property);
     method(type, L"__get_prop", &rkscriptobject::get_property);
+    method(type, L"has_property", &rkscriptobject::has_property);
     method(type, rk_id_tostring, &rkscriptobject::to_string);
 
     b.add_type(type);
@@ -22,6 +23,9 @@ value rkscriptobject::set_property(const std::wstring &key, value_cref value) {
 }
 value rkscriptobject::get_property(const std::wstring &key) {
     return this->properties[sig2hash(key)];
+}
+value rkscriptobject::has_property(const std::wstring &key) {
+    return value::mkboolean(properties.find(sig2hash(key)) != properties.end());
 }
 
 value rkscriptobject::to_string() {
