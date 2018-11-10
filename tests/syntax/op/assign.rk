@@ -1,0 +1,12 @@
+class assign_test {
+    @main
+    static def main() {
+        a = 1;
+        b = true;
+        c = "hh";
+
+        puts (a);
+        puts (b);
+        puts (c);
+    }
+}

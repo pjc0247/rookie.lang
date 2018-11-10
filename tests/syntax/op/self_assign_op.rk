@@ -1,0 +1,20 @@
+class self_ssign_test {
+    @main
+    static def main() {
+        a = 1;
+        a += 1;
+        puts (a);
+
+        a = 1;
+        a -= 1;
+        puts (a);
+
+        a = 1;
+        a *= 2;
+        puts (a);
+
+        a = 4;
+        a /= 2;
+        puts (a);
+    }
+}
