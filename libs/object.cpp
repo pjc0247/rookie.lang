@@ -5,14 +5,23 @@
 
 #include "object.h"
 
-value rkscriptobject::set_property(value_cref key, value_cref value) {
-    auto _key = rkwstr(key);
-    this->properties[sig2hash(_key)] = value;
+void rkscriptobject::import(binding &b) {
+    auto type = type_builder(L"object");
+
+    method(type, L"properties", &rkscriptobject::all_properties);
+    method(type, L"__set_prop", &rkscriptobject::set_property);
+    method(type, L"__get_prop", &rkscriptobject::get_property);
+    method(type, rk_id_tostring, &rkscriptobject::to_string);
+
+    b.add_type(type);
+}
+
+value rkscriptobject::set_property(const std::wstring &key, value_cref value) {
+    this->properties[sig2hash(key)] = value;
     return rknull;
 }
-value rkscriptobject::get_property(value_cref key) {
-    auto _key = rkwstr(key);
-    return this->properties[sig2hash(_key)];
+value rkscriptobject::get_property(const std::wstring &key) {
+    return this->properties[sig2hash(key)];
 }
 
 value rkscriptobject::to_string() {
