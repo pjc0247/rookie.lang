@@ -107,10 +107,12 @@ public:
     value_to_ctype(value_cref v) {
         if (v.type == value_type::object) {
             if (v.objref->sighash == sighash_string)
-                return rkwstr(v);
+                return value_to_std_wstring(v);
         }
         handle_cast_failure<T>();
     }
+    static std::wstring value_to_std_wstring(value_cref v);
+
     template <typename T>
     static
     std::enable_if_t<std::is_base_of<object, T>::value, T>
