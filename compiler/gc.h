@@ -31,6 +31,8 @@ protected:
     void mark(value &v, gc_context &ctx);
     void sweep(gc_context &ctx);
 
+    void shrink_if_possible();
+
 private:
     runner &r;
 

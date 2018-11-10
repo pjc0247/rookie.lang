@@ -47,6 +47,8 @@ void gc::collect() {
     // SWEEP
     sweep(ctx);
 
+    shrink_if_possible();
+
     rklog("[GC] after : %d\n", all_objects.size());
 }
 
@@ -86,4 +88,10 @@ void gc::sweep(gc_context &ctx) {
         else
             ++it;
     }
+}
+void gc::shrink_if_possible() {
+    if (next_collect < object_count() * 2.5f)
+        return;
+
+    next_collect *= 0.8f;
 }
