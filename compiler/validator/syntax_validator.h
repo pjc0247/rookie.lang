@@ -24,6 +24,9 @@ public:
         case syntax_type::syn_op:
             syn_op((op_node*)node);
             break;
+        case syntax_type::syn_assignment:
+            syn_assignment((assignment_node*)node);
+            break;
         }
         
         return node;
@@ -65,6 +68,10 @@ private:
                 return;
             ctx.push_error(syntax_error(op, L"Unused evaluation."));
         }
+    }
+    void syn_assignment(assignment_node *node) {
+        if (node->parent->type != syntax_type::syn_block)
+            ctx.push_error(syntax_error(node, L"Invalid operation"));
     }
 
     bool is_math_op(op_node *op) {

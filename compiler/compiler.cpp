@@ -104,6 +104,9 @@ root_node *compiler::ast_transformed(
 
     ((syntax_traveler*)(new endlpop_transformer()))->transform(root);
 
+    auto validator = new syntax_validator(ctx);
+    validator->transform(root);
+
     return root;
 }
 
