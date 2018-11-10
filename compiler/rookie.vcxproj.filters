@@ -44,6 +44,9 @@
     <ClCompile Include="..\libs\dictionary.cpp">
       <Filter>libs</Filter>
     </ClCompile>
+    <ClCompile Include="..\libs\string.cpp">
+      <Filter>libs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binding.h" />

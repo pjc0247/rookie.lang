@@ -232,6 +232,7 @@
     <ClCompile Include="..\libs\dictionary.cpp" />
     <ClCompile Include="..\libs\json.cpp" />
     <ClCompile Include="..\libs\object.cpp" />
+    <ClCompile Include="..\libs\string.cpp" />
     <ClCompile Include="binding.cpp" />
     <ClCompile Include="compiler.cpp" />
     <ClCompile Include="debugger.cpp" />

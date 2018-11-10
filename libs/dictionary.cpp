@@ -11,7 +11,7 @@
 void rkdictionary::import(binding &b) {
     auto type = type_builder(L"dictionary");
 
-    type.method(rk_id_new, create_array);
+    type.method(rk_id_new, create_dictionary);
 
     method(type, rk_id_getitem, &rkdictionary::get);
     method(type, rk_id_setitem, &rkdictionary::set);
