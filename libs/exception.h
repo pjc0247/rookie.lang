@@ -49,3 +49,10 @@ private:
 
 	std::deque<callframe> callstack;
 };
+
+class memory_overflow_exception : public rkexception {
+public:
+    memory_overflow_exception() :
+        rkexception("memory_overflow_exception") {
+    }
+};

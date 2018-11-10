@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "runner.h"
+#include "libs/exception.h"
 
 #include "gc.h"
 
@@ -22,8 +23,12 @@ void gc::add_object(object *objref) {
     if (all_objects.size() >= next_collect) {
         collect();
 
-        if (all_objects.size() >= next_collect * 0.7)
-            next_collect += gc_grow_size;
+        if (all_objects.size() >= next_collect * 0.7) {
+            if (_overflow(next_collect, gc_grow_size))
+                rk_throw(new memory_overflow_exception());
+            else 
+                next_collect += gc_grow_size;
+        }
     }
 }
 void gc::remove_object(object *objref) {
