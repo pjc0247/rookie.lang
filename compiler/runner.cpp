@@ -294,14 +294,14 @@ void runner::run_entry(program_entry *_entry) {
 
         continue;
     error:
-        printf("[EXCEPTION]\n");
-        printf("%s\n", exception->what());
-
         if (handle_exception()) {
 
         }
-        else 
+        else {
+            printf("[UNHANDLED EXCEPTION]\n");
+            printf("%S\n", exception->what().c_str());
             assert(0);
+        }
 
         exception = nullptr;
     }
@@ -610,15 +610,15 @@ bool runner::handle_exception() {
         }
     }
 
-    assert(exh != nullptr);
+    if (exh == nullptr)
+        return false;
 
     pc = exh->_catch;
 
-	auto rkex = new rkexception(exception);
     auto ex = _initobj_systype(
         sig2hash(L"exception"),
-        rkex);
-	rkex->set_callstack(callstack);
+        exception);
+    exception->set_callstack(callstack);
     push(ex);
 
     return true;
@@ -666,14 +666,17 @@ void runner::syscall(int index, stack_provider &sp) {
     try {
         syscalls.table[index](sp);
     }
-    catch (base_exception e) {
-        exception = new base_exception(e);
+    catch (const base_exception &e) {
+        exception = new rkexception(e);
     }
     catch (const std::exception& ex) {
-        exception = new base_exception(ex.what());
+        exception = new rkexception(ex.what());
+    }
+    catch (rkexception *ex) {
+        exception = ex;
     }
     catch (...) {
-        exception = new base_exception("Unknown exception");
+        exception = new rkexception(L"Unknown exception");
     }
 }
 __forceinline
@@ -727,7 +730,7 @@ void runner::_vcall(int sighash, stack_provider &sp) {
 
     auto _callinfo = vtable->find(sighash);
     if (_callinfo == vtable->end()) {
-        exception = new base_exception("No such method: ");
+        exception = new rkexception(L"No such method: ");
         errflag = true;
     }
     else {

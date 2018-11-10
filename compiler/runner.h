@@ -30,6 +30,8 @@ struct type_cache;
 struct reflection_typedata;
 struct runtime_typedata;
 
+class  rkexception;
+
 enum class runtime_typekind {
     tk_systype,
     tk_programtype
@@ -170,7 +172,7 @@ private:
     uint16_t        bp; // base stack pointer
     value          *callee_ptr; // .this
 
-    base_exception *exception;
+    rkexception    *exception;
 
     // STACKS
     std::deque<callframe> callstack;

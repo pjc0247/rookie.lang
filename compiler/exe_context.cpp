@@ -2,7 +2,10 @@
 
 #include "binding.h"
 #include "sig2hash.h"
+#include "gc.h"
 #include "runner.h"
+
+#include "libs/exception.h"
 
 #include "exe_context.h"
 
@@ -21,6 +24,10 @@ exe_context::exe_context(runner &r, stack_provider &sp) :
 
 const std::wstring &exe_context::get_name(uint32_t sighash) {
     return r.hash_to_string(sighash);
+}
+
+void exe_context::throw_exception(rkexception *exception) {
+    r.exception = exception;
 }
 
 value exe_context::init_obj(uint32_t sighash, object *obj) {

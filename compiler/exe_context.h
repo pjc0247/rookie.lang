@@ -4,18 +4,21 @@
 
 #include "stack_provider.h"
 #include "debugger.h"
-#include "gc.h"
 
 class  runner;
 struct value;
+class  gc;
 
 class  rktype;
+class  rkexception;
 
 class exe_context {
 public:
     exe_context(runner &r, stack_provider &sp);
 
     const std::wstring &get_name(uint32_t sighash);
+
+    void throw_exception(rkexception* exception);
 
     value init_obj(uint32_t sighash, object *obj);
     value init_obj_nogc(uint32_t sighash, object *obj);

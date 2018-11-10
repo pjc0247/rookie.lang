@@ -47,6 +47,10 @@ binding binding::default_binding() {
     return b;
 }
 
+void cvt::throw_invalid_casting() {
+    throw new rkexception("Invalid casting");
+}
+
 value type_builder::default_to_string(value_cref _this) {
     auto objthis = (object*)_this.objref;
     std::wstring str = L"#<";

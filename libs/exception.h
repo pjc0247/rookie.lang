@@ -15,11 +15,12 @@ public:
         b.add_type(type);
     }
 
-	rkexception(base_exception *ex) {
-		assert(ex != nullptr);
-
-		msg = str2wstr(ex->what());
+	rkexception(const base_exception &ex) {
+		msg = str2wstr(ex.what());
 	}
+    rkexception(const char *msg) :
+        msg(str2wstr(msg)) {
+    }
 	rkexception(const std::wstring &msg) :
 		msg(msg) {
 	}
@@ -27,6 +28,10 @@ public:
 	void set_callstack(const std::deque<callframe> &cs) {
 		callstack = cs;
 	}
+
+    const std::wstring &what() {
+        return msg;
+    }
 
 	value to_string() {
 		std::wstring str;
