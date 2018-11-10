@@ -624,8 +624,12 @@ void runner::unhandled_exception() {
     printf("[UNHANDLED EXCEPTION]\n");
     printf("%S\n", exception->what().c_str());
 
-    if (typeid(*exception).name() == typeid(method_not_found_exception).name()) {
-        auto ex = (method_not_found_exception*)exception;
+#define begin_catch(tn, ex) \
+    if (typeid(*exception).name() == typeid(tn).name()) { \
+        auto ex = (tn *)exception; 
+#define end_catch }
+
+    begin_catch(method_not_found_exception, ex)
         set_rkctx(exectx);
         auto candidates = did_you_mean::find(
             ex->given_name, types[callee_ptr->objref->sighash]);
@@ -636,7 +640,10 @@ void runner::unhandled_exception() {
                 printf("  * %S\n", c.id.c_str());
             }
         }
-    }
+    end_catch
+
+#undef begin_catch
+#undef end_catch
 }
 
 __forceinline
