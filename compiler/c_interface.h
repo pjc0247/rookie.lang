@@ -9,6 +9,7 @@ struct pdb;
 struct value;
 
 struct rkcc;
+class  rkexception;
 
 extern "C" {
     void rk_exec(const char *code);
@@ -28,4 +29,7 @@ extern "C" {
     value rk_integer(int n);
     value rk_decimal(float f);
     value rk_string(const char *str);
+
+    void rk_throw(rkexception *ex);
+
 }

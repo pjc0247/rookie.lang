@@ -107,3 +107,7 @@ value rk_decimal(float f) {
 value rk_string(const char *str) {
     return str2rk(str2wstr(str));
 }
+
+void rk_throw(rkexception *ex) {
+    rkctx()->throw_exception(ex);
+}
