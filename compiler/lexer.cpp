@@ -33,6 +33,11 @@ static std::vector<lexer_token> rules{
     lexer_token(L"++", token_type::op),
     lexer_token(L"--", token_type::op),
 
+    lexer_token(L"-=", token_type::op),
+    lexer_token(L"+=", token_type::op),
+    lexer_token(L"*=", token_type::op),
+    lexer_token(L"/=", token_type::op),
+
     lexer_token(L"is", token_type::keyword),
     lexer_token(L"+", token_type::op, -5001),
     lexer_token(L"-", token_type::op, -5001),

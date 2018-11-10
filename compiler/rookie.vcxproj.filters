@@ -188,6 +188,9 @@
       <Filter>syntax</Filter>
     </ClInclude>
     <ClInclude Include="lookup_builder.h" />
+    <ClInclude Include="ast\op_and_assign.h">
+      <Filter>ast</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

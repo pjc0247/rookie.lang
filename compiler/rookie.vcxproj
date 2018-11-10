@@ -186,6 +186,7 @@
     <ClInclude Include="ast\foreach.h" />
     <ClInclude Include="ast\ifelse_chain.h" />
     <ClInclude Include="ast\newdic.h" />
+    <ClInclude Include="ast\op_and_assign.h" />
     <ClInclude Include="ast\syntax_travler.h" />
     <ClInclude Include="binding.h" />
     <ClInclude Include="call.h" />

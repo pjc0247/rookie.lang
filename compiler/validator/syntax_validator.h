@@ -59,8 +59,12 @@ private:
 
         // Prevents useless evaluation:
         // 1 + 1 
-        if (op->parent->type == syntax_type::syn_block)
+        if (op->parent->type == syntax_type::syn_block) {
+            if (op->op == L"+=" || op->op == L"-=" ||
+                op->op == L"*=" || op->op == L"/=")
+                return;
             ctx.push_error(syntax_error(op, L"Unused evaluation."));
+        }
     }
 
     bool is_math_op(op_node *op) {

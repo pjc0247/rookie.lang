@@ -17,6 +17,7 @@
 #include "ast/classfield.h"
 #include "ast/foreach.h"
 #include "ast/ifelse_chain.h"
+#include "ast/op_and_assign.h"
 
 #include "validator/syntax_validator.h"
 #include "validator/duplicated_name.h"
@@ -158,6 +159,7 @@ compiler &compiler::include_essential_passes(compiler &c) {
      .transformer<classfield_transformer>()
      .transformer<foreach_transformer>()
      .transformer<ifelse_chain_transformer>()
+     .transformer<op_and_assign_transformer>()
      .transformer<arr_setitem_transformer>()
      .transformer<arr_getitem_transformer>();
     return c;
