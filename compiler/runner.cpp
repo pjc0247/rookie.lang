@@ -449,14 +449,15 @@ void runner::op_newobj() {
 #endif
 
     // FIXME
+    auto &type_data = types[inst.operand];
 
-    if (types[inst.operand].typekind == runtime_typekind::tk_programtype) {
+    if (type_data.typekind == runtime_typekind::tk_programtype) {
         auto objref = new rkscriptobject();
         push(value::mkobjref(objref));
 
-        objref->vtable = &types[inst.operand].vtable;
+        objref->vtable = &type_data.vtable;
         objref->sighash = inst.operand;
-        objref->name_ptr = types[inst.operand].name.c_str();
+        objref->name_ptr = type_data.name.c_str();
 
         if (objref->vtable->find(sighash__ctor) !=
             objref->vtable->end()) {
@@ -472,12 +473,12 @@ void runner::op_newobj() {
     }
     else {
         // FIXME
-        auto newcall = types[inst.operand].vtable[sighash_new];
+        auto newcall = type_data.vtable[sighash_new];
 
         if (newcall.type == call_type::ct_syscall_direct) {
             syscall(newcall.entry, sp);
             auto obj = stack[stack.size() - 1];
-            obj.objref->vtable = &types[inst.operand].vtable;
+            obj.objref->vtable = &type_data.vtable;
             obj.objref->sighash = inst.operand;
             gc.add_object(obj.objref);
         }
