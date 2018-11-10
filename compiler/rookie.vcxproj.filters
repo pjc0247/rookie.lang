@@ -41,6 +41,9 @@
     <ClCompile Include="syntax\loop_node.cpp">
       <Filter>syntax</Filter>
     </ClCompile>
+    <ClCompile Include="..\libs\dictionary.cpp">
+      <Filter>libs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binding.h" />
