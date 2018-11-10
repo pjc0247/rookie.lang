@@ -131,10 +131,10 @@ public:
     type_builder(const std::wstring &name) :
         name(name) {
 
-        method(L"to_string", [name](value_cref _this) {
-            return value::mkstring2(name);
-        });
+        method(rk_id_tostring, default_to_string);
     }
+
+    static value default_to_string(value_cref _this);
 
     type_builder &static_method(const std::wstring &signature,
         const std::function<value()> &function) {

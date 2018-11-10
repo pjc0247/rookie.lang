@@ -46,3 +46,17 @@ binding binding::default_binding() {
 
     return b;
 }
+
+value type_builder::default_to_string(value_cref _this) {
+    auto objthis = (object*)_this.objref;
+    std::wstring str = L"#<";
+    str += objthis->name_ptr;
+
+    for (auto &p : objthis->properties) {
+        str += L" @" + rk_id2str(p.first) + L": ";
+        str += rk_call_tostring_w(p.second);
+    }
+
+    str += L">";
+    return str2rk(str);
+}
