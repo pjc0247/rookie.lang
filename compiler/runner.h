@@ -85,6 +85,8 @@ public:
     void execute(program_entry *_entry);
     void run_entry(program_entry *_entry);
 
+    const std::wstring &hash_to_string(uint32_t hash);
+
     void  set_callee_as_top();
     void  _vcall(int sighash, stack_provider &sp);
     void  _newobj_systype(int sighash, stack_provider &sp);
@@ -147,6 +149,7 @@ private:
 
     syscalltable syscalls;
     std::map<uint32_t, runtime_typedata> types;
+    std::map<uint32_t, std::wstring> id_pool;
 
     gc gc;
     debugger *dbger;

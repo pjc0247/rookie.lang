@@ -158,6 +158,7 @@ struct program_header {
     uint32_t entry_len;
     uint32_t exception_handler_len;
     uint32_t types_len;
+    uint32_t lookup_len;
     
     uint32_t main_entry;
 };
@@ -184,6 +185,7 @@ struct program {
     instruction       *code;
     const wchar_t     *rdata;
     typedata          *types;
+    const wchar_t     *lookups;
 
     void dump() {
         wprintf(L"[rookie_program]\r\n");

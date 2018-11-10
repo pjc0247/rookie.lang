@@ -46,6 +46,15 @@ runner::runner(const program &p, ::binding &binding) :
     build_runtime_data();
     build_primitive_cache();
     build_type_cache();
+
+    int offset = 0;
+    for (int i = 0; i < p.header.lookup_len; i++) {
+        if (p.lookups[i] == 0) {
+            auto id = std::wstring(p.lookups + offset);
+            id_pool[sig2hash(id)] = id;
+            offset = i + 1;
+        }
+    }
 }
 runner::~runner() {
     delete ptype;
@@ -458,6 +467,7 @@ void runner::op_newobj() {
 
         objref->vtable = &types[inst.operand].vtable;
         objref->sighash = inst.operand;
+        objref->name_ptr = types[inst.operand].name.c_str();
 
         if (objref->vtable->find(sighash__ctor) !=
             objref->vtable->end()) {
@@ -687,6 +697,10 @@ void runner::programcall(int index) {
     current_entry = &entry;
 
     run_entry(current_entry);
+}
+
+const std::wstring &runner::hash_to_string(uint32_t hash) {
+    return id_pool[hash];
 }
 
 void runner::set_callee_as_top() {

@@ -60,6 +60,7 @@ void rk_free_program(program *p) {
     free((void*)p->rdata);
     free(p->entries);
     free(p->code);
+    free((void*)p->lookups);
 
     free(p);
 }

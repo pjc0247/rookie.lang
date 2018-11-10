@@ -15,6 +15,8 @@ class exe_context {
 public:
     exe_context(runner &r, stack_provider &sp);
 
+    const std::wstring &get_name(uint32_t sighash);
+
     value init_obj(uint32_t sighash, object *obj);
     value init_obj_nogc(uint32_t sighash, object *obj);
 

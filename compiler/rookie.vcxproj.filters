@@ -187,6 +187,7 @@
     <ClInclude Include="syntax\syntax_node.h">
       <Filter>syntax</Filter>
     </ClInclude>
+    <ClInclude Include="lookup_builder.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

@@ -30,7 +30,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v141_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -202,6 +202,7 @@
     <ClInclude Include="errors.h" />
     <ClInclude Include="ir\dup.h" />
     <ClInclude Include="ir_optimiser.h" />
+    <ClInclude Include="lookup_builder.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="optimiser.h" />
     <ClInclude Include="program.h" />

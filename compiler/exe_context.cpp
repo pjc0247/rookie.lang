@@ -19,6 +19,10 @@ exe_context::exe_context(runner &r, stack_provider &sp) :
     r(r), sp(sp) {
 }
 
+const std::wstring &exe_context::get_name(uint32_t sighash) {
+    return r.hash_to_string(sighash);
+}
+
 value exe_context::init_obj(uint32_t sighash, object *obj) {
     return r._initobj_systype(sighash, obj);
 }

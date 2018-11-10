@@ -11,6 +11,7 @@
 #include "errors.h"
 #include "type_attr.h"
 #include "ir_optimiser.h"
+#include "lookup_builder.h"
 
 #include "ast/ast_reflection.h"
 
@@ -267,12 +268,17 @@ public:
         program &p = *_p;
         auto types = ctx.get_programtypes();
 
+        auto root = main_node->root;
+        lookup_builder lb;
+        auto ids = lb.build(root);
+
         memset(&p, 0, sizeof(program));
         p.header.code_len = instructions.size();
         p.header.rdata_len = spool.size();
         p.header.entry_len = entries.size();
         p.header.exception_handler_len = exception_handlers.size();
         p.header.types_len = types.size();
+        p.header.lookup_len = ids.size();
 
         p.header.main_entry = 0;
 
@@ -331,6 +337,10 @@ public:
         if (entries.size() > 0) {
             p.entries = (program_entry*)malloc(sizeof(program_entry) * entries.size());
             memcpy(p.entries, &entries[0], sizeof(program_entry) * entries.size());
+        }
+        if (ids.size() > 0) {
+            p.lookups = (wchar_t*)malloc(sizeof(wchar_t) * ids.size());
+            memcpy((wchar_t*)p.lookups, ids.fin(), sizeof(wchar_t) * ids.size());
         }
 
         return _p;

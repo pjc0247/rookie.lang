@@ -19,6 +19,8 @@ public:
         ptr++;
     }
     void pop_back() {
+        assert(ptr > 0);
+
         ptr--;
     }
     void drop(int n) {
