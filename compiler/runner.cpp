@@ -542,7 +542,7 @@ void runner::op_vcall() {
      *  ARGS (0..n)
      *  OP_LDVCALL
      */
-    _vcall(inst.operand, inst.opcode, sp);
+    _vcall(inst.operand, inst.call_params, sp);
 }
 void runner::op_ret() {
     // [STACK-LAYOUT   |   OPERAND]
@@ -872,7 +872,7 @@ callframe runner::pop_callframe(program_entry &entry) {
 
     auto callframe = callstack.back();
     callstack.pop_back();
-    stack.drop(stack.size() - callframe.bp);
+    stack.drop(stack.size() - callframe.bp - 1);
 
     return callframe;
 }

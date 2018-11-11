@@ -788,7 +788,7 @@ private:
                 
         }*/
         emit_callpadding(node, lookup.method);
-        emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()));
+        emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()), node->args());
     }
     void emit_return(return_node *node) {
         auto val = node->value();

@@ -24,7 +24,8 @@ public:
         ptr--;
     }
     void drop(int n) {
-        ptr -= n;
+        if (n > 0)
+            ptr -= n;
     }
     value &back() {
         return buf[ptr - 1];
