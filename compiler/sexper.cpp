@@ -175,6 +175,9 @@ void sexper::sexp_root(const token &token) {
     else if (token.type == token_type::colon) {
         stoken.type = stoken_type::st_begin_inherit;
     }
+    else if (token.type == token_type::comma) {
+        _mark_as_parsed(stoken);
+    }
     else if (token.type == token_type::left_bracket) {
         _mark_as_parsed(stoken);
         stoken.type = stoken_type::st_end_inherit;
