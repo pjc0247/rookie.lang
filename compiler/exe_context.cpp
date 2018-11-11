@@ -56,13 +56,13 @@ value &exe_context::get_this() {
 value exe_context::call(const value &obj, uint32_t sighash) {
     sp.push(obj);
     r.set_callee_as_top();
-    r._vcall(sighash, sp);
+    r._vcall(sighash, 0, sp);
     return sp.pop();
 }
 value exe_context::call(const value &obj, const std::wstring &name) {
     sp.push(obj);
     r.set_callee_as_top();
-    r._vcall(sig2hash(name), sp);
+    r._vcall(sig2hash(name), 0, sp);
     return sp.pop();
 }
 value exe_context::next_param() {

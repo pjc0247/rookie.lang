@@ -90,7 +90,7 @@ public:
     const std::wstring &hash_to_string(uint32_t hash);
 
     void  set_callee_as_top();
-    void  _vcall(int sighash, stack_provider &sp);
+    void  _vcall(int sighash, uint8_t params, stack_provider &sp);
     void  _newobj_systype(int sighash, stack_provider &sp);
     value _initobj_systype(int sighash, object *objref);
     value _initobj_systype_nogc(int sighash, object *objref);
@@ -119,6 +119,7 @@ private:
     void op_newobj();
     void op_newarr();
     void op_newdic();
+    void op_param_to_arr();
 
     void op_vcall();
     void op_ret();
@@ -139,8 +140,8 @@ private:
 
     bool handle_exception();
 
-    void syscall(int index, stack_provider &sp);
-    void programcall(int index);
+    void syscall(int index, uint8_t params, stack_provider &sp);
+    void programcall(int index, uint8_t params);
 
     value &top();
     value pop();

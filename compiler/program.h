@@ -16,6 +16,7 @@ typedef enum opcode : unsigned char {
     op_and, op_or, op_not,
 
     op_newobj, op_newarr, op_newdic,
+    op_param_to_arr,
     op_call, op_syscall, op_vcall,
     op_ret,
 
@@ -62,6 +63,7 @@ inline const wchar_t *to_string(opcode type) {
     case op_newobj: return L"op_newobj";
     case op_newarr: return L"op_newarr";
     case op_newdic: return L"op_newdic";
+    case op_param_to_arr: return L"op_param_to_arr";
     case op_syscall: return L"op_syscall";
     case op_throw: return L"op_throw";
     case op_call: return L"op_call";
@@ -127,14 +129,25 @@ struct instruction {
         float    f32;
     };
 
+    union {
+        uint8_t operand2;
+        uint8_t call_params;
+    };
+
     instruction() :
-        opcode(opcode::op_nop), i32(0) {
+        opcode(opcode::op_nop), i32(0), operand2(0) {
     }
     instruction(opcode_t _o, uint32_t operand) :
-        opcode((uint8_t)_o), operand(operand) {
+        opcode((uint8_t)_o), operand(operand), operand2(0) {
+    }
+    instruction(opcode_t _o, uint32_t operand, uint8_t operand2) :
+        opcode((uint8_t)_o), operand(operand), operand2(operand2) {
     }
     instruction(opcode_t _o, const callsite &cs) :
-        opcode((uint8_t)_o), cs(cs) {
+        opcode((uint8_t)_o), cs(cs), operand2(0) {
+    }
+    instruction(opcode_t _o, const callsite &cs, uint8_t operand2) :
+        opcode((uint8_t)_o), cs(cs), operand2(operand2) {
     }
 };
 

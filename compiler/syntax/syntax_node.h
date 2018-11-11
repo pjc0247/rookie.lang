@@ -64,6 +64,11 @@ public:
 	syntax_node *append(syntax_node *node, bool fire_oncomplete = true);
 	syntax_node *pop();
 
+    syntax_node *last() {
+        if (children.size() == 0) return nullptr;
+        return children[children.size() - 1];
+    }
+
 	token &token() {
 		return source.source;
 	}
@@ -339,7 +344,7 @@ public:
 		return children.end();
 	}
 
-    uint32_t args() {
+    virtual uint8_t args() {
         return children.size() - 1;
     }
 };
@@ -349,6 +354,10 @@ public:
 		call_node(token) {
 		type = syntax_type::syn_callmember;
 	}
+
+    virtual uint8_t args() {
+        return children.size() - 2;
+    }
 };
 
 class return_node : public syntax_node {

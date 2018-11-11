@@ -216,12 +216,15 @@ void runner::run_entry(program_entry *_entry) {
         case opcode::op_newdic:
             op_newdic();
             break;
+        case opcode::op_param_to_arr:
+            op_param_to_arr();
+            break;
 
         case opcode::op_call:
-            programcall(inst.cs.index);
+            programcall(inst.cs.index, inst.cs.params);
             break;
         case opcode::op_syscall:
-            syscall(inst.cs.index, sp);
+            syscall(inst.cs.index, inst.cs.params, sp);
             break;
         case opcode::op_vcall:
             op_vcall();
@@ -339,7 +342,7 @@ void runner::op_eq() {
             push(left);
             callee_ptr = &left;
             push(right);
-            _vcall(sighash_equal, sp);
+            _vcall(sighash_equal, 1, sp);
         }
         else 
             push(rkfalse);
@@ -362,7 +365,7 @@ void runner::op_neq() {
             push(left);
             callee_ptr = &left;
             push(right);
-            _vcall(sighash_equal, sp);
+            _vcall(sighash_equal, 1, sp);
 
             if (top() == rktrue)
                 replace_top(rkfalse);
@@ -432,7 +435,7 @@ void runner::op_add() {
         push(left);
         callee_ptr = &left;
         push(right);
-        _vcall(sig2hash(L"__add__"), sp);
+        _vcall(sig2hash(L"__add__"), 1, sp);
     }
 }
 void runner::op_newobj() {
@@ -460,7 +463,7 @@ void runner::op_newobj() {
             objref->vtable->end()) {
 
             set_callee_as_top();
-            _vcall(sighash__ctor, sp);
+            _vcall(sighash__ctor, inst.call_params, sp);
             pop();
 
             push(value::mkobjref(objref));
@@ -473,7 +476,7 @@ void runner::op_newobj() {
         auto newcall = type_data.vtable[sighash_new];
 
         if (newcall.type == call_type::ct_syscall_direct) {
-            syscall(newcall.entry, sp);
+            syscall(newcall.entry, inst.call_params, sp);
             auto obj = stack[stack.size() - 1];
             obj.objref->vtable = &type_data.vtable;
             obj.objref->sighash = inst.operand;
@@ -485,8 +488,7 @@ void runner::op_newobj() {
 }
 void runner::op_newarr() {
     // [STACK-LAYOUT   |   OPERAND]
-    /*  KEY   (0..n)
-     *  VALUE (0..n)
+    /*  VALUE (0..n)
      *  OP_NEWARR          INTEGER
      */
     set_rkctx(exectx);
@@ -513,6 +515,26 @@ void runner::op_newdic() {
 
     gc.add_object(dicref);
 }
+void runner::op_param_to_arr() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  VALUE (0..n)
+     *  OP_PARAM_TO_ARR 
+     */
+    auto &cf = callstack.back();
+    auto ary_size =
+        stack.size()
+        - cf.bp
+        - (current_entry->params - 1);
+
+    set_rkctx(exectx);
+    auto aryref = new rkarray(ary_size);
+    // FIXME: remove `reverse.
+    aryref->vtable = &ptype->array.vtable;
+    aryref->sighash = sighash_array;
+    push(aryref->reverse());
+
+    delete aryref;
+}
 
 void runner::op_vcall() {
     // [STACK-LAYOUT   |   OPERAND]
@@ -520,7 +542,7 @@ void runner::op_vcall() {
      *  ARGS (0..n)
      *  OP_LDVCALL
      */
-    _vcall(inst.operand, sp);
+    _vcall(inst.operand, inst.opcode, sp);
 }
 void runner::op_ret() {
     // [STACK-LAYOUT   |   OPERAND]
@@ -691,7 +713,7 @@ rktype *runner::get_rktype(uint32_t sighash) {
 }
 
 __forceinline
-void runner::syscall(int index, stack_provider &sp) {
+void runner::syscall(int index, uint8_t params, stack_provider &sp) {
     assert(index >= 0);
     assert(index < syscalls.table.size());
 
@@ -713,7 +735,7 @@ void runner::syscall(int index, stack_provider &sp) {
     }
 }
 __forceinline
-void runner::programcall(int index) {
+void runner::programcall(int index, uint8_t params) {
     assert(index >= 0);
     assert(index < p.header.entry_len);
 
@@ -721,7 +743,7 @@ void runner::programcall(int index) {
     auto stacksize = stack.size();
     push_callframe(entry);
     pc = entry.entry;
-    bp = stacksize - entry.params;
+    bp = stacksize - params;
     current_entry = &entry;
 
     run_entry(current_entry);
@@ -739,7 +761,7 @@ void runner::set_callee_as_top() {
 }
 
 // Performs vcall, internal use only.
-void runner::_vcall(int sighash, stack_provider &sp) {
+void runner::_vcall(int sighash, uint8_t params, stack_provider &sp) {
     std::map<uint32_t, callinfo> *vtable;
 
     if (callee_ptr->type == value_type::integer) {
@@ -769,9 +791,9 @@ void runner::_vcall(int sighash, stack_provider &sp) {
     else {
         auto callinfo = (*_callinfo).second;
         if (callinfo.type == call_type::ct_syscall_direct)
-            syscall(callinfo.entry, sp);
+            syscall(callinfo.entry, params, sp);
         else if (callinfo.type == call_type::ct_programcall_direct) {
-            programcall(callinfo.entry);
+            programcall(callinfo.entry, params);
             stack[stack.size() - 2] = stack[stack.size() - 1];
             pop();
         }
@@ -786,7 +808,7 @@ void runner::_newobj_systype(int sighash, stack_provider &sp) {
         throw invalid_access_exception("invalid calltype for .new");
 #endif
 
-    syscall(newcall.entry, sp);
+    syscall(newcall.entry, 0, sp);
     auto obj = top();
     obj.objref->vtable = &types[sighash].vtable;
     obj.objref->sighash = sighash;
@@ -841,6 +863,7 @@ void runner::replace_top(const value &v) {
 
 void runner::push_callframe(program_entry &entry) {
     callstack.push_back(callframe(pc, bp, &entry));
+
     for (uint16_t i = 0; i < entry.locals - entry.params; i++)
         stack.push_back(value::empty());
 }
@@ -849,8 +872,7 @@ callframe runner::pop_callframe(program_entry &entry) {
 
     auto callframe = callstack.back();
     callstack.pop_back();
-
-    stack.drop(callframe.entry->locals);
+    stack.drop(stack.size() - callframe.bp);
 
     return callframe;
 }

@@ -159,17 +159,25 @@ public:
         instructions.push_back(instruction(opcode, cs));
         instruction_indexes.push_back(codeindex);
     }
+    void emit(opcode_t opcode, const callsite &cs, uint8_t params) {
+        instructions.push_back(instruction(opcode, cs, params));
+        instruction_indexes.push_back(codeindex);
+    }
     // Don't know exact callsite yet, but will be resolved later.
     void emit_defer(opcode_t opcode, const std::wstring &signature, int args) {
         auto cs = callsite(args, 1, 0);
         cs.index = defered_calls.size();
-        instructions.push_back(instruction(opcode, cs));
+        instructions.push_back(instruction(opcode, cs, args));
         instruction_indexes.push_back(codeindex);
 
         defered_calls.push_back(signature);
     }
     void emit(opcode_t opcode, int operand) {
         instructions.push_back(instruction(opcode, operand));
+        instruction_indexes.push_back(codeindex);
+    }
+    void emit(opcode_t opcode, int operand, uint8_t operand2) {
+        instructions.push_back(instruction(opcode, operand, operand2));
         instruction_indexes.push_back(codeindex);
     }
     void emit_f(opcode_t opcode, float operand) {
@@ -589,6 +597,7 @@ private:
         scope.set_method(node);
         emitter.emit_method(node);
 
+        // Default params
         for (auto p : node->params()->children) {
             if (p->type == syntax_type::syn_assignment) {
                 auto id = (ident_node*)p->children[0];
@@ -603,6 +612,18 @@ private:
                 emitter.emit(opcode::op_stloc, lookup.index);
 
                 emitter.modify_operand(jmp_false, emitter.get_cursor());
+            }
+        }
+
+        auto last_param = node->params()->last();
+        if (last_param != nullptr) {
+            if (last_param->type == syntax_type::syn_ident) {
+                auto last_ident = (ident_node*)last_param;
+                if (last_ident->ident[0] == '*') {
+                    emitter.emit(opcode::op_param_to_arr);
+                    emitter.emit(opcode::op_dup);
+                    emitter.emit(opcode::op_stloc, node->params()->children.size() - 1);
+                }
             }
         }
 
@@ -700,7 +721,7 @@ private:
                 emitter.emit(opcode::op_setcallee);
 
                 emit_callpadding(node, lookup.method);
-                emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()));
+                emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()), node->args());
             }
         }
     }
@@ -719,7 +740,8 @@ private:
             auto lookup = scope.lookup_method(signature);
 
             emitter.emit(opcode::op_syscall,
-                callsite(node->args(), lookup.index));
+                callsite(node->args(), lookup.index),
+                node->args());
         }
         else {
             emitter.emit_defer(opcode::op_call,
