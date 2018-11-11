@@ -519,7 +519,7 @@ private:
         }
 
         emitter.emit(opcode::op_call, 0);
-        emitter.emit(opcode::op_dup);
+        emitter.emit(opcode::op_nop);
         emitter.emit(opcode::op_ret);
         emitter.fin_method();
     }

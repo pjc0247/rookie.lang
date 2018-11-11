@@ -61,7 +61,7 @@ void runner::execute() {
     if (p.header.entry_len == 0)
         throw new std::invalid_argument("program does not have any entries.");
 
-    execute(&p.entries[p.header.main_entry]);
+    execute(&p.entries[0]);
 }
 void runner::execute(program_entry *_entry) {
     assert(_entry != nullptr);
@@ -279,9 +279,6 @@ void runner::run_entry(program_entry *_entry) {
             left.integer *= right.integer;
             push(left);
         }
-
-        //else
-        //    throw invalid_program_exception("unknown instruction.");
 
         //printf("ss %d\n", stack.size());
 
@@ -841,11 +838,10 @@ void runner::push_callframe(program_entry &entry) {
 callframe runner::pop_callframe(program_entry &entry) {
     assert(callstack.size() > 0);
 
-    for (uint16_t i = 0; i < entry.locals; i++)
-        stack.pop_back();
-
     auto callframe = callstack.back();
     callstack.pop_back();
+
+    stack.drop(callframe.entry->locals);
 
     return callframe;
 }
