@@ -649,7 +649,6 @@ private:
         auto parents = node->declaring_class()->parents();
 
         std::deque<class_node*> p;
-        method_node *m = nullptr;
 
         if (parents != nullptr) {
             for (auto _parent_ident : parents->children) {
@@ -658,14 +657,16 @@ private:
             }
         }
 
+        std::vector<method_node *> supers;
         while (p.empty() == false) {
             auto c = p.back();
             p.pop_back();
 
             for (auto method : c->methods) {
                 if (method->ident_str() == method_name) {
-                    m = method;
-                    goto found;
+                    supers.push_back(method);
+
+                    continue;
                 }
             }
 
@@ -679,11 +680,13 @@ private:
         }
     found:
 
-        if (m != nullptr) {
+        if (supers.size() == 1) {
             emitter.emit_defer(opcode::op_call,
-                m->declaring_class()->ident_str() + L"::" + m->ident_str(),
+                supers[0]->declaring_class()->ident_str() + L"::" + supers[0]->ident_str(),
                 node->args());
         }
+        else if (supers.size() >= 2)
+            ctx.push_error(codegen_error(method_name + L" has more than 2 supercalls."));
         else
             ctx.push_error(codegen_error(method_name + L" doesn't have a super method."));
     }
