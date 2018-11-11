@@ -34,6 +34,8 @@ public:
     value length();
     value reverse();
 
+    value join(const std::wstring &delim);
+
     value get_iterator();
 
     std::vector<value>::iterator begin();

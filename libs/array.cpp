@@ -20,6 +20,7 @@ void rkarray::import(binding &b) {
     method(type, L"remove_at", &rkarray::remove);
     method(type, L"length", &rkarray::length);
     method(type, L"reverse", &rkarray::reverse);
+    method(type, L"join", &rkarray::join);
     method(type, L"equal", &rkarray::equal);
 
     method(type, L"get_iterator", &rkarray::get_iterator);
@@ -121,6 +122,18 @@ value rkarray::reverse() {
         new_ary->push(ary[i]);
 
     return obj2rk(new_ary);
+}
+value rkarray::join(const std::wstring &delim) {
+    std::wstring str;
+
+    for (int i=0;i<ary.size();i++) {
+        auto &e = ary[i];
+        str += rk_call_tostring(e);
+        if (i != ary.size() - 1)
+            str += delim;
+    }
+
+    return str2rk(str);
 }
 
 value rkarray::get_iterator() {
