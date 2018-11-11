@@ -25,7 +25,8 @@ class rkstring;
 #define _rookie_function(name, body) \
     b.function(name, [] body );
 
-#define rk_id2str(x) (rkctx()->get_name(x))
+#define rk_id2wstr(x) (rkctx()->get_name(x))
+#define rk_id2str(x) (str2rk(rkctx()->get_name(x)))
 
 #define rk_call_tostring_w(x) rkwstr(rkctx()->call(x, rk_id_tostring))
 #define rk_call_tostring_c(x) rkcstr(rkctx()->call(x, rk_id_tostring))

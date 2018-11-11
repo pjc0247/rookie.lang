@@ -105,6 +105,8 @@ private:
     void load_all_programtypes();
     void load_programtype(uint32_t sighash);
 
+    void add_id(const std::wstring &id);
+
     void op_eqtype();
     void op_eq();
     void op_neq();

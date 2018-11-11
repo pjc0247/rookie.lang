@@ -19,6 +19,7 @@ public:
 
         method(type, rk_id_tostring, &rktype::to_string);
         method(type, L"fields", &rktype::fields);
+        method(type, L"methods", &rktype::methods);
         method(type, L"ancestors", &rktype::ancestors);
 
         b.add_type(type);
@@ -37,9 +38,17 @@ public:
     value fields() {
         auto ary = new rkarray();
         for (auto field : rtype.fields) {
-            ary->push(int2rk(field.first));
+            ary->push(rk_id2str(field.first));
         }
         
+        return obj2rk(ary);
+    }
+    value methods() {
+        auto ary = new rkarray();
+        for (auto field : rtype.vtable) {
+            ary->push(rk_id2str(field.first));
+        }
+
         return obj2rk(ary);
     }
     value ancestors() {

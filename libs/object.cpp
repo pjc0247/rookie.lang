@@ -33,7 +33,7 @@ value rkscriptobject::to_string() {
     str += name_ptr;
 
     for (auto &p : properties) {
-        str += L" @" + rk_id2str(p.first) + L": ";
+        str += L" @" + rk_id2wstr(p.first) + L": ";
         str += rk_call_tostring_w(p.second);
     }
 

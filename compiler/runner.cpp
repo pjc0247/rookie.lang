@@ -647,6 +647,10 @@ void runner::unhandled_exception() {
 #undef end_catch
 }
 
+void runner::add_id(const std::wstring &id) {
+    id_pool[sig2hash(id)] = id;
+}
+
 __forceinline
 value runner::get_local(int n) {
     assert(stack.size() > bp + n);
@@ -906,6 +910,8 @@ void runner::load_all_systypes() {
 
             vtable[sighash].type = call_type::ct_syscall_direct;
             vtable[sighash].entry = syscalls.table.size() - 1;
+
+            add_id(method.first);
         }
 
         runtime_typedata tdata;

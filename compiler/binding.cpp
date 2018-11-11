@@ -60,7 +60,7 @@ value type_builder::default_to_string(value_cref _this) {
     str += objthis->name_ptr;
 
     for (auto &p : objthis->properties) {
-        str += L" @" + rk_id2str(p.first) + L": ";
+        str += L" @" + rk_id2wstr(p.first) + L": ";
         str += rk_call_tostring_w(p.second);
     }
 
