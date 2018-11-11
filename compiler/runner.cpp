@@ -288,12 +288,8 @@ void runner::run_entry(program_entry *_entry) {
 
         continue;
     error:
-        if (handle_exception()) {
-
-        }
-        else {
+        if (!handle_exception()) {
             unhandled_exception();
-
             assert(0);
         }
 
