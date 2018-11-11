@@ -203,6 +203,10 @@ void runner::run_entry(program_entry *_entry) {
             op_add();
             break;
 
+        case opcode::op_throw:
+            op_throw();
+            break;
+
         case opcode::op_newobj:
             op_newobj();
             break;
@@ -529,6 +533,15 @@ void runner::op_ret() {
     current_entry = callframe.entry;
 
     push(ret);
+}
+
+void runner::op_throw() {
+    // [STACK-LAYOUT   |   OPERAND]
+    /*  exception(object)
+     *  OP_THROW       
+     */
+    auto obj = pop();
+    exception = (rkexception*)obj.objref;
 }
 
 void runner::op_ldprop() {

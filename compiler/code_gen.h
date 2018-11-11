@@ -557,6 +557,7 @@ private:
             _route(assignment);
             _route(if);
             _route(else);
+            _route(throw);
             _route(for);
             _route(foreach);
             _route(while);
@@ -974,6 +975,10 @@ private:
     }
     void emit_else(else_node *node) {
         emit(node->then());
+    }
+    void emit_throw(throw_node *node) {
+        emit(node->exception());
+        emitter.emit(opcode::op_throw);
     }
     void emit_for(for_node *node) {
         emit(node->init());

@@ -36,3 +36,13 @@ finally_node::finally_node(const stoken &token) :
 	capacity = 1;
 	type = syntax_type::syn_finally;
 }
+
+// THROW_NODE
+throw_node::throw_node(const stoken &token) :
+    syntax_node(token) {
+    capacity = 1;
+    type = syntax_type::syn_throw;
+}
+syntax_node *throw_node::exception() {
+    return children[0];
+}

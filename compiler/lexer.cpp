@@ -27,6 +27,7 @@ static std::vector<lexer_token> rules{
 
     lexer_token(L"try", token_type::keyword),
     lexer_token(L"catch", token_type::keyword),
+    lexer_token(L"throw", token_type::keyword),
     lexer_token(L"true", token_type::literal),
     lexer_token(L"false", token_type::literal),
 
@@ -37,6 +38,7 @@ static std::vector<lexer_token> rules{
     lexer_token(L"+=", token_type::op),
     lexer_token(L"*=", token_type::op),
     lexer_token(L"/=", token_type::op),
+    lexer_token(L"=>", token_type::keyword),
 
     lexer_token(L"is", token_type::keyword),
     lexer_token(L"+", token_type::op, -5001),

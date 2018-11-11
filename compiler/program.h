@@ -19,6 +19,8 @@ typedef enum opcode : unsigned char {
     op_call, op_syscall, op_vcall,
     op_ret,
 
+    op_throw,
+
     op_dup,
     op_pop,
     op_ldthis,
@@ -61,6 +63,7 @@ inline const wchar_t *to_string(opcode type) {
     case op_newarr: return L"op_newarr";
     case op_newdic: return L"op_newdic";
     case op_syscall: return L"op_syscall";
+    case op_throw: return L"op_throw";
     case op_call: return L"op_call";
     case op_vcall: return L"op_vcall";
     case op_ret: return L"op_ret";

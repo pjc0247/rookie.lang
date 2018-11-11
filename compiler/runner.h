@@ -123,6 +123,8 @@ private:
     void op_vcall();
     void op_ret();
 
+    void op_throw();
+
     void op_ldprop();
     void op_stprop();
     void op_ldfld();

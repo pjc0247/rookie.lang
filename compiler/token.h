@@ -53,7 +53,7 @@ enum class stoken_type {
     st_if, st_else, st_for, st_while,
     st_return,
 
-    st_try, st_catch, st_finally,
+    st_try, st_catch, st_finally, st_throw,
 
     st_arraccess,
 

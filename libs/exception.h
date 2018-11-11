@@ -3,6 +3,8 @@
 #include "binding.h"
 #include "object.h"
 
+#include "string.h"
+
 class rkexception : public rkobject<rkexception> {
 public:
     TYPENAME(L"exception")
@@ -10,9 +12,15 @@ public:
     static void import(binding &b) {
         auto type = type_builder(L"exception");
 
+        type.method(rk_id_new, create_object);
+
 		method(type, rk_id_tostring, &rkexception::to_string);
 
         b.add_type(type);
+    }
+
+    static value create_object(value_cref msg) {
+        return value::mkobjref(new rkexception(rkwstr(msg)));
     }
 
 	rkexception(const base_exception &ex) {

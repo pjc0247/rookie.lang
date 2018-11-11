@@ -43,7 +43,8 @@ enum class syntax_type {
 	syn_while,
 	syn_return,
 
-	syn_try, syn_catch, syn_finally
+	syn_try, syn_catch, syn_finally,
+    syn_throw
 };
 
 class root_node;
@@ -390,6 +391,13 @@ public:
 protected:
 	virtual void on_complete();
 };
+class throw_node : public syntax_node {
+public:
+    throw_node(const stoken &token);
+
+    syntax_node *exception();
+};
+
 class finally_node : public syntax_node {
 public:
 	finally_node(const stoken &token);

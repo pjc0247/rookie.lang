@@ -393,7 +393,8 @@ void sexper::sexp_methodbody(const token &token) {
             token.raw == L"if" ||
             token.raw == L"else" ||
             token.raw == L"for" ||
-            token.raw == L"while") {
+            token.raw == L"while" ||
+            token.raw == L"throw") {
 
             flush_single_line();
         }
@@ -474,6 +475,8 @@ void sexper::parse_keyword(const token &token, stoken &stoken) {
         stoken.type = stoken_type::st_try;
     else if (token.raw == L"catch")
         stoken.type = stoken_type::st_catch;
+    else if (token.raw == L"throw")
+        stoken.type = stoken_type::st_throw;
     else if (token.raw == L"null")
         stoken.type = stoken_type::st_null;
 }

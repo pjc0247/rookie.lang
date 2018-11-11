@@ -105,6 +105,8 @@ public:
                 append_and_replace(___try(token));
             else if (token.type == stoken_type::st_catch)
                 append_and_replace(_catch(token));
+            else if (token.type == stoken_type::st_throw)
+                append_and_replace(_throw(token));
 
             else if (token.type == stoken_type::op) {
                 append_and_replace(op(token));
@@ -229,6 +231,10 @@ private:
     }
     catch_node *_catch(const stoken &token) {
         auto node = new catch_node(token);
+        return node;
+    }
+    throw_node *_throw(const stoken &token) {
+        auto node = new throw_node(token);
         return node;
     }
     this_node *_this(const stoken &token) {
