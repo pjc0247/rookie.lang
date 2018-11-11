@@ -665,8 +665,7 @@ private:
             for (auto method : c->methods) {
                 if (method->ident_str() == method_name) {
                     supers.push_back(method);
-
-                    continue;
+                    goto end_loop;
                 }
             }
 
@@ -677,6 +676,8 @@ private:
                 auto parent_ident = (ident_node*)_parent_ident;
                 p.push_back(astr::find_class(root, parent_ident->ident));
             }
+
+        end_loop:;
         }
     found:
 

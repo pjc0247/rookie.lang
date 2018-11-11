@@ -25,8 +25,10 @@ public:
     }
     static class_node *
     find_class(syntax_node *root, const std::wstring &name) {
-        auto r = filter<class_node*>(root, [](syntax_node *n) {
-            if (n->type == syntax_type::syn_class) return true;
+        auto r = filter<class_node*>(root, [name](syntax_node *n) {
+            if (n->type == syntax_type::syn_class) {
+                return ((class_node*)n)->ident_str() == name;
+            }
             return false;
         });
         if (r.size() == 0) return nullptr;
