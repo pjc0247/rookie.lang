@@ -13,8 +13,8 @@
 
 class rkstring;
 
-#define _bind(b, signature, lambda) \
-    b[signature] = lambda
+#define _bind(b, signature, lambda, params) \
+    b[signature] = bind_info(lambda, params)
 
 #define _rookie_library(name) \
     class name { \
@@ -26,7 +26,7 @@ class rkstring;
     b.function(name, [] body );
 
 #define rk_id2wstr(x) (rkctx()->get_name(x))
-#define rk_id2str(x) (str2rk(rkctx()->get_name(x)))
+#define rk_id2str(x) (str2rk(rkctx()->get_name(x))) 
 
 #define rk_call_tostring_w(x) rkwstr(rkctx()->call(x, rk_id_tostring))
 #define rk_call_tostring_c(x) rkcstr(rkctx()->call(x, rk_id_tostring))
@@ -60,7 +60,18 @@ class rkstring;
 
 #define rkid(id) sig2hash_c(id)
 
-typedef std::map<std::wstring, std::function<void(stack_provider&)>> bindmap;
+struct bind_info {
+    int params;
+    std::function<void(stack_provider&)> func;
+
+    bind_info() {
+    }
+    bind_info(const std::function<void(stack_provider&)> &func, int params) :
+        func(func), params(params) {
+    }
+};
+
+typedef std::map<std::wstring, bind_info> bindmap;
 
 class cvt {
 public:
@@ -145,7 +156,7 @@ public:
 
         _bind(static_methods, signature, [function](stack_provider &sp) {
             sp.push(function());
-        });
+        }, 0);
         return *this;
     }
     type_builder &static_method(const std::wstring &signature,
@@ -153,7 +164,7 @@ public:
 
         _bind(static_methods, signature, [function](stack_provider &sp) {
             sp.replace<0>(function(sp.get(0)));
-        });
+        }, 1);
         return *this;
     }
     type_builder &static_method(const std::wstring &signature,
@@ -162,7 +173,7 @@ public:
         _bind(static_methods, signature, [function](stack_provider &sp) {
             sp.replace<1>(function(sp.get(1), sp.get(0)));
             sp.drop<1>();
-        });
+        }, 2);
         return *this;
     }
 
@@ -171,7 +182,7 @@ public:
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.push(function());
-        });
+        }, 0);
         return *this;
     }
     type_builder &method(const std::wstring &signature,
@@ -179,7 +190,7 @@ public:
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<0>(function(sp.get(0)));
-        });
+        }, 1);
         return *this;
     }
     type_builder &method(const std::wstring &signature,
@@ -188,7 +199,7 @@ public:
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<1>(function(sp.get(1), sp.get(0)));
             sp.drop<1>();
-        });
+        }, 2);
         return *this;
     }
     type_builder &method(const std::wstring &signature,
@@ -197,7 +208,7 @@ public:
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<2>(function(sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<2>();
-        });
+        }, 3);
         return *this;
     }
     type_builder &method(const std::wstring &signature,
@@ -206,7 +217,7 @@ public:
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<3>(function(sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<3>();
-        });
+        }, 4);
         return *this;
     }
     type_builder &method(const std::wstring &signature,
@@ -215,7 +226,7 @@ public:
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<4>(function(sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<4>();
-        });
+        }, 5);
         return *this;
     }
     type_builder &method(const std::wstring &signature,
@@ -224,7 +235,7 @@ public:
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<5>(function(sp.get(5), sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<5>();
-        });
+        }, 6);
         return *this;
     }
     type_builder &method(const std::wstring &signature,
@@ -233,7 +244,7 @@ public:
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<6>(function(sp.get(6), sp.get(5), sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<6>();
-        });
+        }, 7);
         return *this;
     }
     
@@ -266,14 +277,14 @@ public:
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.push(function());
-        });
+        }, 0);
     }
     void function(const std::wstring &signature,
         const std::function<value(value_cref)> &function) {
 
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<0>(function(sp.get(0)));
-        });
+        }, 1);
     }
     void function(const std::wstring &signature,
         const std::function<value(value_cref,value_cref)> &function) {
@@ -281,7 +292,7 @@ public:
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<1>(function(sp.get(1), sp.get(0)));
             sp.drop<1>();
-        });
+        }, 2);
     }
     void function(const std::wstring &signature,
         const std::function<value(value_cref, value_cref, value_cref)> &function) {
@@ -289,7 +300,7 @@ public:
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<2>(function(sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<2>();
-        });
+        }, 3);
     }
     void function(const std::wstring &signature,
         const std::function<value(value_cref, value_cref, value_cref, value_cref)> &function) {
@@ -297,7 +308,7 @@ public:
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<3>(function(sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<3>();
-        });
+        }, 4);
     }
     void function(const std::wstring &signature,
         const std::function<value(value_cref, value_cref, value_cref, value_cref, value_cref)> &function) {
@@ -305,7 +316,7 @@ public:
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<4>(function(sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<4>();
-        });
+        }, 5);
     }
     void function(const std::wstring &signature,
         const std::function<value(value_cref, value_cref, value_cref, value_cref, value_cref, value_cref)> &function) {
@@ -313,7 +324,7 @@ public:
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<5>(function(sp.get(5), sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<5>();
-        });
+        }, 6);
     }
     void function(const std::wstring &signature,
         const std::function<value(value_cref, value_cref, value_cref, value_cref, value_cref, value_cref, value_cref)> &function) {
@@ -321,7 +332,7 @@ public:
         _bind(methods, signature, [function](stack_provider &sp) {
             sp.replace<6>(function(sp.get(6), sp.get(5), sp.get(4), sp.get(3), sp.get(2), sp.get(1), sp.get(0)));
             sp.drop<6>();
-        });
+        }, 7);
     }
 
     template <typename T>

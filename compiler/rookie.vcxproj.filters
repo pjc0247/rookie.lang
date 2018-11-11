@@ -198,6 +198,9 @@
       <Filter>ast</Filter>
     </ClInclude>
     <ClInclude Include="did_you_mean.h" />
+    <ClInclude Include="ast\method_router.h">
+      <Filter>ast</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

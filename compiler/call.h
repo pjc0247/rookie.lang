@@ -15,18 +15,21 @@ struct callinfo {
 
     call_type type;
     int entry;
+
+    int params;
 };
 class calltable_builder {
 public:
     void add_programcall(const std::wstring &signature, int entry) {
 
     }
-    int add_syscall(const std::wstring &signature) {
+    int add_syscall(const std::wstring &signature, int params) {
         int entry = table.size();
 
         callinfo ci;
         ci.entry = entry;
         ci.type = call_type::ct_syscall_direct;
+        ci.params = params;
         table.push_back(ci);
 
         lookup[signature] = entry;

@@ -30,6 +30,8 @@ std::vector<stoken> sexper::sexp(const std::vector<token> &_tokens) {
 
     next_is_at = false;
     has_inherit_list = false;
+    state = sexp_state::ss_none;
+
     for (cursor = 0; cursor < tokens.size(); cursor++) {
         auto token = tokens[cursor];
 
@@ -196,8 +198,18 @@ void sexper::sexp_class(token &token) {
     }
     else if (token.type == token_type::op) {
         _mark_as_parsed(stoken);
-        flush_until_priority(token.priority);
-        stack.push_back(token);
+        
+        if (state == sexp_state::ss_param_list) {
+            auto &last_ident = stack.back();
+            if (last_ident.type == token_type::ident)
+                last_ident.raw = L"*" + last_ident.raw;
+            else
+                ctx.push_error(parsing_error(L"unexpected `*`."));
+        }
+        else {
+            flush_until_priority(token.priority);
+            stack.push_back(token);
+        }
     }
     else if (token.type == token_type::annotation) {
         _mark_as_parsed(stoken);
@@ -227,12 +239,16 @@ void sexper::sexp_class(token &token) {
         }
     }
     else if (token.type == token_type::left_paren) {
-        flush_until_type(token_type::right_paren);
         _mark_as_parsed(stoken);
+        flush_until_type(token_type::right_paren);
+
+        state = sexp_state::ss_none;
     }
     else if (token.type == token_type::right_paren) {
         stack.push_back(token.preparsed(stoken_type::st_begin_param));
         stoken.type = stoken_type::st_end_param;
+
+        state = sexp_state::ss_param_list;
     }
     else if (token.type == token_type::literal) {
         stoken.type = stoken_type::st_literal;

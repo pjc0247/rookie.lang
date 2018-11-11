@@ -43,6 +43,11 @@ enum class semantic_position {
     sp_class,
     sp_methodbody
 };
+enum class sexp_state {
+    ss_none,
+    ss_param_list,
+};
+
 class sexper {
 public:
     sexper(compile_context &ctx);
@@ -97,6 +102,8 @@ private:
 
     bool next_is_at;
     bool has_inherit_list;
+
+    sexp_state state;
 
     std::vector<token> tokens;
     std::vector<stoken> result;

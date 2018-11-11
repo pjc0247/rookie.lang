@@ -65,6 +65,8 @@ root_node *compiler::ast_raw(
 
     auto root = tree_builder(ctx).build(stokens);
 
+    root->dump();
+
     auto validator = new syntax_validator(ctx);
     validator->transform(root);
     auto dup_name_validator = new duplicated_name_validator(ctx);
@@ -123,11 +125,11 @@ compile_output compiler::compile(const std::wstring &src,
     calltable_builder syscalls;
 
     for (auto &b : binding.get_functions()) {
-        syscalls.add_syscall(b.first);
+        syscalls.add_syscall(b.first, b.second.params);
     }
     for (auto &type : binding.get_types()) {
         for (auto &static_method : type.get_static_methods()) {
-            syscalls.add_syscall(type.get_name() + L"::" + static_method.first);
+            syscalls.add_syscall(type.get_name() + L"::" + static_method.first, static_method.second.params);
         }
     }
 

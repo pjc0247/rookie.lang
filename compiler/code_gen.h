@@ -32,6 +32,7 @@ struct lookup_result {
     int index;
 
     method_node *method;
+    callinfo callinfo;
 
     lookup_result() :
         type(lookup_type::not_exist),
@@ -86,6 +87,7 @@ public:
         if (syscalls.try_get(ident, ci)) {
             result.type = lookup_type::mtd_syscall;
             result.index = ci.entry;
+            result.callinfo = ci;
             return result;
         }
 

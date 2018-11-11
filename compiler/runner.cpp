@@ -869,12 +869,12 @@ void runner::build_lookup() {
 void runner::build_runtime_data() {
     // SYS FUNCTIONS
     for (auto &b : binding.get_functions()) {
-        syscalls.table.push_back(b.second);
+        syscalls.table.push_back(b.second.func);
     }
     // STATIC METHODS
     for (auto &type : binding.get_types()) {
         for (auto &static_method : type.get_static_methods())
-            syscalls.table.push_back(static_method.second);
+            syscalls.table.push_back(static_method.second.func);
     }
 
     load_all_systypes();
@@ -911,7 +911,7 @@ void runner::load_all_systypes() {
 
         for (auto &method : methods) {
             auto sighash = sig2hash(method.first);
-            syscalls.table.push_back(method.second);
+            syscalls.table.push_back(method.second.func);
 
             vtable[sighash].type = call_type::ct_syscall_direct;
             vtable[sighash].entry = syscalls.table.size() - 1;

@@ -29,7 +29,13 @@ block_node::block_node(const stoken &token) :
 void block_node::push_front(syntax_node *node) {
 	children.push_front(node);
 }
-void block_node::push_local(const std::wstring &str) {
+void block_node::push_local(const std::wstring &_str) {
+    assert(_str.empty() == false);
+
+    auto str = _str;
+    if (str[0] == L'*')
+        str = str.substr(1);
+
 	if (locals.empty() ||
 		std::find(locals.begin(), locals.end(), str) == locals.end()) {
 
