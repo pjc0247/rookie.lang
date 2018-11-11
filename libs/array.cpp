@@ -67,7 +67,7 @@ value rkarray::op_add(value_cref other) {
     auto new_ary = new rkarray();
 
     // FIXME
-    if (other.objref->sighash == sig2hash(L"array")) {
+    if (other.objref->sighash == sighash_array) {
         auto other_ary = rk2obj(other, rkarray*);
 
         new_ary->ary.insert(
