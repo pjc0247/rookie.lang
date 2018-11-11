@@ -338,6 +338,10 @@ public:
 	std::deque<syntax_node*>::iterator end_args() {
 		return children.end();
 	}
+
+    uint32_t args() {
+        return children.size() - 1;
+    }
 };
 class callmember_node : public call_node {
 public:

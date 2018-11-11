@@ -103,15 +103,15 @@ typedef enum callsite_flag {
 
 #pragma pack (push, 1)
 struct callsite {
-    uint8_t lookup_type;
+    uint8_t params;
     uint8_t flags;
     uint16_t index;
 
-    callsite(uint8_t lookup_type, uint16_t index) :
-        lookup_type(lookup_type), index(index), flags(0) {
+    callsite(uint8_t params, uint16_t index) :
+        params(params), index(index), flags(0) {
     }
-    callsite(uint8_t lookup_type, uint8_t flags , uint16_t index) :
-        lookup_type(lookup_type), index(index), flags(flags) {
+    callsite(uint8_t params, uint8_t flags , uint16_t index) :
+        params(params), index(index), flags(flags) {
     }
 };
 struct instruction {

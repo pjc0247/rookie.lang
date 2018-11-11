@@ -160,8 +160,8 @@ public:
         instruction_indexes.push_back(codeindex);
     }
     // Don't know exact callsite yet, but will be resolved later.
-    void emit_defer(opcode_t opcode, const std::wstring &signature) {
-        auto cs = callsite(callsite_lookup::cs_method, 1, 0);
+    void emit_defer(opcode_t opcode, const std::wstring &signature, int args) {
+        auto cs = callsite(args, 1, 0);
         cs.index = defered_calls.size();
         instructions.push_back(instruction(opcode, cs));
         instruction_indexes.push_back(codeindex);
@@ -660,7 +660,8 @@ private:
 
         if (m != nullptr) {
             emitter.emit_defer(opcode::op_call,
-                m->declaring_class()->ident_str() + L"::" + m->ident_str());
+                m->declaring_class()->ident_str() + L"::" + m->ident_str(),
+                node->args());
         }
         else
             ctx.push_error(codegen_error(method_name + L" doesn't have a super method."));
@@ -681,14 +682,15 @@ private:
         //    return;
         //}
         if (lookup.type == lookup_type::mtd_syscall)
-            emitter.emit(opcode::op_syscall, callsite(callsite_lookup::cs_syscall, lookup.index));
+            emitter.emit(opcode::op_syscall, callsite(node->args(), lookup.index));
         else {
             if (lookup.method != nullptr &&
                 lookup.method->attr & method_attr::method_static) {
 
                 emit_callpadding(node, lookup.method);
                 emitter.emit_defer(opcode::op_call,
-                    node->declaring_class()->ident_str() + L"::" + node->ident_str());
+                    node->declaring_class()->ident_str() + L"::" + node->ident_str(),
+                    node->args());
             }
             else {
                 if (current_method->attr & method_attr::method_static)
@@ -717,11 +719,12 @@ private:
             auto lookup = scope.lookup_method(signature);
 
             emitter.emit(opcode::op_syscall,
-                callsite(callsite_lookup::cs_method, lookup.index));
+                callsite(node->args(), lookup.index));
         }
         else {
             emitter.emit_defer(opcode::op_call,
-                callee_name + L"::" + node->ident_str());
+                callee_name + L"::" + node->ident_str(),
+                node->args());
         }
     }
     void emit_callmember(callmember_node *node) {
