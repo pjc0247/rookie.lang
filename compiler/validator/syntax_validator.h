@@ -46,6 +46,17 @@ private:
         if (method->children[1]->type != syntax_type::syn_params) {
             ctx.push_error(syntax_error(method, L"Wrong method definition."));
         }
+        else {
+            auto params = method->children[1]->children;
+
+            for (int i=0;i<params.size();i++) {
+                if (params[i]->type == syntax_type::syn_ident) {
+                    auto id = (ident_node*)params[i];
+                    if (id->ident[0] == L'*' && i != params.size()-1)
+                        ctx.push_error(syntax_error(method, L"Asterisk(`*`) param must be positioned at last."));
+                }
+            }
+        }
     }
     void syn_ident(ident_node *id) {
         auto method = id->declaring_method();
