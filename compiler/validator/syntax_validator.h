@@ -70,7 +70,8 @@ private:
         }
     }
     void syn_assignment(assignment_node *node) {
-        if (node->parent->type != syntax_type::syn_block)
+        if (node->parent->type != syntax_type::syn_block &&
+            node->parent->type != syntax_type::syn_class)
             ctx.push_error(syntax_error(node, L"Invalid operation"));
     }
 
