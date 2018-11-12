@@ -50,8 +50,10 @@ enum class stoken_type {
     st_begin_inherit, st_end_inherit,
     st_defmethod,
     st_static,
-    st_if, st_else, st_for, st_while,
+    st_if, st_else, st_for, st_foreach, st_while,
     st_return,
+
+    st_in,
 
     st_try, st_catch, st_finally, st_throw,
 
@@ -89,6 +91,7 @@ inline const wchar_t *to_string(stoken_type type) {
     case stoken_type::st_if: return L"st_if";
     case stoken_type::st_else: return L"st_else";
     case stoken_type::st_for: return L"st_for";
+    case stoken_type::st_in: return L"st_in";
     case stoken_type::st_arraccess: return L"st_arraccess";
     case stoken_type::st_begin_arr: return L"st_begin_arr";
     case stoken_type::st_end_arr: return L"st_end_arr";

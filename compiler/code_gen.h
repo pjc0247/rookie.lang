@@ -634,6 +634,7 @@ private:
         emitter.fin_method();
     }
 
+    /*
     void emit_callpadding(call_node *caller, method_node *callee) {
         if (callee == nullptr) return;
 
@@ -648,6 +649,8 @@ private:
         for (int i = 0; i < arg_diff; i++)
             emitter.emit(opcode::op_ldempty);
     }
+    */
+
     void emit_callsuper(call_node *node) {
         auto method_name = node->declaring_method()->ident_str();
         auto parents = node->declaring_class()->parents();
@@ -716,7 +719,6 @@ private:
             if (lookup.method != nullptr &&
                 lookup.method->attr & method_attr::method_static) {
 
-                emit_callpadding(node, lookup.method);
                 emitter.emit_defer(opcode::op_call,
                     node->declaring_class()->ident_str() + L"::" + node->ident_str(),
                     node->args());
@@ -728,7 +730,6 @@ private:
                 emitter.emit(opcode::op_ldthis);
                 emitter.emit(opcode::op_setcallee);
 
-                emit_callpadding(node, lookup.method);
                 emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()), node->args());
             }
         }
@@ -795,7 +796,6 @@ private:
             else if (lookup.type == lookup_type::mtd_method)
                 
         }*/
-        emit_callpadding(node, lookup.method);
         emitter.emit(opcode::op_vcall, sig2hash(node->ident_str()), node->args());
     }
     void emit_return(return_node *node) {

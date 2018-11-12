@@ -740,7 +740,6 @@ void runner::programcall(int index, uint8_t params) {
     assert(index < p.header.entry_len);
 
     auto &entry = p.entries[index];
-    auto stacksize = stack.size();
 
     while (params < entry.params) {
         push(rknull);
@@ -749,7 +748,7 @@ void runner::programcall(int index, uint8_t params) {
 
     push_callframe(entry, params);
     pc = entry.entry;
-    bp = stacksize - params;
+    bp = stack.size() - params;
     current_entry = &entry;
 
     run_entry(current_entry);
