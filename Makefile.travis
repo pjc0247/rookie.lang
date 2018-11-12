@@ -1,10 +1,11 @@
 EMCC = emcc
 LIBS := $(wildcard ./libs/*.cpp)
 SRCS := $(wildcard ./compiler/*.cpp)
+SRCS_SYNTAX := $(wildcard ./compiler/syntax/*.cpp)
 
 all:
 	mkdir -p www
-	$(EMCC) -Os -std=c++17 $(SRCS) $(LIBS) -I. -Icompiler -Iincludes \
+	$(EMCC) -Os -std=c++17 $(SRCS) $(SRCS_SYNTAX) $(LIBS) -I. -Icompiler -Iincludes \
 		-g4 \
 		-o www/rklang.js -Wc++11-extensions \
 		-s WASM=1 \
