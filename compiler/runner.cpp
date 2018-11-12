@@ -27,6 +27,9 @@
 #define _pop2_int(a, b) \
     auto b = pop(); auto a = pop(); 
 
+#define throw_and_halt(e) \
+	exception = e; return;
+
 struct primitive_cache {
     runtime_typedata integer, string, object, boolean;
     runtime_typedata array, dictionary;
@@ -741,14 +744,16 @@ void runner::programcall(int index, uint8_t params) {
 
     auto &entry = p.entries[index];
 
+	// Too many parameters were given to this call
     if (params > entry.params &&
         !(entry.flags & rk_entry_va_args)) {
-        exception = new rkexception(
-            L"Too many parameters. (max " +
-            std::to_wstring(entry.params) +
-            L")");
-        return;
+
+		throw_and_halt(new rkexception(
+			L"Too many parameters. (max " +
+			std::to_wstring(entry.params) +
+			L")"));
     }
+	// Callpadding
     while (params < entry.params) {
         push(rknull);
         params++;
@@ -797,8 +802,8 @@ void runner::_vcall(int sighash, uint8_t params, stack_provider &sp) {
         auto calleeobj = callee_ptr->objref;
 
 		if (calleeobj == nullptr) {
-			exception = new null_pointer_exception(hash_to_string(sighash));
-			return;
+			throw_and_halt(
+				new null_pointer_exception(hash_to_string(sighash)));
 		}
 
         vtable = calleeobj->vtable;
@@ -806,8 +811,9 @@ void runner::_vcall(int sighash, uint8_t params, stack_provider &sp) {
 
     auto _callinfo = vtable->find(sighash);
     if (_callinfo == vtable->end()) {
-        exception = new method_not_found_exception(
-            hash_to_string(sighash));
+        throw_and_halt(
+			new method_not_found_exception(
+				hash_to_string(sighash)));
     }
     else {
         auto callinfo = (*_callinfo).second;
