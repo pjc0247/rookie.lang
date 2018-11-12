@@ -31,8 +31,7 @@ protected:
 class arr_getitem_transformer : public syntax_traveler {
 protected:
     bool is_transformable(syntax_node *node) {
-        return node->type == syntax_type::syn_arraccess &&
-            node->parent->type != syntax_type::syn_assignment;
+        return node->type == syntax_type::syn_arraccess;
     }
     virtual syntax_node *visit(syntax_node *node) {
         if (is_transformable(node)) {
