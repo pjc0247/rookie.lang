@@ -1,0 +1,27 @@
+class va_args_test {
+    @main
+    static def main () {
+        foo0(1,2,3,4);
+        foo1(1,2,3,4);
+        foo2(1,2,3,4);
+        foo3(1,2,3,4);
+    }
+    static def foo0(*args) {
+        puts (args);
+    }
+    static def foo1(a, *args) {
+        puts (a);
+        puts (args);
+    }
+    static def foo2(a, b, *args) {
+        puts (a);
+        puts (b);
+        puts (args);
+    }
+    static def foo3(a, b, c, *args) {
+        puts (a);
+        puts (b);
+        puts (c);
+        puts (args);
+    }
+}
