@@ -13,7 +13,7 @@ class idx {
         return x;
     }
     def __setitem__ (x, y){ 
-        print(x)
-        print(y)
+        print(x);
+        print(y);
     }
 }
