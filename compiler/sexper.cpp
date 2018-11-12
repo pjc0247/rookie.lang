@@ -202,7 +202,9 @@ void sexper::sexp_class(token &token) {
     else if (token.type == token_type::op) {
         _mark_as_parsed(stoken);
 
-        if (state == sexp_state::ss_param_list) {
+        if (state == sexp_state::ss_param_list &&
+			token.raw == L"*") {
+
             auto &last_ident = stack.back();
             if (last_ident.type == token_type::ident)
                 last_ident.raw = L"*" + last_ident.raw;
@@ -210,7 +212,6 @@ void sexper::sexp_class(token &token) {
                 ctx.push_error(parsing_error(token, L"unexpected `*`."));
         }
         else {
-            flush_until_priority(token.priority);
             stack.push_back(token);
         }
     }

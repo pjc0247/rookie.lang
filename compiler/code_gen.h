@@ -602,7 +602,9 @@ private:
         for (auto p : node->params()->children) {
             if (p->type == syntax_type::syn_assignment) {
                 auto id = (ident_node*)p->children[0];
+				scope.push_block(node->body());
                 auto lookup = scope.lookup_variable(id->ident);
+				scope.pop_block();
 
                 emitter.emit(opcode::op_ldloc, lookup.index);
                 emitter.emit(opcode::op_ldempty);

@@ -688,8 +688,8 @@ value runner::get_local(int n) {
 
     auto v = stack[bp + n];
 #if _RK_STRICT_CHECK
-    if (v.type == value_type::empty)
-        throw invalid_access_exception("Accessed to the unassigned slot.");
+   // if (v.type == value_type::empty)
+   //     throw invalid_access_exception("Accessed to the unassigned slot.");
 #endif
     return v;
 }
@@ -755,7 +755,7 @@ void runner::programcall(int index, uint8_t params) {
     }
 	// Callpadding
     while (params < entry.params) {
-        push(rknull);
+        push(rkempty);
         params++;
     }
 

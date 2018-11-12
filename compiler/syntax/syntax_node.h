@@ -502,8 +502,9 @@ protected:
 	virtual void on_complete() {
 		auto ident = dynamic_cast<ident_node*>(left());
 		auto method = declaring_method();
+		auto block = nearest_block();
 
-		if (ident != nullptr && method != nullptr)
+		if (ident && method && block)
 			nearest_block()->push_local(ident->ident);
 	}
 };
