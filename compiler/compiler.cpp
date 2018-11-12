@@ -65,7 +65,9 @@ root_node *compiler::ast_raw(
 
     auto root = tree_builder(ctx).build(stokens);
 
+#if _DEBUG
     root->dump();
+#endif
 
     auto validator = new syntax_validator(ctx);
     validator->transform(root);
