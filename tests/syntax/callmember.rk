@@ -11,6 +11,6 @@ class foo {
         bye();
     }
     def bye(){
-        print ("bye");
+        puts ("bye");
     }
 }

@@ -7,5 +7,14 @@ class start_end_test {
             puts ("PASS");
         if (a.starts_with("Hello World l") == false)
             puts ("PASS");
+        if (a.starts_with("Hello World"))
+            puts ("PASS");
+
+        if (a.ends_with("World"))
+            puts ("PASS");
+        if (a.ends_with("World l") == false)
+            puts ("PASS");
+        if (a.ends_with("Hello World"))
+            puts ("PASS");
     }
 }
