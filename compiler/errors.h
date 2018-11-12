@@ -25,8 +25,8 @@ public:
 
 class parsing_error : public compile_error {
 public:
-    parsing_error(const std::wstring &message) :
-        compile_error(::token(), message) {
+    parsing_error(const token &token, const std::wstring &message) :
+        compile_error(token, message) {
     }
 };
 class codegen_error : public compile_error {

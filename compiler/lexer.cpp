@@ -185,7 +185,7 @@ std::vector<token> lexer::lex(const std::wstring &_src) {
     }
 
     if (inside_quote)
-        ctx.push_error(parsing_error(L"unpaired quote(\")"));
+        ctx.push_error(parsing_error(token(), L"unpaired quote(\")"));
 
     if (head != tail) {
         auto t = parse(src.substr(tail, head - tail));
@@ -225,7 +225,7 @@ token lexer::parse(const std::wstring &raw) {
         t.literal_type = literal_type::string;
         t.raw = t.raw.substr(1, t.raw.size() - 2);
     }
-    if (raw[0] == '`' && raw[raw.length() - 1] == '`') {
+    else if (raw[0] == '`' && raw[raw.length() - 1] == '`') {
         t.type = token_type::literal;
         t.literal_type = literal_type::string_with_interpoloation;
         t.raw = t.raw.substr(1, t.raw.size() - 2);
@@ -244,6 +244,9 @@ token lexer::parse(const std::wstring &raw) {
         if (t.raw.length() >= rooke_max_signature - 1)
             ctx.push_error(name_too_long_error(t));
     }
+	else {
+		ctx.push_error(parsing_error(t, L"Unknown token: " + t.raw));
+	}
 
     return t;
 }

@@ -207,7 +207,7 @@ void sexper::sexp_class(token &token) {
             if (last_ident.type == token_type::ident)
                 last_ident.raw = L"*" + last_ident.raw;
             else
-                ctx.push_error(parsing_error(L"unexpected `*`."));
+                ctx.push_error(parsing_error(token, L"unexpected `*`."));
         }
         else {
             flush_until_priority(token.priority);
