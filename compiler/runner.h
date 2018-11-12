@@ -60,9 +60,10 @@ struct callframe {
     program_entry *entry;
     short pc;
     short bp;
+    uint8_t params;
 
-    callframe(short pc, short bp, program_entry *entry) :
-        pc(pc), bp(bp), entry(entry) {
+    callframe(short pc, short bp, uint8_t params, program_entry *entry) :
+        pc(pc), bp(bp), params(params), entry(entry) {
     }
 };
 struct exception_frame {
@@ -148,7 +149,7 @@ private:
     void  push(const value &v);
     void  replace_top(const value &v);
 
-    void push_callframe(program_entry &entry);
+    void push_callframe(program_entry &entry, uint8_t params);
     callframe pop_callframe(program_entry &entry);
 
 private:

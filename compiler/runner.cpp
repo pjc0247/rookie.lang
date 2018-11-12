@@ -75,7 +75,7 @@ void runner::execute(program_entry *_entry) {
     bp = 0;
     endflag = false;
 
-    push_callframe(*_entry);
+    push_callframe(*_entry, 0);
 
     exectx = new exe_context(*this, sp);
 
@@ -287,7 +287,7 @@ void runner::run_entry(program_entry *_entry) {
             push(left);
         }
 
-        //printf("ss %d\n", stack.size());
+        // printf("ss stacksize: %d, bp: %d,\n", stack.size(), bp);
 
         if (exception != nullptr) {
             goto error;
@@ -528,7 +528,7 @@ void runner::op_param_to_arr() {
 
     set_rkctx(exectx);
     auto aryref = new rkarray(ary_size);
-    // FIXME: remove `reverse.
+    // FIXME: remove `reverse`.
     aryref->vtable = &ptype->array.vtable;
     aryref->sighash = sighash_array;
     push(aryref->reverse());
@@ -741,7 +741,7 @@ void runner::programcall(int index, uint8_t params) {
 
     auto &entry = p.entries[index];
     auto stacksize = stack.size();
-    push_callframe(entry);
+    push_callframe(entry, params);
     pc = entry.entry;
     bp = stacksize - params;
     current_entry = &entry;
@@ -861,8 +861,8 @@ void runner::replace_top(const value &v) {
     stack[stack.size()-1] = v;
 }
 
-void runner::push_callframe(program_entry &entry) {
-    callstack.push_back(callframe(pc, bp, &entry));
+void runner::push_callframe(program_entry &entry, uint8_t params) {
+    callstack.push_back(callframe(pc, bp, params, &entry));
 
     for (uint16_t i = 0; i < entry.locals - entry.params; i++)
         stack.push_back(value::empty());
@@ -872,7 +872,8 @@ callframe runner::pop_callframe(program_entry &entry) {
 
     auto callframe = callstack.back();
     callstack.pop_back();
-    stack.drop(stack.size() - callframe.bp - 1);
+
+    stack.drop(callframe.params + (callframe.entry->locals - callframe.entry->params));
 
     return callframe;
 }
