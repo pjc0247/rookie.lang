@@ -18,6 +18,8 @@ gc::~gc() {
 }
 
 void gc::add_object(object *objref) {
+    if (objref == nullptr) return;
+
     all_objects.insert(objref);
 
     if (all_objects.size() >= next_collect) {

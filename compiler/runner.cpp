@@ -477,7 +477,7 @@ void runner::op_newobj() {
 
         if (newcall.type == call_type::ct_syscall_direct) {
             syscall(newcall.entry, inst.call_params, sp);
-            auto obj = stack[stack.size() - 1];
+            auto &obj = top();
             obj.objref->vtable = &type_data.vtable;
             obj.objref->sighash = inst.operand;
             gc.add_object(obj.objref);
@@ -740,10 +740,20 @@ void runner::programcall(int index, uint8_t params) {
     assert(index < p.header.entry_len);
 
     auto &entry = p.entries[index];
+
+    if (params > entry.params &&
+        !(entry.flags & rk_entry_va_args)) {
+        exception = new rkexception(
+            L"Too many parameters. (max " +
+            std::to_wstring(entry.params) +
+            L")");
+        return;
+    }
     while (params < entry.params) {
         push(rknull);
         params++;
     }
+
     auto stacksize = stack.size();
 
     push_callframe(entry, params);
@@ -878,7 +888,7 @@ callframe runner::pop_callframe(program_entry &entry) {
     auto callframe = callstack.back();
     callstack.pop_back();
 
-    stack.drop(callframe.params + (callframe.entry->locals - callframe.entry->params));
+    stack.drop(callframe.entry->locals);
 
     return callframe;
 }

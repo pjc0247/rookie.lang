@@ -1,7 +1,9 @@
 #pragma once
 
 #define rooke_max_signature 32
-#define rookie_max_params 7
+#define rookie_max_params   7
+
+#define rk_entry_va_args    1
 
 typedef enum opcode : unsigned char {
     op_nop = 0,
@@ -187,6 +189,8 @@ struct program_entry {
     uint32_t entry;
     uint32_t codesize;
     uint16_t stacksize;
+
+    uint32_t flags;
 };
 struct exception_handler {
     uint32_t pc_begin, pc_end;

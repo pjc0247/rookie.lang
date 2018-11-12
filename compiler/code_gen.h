@@ -224,6 +224,7 @@ public:
         entry.entry = get_cursor();
         entry.params = method->params()->children.size();
         entry.locals = method->local_size;
+        entry.flags = method->is_va_args() ? rk_entry_va_args : 0;
         entries.push_back(entry);
     }
     void begin_bootstrap() {
@@ -615,16 +616,10 @@ private:
             }
         }
 
-        auto last_param = node->params()->last();
-        if (last_param != nullptr) {
-            if (last_param->type == syntax_type::syn_ident) {
-                auto last_ident = (ident_node*)last_param;
-                if (last_ident->ident[0] == '*') {
-                    emitter.emit(opcode::op_param_to_arr);
-                    emitter.emit(opcode::op_dup);
-                    emitter.emit(opcode::op_stloc, node->params()->children.size() - 1);
-                }
-            }
+        if (node->is_va_args()) {
+            emitter.emit(opcode::op_param_to_arr);
+            emitter.emit(opcode::op_dup);
+            emitter.emit(opcode::op_stloc, node->params()->children.size() - 1);
         }
 
         emit(node->body());

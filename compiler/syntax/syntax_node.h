@@ -269,14 +269,27 @@ public:
 	const std::wstring &ident_str() {
 		return ident()->ident;
 	}
-	params_node *params() {
+	params_node *params() const {
 		return (params_node*)children[1];
 	}
-	block_node *body() {
+	block_node *body() const {
 		return (block_node*)children[2];
 	}
 
 	void push_annotation(annotation_node *node);
+
+    bool is_va_args() const {
+        auto last_param = params()->last();
+        if (last_param != nullptr) {
+            if (last_param->type == syntax_type::syn_ident) {
+                auto last_ident = (ident_node*)last_param;
+                if (last_ident->ident[0] == L'*') {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 protected:
 	virtual void on_complete();
