@@ -639,6 +639,10 @@ private:
 
         auto params_required = callee->params()->children.size();
         auto params_given = (caller->children.size() - 1);
+
+        if (params_required < params_given)
+                return;
+
         auto arg_diff = params_required - params_given;
 
         for (int i = 0; i < arg_diff; i++)
