@@ -6,7 +6,7 @@
 for_node::for_node(const stoken &token) :
 	syntax_node(token) {
 
-    nth_block_or_single = 4;
+    nth_block_or_single = 3;
 	type = syntax_type::syn_for;
 }
 
