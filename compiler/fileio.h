@@ -25,7 +25,7 @@ public:
         fseek(fp, 0, SEEK_SET);
 
         wchar_t *buf = new wchar_t[len + 1];
-        fread(buf, sizeof(wchar_t), len, fp);
+        len = fread(buf, sizeof(wchar_t), len, fp);
         buf[len] = 0;
 
         fclose(fp);
