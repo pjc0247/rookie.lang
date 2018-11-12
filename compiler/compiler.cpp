@@ -15,7 +15,6 @@
 #include "ast/newdic.h"
 #include "ast/string_interpolation.h"
 #include "ast/classfield.h"
-#include "ast/foreach.h"
 #include "ast/ifelse_chain.h"
 #include "ast/op_and_assign.h"
 
@@ -169,7 +168,6 @@ compiler &compiler::include_essential_passes(compiler &c) {
      .transformer<newdic_transformer>()
      .transformer<string_interpolation_transformer>()
      .transformer<classfield_transformer>()
-     .transformer<foreach_transformer>()
      .transformer<ifelse_chain_transformer>()
      .transformer<op_and_assign_transformer>()
      .transformer<arr_setitem_transformer>()
