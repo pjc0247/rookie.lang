@@ -64,7 +64,7 @@ public:
 	syntax_node *append(syntax_node *node, bool fire_oncomplete = true);
 	syntax_node *pop();
 
-    syntax_node *last() {
+    syntax_node *last() const {
         if (children.size() == 0) return nullptr;
         return children[children.size() - 1];
     }

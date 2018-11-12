@@ -1,15 +1,13 @@
-class and_or_test{
-
-    @main
+// MUST NOT execute a body
+// if condition is false initially
+class for_test {
+	@main
     static def main() {
+        a = [1,2,3];
 
-        try {
-            and_or_test.new().asdfsafd();
-        }
-        catch {
-            puts ("FAIL");
-        }
-
+        for (c in a)
+            puts (c);
+        
         puts ("PASS");
     }
 }

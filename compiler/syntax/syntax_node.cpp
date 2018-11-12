@@ -10,6 +10,8 @@ syntax_node::syntax_node(const stoken &token) :
 
 }
 bool syntax_node::is_complete() const {
+    if (last() != nullptr && last()->type == syntax_type::syn_block)
+        return true;
 	if (capacity > 0)
 		return children.size() >= capacity;
 

@@ -47,7 +47,10 @@ public:
             _ending_expression(st_end_call);
             _ending_expression(st_end_arr);
 
-            if (token.type == stoken_type::endl)
+            if (token.raw == L"in")
+                current->nth_block_or_single = current->children.size() + 1;
+
+            else if (token.type == stoken_type::endl)
                 append_and_set(new endl_node(token));
             else if (token.type == stoken_type::st_include)
                 append_and_replace(include(token));
@@ -97,6 +100,8 @@ public:
                 append_and_replace(_else(token));
             else if (token.type == stoken_type::st_for)
                 append_and_replace(_for(token));
+            else if (token.type == stoken_type::st_foreach)
+                append_and_replace(_foreach(token));
             else if (token.type == stoken_type::st_while)
                 append_and_replace(_while(token));
             else if (token.type == stoken_type::st_return)
@@ -219,6 +224,10 @@ private:
     }
     for_node *_for(const stoken &token) {
         auto node = new for_node(token);
+        return node;
+    }
+    foreach_node *_foreach(const stoken &token) {
+        auto node = new foreach_node(token);
         return node;
     }
     while_node *_while(const stoken &token) {

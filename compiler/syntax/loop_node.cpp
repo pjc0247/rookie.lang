@@ -6,6 +6,7 @@
 for_node::for_node(const stoken &token) :
 	syntax_node(token) {
 
+    nth_block_or_single = 4;
 	type = syntax_type::syn_for;
 }
 
@@ -25,7 +26,6 @@ syntax_node *for_node::body() const {
 // FOREACH_NODE
 foreach_node::foreach_node(const stoken &token) :
 	syntax_node(token) {
-	capacity = 3;
 	type = syntax_type::syn_foreach;
 }
 

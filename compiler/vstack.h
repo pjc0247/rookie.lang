@@ -24,6 +24,8 @@ public:
         ptr--;
     }
     void drop(int n) {
+        assert(ptr >= n);
+
         if (n > 0)
             ptr -= n;
     }
