@@ -741,6 +741,12 @@ void runner::programcall(int index, uint8_t params) {
 
     auto &entry = p.entries[index];
     auto stacksize = stack.size();
+
+    while (params < entry.params) {
+        push(rknull);
+        params++;
+    }
+
     push_callframe(entry, params);
     pc = entry.entry;
     bp = stacksize - params;
