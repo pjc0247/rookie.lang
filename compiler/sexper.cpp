@@ -329,33 +329,20 @@ void sexper::sexp_methodbody(const token &token) {
                 goto end_parse;
             }
 
-            if (stack.empty() == false &&
-                stack.back().stype == stoken_type::st_begin_call) {
-                result.push_back(parse(stack.back()));
-                stack.pop_back();
-            }
-            if (stack.empty() == false &&
-                stack.back().stype == stoken_type::st_memberaccess) {
-                result.push_back(parse(stack.back()));
-                stack.pop_back();
-            }
-            if (stack.empty() == false &&
-                stack.back().stype == stoken_type::st_arraccess) {
-                result.push_back(parse(stack.back()));
-                stack.pop_back();
-            }
+			if (stack.empty() == false) {
+				auto type = stack.back().stype;
+				if (type == stoken_type::st_begin_call ||
+					type == stoken_type::st_memberaccess ||
+					type == stoken_type::st_arraccess) {
+					result.push_back(parse(stack.back()));
+					stack.pop_back();
+				}
+			}
 
         end_parse:;
 
             flush_until_priority(token.priority);
         }
-
-        /*
-        else if (token.type == token_type::right_paren) {
-        flush_until_type(token_type::right_paren);
-
-        }
-        */
 
         stack.push_back(token);
     }
