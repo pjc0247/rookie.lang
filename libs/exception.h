@@ -58,6 +58,15 @@ private:
 	std::deque<callframe> callstack;
 };
 
+class null_pointer_exception : public rkexception {
+public:
+	null_pointer_exception() :
+		rkexception("Nullpointer exception") {
+	}
+	null_pointer_exception(const std::wstring &name) :
+		rkexception(L"Nullpointer exception. (null." + name + L")") {
+	}
+};
 class memory_overflow_exception : public rkexception {
 public:
     memory_overflow_exception() :
@@ -73,4 +82,4 @@ public:
 
 public:
     std::wstring given_name;
-};
+}; 

@@ -795,6 +795,12 @@ void runner::_vcall(int sighash, uint8_t params, stack_provider &sp) {
     }
     else {
         auto calleeobj = callee_ptr->objref;
+
+		if (calleeobj == nullptr) {
+			exception = new null_pointer_exception(hash_to_string(sighash));
+			return;
+		}
+
         vtable = calleeobj->vtable;
     }
 
