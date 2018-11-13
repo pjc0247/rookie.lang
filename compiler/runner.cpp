@@ -105,6 +105,10 @@ void runner::run_entry(program_entry *_entry) {
     int ss = stack.size();
     int depth = callstack.size();
 
+	if (depth >= 150) {
+		throw new rkexception("Stack too deep");
+	}
+
     while (!endflag && callstack.size() >= depth) {
 #ifdef RK_HALT_ON_LONG_EXECUTION
         halt_counter++;
