@@ -69,6 +69,9 @@ value exe_context::next_param() {
     return sp.pop();
 }
 
+program_entry *exe_context::get_caller_entry(int offset) {
+    return r.callstack[r.callstack.size() - offset - 1].entry;
+}
 gc &exe_context::gc() {
     return r.gc;
 }

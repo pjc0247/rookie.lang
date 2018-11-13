@@ -41,6 +41,8 @@ public:
 
     value next_param();
 
+    program_entry *get_caller_entry(int offset);
+
     gc &gc();
     debugger *debugger();
 

@@ -1,10 +1,8 @@
 #pragma once
 
 #include <string>
-#include <algorithm>
 
 #include "binding.h"
-#include "object.h"
 
 class rkreflection : public rkobject<rkreflection> {
 public:
