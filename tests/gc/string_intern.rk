@@ -1,0 +1,16 @@
+class string_intern_test {
+    @main
+    static def main () {
+        puts ("hello world");
+
+        if (gc.object_count() == 0)
+            puts ("PASS");
+
+        puts ("hello world1");
+        puts ("hello world2");
+        puts ("hello world3");
+
+        if (gc.object_count() == 0)
+            puts ("PASS");
+    }
+}

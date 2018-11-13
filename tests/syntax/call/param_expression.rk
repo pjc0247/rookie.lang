@@ -1,0 +1,13 @@
+class param_expression_test {
+    @main
+    static def main () {
+        a = 1;
+        b = 5;
+        foo(a + b, b * a);
+    }
+
+    static def foo (a, b) {
+        puts (a);
+        puts (b);
+    }
+}
