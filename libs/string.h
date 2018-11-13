@@ -3,7 +3,6 @@
 #include <string>
 
 #include "binding.h"
-#include "object.h"
 
 class rkstring : public rkobject<rkstring> {
 public:

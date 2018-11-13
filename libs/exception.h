@@ -83,3 +83,21 @@ public:
 public:
     std::wstring given_name;
 }; 
+
+class not_implemented_exception : public rkexception {
+public:
+    not_implemented_exception() :
+        rkexception("Method is not implemented.") {
+    }
+    not_implemented_exception(const std::wstring &msg) :
+        rkexception(msg) {
+    }
+};
+
+// Exception shortcuts
+class e {
+public:
+    static not_implemented_exception *not_avaliable_in_this_platform() {
+        return new not_implemented_exception(L"Method is not avaliable in this platform.");
+    }
+};

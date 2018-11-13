@@ -1,7 +1,6 @@
 #pragma once
 
 #include "binding.h"
-#include "object.h"
 
 class rkgc : public rkobject<rkgc> {
 public:

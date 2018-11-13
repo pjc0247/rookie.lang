@@ -1,9 +1,6 @@
 #pragma once
 
-#include <algorithm>
-
 #include "binding.h"
-#include "object.h"
 
 class rkmath : public rkobject<rkmath> {
 public:

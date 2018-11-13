@@ -1,13 +1,18 @@
-// MUST NOT execute a body
-// if condition is false initially
-class for_test {
-	@main
-    static def main() {
-        a = [1,2,3];
-
-        for (c in a)
-            puts (c);
+class foo {
+    def _ctor() {
+        puts (caller());
         
-        puts ("PASS");
+        bar();
+    }
+
+    def bar() {
+        puts (caller());
+    }
+}
+
+class default_param_test {
+    @main
+    static def main () {
+        foo.new();
     }
 }

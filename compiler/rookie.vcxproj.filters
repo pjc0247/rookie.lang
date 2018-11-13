@@ -47,6 +47,9 @@
     <ClCompile Include="..\libs\string.cpp">
       <Filter>libs</Filter>
     </ClCompile>
+    <ClCompile Include="..\libs\type.cpp">
+      <Filter>libs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binding.h" />
@@ -197,6 +200,16 @@
     <ClInclude Include="did_you_mean.h" />
     <ClInclude Include="ast\method_router.h">
       <Filter>ast</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\dir.h">
+      <Filter>libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\includes\stdfs.h">
+      <Filter>includes</Filter>
+    </ClInclude>
+    <ClInclude Include="string_intern.h" />
+    <ClInclude Include="..\libs\caller.h">
+      <Filter>libs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

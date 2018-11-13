@@ -15,9 +15,11 @@
 #include "libs/kvpair.h"
 #include "libs/iterator.h"
 #include "libs/file.h"
+#include "libs/dir.h"
 #include "libs/boolean.h"
 #include "libs/json.h"
 #include "libs/exception.h"
+#include "libs/caller.h"
 
 #include "binding.h"
 
@@ -40,9 +42,11 @@ binding binding::default_binding() {
     b.import<rkdictionary_iterator>();
     b.import<rkkvpair>();
     b.import<rkfile>();
+    b.import<rkdir>();
     b.import<rkboolean>();
     b.import<rkjson>();
     b.import<rkexception>();
+    b.import<rkcaller>();
 
     return b;
 }

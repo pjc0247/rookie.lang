@@ -3,6 +3,7 @@
 #include "binding.h"
 #include "sig2hash.h"
 #include "did_you_mean.h"
+#include "string_intern.h"
 
 #include "libs/array.h"
 #include "libs/dictionary.h"
@@ -28,7 +29,7 @@
     auto b = pop(); auto a = pop(); 
 
 #define throw_and_halt(e) \
-	exception = e; return;
+	do { exception = e; return; } while(false)
 
 struct primitive_cache {
     runtime_typedata integer, string, object, boolean;
@@ -51,8 +52,12 @@ runner::runner(const program &p, ::binding &binding) :
     build_runtime_data();
     build_primitive_cache();
     build_type_cache();
+
+    strpool = new string_intern();
+    strpool->preload(p.rdata, p.header.rdata_len, *this);
 }
 runner::~runner() {
+    delete strpool;
     delete ptype;
 
     for (auto t : typecache->table)
@@ -128,8 +133,9 @@ void runner::run_entry(program_entry *_entry) {
             break;
         case opcode::op_ldstr:
             // FIX: Performance
-            push(value::mkstring(p.rdata + inst.operand));
-            _newobj_systype(sighash_string, sp);
+            //push(value::mkstring(p.rdata + inst.operand));
+            //_newobj_systype(sighash_string, sp);
+            push(strpool->get(inst.operand));
             break;
         case opcode::op_ldnull:
             push(rknull);
@@ -423,10 +429,12 @@ void runner::op_add() {
     auto left  = top();
 
 	if (is_rkstr(left)) {
+        set_rkctx(exectx);
 		auto str = new rkstring(rkwstr(left) + rk_call_tostring_w(right));
 		replace_top(_initobj_systype(sighash_string, str));
 	}
 	else if (is_rkstr(right)) {
+        set_rkctx(exectx);
 		auto str = new rkstring(rk_call_tostring_w(left) + rkwstr(right));
 		replace_top(_initobj_systype(sighash_string, str));
 	}
@@ -475,9 +483,12 @@ void runner::op_newobj() {
         gc.add_object(objref);
     }
     else {
-        // FIXME
-        auto newcall = type_data.vtable[sighash_new];
+        auto newcall_it = type_data.vtable.find(sighash_new);
 
+        if (newcall_it == type_data.vtable.end())
+            throw_and_halt(new rkexception("Object is not allowed to create."));
+
+        auto newcall = (*newcall_it).second;
         if (newcall.type == call_type::ct_syscall_direct) {
             syscall(newcall.entry, inst.call_params, sp);
             auto &obj = top();

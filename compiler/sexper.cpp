@@ -132,6 +132,8 @@ std::vector<token> sexper::preprocess(const std::vector<token> &_tokens) {
                     depth -= 1;
 
                     if (depth == 0) {
+                        (*it2).priority = -9998;
+
                         bool modify_p = false;
                         if ((*std::prev(it, 2)).type != token_type::dot)
                             modify_p = true;
@@ -277,6 +279,10 @@ void sexper::sexp_class(token &token) {
     else if (token.type == token_type::comma) {
         flush_until_priority(token.priority);
         stoken.type = stoken_type::comma;
+
+        if (state == sexp_state::ss_param_list) {
+            
+        }
     }
     else if (token.type == token_type::right_bracket)
         stoken.type = stoken_type::st_end_block;
@@ -353,7 +359,9 @@ void sexper::sexp_methodbody(const token &token) {
     }
     else if (token.type == token_type::right_paren) {
         _mark_as_parsed(stoken);
-        stack.push_back(token);
+
+        if (prev_token().type != token_type::ident)
+            stack.push_back(token);
     }
     else if (token.type == token_type::left_bracket) {
         _mark_as_parsed(stoken);

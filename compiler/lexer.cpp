@@ -65,7 +65,7 @@ static std::vector<lexer_token> rules{
     lexer_token(L"]", token_type::right_sq_bracket, -900),
 
     lexer_token(L".", token_type::dot, -3000),
-    lexer_token(L",", token_type::comma, -1000),
+    lexer_token(L",", token_type::comma, -9900),
     lexer_token(L":", token_type::colon, -1000),
     lexer_token(L";", token_type::semicolon, -9999)
 };

@@ -23,6 +23,7 @@ class  object;
 class  binding;
 class  exe_context;
 class  vstack;
+class  string_intern;
 
 struct primitive_cache;
 struct type_cache;
@@ -167,6 +168,7 @@ private:
 
     primitive_cache *ptype;
     type_cache      *typecache;
+    string_intern   *strpool;
 
     // REGISTERS
     program_entry  *current_entry;
