@@ -99,7 +99,6 @@ value rkarray::equal(value_cref other) {
 
 value rkarray::push(value_cref v) {
     ary.push_back(v);
-    gc_refs.push_back(v);
     return rknull;
 }
 value rkarray::clear() {

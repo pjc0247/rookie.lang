@@ -75,13 +75,6 @@ void gc::mark(const value &v, gc_context &ctx) {
 
         mark(prop.second, ctx);
     }
-    for (auto &ref : v.objref->gc_refs) {
-        if (ctx.marks.find(ref.objref) !=
-            ctx.marks.end())
-            continue;
-
-        mark(ref, ctx);
-    }
 
     v.objref->gc_visit([this, &ctx](value_cref v) { mark(v, ctx); });
 }

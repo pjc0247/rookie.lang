@@ -35,5 +35,4 @@ public:
 
     std::map<uint32_t, callinfo> *vtable;
     std::map<uint32_t, value>    properties;
-    std::vector<value>           gc_refs;
 };
