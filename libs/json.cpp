@@ -65,10 +65,12 @@ std::wstring rkjson::_stringify(value_cref obj) {
     else if (obj.type == value_type::boolean)
         return rk2int(obj) ? L"true" : L"false";
     else if (obj.type == value_type::object) {
-        if (obj.objref->sighash == sighash_array)
-            return _stringify_array(obj);
-        else if (obj.objref->sighash == sighash_dictionary)
-            return _stringify_dictionary(obj);
+		if (obj.objref->sighash == sighash_array)
+			return _stringify_array(obj);
+		else if (obj.objref->sighash == sighash_dictionary)
+			return _stringify_dictionary(obj);
+		else if (obj.objref->sighash == sighash_string)
+			return L"\"" + rkwstr(obj) + L"\"";
     }
 }
 std::wstring rkjson::_stringify_array(value_cref obj) {
