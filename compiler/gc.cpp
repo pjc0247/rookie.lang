@@ -8,6 +8,7 @@
 gc::gc(runner &r) :
     r(r) {
 
+    force_no_gc = 0;
     next_collect = gc_grow_size;
 }
 gc::~gc() {
@@ -22,14 +23,17 @@ void gc::add_object(object *objref) {
 
     all_objects.insert(objref);
 
-    if (all_objects.size() >= next_collect) {
+    if (force_no_gc == 0 &&
+        all_objects.size() >= next_collect) {
         collect();
 
         if (all_objects.size() >= next_collect * 0.7) {
+            rklog("[GC] increased %d", next_collect);
+
             if (_overflow(next_collect, gc_grow_size))
                 rk_throw(new memory_overflow_exception());
-            else 
-                next_collect += gc_grow_size;
+            else
+                grow_single();
         }
     }
 }
@@ -97,3 +101,31 @@ void gc::shrink_if_possible() {
 
     next_collect *= 0.8f;
 }
+
+inline
+void gc::grow_single() {
+    if (_overflow(next_collect, gc_grow_size))
+        throw memory_overflow_exception();
+    
+    next_collect += gc_grow_size;
+}
+inline
+void gc::grow_until_fit() {
+    while (all_objects.size() * 1.1 >= next_collect)
+        grow_single();
+}
+
+void gc::begin_no_gc() {
+    assert(force_no_gc != UINT32_MAX);
+
+    force_no_gc++;
+}
+void gc::end_no_gc() {
+    assert(force_no_gc != 0);
+
+    force_no_gc--;
+
+    if (force_no_gc == 0)
+        grow_until_fit();
+}
+

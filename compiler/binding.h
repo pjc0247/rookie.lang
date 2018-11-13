@@ -60,6 +60,9 @@ class rkstring;
 
 #define rkid(id) sig2hash_c(id)
 
+#define _begin_no_gc() rkctx()->gc().begin_no_gc()
+#define _end_no_gc()   rkctx()->gc().end_no_gc()
+
 struct bind_info {
     int params;
     std::function<void(stack_provider&)> func;

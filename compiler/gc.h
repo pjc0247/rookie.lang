@@ -27,11 +27,18 @@ public:
 
     int object_count();
 
+    void begin_no_gc();
+    void end_no_gc();
+
 protected:
     void mark(value &v, gc_context &ctx);
     void sweep(gc_context &ctx);
 
     void shrink_if_possible();
+
+private:
+    void grow_single();
+    void grow_until_fit();
 
 private:
     runner &r;
@@ -40,4 +47,6 @@ private:
     std::vector<value> roots;
 
     uint32_t next_collect;
+
+    uint32_t force_no_gc;
 };
