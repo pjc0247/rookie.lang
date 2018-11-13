@@ -16,4 +16,6 @@ public:
 
 private:
     static std::wstring _stringify(value_cref obj);
+    static std::wstring _stringify_array(value_cref obj);
+    static std::wstring _stringify_dictionary(value_cref obj);
 };
