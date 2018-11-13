@@ -8,6 +8,8 @@
 void rkscriptobject::import(binding &b) {
     auto type = type_builder(L"object");
 
+    type.method(rk_id_new, create_instance);
+
     method(type, L"properties", &rkscriptobject::all_properties);
     method(type, L"__set_prop", &rkscriptobject::set_property);
     method(type, L"__get_prop", &rkscriptobject::get_property);
