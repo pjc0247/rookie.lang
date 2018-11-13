@@ -109,5 +109,5 @@ value rk_string(const char *str) {
 }
 
 void rk_throw(rkexception *ex) {
-    rkctx()->throw_exception(ex);
+    rkctx()->set_exception(ex);
 }

@@ -18,7 +18,7 @@ public:
 
     const std::wstring &get_name(uint32_t sighash);
 
-    void throw_exception(rkexception* exception);
+    void set_exception(rkexception* exception);
 
     value init_obj(uint32_t sighash, object *obj);
     value init_obj_nogc(uint32_t sighash, object *obj);

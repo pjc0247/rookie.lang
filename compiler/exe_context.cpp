@@ -26,7 +26,7 @@ const std::wstring &exe_context::get_name(uint32_t sighash) {
     return r.hash_to_string(sighash);
 }
 
-void exe_context::throw_exception(rkexception *exception) {
+void exe_context::set_exception(rkexception *exception) {
     r.exception = exception;
 }
 
