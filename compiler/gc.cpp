@@ -62,7 +62,7 @@ int gc::object_count() {
     return all_objects.size();
 }
 
-void gc::mark(value &v, gc_context &ctx) {
+void gc::mark(const value &v, gc_context &ctx) {
     if (v.type != value_type::object)
         return;
 
@@ -82,6 +82,8 @@ void gc::mark(value &v, gc_context &ctx) {
 
         mark(ref, ctx);
     }
+
+    v.objref->gc_visit([this, &ctx](value_cref v) { mark(v, ctx); });
 }
 void gc::sweep(gc_context &ctx) {
     for (auto it = all_objects.begin(); it != all_objects.end();) {

@@ -29,6 +29,8 @@ public:
     std::map<std::wstring, value>::iterator begin();
     std::map<std::wstring, value>::iterator end();
 
+    virtual void gc_visit(gc_mark_func mark);
+
 private:
     std::map<std::wstring, value> dic;
 };

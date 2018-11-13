@@ -1,5 +1,8 @@
 #include "stdafx.h"
 
+#include "string.h"
+#include "iterator.h"
+
 #include "array.h"
 
 void rkarray::import(binding &b) {
@@ -96,6 +99,7 @@ value rkarray::equal(value_cref other) {
 
 value rkarray::push(value_cref v) {
     ary.push_back(v);
+    gc_refs.push_back(v);
     return rknull;
 }
 value rkarray::clear() {
@@ -146,4 +150,9 @@ std::vector<value>::iterator rkarray::begin() {
 }
 std::vector<value>::iterator rkarray::end() {
     return ary.end();
+}
+
+void rkarray::gc_visit(gc_mark_func mark) {
+    for (auto &v : ary)
+        mark(v);
 }

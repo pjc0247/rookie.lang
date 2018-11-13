@@ -9,6 +9,8 @@
 #define TYPENAME(n) \
     virtual const wchar_t *type_name() { return n; }
 
+typedef const std::function<void(value_cref)> & gc_mark_func;
+
 class object {
 public:
     virtual const wchar_t *type_name() { return L"object"; }
@@ -21,6 +23,9 @@ public:
         if (it == properties.end())
             return rknull;
         return (*it).second;
+    }
+
+    virtual void gc_visit(gc_mark_func mark) {
     }
 
 public:

@@ -45,6 +45,7 @@ value rkdictionary::get(value_cref key) {
 value rkdictionary::set(value_cref key, value_cref v) {
     auto h = rkwstr(key);
     dic[h] = v;
+
     return rknull;
 }
 value rkdictionary::to_string() {
@@ -96,4 +97,9 @@ std::map<std::wstring, value>::iterator rkdictionary::begin() {
 }
 std::map<std::wstring, value>::iterator rkdictionary::end() {
     return dic.end();
+}
+
+void rkdictionary::gc_visit(gc_mark_func mark) {
+    for (auto &p : dic)
+        mark(p.second);
 }

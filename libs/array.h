@@ -3,10 +3,6 @@
 #include <algorithm>
 
 #include "binding.h"
-#include "object.h"
-#include "string.h"
-
-#include "iterator.h"
 
 class rkarray : public rkobject<rkarray> {
 public:
@@ -40,6 +36,8 @@ public:
 
     std::vector<value>::iterator begin();
     std::vector<value>::iterator end();
+
+    void gc_visit(gc_mark_func mark);
 
 private:
     std::vector<value> ary;

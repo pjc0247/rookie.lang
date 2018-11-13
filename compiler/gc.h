@@ -31,7 +31,7 @@ public:
     void end_no_gc();
 
 protected:
-    void mark(value &v, gc_context &ctx);
+    void mark(const value &v, gc_context &ctx);
     void sweep(gc_context &ctx);
 
     void shrink_if_possible();
