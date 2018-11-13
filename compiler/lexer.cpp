@@ -106,6 +106,7 @@ std::vector<token> lexer::lex(const std::wstring &_src) {
                 head++;
                 if (src[head] == '\n') break;
             }
+            tail = head;
             continue;
         }
 
