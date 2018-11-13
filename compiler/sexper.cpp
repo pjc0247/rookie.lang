@@ -142,7 +142,7 @@ std::vector<token> sexper::preprocess(const std::vector<token> &_tokens) {
                         tokens.erase(std::prev(it));
 
                         if (modify_p)
-                            (*inserted).priority = std::min(-6000, (*inserted).priority);
+                            (*inserted).priority = std::min(-9901, (*inserted).priority);
 
                         break;
                     }
@@ -401,7 +401,7 @@ void sexper::sexp_methodbody(const token &token) {
         else {
             stack.push_back(::token(token)
                 .for_stackdelim()
-                .with_priority(-3000)
+                .with_priority(-9901)
                 .with_hint(stoken_type::st_end_arr));
             stoken.type = stoken_type::st_end_arr;
         }

@@ -20,7 +20,7 @@ static std::vector<lexer_token> rules{
     lexer_token(L"if", token_type::keyword, -9000),
     lexer_token(L"else", token_type::keyword, -9000),
     lexer_token(L"for", token_type::keyword, -10000),
-    lexer_token(L"while", token_type::keyword, -10000),
+    lexer_token(L"while", token_type::keyword, -9000),
     lexer_token(L"return", token_type::keyword, -9000),
     lexer_token(L"null", token_type::keyword),
     lexer_token(L"in", token_type::keyword),
