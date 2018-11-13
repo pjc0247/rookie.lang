@@ -21,7 +21,8 @@ protected:
                     auto prev = *std::prev(it);
 
                     if (prev->type == syntax_type::syn_call ||
-                        prev->type == syntax_type::syn_callmember) {
+                        prev->type == syntax_type::syn_callmember ||
+                        prev->type == syntax_type::syn_newobj) {
 
                         auto pop = new pop_node(node->s_token());
                         pop->parent = node;
