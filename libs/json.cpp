@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "thirdparty/json.hpp"
+#include "string.h"
 #include "array.h"
 
 #include "json.h"
