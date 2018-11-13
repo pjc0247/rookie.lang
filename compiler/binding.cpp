@@ -61,7 +61,7 @@ std::wstring cvt::value_to_std_wstring(value_cref v) {
 value type_builder::default_to_string(value_cref _this) {
     auto objthis = (object*)_this.objref;
     std::wstring str = L"#<";
-    str += objthis->name_ptr;
+    str += objthis->type_name();
 
     for (auto &p : objthis->properties) {
         str += L" @" + rk_id2wstr(p.first) + L": ";
