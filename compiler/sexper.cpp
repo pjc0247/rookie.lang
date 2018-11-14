@@ -477,6 +477,7 @@ void sexper::sexp_methodbody(const token &token) {
 	else if (token.type == token_type::keyword) {
 		_mark_as_parsed(stoken);
 
+        // for (e `in` elems) 
 		if (token.raw == L"in") {
 			flush_single_line();
 			stack.back().stype = stoken_type::st_foreach;
@@ -577,7 +578,6 @@ void sexper::parse_keyword(const token &token, stoken &stoken) {
 	else if (token.raw == L"in")
 		stoken.type = stoken_type::st_in;
 }
-
 void sexper::flush_single_line() {
 	flush_until_priority(-9999);
 }

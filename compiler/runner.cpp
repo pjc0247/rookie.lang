@@ -4,6 +4,7 @@
 #include "sig2hash.h"
 #include "did_you_mean.h"
 #include "string_intern.h"
+#include "conout.h"
 
 #include "libs/array.h"
 #include "libs/dictionary.h"
@@ -682,10 +683,13 @@ void runner::unhandled_exception() {
             ex->given_name, types[callee_ptr->objref->sighash]);
 
         if (candidates.size() > 0) {
+            con::setColor(CON_YELLOW);
             printf("Did you mean?\n");
+            con::setColor(CON_WHITE);
             for (auto &c : candidates) {
                 printf("  * %S\n", c.id.c_str());
             }
+            con::setColor(CON_LIGHTGRAY);
         }
     end_catch
 
