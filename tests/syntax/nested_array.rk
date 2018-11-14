@@ -1,0 +1,15 @@
+class nested_array_test {
+    @main
+    static def main () {
+        a = [[[]]];
+
+        puts (a);
+
+        if (a == [[[]]])
+            puts ("PASS");
+        if (a[0] == [[]])
+            puts ("PASS");
+        if (a[0][0] == [])
+            puts ("PASS");
+    }
+}
