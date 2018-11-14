@@ -5,6 +5,7 @@
 #include "binding.h"
 #include "string.h"
 #include "object.h"
+#include "exception.h"
 
 class rkkvpair : public rkobject<rkkvpair> {
 public:
