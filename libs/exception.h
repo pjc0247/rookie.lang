@@ -94,6 +94,13 @@ public:
     }
 };
 
+class divide_by_zero_exception : public rkexception {
+public:
+    divide_by_zero_exception() :
+        rkexception("Divide by zero") {
+    }
+};
+
 // Exception shortcuts
 class e {
 public:

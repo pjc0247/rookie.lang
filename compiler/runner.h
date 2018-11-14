@@ -117,6 +117,7 @@ private:
     void op_not();
 
     void op_add();
+    void op_div();
 
     void op_newobj();
     void op_newarr();

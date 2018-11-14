@@ -216,6 +216,9 @@ void runner::run_entry(program_entry *_entry) {
         case opcode::op_add:
             op_add();
             break;
+        case opcode::op_div:
+            op_div();
+            break;
 
         case opcode::op_throw:
             op_throw();
@@ -287,12 +290,6 @@ void runner::run_entry(program_entry *_entry) {
         else if (inst.opcode == opcode::op_sub) {
             _pop2_int(left, right);
             left.integer -= right.integer;
-            push(left);
-        }
-        else if (inst.opcode == opcode::op_div) {
-            _pop2_int(left, right);
-            // TODO: check left is zero
-            left.integer /= right.integer;
             push(left);
         }
         else if (inst.opcode == opcode::op_mul) {
@@ -453,6 +450,15 @@ void runner::op_add() {
         push(right);
         _vcall(sig2hash(L"__add__"), 1, sp);
     }
+}
+void runner::op_div() {
+    _pop2_int(left, right);
+    // TODO: check left is zero
+    if (right.integer == 0)
+        throw_and_halt(new divide_by_zero_exception());
+
+    left.integer /= right.integer;
+    push(left);
 }
 void runner::op_newobj() {
     // [STACK-LAYOUT   |   OPERAND]
