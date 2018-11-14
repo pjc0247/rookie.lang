@@ -13,6 +13,7 @@ typedef enum opcode : unsigned char {
     op_sub,
     op_mul,
     op_div,
+    op_mod,
     op_eq, op_neq,
     op_g, op_l, op_ge, op_le,
     op_and, op_or, op_not,
@@ -53,6 +54,7 @@ inline const wchar_t *to_string(opcode type) {
     case op_sub: return L"op_sub";
     case op_mul: return L"op_mul";
     case op_div: return L"op_div";
+    case op_mod: return L"op_mod";
     case op_eq: return L"op_eq";
     case op_neq: return L"op_neq";
     case op_g: return L"op_g";
