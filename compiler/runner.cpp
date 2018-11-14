@@ -32,6 +32,8 @@
 #define throw_and_halt(e) \
 	do { exception = e; return; } while(false)
 
+#define ensure_stack(n) assert(stack.size() >= n)
+
 struct primitive_cache {
     runtime_typedata integer, string, object, boolean;
     runtime_typedata array, dictionary;
@@ -321,6 +323,7 @@ void runner::op_eqtype() {
      *  RIGHT
      *  OP_EQTYPE
      */
+	ensure_stack(2);
     _pop2_int(left, right);
 
     auto type = get_type(left);
@@ -344,6 +347,7 @@ void runner::op_eq() {
      *  RIGHT
      *  OP_EQ
      */
+	ensure_stack(2);
     _pop2_int(left, right);
 
     if (left.type == right.type) {
@@ -367,6 +371,7 @@ void runner::op_neq() {
      *  RIGHT
      *  OP_NEQ
      */
+	ensure_stack(2);
     _pop2_int(left, right);
 
     if (left.type == right.type) {
@@ -395,6 +400,7 @@ void runner::op_and() {
     *   RIGHT
     *   OP_AND
     */
+	ensure_stack(2);
     auto right = pop();
     auto left = top();
 
@@ -406,6 +412,7 @@ void runner::op_or() {
     *   RIGHT
     *   OP_OR
     */
+	ensure_stack(2);
     auto right = pop();
     auto left = top();
 
@@ -416,6 +423,7 @@ void runner::op_not() {
     /*  LEFT
     *   OP_NOT
     */
+	ensure_stack(1);
     auto left = top();
 
     replace_top(int2rk(!left.uinteger));
@@ -427,6 +435,7 @@ void runner::op_add() {
      *  RIGHT
      *  OP_ADD          
      */
+	ensure_stack(2);
     auto right = pop();
     auto left  = top();
 
@@ -452,13 +461,22 @@ void runner::op_add() {
     }
 }
 void runner::op_div() {
+	ensure_stack(2);
     _pop2_int(left, right);
-    // TODO: check left is zero
-    if (right.integer == 0)
-        throw_and_halt(new divide_by_zero_exception());
 
-    left.integer /= right.integer;
-    push(left);
+	if (is_rkint(left) && is_rkint(right)) {
+		if (right.integer == 0)
+			throw_and_halt(new divide_by_zero_exception());
+
+		left.integer /= right.integer;
+		push(left);
+	}
+	else {
+		push(left);
+		callee_ptr = &left;
+		push(right);
+		_vcall(sig2hash(L"__div__"), 1, sp);
+	}
 }
 void runner::op_newobj() {
     // [STACK-LAYOUT   |   OPERAND]
@@ -573,6 +591,7 @@ void runner::op_ret() {
     // [STACK-LAYOUT   |   OPERAND]
     /*  OP_RET
      */
+	ensure_stack(1);
     auto ret = pop();
     auto callframe = pop_callframe(*current_entry);
     pc = callframe.pc;
@@ -587,6 +606,7 @@ void runner::op_throw() {
     /*  exception(object)
      *  OP_THROW       
      */
+	ensure_stack(1);
     auto obj = pop();
     exception = (rkexception*)obj.objref;
 }
@@ -596,6 +616,7 @@ void runner::op_ldprop() {
     /*  THIS(object)
      *  OP_LDPROP          SIGHASH
      */
+	ensure_stack(1);
     auto obj = pop();
 
     if (obj.type != value_type::object)
@@ -609,6 +630,7 @@ void runner::op_stprop() {
      *  .THIS(object)
      *  OP_STPROP          SIGHASH
      */
+	ensure_stack(2);
     auto obj = pop();
     auto value = pop();
 
@@ -622,6 +644,7 @@ void runner::op_ldfld() {
     /*  TYPE
      *  OP_LDFLD           SIGHASH
      */
+	ensure_stack(1);
     auto type = pop();
     auto value = rk2obj(type, rktype*)->rtype
         .fields[inst.operand];
@@ -634,6 +657,7 @@ void runner::op_stfld() {
      *  VALUE
      *  OP_STFLD           SIGHASH
      */
+	ensure_stack(2);
     auto value = pop();
     auto type = pop();
 
