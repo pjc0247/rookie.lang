@@ -67,6 +67,12 @@ public:
 		rkexception(L"Nullpointer exception. (null." + name + L")") {
 	}
 };
+class out_of_range_exception : public rkexception {
+public:
+	out_of_range_exception() :
+		rkexception("out of range") {
+	}
+};
 class memory_overflow_exception : public rkexception {
 public:
     memory_overflow_exception() :

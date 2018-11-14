@@ -138,7 +138,7 @@ public:
         handle_cast_failure<T>();
     }
     template <typename T>
-    static void handle_cast_failure() {
+    [[noreturn]] static void handle_cast_failure() {
         throw_invalid_casting(typeid(T).name());
     }
     static void throw_invalid_casting(const char *expected);

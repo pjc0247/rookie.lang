@@ -501,7 +501,6 @@ void sexper::sexp_methodbody(const token &token) {
 	else
 		stoken = parse(token);
 
-ffs:;
 	if (stoken.type == stoken_type::none)
 		ctx.push_error(unexpected_token_error(token));
 	else if (stoken.type != stoken_type::nothing)

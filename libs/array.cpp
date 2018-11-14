@@ -33,8 +33,8 @@ void rkarray::import(binding &b) {
 
 rkarray::rkarray() {
 }
-rkarray::rkarray(int n) {
-    for (int i = 0; i < n; i++) {
+rkarray::rkarray(uint32_t n) {
+    for (uint32_t i = 0; i < n; i++) {
         value v = rkctx()->next_param();
         push(v);
     }

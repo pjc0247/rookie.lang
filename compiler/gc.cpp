@@ -58,7 +58,7 @@ void gc::collect() {
     rklog("[GC] after : %d\n", all_objects.size());
 }
 
-int gc::object_count() {
+uint32_t gc::object_count() {
     return all_objects.size();
 }
 

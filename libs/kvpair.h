@@ -29,7 +29,8 @@ public:
     value get(uint32_t key) {
         if (key == 0) return k;
         if (key == 1) return v;
-        // TODO: EXCEPTION
+        
+		throw new out_of_range_exception();
     }
     value to_string() {
         return str2rk(L"<#kvpair key: " + rk_call_tostring(k) + L", value: " + rk_call_tostring(v) + L">");

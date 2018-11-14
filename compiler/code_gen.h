@@ -683,7 +683,6 @@ private:
 
         end_loop:;
         }
-    found:
 
         if (supers.size() == 1) {
             emitter.emit_defer(opcode::op_call,

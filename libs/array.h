@@ -11,7 +11,7 @@ public:
     static void import(binding &b);
 
     rkarray();
-    rkarray(int n);
+    rkarray(uint32_t n);
     
     value static create_array(const value &idx);
 

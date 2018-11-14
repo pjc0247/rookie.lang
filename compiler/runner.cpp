@@ -105,8 +105,8 @@ void runner::execute(program_entry *_entry) {
     delete exectx;
 }
 void runner::run_entry(program_entry *_entry) {
-    int ss = stack.size();
-    int depth = callstack.size();
+    auto ss = stack.size();
+    auto depth = callstack.size();
 
 	if (depth >= 150) {
 		throw new rkexception("Stack too deep");

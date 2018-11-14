@@ -25,7 +25,7 @@ public:
 
     void collect();
 
-    int object_count();
+	uint32_t object_count();
 
     void begin_no_gc();
     void end_no_gc();
