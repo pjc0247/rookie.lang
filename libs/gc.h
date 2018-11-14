@@ -16,7 +16,7 @@ public:
     }
 
     static value object_count() {
-        return value::mkinteger(rkctx()->gc().object_count());
+        return int2rk(rkctx()->gc().object_count());
     }
     static value collect() {
         rkctx()->gc().collect();

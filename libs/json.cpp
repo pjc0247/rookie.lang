@@ -65,12 +65,14 @@ std::wstring rkjson::_stringify(value_cref obj) {
     else if (obj.type == value_type::boolean)
         return rk2int(obj) ? L"true" : L"false";
     else if (obj.type == value_type::object) {
-		if (obj.objref->sighash == sighash_array)
-			return _stringify_array(obj);
-		else if (obj.objref->sighash == sighash_dictionary)
-			return _stringify_dictionary(obj);
-		else if (obj.objref->sighash == sighash_string)
-			return L"\"" + rkwstr(obj) + L"\"";
+        if (obj.objref->sighash == sighash_array)
+            return _stringify_array(obj);
+        else if (obj.objref->sighash == sighash_dictionary)
+            return _stringify_dictionary(obj);
+        else if (obj.objref->sighash == sighash_string)
+            return L"\"" + rkwstr(obj) + L"\"";
+        else
+            return _stringify_object(obj);
     }
 }
 std::wstring rkjson::_stringify_array(value_cref obj) {
@@ -93,6 +95,18 @@ std::wstring rkjson::_stringify_dictionary(value_cref obj) {
     for (auto &v : *dic) {
         str += L"\"" + v.first + L"\"";
         str += L":" + _stringify(v.second);
+        str += L",";
+    }
+    str.pop_back();
+    str += L"}";
+
+    return str;
+}
+std::wstring rkjson::_stringify_object(value_cref obj) {
+    std::wstring str = L"{";
+    for (auto &p : obj.objref->properties) {
+        str += L"\"" + rk_id2wstr(p.first) + L"\"";
+        str += L":" + _stringify(p.second);
         str += L",";
     }
     str.pop_back();
