@@ -36,6 +36,8 @@ public:
     rktype *get_type(const std::wstring &name);
 
     value &get_this();
+
+    value vcall(const value &obj, uint32_t sighash, value_cref a);
     value call(const value &obj, uint32_t sighash);
     value call(const value &obj, const std::wstring &name);
 

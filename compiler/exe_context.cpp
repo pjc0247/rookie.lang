@@ -53,6 +53,13 @@ rktype *exe_context::get_type(const std::wstring &name) {
 value &exe_context::get_this() {
     return *r.callee_ptr;
 }
+value exe_context::vcall(const value &obj, uint32_t sighash, value_cref a) {
+    sp.push(obj);
+    r.set_callee_as_top();
+    sp.push(a);
+    r._vcall(sighash, 0, sp);
+    return sp.pop();
+}
 value exe_context::call(const value &obj, uint32_t sighash) {
     sp.push(obj);
     r.set_callee_as_top();
