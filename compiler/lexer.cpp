@@ -101,7 +101,7 @@ std::vector<token> lexer::lex(const std::wstring &_src) {
             inside_quote ^= true;
         if (inside_quote) goto end_loop;
 
-        if (src[head] == '/' && src[head + 1] == '/') {
+        if (src[head] == '#' || (src[head] == '#' && src[head + 1] == '/')) {
             while (head < src.length() - 1) {
                 head++;
                 if (src[head] == '\n') break;
