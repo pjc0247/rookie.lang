@@ -139,9 +139,9 @@ public:
     }
     template <typename T>
     static void handle_cast_failure() {
-        throw_invalid_casting();
+        throw_invalid_casting(typeid(T).name());
     }
-    static void throw_invalid_casting();
+    static void throw_invalid_casting(const char *expected);
 };
 
 class type_builder {

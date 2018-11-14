@@ -51,8 +51,8 @@ binding binding::default_binding() {
     return b;
 }
 
-void cvt::throw_invalid_casting() {
-    throw new rkexception("Invalid casting");
+void cvt::throw_invalid_casting(const char *expected) {
+    throw new rkexception(std::string("Invalid casting, expected: ") + expected);
 }
 std::wstring cvt::value_to_std_wstring(value_cref v) {
     return rkwstr(v);
