@@ -109,6 +109,7 @@ std::vector<token> sexper::preprocess(const std::vector<token> &_tokens) {
 						auto inserted = tokens.insert(std::next(it2), *std::prev(it));
 						tokens.erase(std::prev(it));
 
+                        it = std::next(inserted);
 						//(*inserted).priority = -10000;
 
 						break;
@@ -401,25 +402,33 @@ void sexper::sexp_methodbody(const token &token) {
 		auto right_sq_bracket =
 			flush_until_type(token_type::right_sq_bracket);
 
-		if (right_sq_bracket.hint_stype == stoken_type::st_end_arr)
-			stoken.type = stoken_type::st_begin_arr;
+        if (next_token().type == token_type::ident) {
+            stack.push_back(next_token().preparsed(stoken_type::st_arraccess));
+        }
+        else if (right_sq_bracket.hint_stype == stoken_type::st_end_arr) {
+            stack.push_back(::token().for_stackdelim());
+            //stack.push_back(::token(token).preparsed(stoken_type::st_begin_arr));
+            stoken.type = stoken_type::st_begin_arr;
+        }
 	}
 	else if (token.type == token_type::right_sq_bracket) {
 		_mark_as_parsed(stoken);
 
-		if (prev_token().type == token_type::ident ||
-			prev_token().type == token_type::left_paren) {
+		if (prev_token().type == token_type::semicolon ||
+            prev_token().type == token_type::right_paren ||
+            prev_token().type == token_type::right_sq_bracket ||
+            prev_token().type == token_type::right_bracket) {
 
-			stack.push_back(::token(token)
-				.for_stackdelim()
-				.with_hint(stoken_type::st_arraccess));
+            stack.push_back(::token(token)
+                .for_stackdelim()
+                .with_priority(-9901)
+                .with_hint(stoken_type::st_end_arr));
+            stoken.type = stoken_type::st_end_arr;
 		}
 		else {
-			stack.push_back(::token(token)
-				.for_stackdelim()
-				.with_priority(-9901)
-				.with_hint(stoken_type::st_end_arr));
-			stoken.type = stoken_type::st_end_arr;
+            stack.push_back(::token(token)
+                .for_stackdelim()
+                .with_hint(stoken_type::st_arraccess));
 		}
 	}
 	else if (token.type == token_type::ident ||
@@ -595,8 +604,10 @@ token sexper::flush_until_type(token_type type) {
 		auto token = stack.back();
 		stack.pop_back();
 
-		rklog("   flushed : %S \n", token.raw.c_str());
-		auto parsed = parse(token);
+        auto parsed = parse(token);
+
+		rklog("   flushed : %S  %S\n", token.raw.c_str(), to_string(parsed.type));
+		
 		if (parsed.type != stoken_type::none &&
 			parsed.type != stoken_type::nothing)
 			result.push_back(parsed);
