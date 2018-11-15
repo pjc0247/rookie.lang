@@ -139,9 +139,6 @@ void runner::run_entry(program_entry *_entry) {
             push(float2rk(inst.f32));
             break;
         case opcode::op_ldstr:
-            // FIX: Performance
-            //push(value::mkstring(p.rdata + inst.operand));
-            //_newobj_systype(sighash_string, sp);
             push(strpool->get(inst.operand));
             break;
         case opcode::op_ldnull:
