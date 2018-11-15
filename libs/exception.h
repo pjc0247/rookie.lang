@@ -100,6 +100,12 @@ public:
     }
 };
 
+class overflow_exception : public rkexception {
+public:
+	overflow_exception() :
+		rkexception("Operation overflows") {
+	}
+};
 class divide_by_zero_exception : public rkexception {
 public:
     divide_by_zero_exception() :

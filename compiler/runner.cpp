@@ -139,6 +139,7 @@ void runner::run_entry(program_entry *_entry) {
             push(float2rk(inst.f32));
             break;
         case opcode::op_ldstr:
+			// Loads from intern_pool
             push(strpool->get(inst.operand));
             break;
         case opcode::op_ldnull:
@@ -472,7 +473,11 @@ void runner::op_mul() {
 	_pop2_int(left, right);
 
 	if (is_rkint(left) && is_rkint(right)) {
-		left.integer *= right.integer;
+		auto x = right.integer * left.integer;
+		if (left.integer != 0 && x / left.integer != right.integer)
+			throw_and_halt(new overflow_exception());
+		
+		left.integer = x;
 		push(left);
 	}
 	else {
