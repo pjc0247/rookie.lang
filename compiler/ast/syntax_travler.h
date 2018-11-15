@@ -1,10 +1,13 @@
 #pragma once
 
+#include "compilation.h"
 #include "syntax/syntax_node.h"
 
 class syntax_traveler {
 public:
-    virtual int transform(root_node *root) {
+    virtual int transform(compile_context &_ctx, root_node *root) {
+		ctx = &_ctx;
+
         _visit(root);
 
         return changes;
@@ -49,6 +52,8 @@ protected:
     }
 
 protected:
+	compile_context *ctx;
+
     int changes;
 };
 

@@ -28,11 +28,17 @@ protected:
                     _node->integer = left->integer + right->integer;
                 else if (op == L"-")
                     _node->integer = left->integer - right->integer;
-                else if (op == L"*")
-                    _node->integer = left->integer * right->integer;
+				else if (op == L"*") {
+					auto x = left->integer * right->integer;
+					if (left->integer != 0 && x / left->integer != right->integer) {
+						ctx->push_error(compile_error(node->token(), L"Operation overflows"));
+					}
+					_node->integer = left->integer * right->integer;
+				}
                 else if (op == L"/") {
                     if (right->integer == 0)
-                        return node;
+						ctx->push_error(compile_error(node->token(), L"Divide by zero"));
+
                     _node->integer = left->integer / right->integer;
                 }
                 else if (op == L">")
