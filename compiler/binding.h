@@ -45,6 +45,8 @@ class rkstring;
 
 #define int2rk(v) value::mkinteger(v)
 #define rk2int(v) v.integer
+#define uint2rk(v) value::mkuinteger(v);
+#define rk2uint(V) v.uinteger
 
 #define float2rk(v) value::mkdecimal(v)
 #define rk2float(v) v.decimal
