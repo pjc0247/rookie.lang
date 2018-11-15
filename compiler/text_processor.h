@@ -36,6 +36,8 @@ private:
     compile_context &ctx;
 
     string_pool *spool;
+
+	uint32_t line, cols;
 };
 
 enum class semantic_position {

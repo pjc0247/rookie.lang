@@ -84,10 +84,10 @@ std::vector<token> lexer::lex(const std::wstring &_src) {
     std::vector<token> result;
 
     uint32_t head = 1, tail = 1;
-    uint32_t line = 1, cols = 1;
     bool inside_quote = false;
     bool inside_comment = false;
     wchar_t last_meaningful_ch = 0;
+	line = 1, cols = 1;
 
     std::wstring line_buf;
     int spool_idx = 0;
@@ -136,8 +136,6 @@ std::vector<token> lexer::lex(const std::wstring &_src) {
 
             if (head != tail) {
                 auto t = parse(src.substr(tail, head - tail));
-                t.line = line;
-                t.cols = cols;
                 t.dbg_codeidx = spool_idx;
                 result.push_back(t);
 
@@ -220,6 +218,8 @@ token lexer::parse(const std::wstring &raw) {
 
     auto t = token();
     t.raw = raw;
+	t.line = line;
+	t.cols = cols;
 
     if (raw[0] == '"' && raw[raw.length() - 1] == '"') {
         t.type = token_type::literal;
