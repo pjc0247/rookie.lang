@@ -218,6 +218,12 @@ void runner::run_entry(program_entry *_entry) {
         case opcode::op_add:
             op_add();
             break;
+		case opcode::op_sub:
+			op_sub();
+			break;
+		case opcode::op_mul:
+			op_mul();
+			break;
         case opcode::op_div:
             op_div();
             break;
@@ -287,17 +293,6 @@ void runner::run_entry(program_entry *_entry) {
         else if (inst.opcode == opcode::op_ge) {
             _pop2_int(left, right);
             push(value::mkboolean(left.integer >= right.integer));
-        }
-
-        else if (inst.opcode == opcode::op_sub) {
-            _pop2_int(left, right);
-            left.integer -= right.integer;
-            push(left);
-        }
-        else if (inst.opcode == opcode::op_mul) {
-            _pop2_int(left, right);
-            left.integer *= right.integer;
-            push(left);
         }
 
         // printf("ss stacksize: %d, bp: %d,\n", stack.size(), bp);
@@ -457,8 +452,38 @@ void runner::op_add() {
         push(left);
         callee_ptr = &left;
         push(right);
-        _vcall(sig2hash(L"__add__"), 1, sp);
+        _vcall(sighash___add__, 1, sp);
     }
+}
+void runner::op_sub() {
+	ensure_stack(2);
+	_pop2_int(left, right);
+
+	if (is_rkint(left) && is_rkint(right)) {
+		left.integer -= right.integer;
+		push(left);
+	}
+	else {
+		push(left);
+		callee_ptr = &left;
+		push(right);
+		_vcall(sighash___sub__, 1, sp);
+	}
+}
+void runner::op_mul() {
+	ensure_stack(2);
+	_pop2_int(left, right);
+
+	if (is_rkint(left) && is_rkint(right)) {
+		left.integer *= right.integer;
+		push(left);
+	}
+	else {
+		push(left);
+		callee_ptr = &left;
+		push(right);
+		_vcall(sighash___mul__, 1, sp);
+	}
 }
 void runner::op_div() {
 	ensure_stack(2);
@@ -475,7 +500,7 @@ void runner::op_div() {
 		push(left);
 		callee_ptr = &left;
 		push(right);
-		_vcall(sig2hash(L"__div__"), 1, sp);
+		_vcall(sighash___div__, 1, sp);
 	}
 }
 void runner::op_newobj() {
