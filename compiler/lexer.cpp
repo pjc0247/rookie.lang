@@ -231,9 +231,17 @@ token lexer::parse(const std::wstring &raw) {
         t.literal_type = literal_type::string_with_interpoloation;
         t.raw = t.raw.substr(1, t.raw.size() - 2);
     }
-    else if (std::regex_match(raw, std::wregex(L"-?[0-9]+"))) {
-        t.type = token_type::literal;
-        t.literal_type = literal_type::integer;
+	else if (std::regex_match(raw, std::wregex(L"-?[0-9]+"))) {
+		t.type = token_type::literal;
+		t.literal_type = literal_type::integer;
+
+		try {
+			size_t sz;
+			std::stoi(raw, &sz);
+		}
+		catch (const std::out_of_range&) {
+			ctx.push_error(parsing_error(t, L"integer literal out of range"));
+		}
     }
     else if (std::regex_match(raw, std::wregex(L"-?[0-9]+\\.[0-9]+"))) {
         t.type = token_type::literal;
