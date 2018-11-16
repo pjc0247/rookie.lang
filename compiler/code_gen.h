@@ -10,7 +10,6 @@
 #include "binding.h"
 #include "errors.h"
 #include "type_attr.h"
-#include "ir_optimiser.h"
 #include "lookup_builder.h"
 
 #include "ast/ast_reflection.h"

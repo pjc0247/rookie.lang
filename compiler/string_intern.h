@@ -14,6 +14,8 @@ public:
     }
 
     void preload(const wchar_t *buf, uint32_t buf_len, runner &r) {
+        if (buf == nullptr) return;
+
         uint32_t offset = 0;
 
         for (uint32_t i = 0; i < buf_len; i++) {

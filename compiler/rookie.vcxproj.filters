@@ -93,7 +93,6 @@
     <ClInclude Include="ast\arraccess.h">
       <Filter>ast</Filter>
     </ClInclude>
-    <ClInclude Include="ir_optimiser.h" />
     <ClInclude Include="..\libs\string.h">
       <Filter>libs</Filter>
     </ClInclude>

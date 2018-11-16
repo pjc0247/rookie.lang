@@ -5,6 +5,8 @@
 
 #include "program.h"
 
+// NOT SAFE!
+//   MUST IMPLEMENT IR-LEVEL CODE BLOCKS FIRST.
 class dup_transformer {
 public:
     dup_transformer(const std::vector<instruction> &src) {
