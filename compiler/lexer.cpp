@@ -118,6 +118,7 @@ std::vector<token> lexer::lex(const std::wstring &_src) {
             if (src.substr(head, candidate.length()) != candidate)
                 continue;
 
+            // Determines `-` means `minus number` or `minus operator`.
             if (rule.raw == L"-" &&
                 !(is_ident_acceptible(last_meaningful_ch) ||
                  last_meaningful_ch == L')' ||
