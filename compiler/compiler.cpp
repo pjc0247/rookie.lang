@@ -68,10 +68,10 @@ root_node *compiler::ast_raw(
     root->dump();
 #endif
 
-    auto validator = new syntax_validator(ctx);
-    validator->transform(root);
+    auto validator = new syntax_validator();
+    validator->transform(ctx, root);
     auto dup_name_validator = new duplicated_name_validator(ctx);
-    dup_name_validator->transform(root);
+    dup_name_validator->transform(ctx, root);
 
     return root;
 }
@@ -91,7 +91,7 @@ root_node *compiler::ast_transformed(
 
     // 1. Firstpass transformers
     for (auto &t : firstpass)
-        t->transform(root);
+        t->transform(ctx, root);
 
     // 2. Optimizers
     int round = 0;
@@ -103,17 +103,17 @@ root_node *compiler::ast_transformed(
         for (auto &t : optimizers) {
             t->prepare();
             rklog("   [transform] %s\n", typeid(*t).name());
-            round_changes += t->transform(root);
+            round_changes += t->transform(ctx, root);
         }
         total_changes += round_changes;
         rklog("%d node(s) optimised in this round.\n", round_changes);
         rklog("%d changes so far!\n\n", total_changes);
     } while (round_changes > 0);
 
-    ((syntax_traveler*)(new endlpop_transformer()))->transform(root);
+    ((syntax_traveler*)(new endlpop_transformer()))->transform(ctx, root);
 
-    auto validator = new syntax_validator(ctx);
-    validator->transform(root);
+    auto validator = new syntax_validator();
+    validator->transform(ctx, root);
 
     return root;
 }

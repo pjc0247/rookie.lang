@@ -6,10 +6,6 @@
 
 class syntax_validator : public syntax_traveler {
 public:
-    syntax_validator(compile_context &ctx) :
-        ctx(ctx) {
-    }
-
     virtual syntax_node *visit(syntax_node *node) {
         switch (node->type) {
         case syntax_type::syn_class:
@@ -38,13 +34,13 @@ private:
             auto child = klass->children[i];
 
             if (child->type == syntax_type::syn_ident) {
-                ctx.push_error(syntax_error(child, L"Unexpectd identifier."));
+                ctx->push_error(syntax_error(child, L"Unexpectd identifier."));
             }
         }
     }
     void syn_method(method_node *method) {
         if (method->children[1]->type != syntax_type::syn_params) {
-            ctx.push_error(syntax_error(method, L"Wrong method definition."));
+            ctx->push_error(syntax_error(method, L"Wrong method definition."));
         }
         else {
             auto params = method->children[1]->children;
@@ -53,7 +49,7 @@ private:
                 if (params[i]->type == syntax_type::syn_ident) {
                     auto id = (ident_node*)params[i];
                     if (id->ident[0] == L'*' && i != params.size()-1)
-                        ctx.push_error(syntax_error(method, L"Asterisk(`*`) param must be positioned at last."));
+                        ctx->push_error(syntax_error(method, L"Asterisk(`*`) param must be positioned at last."));
                 }
             }
         }
@@ -62,14 +58,14 @@ private:
         auto method = id->declaring_method();
         if (method && method->attr & method_attr::method_static) {
             if (id->ident[0] == L'@') {
-                ctx.push_error(syntax_error(method, L"`@` is not allowed in static method."));
+                ctx->push_error(syntax_error(method, L"`@` is not allowed in static method."));
             }
         }
     }
     void syn_op(op_node *op) {
         if (is_math_op(op) &&
             (is_bool(op->left()) || is_bool(op->right())))
-            ctx.push_error(syntax_error(op, L"Unexpected `bool`."));
+            ctx->push_error(syntax_error(op, L"Unexpected `bool`."));
 
         // Prevents useless evaluation:
         // 1 + 1 
@@ -77,7 +73,7 @@ private:
             if (op->op == L"+=" || op->op == L"-=" ||
                 op->op == L"*=" || op->op == L"/=")
                 return;
-            ctx.push_error(syntax_error(op, L"Unused evaluation."));
+            ctx->push_error(syntax_error(op, L"Unused evaluation."));
         }
     }
     void syn_assignment(assignment_node *node) {
@@ -85,7 +81,7 @@ private:
             node->parent->type != syntax_type::syn_class &&
 			node->parent->type != syntax_type::syn_params &&
             node->parent->type != syntax_type::syn_for)
-            ctx.push_error(syntax_error(node, L"Invalid operation"));
+            ctx->push_error(syntax_error(node, L"Invalid operation"));
     }
 
     bool is_math_op(op_node *op) {
@@ -109,7 +105,4 @@ private:
         auto b = (bool_node*)node;
         return b->value == false;
     }
-
-private:
-    compile_context &ctx;
 };

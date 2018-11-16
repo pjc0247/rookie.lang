@@ -22,6 +22,12 @@ _predefined_hash(new);
 _predefined_hash(_ctor);
 _predefined_hash(equal);
 
+_predefined_hash(__add__);
+_predefined_hash(__sub__);
+_predefined_hash(__mul__);
+_predefined_hash(__div__);
+_predefined_hash(__mod__);
+
 _predefined_hash(object);
 _predefined_hash(array);
 _predefined_hash(dictionary);
