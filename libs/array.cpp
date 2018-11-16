@@ -69,7 +69,6 @@ value rkarray::to_string() {
 value rkarray::op_add(value_cref other) {
     auto new_ary = new rkarray();
 
-    // FIXME
     if (other.objref->sighash == sighash_array) {
         auto other_ary = rk2obj(other, rkarray*);
 
@@ -79,6 +78,11 @@ value rkarray::op_add(value_cref other) {
         new_ary->ary.insert(
             new_ary->ary.end(),
             other_ary->ary.begin(), other_ary->ary.end());
+    }
+    else {
+        throw new argument_exception(
+            L"`+` is only avaliable with `array`."
+             "please consider to use `push` instead.");
     }
 
     return obj2rk(new_ary);

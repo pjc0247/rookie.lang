@@ -73,6 +73,15 @@ public:
 		rkexception("out of range") {
 	}
 };
+class argument_exception : public rkexception {
+public:
+    argument_exception() :
+        rkexception("Argument is invalid") {
+    }
+    argument_exception(const std::wstring &msg) :
+        rkexception(msg) {
+    }
+};
 class memory_overflow_exception : public rkexception {
 public:
     memory_overflow_exception() :
