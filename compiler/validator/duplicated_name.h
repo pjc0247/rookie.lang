@@ -8,10 +8,6 @@
 
 class duplicated_name_validator : public syntax_traveler {
 public:
-    duplicated_name_validator(compile_context &ctx) :
-        ctx(ctx) {
-    }
-
     virtual syntax_node *visit(syntax_node *node) {
         switch (node->type) {
         case syntax_type::syn_class:
@@ -34,13 +30,11 @@ private:
     void add_method(method_node *node) {
         auto &type = types[node->declaring_class()->ident_str()];
         if (type.find(node->ident_str()) != type.end())
-            ctx.push_error(syntax_error(node, L"duplicated method name."));
+            ctx->push_error(syntax_error(node, L"duplicated method name."));
 
         type.insert(node->ident_str());
     }
 
 private:
-    compile_context &ctx;
-    
     std::map<std::wstring, std::set<std::wstring>> types;
 };

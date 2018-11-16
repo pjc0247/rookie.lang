@@ -28,6 +28,13 @@
     if (ctx.errors.empty() == false) \
         return x;
 
+#define validator_pass(t) \
+    do { \
+        auto __##t = new t(); \
+        (__##t)->transform(ctx, root); \
+        delete __##t; \
+    } while(0);
+
 compiler compiler::default_compiler(::binding &binding) {
     auto c = compiler(binding);
 
@@ -69,12 +76,9 @@ root_node *compiler::ast_raw(
     root->dump();
 #endif
 
-    auto validator = new syntax_validator();
-    validator->transform(ctx, root);
-    auto dup_name_validator = new duplicated_name_validator(ctx);
-    dup_name_validator->transform(ctx, root);
-    auto uv = new unused_validator();
-    uv->transform(ctx, root);
+    validator_pass(syntax_validator);
+    validator_pass(duplicated_name_validator);
+    validator_pass(unused_validator);
 
     return root;
 }
