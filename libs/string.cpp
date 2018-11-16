@@ -35,7 +35,8 @@ value rkstring::create_instance(value_cref str) {
     return obj2rk(ptr);
 }
 value rkstring::at(uint32_t idx) {
-    return value::mkchar(str[idx]);
+    auto obj = new rkstring(str.substr(idx, 1));
+    return obj2rk(obj);
 }
 value rkstring::length() {
     return int2rk(str.size());
