@@ -211,6 +211,9 @@
     <ClInclude Include="..\libs\caller.h">
       <Filter>libs</Filter>
     </ClInclude>
+    <ClInclude Include="validator\unused_detector.h">
+      <Filter>validator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="thirdparty">

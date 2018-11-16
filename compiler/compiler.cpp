@@ -20,6 +20,7 @@
 
 #include "validator/syntax_validator.h"
 #include "validator/duplicated_name.h"
+#include "validator/unused_detector.h"
 
 #include "compiler.h"
 
@@ -72,6 +73,8 @@ root_node *compiler::ast_raw(
     validator->transform(ctx, root);
     auto dup_name_validator = new duplicated_name_validator(ctx);
     dup_name_validator->transform(ctx, root);
+    auto uv = new unused_validator();
+    uv->transform(ctx, root);
 
     return root;
 }

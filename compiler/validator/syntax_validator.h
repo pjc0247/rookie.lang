@@ -66,15 +66,6 @@ private:
         if (is_math_op(op) &&
             (is_bool(op->left()) || is_bool(op->right())))
             ctx->push_error(syntax_error(op, L"Unexpected `bool`."));
-
-        // Prevents useless evaluation:
-        // 1 + 1 
-        if (op->parent->type == syntax_type::syn_block) {
-            if (op->op == L"+=" || op->op == L"-=" ||
-                op->op == L"*=" || op->op == L"/=")
-                return;
-            ctx->push_error(syntax_error(op, L"Unused evaluation."));
-        }
     }
     void syn_assignment(assignment_node *node) {
         if (node->parent->type != syntax_type::syn_block &&

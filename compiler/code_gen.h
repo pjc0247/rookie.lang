@@ -412,8 +412,6 @@ private:
                     if (eidx == -1)
                         ctx.push_error(codegen_error(L"Unresolved name: " + method_name));
                     inst.cs.index = eidx;
-
-                    rklog("Resolve %S %d\n", method_name.c_str(), eidx);
                 }
             }
         }
