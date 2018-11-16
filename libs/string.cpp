@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "exception.h"
+
 #include "string.h"
 
 void rkstring::import(binding &b) {
@@ -35,6 +37,9 @@ value rkstring::create_instance(value_cref str) {
     return obj2rk(ptr);
 }
 value rkstring::at(uint32_t idx) {
+    if (idx < 0 || idx >= str.length())
+        throw new out_of_range_exception();
+
     auto obj = new rkstring(str.substr(idx, 1));
     return obj2rk(obj);
 }
