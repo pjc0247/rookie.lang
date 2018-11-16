@@ -26,9 +26,11 @@
 #else
 #define __forceinline inline
 #define stdinvoke std::__invoke
+
+#define RK_NO_IO
 #endif
 
-#if defined(__EMSCRIPTEN__) || defined(__clang__)
+#if defined(__EMSCRIPTEN__)
 #define RK_ENV_WEB
 #define RK_HALT_ON_LONG_EXECUTION
 #else

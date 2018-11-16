@@ -28,7 +28,7 @@ public:
     }
 
     static value read_text(const std::wstring &filename) {
-#ifndef RK_ENV_WEB
+#if !defined(RK_ENV_WEB) && !defined(RK_NO_IO)
         std::wifstream t(filename);
         std::wstringstream buffer;
         buffer << t.rdbuf();
@@ -37,7 +37,7 @@ public:
         throw e::not_avaliable_in_this_platform();
     }
     static value write_text(const std::wstring &filename, value_cref obj) {
-#ifndef RK_ENV_WEB
+#if !defined(RK_ENV_WEB) && !defined(RK_NO_IO)
         auto content = rk_call_tostring_w(obj);
 
         std::wofstream t(filename);
@@ -46,13 +46,13 @@ public:
         throw e::not_avaliable_in_this_platform();
     }
     static value size(const std::wstring &filename) {
-#ifndef RK_ENV_WEB
+#if !defined(RK_ENV_WEB) && !defined(RK_NO_IO)
         return int2rk(fs::file_size(filename));
 #endif
         throw e::not_avaliable_in_this_platform();
     }
     static value exists(const std::wstring &filename) {
-#ifndef RK_ENV_WEB
+#if !defined(RK_ENV_WEB) && !defined(RK_NO_IO)
         return value::mkboolean(fs::exists(filename));
 #endif
         throw e::not_avaliable_in_this_platform();

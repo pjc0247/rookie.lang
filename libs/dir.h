@@ -28,13 +28,13 @@ public:
     }
 
     static value create(const std::wstring &path) {
-#ifndef RK_ENV_WEB
+#if !defined(RK_ENV_WEB) && !defined(RK_NO_IO)
         return value::mkboolean(fs::create_directory(path));
 #endif
         throw e::not_avaliable_in_this_platform();
     }
     static value exists(const std::wstring &path) {
-#ifndef RK_ENV_WEB
+#if !defined(RK_ENV_WEB) && !defined(RK_NO_IO)
         return value::mkboolean(fs::is_directory(path));
 #endif
         throw e::not_avaliable_in_this_platform();
@@ -42,7 +42,7 @@ public:
 
     // FIXME : this is not a `glob` actually.
     static value glob(const std::wstring &path) {
-#ifndef RK_ENV_WEB
+#if !defined(RK_ENV_WEB) && !defined(RK_NO_IO)
         _begin_no_gc();
 
         auto ary = new rkarray();
