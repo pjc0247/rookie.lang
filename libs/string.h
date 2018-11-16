@@ -17,6 +17,7 @@ public:
 
     value at(uint32_t idx);
     value length();
+    value contains(const std::wstring &str);
     value starts_with(value_cref other);
     value ends_with(value_cref other);
     value equal(value_cref v);

@@ -40,6 +40,11 @@ value rkstring::at(uint32_t idx) {
 value rkstring::length() {
     return int2rk(str.size());
 }
+value rkstring::contains(const std::wstring &str) {
+    if (str.find(str) == std::wstring::npos)
+        return rkfalse;
+    return rktrue;
+}
 value rkstring::starts_with(value_cref other) {
     auto wstr = rkwstr(other);
     if (wstr.length() > str.length())
