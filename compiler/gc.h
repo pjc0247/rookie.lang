@@ -43,7 +43,7 @@ private:
 private:
     runner &r;
 
-    std::set<object*> all_objects;
+    std::set<object*>  all_objects;
     std::vector<value> roots;
 
     uint32_t next_collect;
