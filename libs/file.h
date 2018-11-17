@@ -47,7 +47,7 @@ public:
     }
     static value size(const std::wstring &filename) {
 #if !defined(RK_ENV_WEB) && !defined(RK_NO_IO)
-        return int2rk(fs::file_size(filename));
+        return uint2rk(fs::file_size(filename));
 #endif
         throw e::not_avaliable_in_this_platform();
     }
