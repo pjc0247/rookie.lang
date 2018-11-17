@@ -37,11 +37,12 @@ class rkstring;
 #define is_rkstr(v) (v.type == value_type::object && v.objref->sighash == sighash_string)
 #define is_rkchar(v) v.type == value_type::character
 #define is_rkbool(v) v.type == value_type::boolean
-#define rkint(v) v.integer
+
 #define rkcstr(v) (((rkstring*)v.objref)->c_str())
 #define rkwstr(v) (((rkstring*)v.objref)->w_str())
-#define rkchar(v) v.character
-#define rkbool(v) (v.integer == 1 ? true : false)
+
+#define bool2rk(v) value::mkboolean(v)
+#define rk2bool(v) (v.integer == 1 ? true : false)
 
 #define int2rk(v) value::mkinteger(v)
 #define rk2int(v) v.integer
@@ -52,6 +53,8 @@ class rkstring;
 #define rk2float(v) v.decimal
 
 #define str2rk(v) value::mkstring2(v)
+#define rk2str(v) rkwstr(v)
+#define rk2cstr(v) rkcstr(v)
 
 #define obj2rk(v) (rkctx()->init_obj(sig2hash(v->type_name()), v))
 #define obj2rk_nogc(v, name) (rkctx()->init_obj_nogc(sig2hash_c(name), v))

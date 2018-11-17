@@ -15,15 +15,13 @@ _rookie_function(L"print", (value_cref v) {
         printf("null\n");
 
     else if (is_rkbool(v))
-        printf("%s\n", rkbool(v) ? "true" : "false");
+        printf("%s\n", rk2bool(v) ? "true" : "false");
     else if (is_rkint(v))
-        printf("%d\n", rkint(v));
+        printf("%d\n", rk2int(v));
     else if (is_rkdecimal(v))
         printf("%f\n", rk2float(v));
     else if (is_rkstr(v))
         printf("%ls\n", rkcstr(v));
-    else if (is_rkchar(v))
-        wprintf(L"%c\n", rkchar(v));
     else {
         printf("%S\n", rk_call_tostring_c(v));
     }
@@ -35,17 +33,14 @@ _rookie_function(L"puts", (value_cref v) {
         printf("null\n");
 
     else if (is_rkbool(v))
-        printf("%s\n", rkbool(v) ? "true" : "false");
+        printf("%s\n", rk2bool(v) ? "true" : "false");
     else if (is_rkint(v))
-        printf("%d\n", rkint(v));
+        printf("%d\n", rk2int(v));
     else if (is_rkdecimal(v))
         printf("%f\n", rk2float(v));
     else if (is_rkstr(v)) {
         printf("%ls\n", rkcstr(v));
     }
-    else if (is_rkchar(v))
-        wprintf(L"%c\n", rkchar(v));
-
     else {
         printf("%S\n", rk_call_tostring_c(v));
     }

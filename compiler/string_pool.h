@@ -20,7 +20,7 @@ public:
         return pool.size();
     }
 
-    void dump() {
+    void dump() const {
         printf("===begin_string_pool====\r\n");
         for (uint32_t i = 0; i < pool.size(); i++)
             putchar(pool[i]);
