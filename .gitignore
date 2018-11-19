@@ -5,7 +5,7 @@
 
 compiler/testcode.rk
 
-
+.DS_Store
 www/
 intermediate/
 bin/*.*
