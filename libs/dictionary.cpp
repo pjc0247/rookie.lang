@@ -26,6 +26,8 @@ void rkdictionary::import(binding &b) {
     b.add_type(type);
 }
 
+rkdictionary::rkdictionary() {
+}
 rkdictionary::rkdictionary(int n) {
     for (int i = 0; i < n; i++) {
         value v = rkctx()->next_param();

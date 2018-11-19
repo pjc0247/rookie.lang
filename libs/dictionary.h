@@ -11,6 +11,7 @@ public:
 
     static void import(binding &b);
 
+    rkdictionary();
     rkdictionary(int n);
 
     static value create_dictionary(value_cref idx);
