@@ -33,7 +33,7 @@ static value _parse(json &j) {
     if (j.type() == json::value_t::number_integer)
         return int2rk(j.get<int32_t>());
     if (j.type() == json::value_t::number_unsigned)
-        return int2rk(j.get<uint32_t>());
+        return uint2rk(j.get<uint32_t>());
 
     if (j.type() == json::value_t::object) {
         auto obj = new rkjson();
