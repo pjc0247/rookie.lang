@@ -38,7 +38,7 @@ value rkstring::create_instance(value_cref str) {
 }
 value rkstring::at(uint32_t idx) {
     if (idx < 0 || idx >= str.length())
-        throw new out_of_range_exception();
+        throw new out_of_range_exception(idx);
 
     auto obj = new rkstring(str.substr(idx, 1));
     return obj2rk(obj);

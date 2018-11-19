@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "binding.h"
 #include "object.h"
 
@@ -72,6 +74,9 @@ public:
 	out_of_range_exception() :
 		rkexception("out of range") {
 	}
+    out_of_range_exception(int given) :
+        rkexception(L"out of range (given: " + std::to_wstring(given) + L")") {
+    }
 };
 class argument_exception : public rkexception {
 public:

@@ -31,7 +31,7 @@ public:
         if (key == 0) return k;
         if (key == 1) return v;
         
-		throw new out_of_range_exception();
+		throw new out_of_range_exception(key);
     }
     value to_string() {
         return str2rk(L"<#kvpair key: " + rk_call_tostring(k) + L", value: " + rk_call_tostring(v) + L">");
