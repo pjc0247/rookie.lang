@@ -25,8 +25,10 @@ public:
     }
 
     value current() {
+        return rknull;
     }
     value move_next() {
+        return rknull;
     }
 };
 
