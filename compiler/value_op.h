@@ -17,9 +17,12 @@ inline value operator/(const value &a, const value &b) {
 }
 
 inline bool operator==(const value& lhs, object *rhs) {
-    if (rhs == nullptr &&
-        (lhs.type == value_type::null || lhs.type == value_type::empty))
-        return true;
+    if (rhs == nullptr) {
+        if (lhs.type == value_type::null || lhs.type == value_type::empty)
+            return true;
+        else
+            return false;
+    }
 
     if (lhs.objref == rhs)
         return true;
