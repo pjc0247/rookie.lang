@@ -6,13 +6,17 @@
 #pragma once
 
 #include <stdio.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include <string>
 #include <exception>
 
 #ifndef __EMSCRIPTEN__
 class fileio {
 public:
-    static wchar_t *read_string(const std::wstring &filepath) {
+    static std::wstring read_string(const std::wstring &filepath) {
+        /*
         FILE *fp = _wfopen(filepath.c_str(), L"rtS, ccs=UTF-8");
 
         if (!fp) {
@@ -31,6 +35,12 @@ public:
         fclose(fp);
 
         return buf;
+        */
+
+        std::wifstream t(wstr2str(filepath.c_str()));
+        std::wstringstream buffer;
+        buffer << t.rdbuf();
+        return buffer.str();
     }
 };
 #endif

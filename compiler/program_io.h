@@ -9,7 +9,7 @@
 class program_writer {
 public:
     static bool write(const std::wstring &path, const program &p) {
-        FILE *fp = _wfopen(path.c_str(), L"wb");
+        FILE *fp = fopen(wstr2str(path.c_str()).c_str(), "wb");
         if (fp == 0) return false;
 
         fwrite(&p.header, sizeof(program_header), 1, fp);
@@ -24,7 +24,7 @@ public:
 class program_reader {
 public:
     static bool read(const std::wstring &path, program &p) {
-        FILE *fp = _wfopen(path.c_str(), L"rb");
+        FILE *fp = fopen(wstr2str(path.c_str()).c_str(), "rb");
         if (fp == 0) return false;
 
         fread(&p.header, sizeof(program_header), 1, fp);
