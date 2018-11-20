@@ -78,7 +78,6 @@ root_node *compiler::ast_raw(
 
     validator_pass(syntax_validator);
     validator_pass(duplicated_name_validator);
-    validator_pass(unused_validator);
 
     return root;
 }
@@ -120,6 +119,7 @@ root_node *compiler::ast_transformed(
     ((syntax_traveler*)(new endlpop_transformer()))->transform(ctx, root);
 
     validator_pass(syntax_validator);
+    validator_pass(unused_validator);
 
     return root;
 }
