@@ -19,13 +19,14 @@ void rkscriptobject::import(binding &b) {
 
     method(type, L"type", &rkscriptobject::type);
 
+    method(type, rk_id_equals, &rkscriptobject::equals);
     method(type, rk_id_tostring, &rkscriptobject::to_string);
 
     b.add_type(type);
 }
 
 value rkscriptobject::all_properties() {
-    auto dic = new rkdictionary(0);
+    auto dic = new rkdictionary();
     for (auto &p : properties) {
         auto key = rk_id2str(p.first);
         auto value = p.second;
@@ -49,6 +50,9 @@ value rkscriptobject::type() {
     return a;
 }
 
+value rkscriptobject::equals(value_cref other) {
+    return rkfalse;
+}
 value rkscriptobject::to_string() {
     std::wstring str = L"#<";
     str += name_ptr;

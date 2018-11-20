@@ -13,5 +13,6 @@ public:
 
     value type();
 
+    value equals(value_cref other);
     value to_string();
 };
