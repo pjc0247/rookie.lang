@@ -67,6 +67,7 @@ private:
     void parse_keyword(const token &token, stoken &stoken);
     
     void flush_single_line();
+    void flush_expression();
     void flush_until_priority(int priority);
     token flush_until_type(token_type type);
 

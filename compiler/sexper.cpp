@@ -315,10 +315,13 @@ void sexper::sexp_methodbody(const token &token) {
 
 		stoken = parse(token);
 	}
+    else if (token.type == token_type::comma) {
+        _mark_as_parsed(stoken);
+        flush_expression();
+    }
 	else if (
 		token.type == token_type::semicolon ||
-		token.type == token_type::colon ||
-		token.type == token_type::comma) {
+		token.type == token_type::colon) {
 
 		_mark_as_parsed(stoken);
 
@@ -331,42 +334,9 @@ void sexper::sexp_methodbody(const token &token) {
 	}
 	else if (token.type == token_type::op) {
 		_mark_as_parsed(stoken);
-		//flush_until_priority(token.priority);
 
-		if (stack.empty() == false) {
-			auto t = stack.back();
-			stack.pop_back();
-			auto parsed = parse(t);
-
-			if (parsed.type == stoken_type::st_literal ||
-				parsed.type == stoken_type::ident)
-				result.push_back(parsed);
-			else if (parsed.type == stoken_type::st_memberaccess)
-				result.push_back(parsed);
-			else if (parsed.type == stoken_type::st_null)
-				result.push_back(parsed);
-			else if (parsed.type == stoken_type::st_true ||
-				parsed.type == stoken_type::st_false)
-				result.push_back(parsed);
-			else {
-				stack.push_back(t);
-				goto end_parse;
-			}
-
-			if (stack.empty() == false) {
-				auto type = stack.back().stype;
-				if (type == stoken_type::st_begin_call ||
-					type == stoken_type::st_memberaccess ||
-					type == stoken_type::st_arraccess) {
-					result.push_back(parse(stack.back()));
-					stack.pop_back();
-				}
-			}
-
-		end_parse:;
-
-			flush_until_priority(token.priority);
-		}
+        flush_expression();
+        flush_until_priority(token.priority);
 
 		stack.push_back(token);
 	}
@@ -413,11 +383,12 @@ void sexper::sexp_methodbody(const token &token) {
 	}
 	else if (token.type == token_type::right_sq_bracket) {
 		_mark_as_parsed(stoken);
-
+        
 		if (prev_token().type == token_type::semicolon ||
             prev_token().type == token_type::right_paren ||
             prev_token().type == token_type::right_sq_bracket ||
-            prev_token().type == token_type::right_bracket) {
+            prev_token().type == token_type::right_bracket ||
+            prev_token().type == token_type::keyword) {
 
             stack.push_back(::token(token)
                 .for_stackdelim()
@@ -579,6 +550,40 @@ void sexper::parse_keyword(const token &token, stoken &stoken) {
 }
 void sexper::flush_single_line() {
 	flush_until_priority(-9999);
+}
+void sexper::flush_expression() {
+    if (stack.empty() == false) {
+        auto t = stack.back();
+        stack.pop_back();
+        auto parsed = parse(t);
+
+        if (parsed.type == stoken_type::st_literal ||
+            parsed.type == stoken_type::ident)
+            result.push_back(parsed);
+        else if (parsed.type == stoken_type::st_memberaccess)
+            result.push_back(parsed);
+        else if (parsed.type == stoken_type::st_null)
+            result.push_back(parsed);
+        else if (parsed.type == stoken_type::st_true ||
+            parsed.type == stoken_type::st_false)
+            result.push_back(parsed);
+        else {
+            stack.push_back(t);
+            goto end_parse;
+        }
+
+        if (stack.empty() == false) {
+            auto type = stack.back().stype;
+            if (type == stoken_type::st_begin_call ||
+                type == stoken_type::st_memberaccess ||
+                type == stoken_type::st_arraccess) {
+                result.push_back(parse(stack.back()));
+                stack.pop_back();
+            }
+        }
+
+    end_parse:;
+    }
 }
 void sexper::flush_until_priority(int priority) {
 	while (!stack.empty()) {
