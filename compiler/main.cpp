@@ -19,14 +19,13 @@
 #endif
 
 // Copmpiles given string into a program.
-program *compile(const std::wstring &filepath) {
+program *compile(const std::wstring &filepath, compile_option opts) {
 #ifndef RK_ENV_WEB
-    wchar_t *buf = fileio::read_string(filepath);
+    auto buf = fileio::read_string(filepath);
 
     auto b = binding::default_binding();
     auto rc = compiler::default_compiler(b);
 
-    compile_option opts;
     opts.generate_pdb = true;
 
     auto out = rc.compile(buf, opts);
@@ -53,8 +52,6 @@ program *compile(const std::wstring &filepath) {
         printf("========BUILD: FAILURE========\n");
     }
 
-    delete[] buf;
-
     return out.program;
 #else
     throw base_exception("Not supported");
@@ -75,11 +72,16 @@ int main(int argc, char **argv) {
         { "debug-vm",{ "--debug-vm" },
           "prints additional output for vm", 0},
 
+        { "no-optimizer",{ "-o0" },
+          "Do not perform optimization", 0},
+
         { "wasm", {"-w", "--wasm"},
           "generated wast file and write it", 1}
     }};
     argagg::parser_results args;
     try {
+        compile_option opts;
+
         args = argparser.parse(argc, argv);
 
         if (args["help"]) {
@@ -97,7 +99,7 @@ int main(int argc, char **argv) {
 
         program *p = nullptr;
         for (auto path : args.pos) {
-            p = compile(str2wstr(path));
+            p = compile(str2wstr(path), opts);
 
             auto dir = fs::path(path).parent_path();
 
