@@ -3,6 +3,8 @@ rookie
 
 [![Build Status](https://travis-ci.org/pjc0247/rookie.lang.svg?branch=master)](https://travis-ci.org/pjc0247/rookie.lang)
 
+Rookie is a dynamic programming language with simple and readable syntax.
+
 __[ONLINE PLAYGROUND](https://pjc0247.github.io/try-rookie/)__<br>
 __[LANGUAGE DOCUMENTATION](https://rookielang.github.io)__
 
