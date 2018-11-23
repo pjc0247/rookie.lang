@@ -32,7 +32,7 @@ void debugger::on_pre_exec(runner &r, const instruction &inst) {
         inst.opcode == opcode::op_newobj) {
 
         con::setColor(CON_LIGHTMAGENTA);
-        rklog("%12S", pdb.get_name(inst.operand).c_str());
+        rklog("%12S", r.hash_to_string(inst.operand).c_str());
     }
     else {
         con::setColor(CON_WHITE);
