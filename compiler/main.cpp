@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
         { "debug-vm",{ "--debug-vm" },
           "prints additional output for vm", 0},
 
-        { "no-optimizer",{ "-o0" },
+        { "no-optimizer",{ "-z", "--no-opt" },
           "Do not perform optimization", 0},
 
         { "wasm", {"-w", "--wasm"},
