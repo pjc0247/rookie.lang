@@ -14,6 +14,7 @@ Concept
 * Less confusing syntax, unlike modern languages.
 * Automated memory management with built in __Garbage Gollector__.
 * Supports `OOP`.
+* Built-in __JSON__ library.
 
 Usage
 ----
