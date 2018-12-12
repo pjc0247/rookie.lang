@@ -66,3 +66,13 @@ __WebAssembly(emcc)__<br>
 ```
 make
 ```
+
+__Compilation Flags__
+
+* __RK_HALT_ON_LONG_EXECUTION__
+  * Prevents long execution, This option is automatically enabled in WebAssembly build.
+* __RK_STRICT_CHECK__
+  * Performs additional safe checks during execution. This may decreased the overall performance and not necessary for most cases.
+* __RK_NO_IO__
+  * Exclude Input/Output codes from build.
+  
