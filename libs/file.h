@@ -23,6 +23,7 @@ public:
         static_method(type, L"write_text", write_text);
         static_method(type, L"size", size);
         static_method(type, L"exists", exists);
+        static_method(type, L"remove", remove);
 
         b.add_type(type);
     }
@@ -54,6 +55,15 @@ public:
     static value exists(const std::wstring &filename) {
 #if !defined(RK_ENV_WEB) && !defined(RK_NO_IO)
         return value::mkboolean(fs::exists(filename));
+#endif
+        throw e::not_avaliable_in_this_platform();
+    }
+    static value remove(const std::wstring &path) {
+#if !defined(RK_ENV_WEB) && !defined(RK_NO_IO)
+        if (fs::is_directory(path) == false) {
+            return fs::remove(path) ? rktrue : rkfalse;
+        }
+        return rkfalse;
 #endif
         throw e::not_avaliable_in_this_platform();
     }
