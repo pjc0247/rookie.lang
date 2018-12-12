@@ -3,6 +3,8 @@
 #include "binding.h"
 #include "object.h"
 
+#include <string>
+
 class rkjson : public rkobject<rkjson> {
 public:
     TYPENAME(L"json")
@@ -12,7 +14,7 @@ public:
     // AnyObject -> String
     static value stringify(value_cref obj);
     // String -> Object
-    static value parse(value_cref);
+    static value parse(const std::wstring &json);
 
 private:
     static std::wstring _stringify(value_cref obj);

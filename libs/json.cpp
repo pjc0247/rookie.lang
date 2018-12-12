@@ -54,9 +54,7 @@ static value _parse(json &j) {
         return obj2rk(ary);
     }
 }
-value rkjson::parse(value_cref _str) {
-    auto str = rkwstr(_str);
-
+value rkjson::parse(const std::wstring &str) {
     auto j = json::parse(str);
     return _parse(j);
 }
