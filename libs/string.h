@@ -20,6 +20,9 @@ public:
     value contains(const std::wstring &str);
     value starts_with(value_cref other);
     value ends_with(value_cref other);
+    value substr(int start, int len);
+    value lower();
+    value upper();
     value equal(value_cref v);
     value append(value_cref other);
     value to_string();

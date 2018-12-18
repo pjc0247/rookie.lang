@@ -15,6 +15,9 @@ void rkstring::import(binding &b) {
     method(type, L"length", &rkstring::length);
     method(type, L"starts_with", &rkstring::starts_with);
     method(type, L"ends_with", &rkstring::ends_with);
+    method(type, L"substr", &rkstring::substr);
+    method(type, L"lower", &rkstring::lower);
+    method(type, L"upper", &rkstring::upper);
 
     method(type, L"equal", &rkstring::equal);
 
@@ -73,6 +76,30 @@ value rkstring::ends_with(value_cref other) {
             return rkfalse;
     }
     return rktrue;
+}
+
+value rkstring::substr(int start, int len) {
+    if (start < 0) throw new out_of_range_exception();
+    if (len < 0 || len >= str.length()) throw new out_of_range_exception();
+
+    auto new_str = str.substr(start, len);
+    return str2rk(new_str);
+}
+value rkstring::lower() {
+    auto new_str = str;
+    std::transform(
+        str.begin(), str.end(),
+        new_str.begin(),
+        ::tolower);
+    return str2rk(new_str);
+}
+value rkstring::upper() {
+    auto new_str = str;
+    std::transform(
+        str.begin(), str.end(),
+        new_str.begin(),
+        ::toupper);
+    return str2rk(new_str);
 }
 
 value rkstring::equal(value_cref v) {
