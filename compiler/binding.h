@@ -376,6 +376,7 @@ public:
         return value::mkobjref(new T());
     }
 
+    // Defines a static method with zero parameter.
     static void static_method(type_builder &type,
         const wchar_t *name, value(*function)()) {
 
@@ -383,6 +384,7 @@ public:
             return stdinvoke(function);
         });
     }
+    // Defines a static method with 1 parameter.
     template <typename P1>
     static void static_method(type_builder &type,
         const wchar_t *name, value(*function)(P1)) {
@@ -391,6 +393,7 @@ public:
             return stdinvoke(function, cvt::value_to_ctype<P1>(a));
         });
     }
+    // Defines a static method with 2 parameters.
     template <typename P1, typename P2>
     static void static_method(type_builder &type,
         const wchar_t *name, value(*function)(P1, P2)) {
@@ -399,6 +402,7 @@ public:
             return stdinvoke(function, cvt::value_to_ctype<P1>(a), cvt::value_to_ctype<P2>(b));
         });
     }
+    // Defines a static method with 3 parameters.
     template <typename P1, typename P2, typename P3>
     static void static_method(type_builder &type,
         const wchar_t *name, value(*function)(P1, P2, P3)) {
@@ -408,6 +412,7 @@ public:
         });
     }
 
+    // Defines an instance method with zero parameter.
     static void method(type_builder &type,
         const wchar_t *name, value(T::*function)()) {
 
@@ -416,6 +421,7 @@ public:
             return stdinvoke(function, obj);
         });
     }
+    // Defines an instance method with 1 parameter.
     template <typename P1>
     static void method(type_builder &type,
         const wchar_t *name, value(T::*function)(P1)) {
@@ -426,6 +432,7 @@ public:
             return stdinvoke(function, obj, bb);
         });
     }
+    // Defines an instance method with 2 parameters.
     template <typename P1, typename P2>
     static void method(type_builder &type,
         const wchar_t *name, value(T::*function)(P1, P2)) {
@@ -435,6 +442,7 @@ public:
             return stdinvoke(function, obj, cvt::value_to_ctype<P1>(a), cvt::value_to_ctype<P2>(b));
         });
     }
+    // Defines an instance method with 3 parameters.
     template <typename P1, typename P2, typename P3>
     static void method(type_builder &type,
         const wchar_t *name, value(T::*function)(P1, P2, P3)) {
@@ -444,6 +452,7 @@ public:
             return stdinvoke(function, obj, cvt::value_to_ctype<P1>(a), cvt::value_to_ctype<P2>(b), cvt::value_to_ctype<P3>(c));
         });
     }
+    // Defines an instance method with 4 parameters.
     template <typename P1, typename P2, typename P3, typename P4>
     static void method(type_builder &type,
         const wchar_t *name, value(T::*function)(P1, P2, P3, P4)) {
@@ -453,6 +462,7 @@ public:
             return stdinvoke(function, obj, cvt::value_to_ctype<P1>(a), cvt::value_to_ctype<P2>(b), cvt::value_to_ctype<P3>(c), cvt::value_to_ctype<P4>(d));
         });
     }
+    // Defines an instance method with 5 parameters.
     template <typename P1, typename P2, typename P3, typename P4, typename P5>
     static void method(type_builder &type,
         const wchar_t *name, value(T::*function)(P1, P2, P3, P4, P5)) {
@@ -462,6 +472,7 @@ public:
             return stdinvoke(function, obj, cvt::value_to_ctype<P1>(a), cvt::value_to_ctype<P2>(b), cvt::value_to_ctype<P3>(c), cvt::value_to_ctype<P4>(d), cvt::value_to_ctype<P5>(e));
         });
     }
+    // Defines an instance method with 6 parameters.
     template <typename P1, typename P2, typename P3, typename P4, typename P5, typename P6>
     static void method(type_builder &type,
         const wchar_t *name, value(T::*function)(P1, P2, P3, P4, P5, P6)) {
