@@ -740,13 +740,13 @@ void runner::unhandled_exception() {
             ex->given_name, types[callee_ptr->objref->sighash]);
 
         if (candidates.size() > 0) {
-            con::setColor(CON_YELLOW);
+            con::set_color(CON_YELLOW);
             printf("Did you mean?\n");
-            con::setColor(CON_WHITE);
+            con::set_color(CON_WHITE);
             for (auto &c : candidates) {
                 printf("  * %S\n", c.id.c_str());
             }
-            con::setColor(CON_LIGHTGRAY);
+            con::set_color(CON_LIGHTGRAY);
         }
     end_catch
 
@@ -812,6 +812,8 @@ void runner::syscall(int index, uint8_t params, stack_provider &sp) {
     catch (...) {
         exception = new rkexception(L"Unknown exception");
     }
+
+    gc.add_object(exception);
 }
 __forceinline
 void runner::programcall(int index, uint8_t params) {

@@ -12,6 +12,8 @@ gc::gc(runner &r) :
     next_collect = gc_grow_size;
 }
 gc::~gc() {
+    rklog("[GC] cleaning up %d object(s).\n", all_objects.size());
+
     for (auto obj : all_objects) {
         if (obj != nullptr)
             delete obj;
