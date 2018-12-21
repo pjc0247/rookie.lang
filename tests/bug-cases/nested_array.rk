@@ -1,0 +1,11 @@
+class nested_array_test {
+    @main
+    static def main() {
+        a = [[], [], []];
+
+        puts (a.length() == 3);
+        puts (a[0] == []);
+        puts (a[1] == []);
+        puts (a[2] == []);
+    }
+}

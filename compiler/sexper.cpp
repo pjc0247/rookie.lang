@@ -385,6 +385,7 @@ void sexper::sexp_methodbody(const token &token) {
 		_mark_as_parsed(stoken);
         
 		if (prev_token().type == token_type::semicolon ||
+            prev_token().type == token_type::comma ||
             prev_token().type == token_type::right_paren ||
             prev_token().type == token_type::right_sq_bracket ||
             prev_token().type == token_type::right_bracket ||
