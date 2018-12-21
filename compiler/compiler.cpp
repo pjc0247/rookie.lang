@@ -24,10 +24,11 @@
 
 #include "compiler.h"
 
+// Exits compliation pipeline if there is an error
 #define halt_if_error(x) \
     if (ctx.errors.empty() == false) \
         return x;
-
+/// Executes validator immediatly
 #define validator_pass(t) \
     do { \
         auto __##t = new t(); \
@@ -47,7 +48,7 @@ compiler compiler::default_compiler(::binding &binding) {
 
     return c;
 }
-compiler compiler::build_compiler(::binding &binding, int options) {
+compiler compiler::build_compiler(::binding &binding, uint32_t options) {
     auto c = compiler(binding);
     include_essential_passes(c);
 

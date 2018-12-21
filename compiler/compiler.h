@@ -16,7 +16,7 @@ public:
     // Builds a new compiler with default options.
     static compiler default_compiler(binding &binding);
     // Builds a new compiler with given options.
-    static compiler build_compiler(binding &binding, int options = 0);
+    static compiler build_compiler(binding &binding, uint32_t options = 0);
 
     compiler(binding &binding);
 

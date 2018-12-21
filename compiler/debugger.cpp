@@ -10,19 +10,19 @@ debugger::debugger(::pdb &pdb) :
 }
 
 void debugger::on_begin_program(runner &_r, const program &p) {
-    con::setColor(CON_WHITE);
+    con::set_color(CON_WHITE);
     rklog("[%3s] %15s    %12s    %s\n", "PC", "OPCODE", "OPERAND", "CODE");
     rklog("[%3s] %15s    %12s    %s\n", "---", "-----", "-----", "-----");
-    con::setColor(CON_LIGHTGRAY);
+    con::set_color(CON_LIGHTGRAY);
 
     r = &_r;
 }
 void debugger::on_pre_exec(runner &r, const instruction &inst) {
-    con::setColor(CON_LIGHTGRAY);
+    con::set_color(CON_LIGHTGRAY);
     rklog("[");
-    con::setColor(CON_YELLOW);
+    con::set_color(CON_YELLOW);
     rklog("%3d", r.pc);
-    con::setColor(CON_LIGHTGRAY);
+    con::set_color(CON_LIGHTGRAY);
     rklog("] %15S    ", to_string((opcode_t)inst.opcode));
     if (inst.opcode == opcode::op_vcall ||
         inst.opcode == opcode::op_call ||
@@ -31,11 +31,11 @@ void debugger::on_pre_exec(runner &r, const instruction &inst) {
         inst.opcode == opcode::op_stprop ||
         inst.opcode == opcode::op_newobj) {
 
-        con::setColor(CON_LIGHTMAGENTA);
+        con::set_color(CON_LIGHTMAGENTA);
         rklog("%12S", r.hash_to_string(inst.operand).c_str());
     }
     else {
-        con::setColor(CON_WHITE);
+        con::set_color(CON_WHITE);
         rklog("%12d", inst.operand);
     }
     rklog("    ");
@@ -48,7 +48,7 @@ void debugger::on_pre_exec(runner &r, const instruction &inst) {
         L"for", L"if", L"class", L"def", L"static", L"this", L"in"
     });
 
-    con::setColor(CON_LIGHTGRAY);
+    con::set_color(CON_LIGHTGRAY);
     if (pdb._pdb.inst_data[r.pc].codeindex != -1) {
         for (int i = pdb._pdb.inst_data[r.pc-1].codeindex;; i++) {
             auto ch = pdb._pdb.code[i];
@@ -61,7 +61,7 @@ void debugger::on_pre_exec(runner &r, const instruction &inst) {
 
             int targetColor = -1;
             if (ch == '"') {
-                if (!quote) con::setColor(CON_BROWN);
+                if (!quote) con::set_color(CON_BROWN);
                 else targetColor = CON_LIGHTGRAY;
                 quote ^= 1;
             }
@@ -82,25 +82,25 @@ void debugger::on_pre_exec(runner &r, const instruction &inst) {
                     }
                 }
 
-                if (cnt > 0) con::setColor(CON_LIGHTCYAN);
-                else if (ch == '(') con::setColor(CON_DARKGRAY);
-                else if (ch == ')') con::setColor(CON_DARKGRAY);
-                else if (ch >= '0' && ch <= '9') con::setColor(CON_LIGHTGREEN);
-                else con::setColor(CON_LIGHTGRAY);
+                if (cnt > 0) con::set_color(CON_LIGHTCYAN);
+                else if (ch == '(') con::set_color(CON_DARKGRAY);
+                else if (ch == ')') con::set_color(CON_DARKGRAY);
+                else if (ch >= '0' && ch <= '9') con::set_color(CON_LIGHTGREEN);
+                else con::set_color(CON_LIGHTGRAY);
             }
 
             wprintf(L"%c", ch);
 
             if (targetColor != -1)
-                con::setColor(targetColor);
+                con::set_color(targetColor);
             if (cnt > 0) cnt--;
             if (cnt == 0) {
-                con::setColor(CON_LIGHTGRAY);
+                con::set_color(CON_LIGHTGRAY);
                 cnt = -1;
             }
         }
     }
-    con::setColor(CON_LIGHTGRAY);
+    con::set_color(CON_LIGHTGRAY);
 
     rklog("\n");
 }
@@ -111,25 +111,25 @@ void debugger::dumpstack() {
         return;
     }
 
-    con::setColor(CON_WHITE);
+    con::set_color(CON_WHITE);
     printf("\n\n");
     printf("[[DUMPSTACK]=====================\n");
     for (int i= r->stack.size()-1;i>=0;i--) {
         auto &item = r->stack[i];
 
         if (r->callee_ptr == &item) {
-            con::setColor(CON_YELLOW);
+            con::set_color(CON_YELLOW);
             printf("  > ");
         }
         else {
-            con::setColor(CON_LIGHTCYAN);
+            con::set_color(CON_LIGHTCYAN);
             printf("  * ");
         }
 
-        con::setColor(CON_LIGHTMAGENTA);
+        con::set_color(CON_LIGHTMAGENTA);
         printf("%2d  ", i);
 
-        con::setColor(CON_WHITE);
+        con::set_color(CON_WHITE);
         if (item.type == value_type::integer)
             printf("%8s, %15d", "INT", item.integer);
         else if (item.type == value_type::boolean)

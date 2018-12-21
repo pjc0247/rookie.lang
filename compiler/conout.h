@@ -42,7 +42,7 @@
 
 class con {
 public:
-    static void setColor(int color) {
+    static void set_color(int color) {
 #if _WIN32
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 #else
