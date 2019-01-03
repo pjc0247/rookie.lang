@@ -38,6 +38,7 @@ else {
 
 built-in runner
 ----
+Default implementaion of __RookieVM__.<br>
 ```cpp
 program p; // program you built
 
