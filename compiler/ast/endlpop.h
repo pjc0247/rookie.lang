@@ -17,7 +17,8 @@ protected:
             for (auto it = node->children.begin();it!=node->children.end();++it) {
                 auto child = *it;
 
-                if (child->type == syntax_type::syn_endl) {
+                if (child->type == syntax_type::syn_endl ||
+                    child->type == syntax_type::syn_comma) {
                     auto prev = *std::prev(it);
 
                     if (prev->type == syntax_type::syn_call ||

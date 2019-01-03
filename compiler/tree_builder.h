@@ -52,6 +52,8 @@ public:
 
             else if (token.type == stoken_type::endl)
                 append_and_set(new endl_node(token));
+            else if (token.type == stoken_type::comma)
+                append_and_set(new comma_node(token));
             else if (token.type == stoken_type::st_include)
                 append_and_replace(include(token));
             else if (token.type == stoken_type::st_begin_block) {

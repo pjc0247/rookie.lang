@@ -11,6 +11,7 @@ enum class syntax_type {
 	syn_none,
 	syn_root,
 
+    syn_comma,
 	syn_endl,
 	syn_pop,
 
@@ -118,6 +119,13 @@ public:
 		: syntax_node(token) {
 		is_virtual = true;
 	}
+};
+class comma_node : public syntax_node {
+public:
+    comma_node(const stoken &token)
+        : syntax_node(token) {
+        type = syntax_type::syn_comma;
+    }
 };
 class endl_node : public syntax_node {
 public:

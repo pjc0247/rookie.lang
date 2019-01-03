@@ -317,6 +317,7 @@ void sexper::sexp_methodbody(const token &token) {
 	}
     else if (token.type == token_type::comma) {
         _mark_as_parsed(stoken);
+        stoken.type = stoken_type::comma;
         flush_expression();
     }
 	else if (
