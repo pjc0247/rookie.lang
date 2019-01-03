@@ -73,6 +73,9 @@ private:
 			node->parent->type != syntax_type::syn_params &&
             node->parent->type != syntax_type::syn_for)
             ctx->push_error(syntax_error(node, L"Invalid operation"));
+
+        if (next() != nullptr && next()->type == syntax_type::syn_comma)
+            ctx->push_error(syntax_error(node, L"Ilegal expression "));
     }
 
     bool is_math_op(op_node *op) {
