@@ -903,7 +903,7 @@ private:
     void emit_newobj(newobj_node *node) {
         for (auto it = node->begin_args(); it != node->end_args(); ++it)
             emit(*it);
-        emitter.emit(opcode::op_newobj, sig2hash(node->ident_str()));
+        emitter.emit(opcode::op_newobj, sig2hash(node->ident_str()), node->args() + 1);
     }
     void emit_newarr(newarr_node *node) {
         for (int i=node->children.size()-1; i>=0;i--)

@@ -520,7 +520,7 @@ void runner::op_newobj() {
 
     if (type_data.typekind == runtime_typekind::tk_programtype) {
         auto objref = new rkscriptobject();
-        push(value::mkobjref(objref));
+        auto v = value::mkobjref(objref);
 
         objref->vtable = &type_data.vtable;
         objref->sighash = inst.operand;
@@ -528,13 +528,11 @@ void runner::op_newobj() {
 
         if (objref->vtable->find(sighash__ctor) !=
             objref->vtable->end()) {
-
-            set_callee_as_top();
+            
+            callee_ptr = &v;
             _vcall(sighash__ctor, inst.call_params, sp);
-            pop();
-
-            push(value::mkobjref(objref));
         }
+        push(v);
 
         gc.add_object(objref);
     }
