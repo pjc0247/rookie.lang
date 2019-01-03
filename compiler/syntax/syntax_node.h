@@ -271,10 +271,10 @@ class method_node : public syntax_node {
 public:
 	method_node(const stoken &token);
 
-	ident_node *ident() {
+	ident_node *ident() const {
 		return (ident_node*)children[0];
 	}
-	const std::wstring &ident_str() {
+	const std::wstring &ident_str() const {
 		return ident()->ident;
 	}
 	params_node *params() const {
@@ -351,10 +351,10 @@ public:
 		type = syntax_type::syn_call;
 	}
 
-	ident_node *ident() {
+	ident_node *ident() const {
 		return (ident_node*)children[0];
 	}
-	const std::wstring &ident_str() {
+	const std::wstring &ident_str() const {
 		return ident()->ident;
 	}
 
@@ -376,7 +376,7 @@ public:
 		type = syntax_type::syn_callmember;
 	}
 
-    virtual uint8_t args() {
+    virtual uint8_t args() const {
         return children.size() - 2;
     }
 };
@@ -389,7 +389,7 @@ public:
 		type = syntax_type::syn_return;
 	}
 
-	syntax_node *value() {
+	syntax_node *value() const {
 		if (children.size() == 0)
 			return nullptr;
 		return children[0];
@@ -464,7 +464,7 @@ public:
 		type = syntax_type::syn_standalone_op;
 	}
 
-	syntax_node *left() {
+	syntax_node *left() const {
 		return children[0];
 	}
 public:
@@ -487,10 +487,10 @@ public:
 		type = syntax_type::syn_op;
 	}
 
-	syntax_node *left() {
+	syntax_node *left() const {
 		return children[0];
 	}
-	syntax_node *right() {
+	syntax_node *right() const {
 		return children[1];
 	}
 
