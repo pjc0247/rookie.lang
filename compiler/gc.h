@@ -8,6 +8,8 @@
 #include <set>
 #include <vector>
 
+#include "vm/spinwait.h"
+
 const uint32_t gc_grow_size = 50;
 
 class  runner;
@@ -19,6 +21,8 @@ class gc {
 public:
     gc(runner &r);
     virtual ~gc();  
+
+    spinwait &lock();
 
     void add_object(object *objref);
     void remove_object(object *objref);
@@ -42,6 +46,7 @@ private:
 
 private:
     runner &r;
+    spinwait gclock;
 
     std::set<object*>  all_objects;
     std::vector<value> roots;

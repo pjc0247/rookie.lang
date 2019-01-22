@@ -20,6 +20,10 @@ gc::~gc() {
     }
 }
 
+spinwait &gc::lock() {
+    return gclock;
+}
+
 void gc::add_object(object *objref) {
     if (objref == nullptr) return;
 
@@ -48,6 +52,8 @@ void gc::collect() {
 
     rklog("[GC] before : %d\n", all_objects.size());
 
+    gclock.lock();
+
     // MARK
     for (int i=0;i<r.stack.size();i++)
         mark(r.stack[i], ctx);
@@ -56,6 +62,8 @@ void gc::collect() {
     sweep(ctx);
 
     shrink_if_possible();
+
+    gclock.unlock();
 
     rklog("[GC] after : %d\n", all_objects.size());
 }
