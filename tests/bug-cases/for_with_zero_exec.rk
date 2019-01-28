@@ -1,5 +1,5 @@
-// MUST NOT execute a body
-// if condition is false initially
+# MUST NOT execute a body
+# if condition is false initially
 class for_test {
 	@main
     static def main() {

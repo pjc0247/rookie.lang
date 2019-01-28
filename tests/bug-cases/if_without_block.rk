@@ -1,4 +1,4 @@
-// if-statement without brackets `{}`
+# if-statement without brackets `{}`
 class if_without_block_test {
     @main
     static def main() {

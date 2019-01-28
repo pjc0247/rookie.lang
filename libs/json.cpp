@@ -53,6 +53,8 @@ static value _parse(json &j) {
 
         return obj2rk(ary);
     }
+
+	throw new rkexception("Unknown JSON type");
 }
 value rkjson::parse(const std::wstring &str) {
     auto j = json::parse(str);
