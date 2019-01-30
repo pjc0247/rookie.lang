@@ -6,15 +6,15 @@
 
 class string_pool {
 public:
-	// get_or_append
+    // get_or_append
     uint32_t get_ptr(const std::wstring &str) {
         if (instruction_indexes.find(str) != instruction_indexes.end())
             return instruction_indexes[str];
         return append(str);
     }
 
-	// Finalizes construction and 
-	// returns first addr of the pool.
+    // Finalizes construction and 
+    // returns first addr of the pool.
     const wchar_t *fin() const {
         if (pool.empty())
             return L"";

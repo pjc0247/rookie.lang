@@ -54,29 +54,29 @@ static value _parse(json &j) {
         return obj2rk(ary);
     }
 
-	throw new rkexception("Unknown JSON type");
+    throw new rkexception("Unknown JSON type");
 }
 value rkjson::parse(const std::wstring &str) {
     auto j = json::parse(str);
     return _parse(j);
 }
 std::wstring rkjson::_stringify(value_cref obj) {
-	if (obj.type == value_type::integer)
-		return std::to_wstring(rk2int(obj));
-	else if (obj.type == value_type::boolean)
-		return rk2int(obj) ? L"true" : L"false";
-	else if (obj.type == value_type::object) {
-		if (obj.objref->sighash == sighash_array)
-			return _stringify_array(obj);
-		else if (obj.objref->sighash == sighash_dictionary)
-			return _stringify_dictionary(obj);
-		else if (obj.objref->sighash == sighash_string)
-			return L"\"" + rkwstr(obj) + L"\"";
-		else
-			return _stringify_object(obj);
-	}
-	else
-		throw new rkexception("Not Supported");
+    if (obj.type == value_type::integer)
+        return std::to_wstring(rk2int(obj));
+    else if (obj.type == value_type::boolean)
+        return rk2int(obj) ? L"true" : L"false";
+    else if (obj.type == value_type::object) {
+        if (obj.objref->sighash == sighash_array)
+            return _stringify_array(obj);
+        else if (obj.objref->sighash == sighash_dictionary)
+            return _stringify_dictionary(obj);
+        else if (obj.objref->sighash == sighash_string)
+            return L"\"" + rkwstr(obj) + L"\"";
+        else
+            return _stringify_object(obj);
+    }
+    else
+        throw new rkexception("Not Supported");
 }
 std::wstring rkjson::_stringify_array(value_cref obj) {
     auto ary = rk2obj(obj, rkarray*);

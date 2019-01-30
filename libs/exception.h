@@ -16,7 +16,7 @@ public:
 
         type.method(rk_id_new, create_object);
 
-		method(type, rk_id_tostring, &rkexception::to_string);
+        method(type, rk_id_tostring, &rkexception::to_string);
 
         b.add_type(type);
     }
@@ -25,55 +25,55 @@ public:
         return value::mkobjref(new rkexception(rkwstr(msg)));
     }
 
-	rkexception(const base_exception &ex) {
-		msg = str2wstr(ex.what());
-	}
+    rkexception(const base_exception &ex) {
+        msg = str2wstr(ex.what());
+    }
     rkexception(const char *msg) :
         msg(str2wstr(msg)) {
     }
-	rkexception(const std::wstring &msg) :
-		msg(msg) {
-	}
+    rkexception(const std::wstring &msg) :
+        msg(msg) {
+    }
 
-	void set_callstack(const std::deque<callframe> &cs) {
-		callstack = cs;
-	}
+    void set_callstack(const std::deque<callframe> &cs) {
+        callstack = cs;
+    }
 
     const std::wstring &what() {
         return msg;
     }
 
-	value to_string() {
-		std::wstring str;
-		str = L"#<exception: " + msg + L">\r\n";
-		str += L"[[STACKTRACE]]\r\n";
-		for (int i=callstack.size()-1; i>= 0; i--) {
-			auto &c = callstack[i];
-			str += L"   * " + std::wstring(c.entry->signature) + L"\r\n";
-		}
-		return str2rk(str);
-	}
+    value to_string() {
+        std::wstring str;
+        str = L"#<exception: " + msg + L">\r\n";
+        str += L"[[STACKTRACE]]\r\n";
+        for (int i=callstack.size()-1; i>= 0; i--) {
+            auto &c = callstack[i];
+            str += L"   * " + std::wstring(c.entry->signature) + L"\r\n";
+        }
+        return str2rk(str);
+    }
 
 private:
-	std::wstring msg;
+    std::wstring msg;
 
-	std::deque<callframe> callstack;
+    std::deque<callframe> callstack;
 };
 
 class null_pointer_exception : public rkexception {
 public:
-	null_pointer_exception() :
-		rkexception("Nullpointer exception") {
-	}
-	null_pointer_exception(const std::wstring &name) :
-		rkexception(L"Nullpointer exception. (null." + name + L")") {
-	}
+    null_pointer_exception() :
+        rkexception("Nullpointer exception") {
+    }
+    null_pointer_exception(const std::wstring &name) :
+        rkexception(L"Nullpointer exception. (null." + name + L")") {
+    }
 };
 class out_of_range_exception : public rkexception {
 public:
-	out_of_range_exception() :
-		rkexception("out of range") {
-	}
+    out_of_range_exception() :
+        rkexception("out of range") {
+    }
     out_of_range_exception(int given) :
         rkexception(L"out of range (given: " + std::to_wstring(given) + L")") {
     }
@@ -116,9 +116,9 @@ public:
 
 class overflow_exception : public rkexception {
 public:
-	overflow_exception() :
-		rkexception("Operation overflows") {
-	}
+    overflow_exception() :
+        rkexception("Operation overflows") {
+    }
 };
 class divide_by_zero_exception : public rkexception {
 public:

@@ -6,7 +6,7 @@
 class syntax_traveler {
 public:
     virtual int transform(compile_context &_ctx, root_node *root) {
-		ctx = &_ctx;
+        ctx = &_ctx;
 
         _visit(root);
 
@@ -66,7 +66,7 @@ protected:
     }
 
 protected:
-	compile_context *ctx;
+    compile_context *ctx;
 
     int changes;
 

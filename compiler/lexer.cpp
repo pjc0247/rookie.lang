@@ -87,7 +87,7 @@ std::vector<token> lexer::lex(const std::wstring &_src) {
     bool inside_quote = false;
     bool inside_comment = false;
     wchar_t last_meaningful_ch = 0;
-	line = 1, cols = 1;
+    line = 1, cols = 1;
 
     std::wstring line_buf;
     int spool_idx = 0;
@@ -219,8 +219,8 @@ token lexer::parse(const std::wstring &raw) {
 
     auto t = token();
     t.raw = raw;
-	t.line = line;
-	t.cols = cols;
+    t.line = line;
+    t.cols = cols;
 
     if (raw[0] == '"' && raw[raw.length() - 1] == '"') {
         t.type = token_type::literal;
@@ -232,17 +232,17 @@ token lexer::parse(const std::wstring &raw) {
         t.literal_type = literal_type::string_with_interpoloation;
         t.raw = t.raw.substr(1, t.raw.size() - 2);
     }
-	else if (std::regex_match(raw, std::wregex(L"-?[0-9]+"))) {
-		t.type = token_type::literal;
-		t.literal_type = literal_type::integer;
+    else if (std::regex_match(raw, std::wregex(L"-?[0-9]+"))) {
+        t.type = token_type::literal;
+        t.literal_type = literal_type::integer;
 
-		try {
-			size_t sz;
-			std::stoi(raw, &sz);
-		}
-		catch (const std::out_of_range&) {
-			ctx.push_error(parsing_error(t, L"integer literal out of range"));
-		}
+        try {
+            size_t sz;
+            std::stoi(raw, &sz);
+        }
+        catch (const std::out_of_range&) {
+            ctx.push_error(parsing_error(t, L"integer literal out of range"));
+        }
     }
     else if (std::regex_match(raw, std::wregex(L"-?[0-9]+\\.[0-9]+"))) {
         t.type = token_type::literal;
@@ -254,9 +254,9 @@ token lexer::parse(const std::wstring &raw) {
         if (t.raw.length() >= rooke_max_signature - 1)
             ctx.push_error(name_too_long_error(t));
     }
-	else {
-		ctx.push_error(parsing_error(t, L"Unknown token: " + t.raw));
-	}
+    else {
+        ctx.push_error(parsing_error(t, L"Unknown token: " + t.raw));
+    }
 
     return t;
 }

@@ -11,12 +11,12 @@ enum class call_type {
     et_syscall_name
 };
 struct callinfo {
-	uint32_t sighash;
+    uint32_t sighash;
 
     call_type type;
     uint32_t entry;
 
-	uint32_t params;
+    uint32_t params;
 };
 class calltable_builder {
 public:

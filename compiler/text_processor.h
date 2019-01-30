@@ -37,7 +37,7 @@ private:
 
     string_pool *spool;
 
-	uint32_t line, cols;
+    uint32_t line, cols;
 };
 
 enum class semantic_position {

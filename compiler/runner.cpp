@@ -30,7 +30,7 @@
     auto b = pop(); auto a = pop(); 
 
 #define throw_and_halt(e) \
-	do { exception = e; return; } while(false)
+    do { exception = e; return; } while(false)
 
 #define ensure_stack(n) assert(stack.size() >= n)
 
@@ -108,9 +108,9 @@ void runner::run_entry(program_entry *_entry) {
     auto ss = stack.size();
     auto depth = callstack.size();
 
-	if (depth >= 150) {
-		throw new rkexception("Stack too deep");
-	}
+    if (depth >= 150) {
+        throw new rkexception("Stack too deep");
+    }
 
     while (!endflag && callstack.size() >= depth) {
 #ifdef RK_HALT_ON_LONG_EXECUTION
@@ -139,7 +139,7 @@ void runner::run_entry(program_entry *_entry) {
             push(float2rk(inst.f32));
             break;
         case opcode::op_ldstr:
-			// Loads from intern_pool
+            // Loads from intern_pool
             push(strpool->get(inst.operand));
             break;
         case opcode::op_ldnull:
@@ -216,12 +216,12 @@ void runner::run_entry(program_entry *_entry) {
         case opcode::op_add:
             op_add();
             break;
-		case opcode::op_sub:
-			op_sub();
-			break;
-		case opcode::op_mul:
-			op_mul();
-			break;
+        case opcode::op_sub:
+            op_sub();
+            break;
+        case opcode::op_mul:
+            op_mul();
+            break;
         case opcode::op_div:
             op_div();
             break;
@@ -316,7 +316,7 @@ void runner::op_eqtype() {
      *  RIGHT
      *  OP_EQTYPE
      */
-	ensure_stack(2);
+    ensure_stack(2);
     _pop2_int(left, right);
 
     auto type = get_type(left);
@@ -340,7 +340,7 @@ void runner::op_eq() {
      *  RIGHT
      *  OP_EQ
      */
-	ensure_stack(2);
+    ensure_stack(2);
     _pop2_int(left, right);
 
     if (left.type == right.type) {
@@ -364,7 +364,7 @@ void runner::op_neq() {
      *  RIGHT
      *  OP_NEQ
      */
-	ensure_stack(2);
+    ensure_stack(2);
     _pop2_int(left, right);
 
     if (left.type == right.type) {
@@ -393,7 +393,7 @@ void runner::op_and() {
     *   RIGHT
     *   OP_AND
     */
-	ensure_stack(2);
+    ensure_stack(2);
     auto right = pop();
     auto left = top();
 
@@ -405,7 +405,7 @@ void runner::op_or() {
     *   RIGHT
     *   OP_OR
     */
-	ensure_stack(2);
+    ensure_stack(2);
     auto right = pop();
     auto left = top();
 
@@ -416,7 +416,7 @@ void runner::op_not() {
     /*  LEFT
     *   OP_NOT
     */
-	ensure_stack(1);
+    ensure_stack(1);
     auto left = top();
 
     replace_top(int2rk(!left.uinteger));
@@ -428,20 +428,20 @@ void runner::op_add() {
      *  RIGHT
      *  OP_ADD          
      */
-	ensure_stack(2);
+    ensure_stack(2);
     auto right = pop();
     auto left  = top();
 
-	if (is_rkstr(left)) {
+    if (is_rkstr(left)) {
         set_rkctx(exectx);
-		auto str = new rkstring(rkwstr(left) + rk_call_tostring_w(right));
-		replace_top(_initobj_systype(sighash_string, str));
-	}
-	else if (is_rkstr(right)) {
+        auto str = new rkstring(rkwstr(left) + rk_call_tostring_w(right));
+        replace_top(_initobj_systype(sighash_string, str));
+    }
+    else if (is_rkstr(right)) {
         set_rkctx(exectx);
-		auto str = new rkstring(rk_call_tostring_w(left) + rkwstr(right));
-		replace_top(_initobj_systype(sighash_string, str));
-	}
+        auto str = new rkstring(rk_call_tostring_w(left) + rkwstr(right));
+        replace_top(_initobj_systype(sighash_string, str));
+    }
     else if (is_rkint(left) && is_rkint(right)) {
         left.integer += right.integer;
         replace_top(left);
@@ -454,56 +454,56 @@ void runner::op_add() {
     }
 }
 void runner::op_sub() {
-	ensure_stack(2);
-	_pop2_int(left, right);
-
-	if (is_rkint(left) && is_rkint(right)) {
-		left.integer -= right.integer;
-		push(left);
-	}
-	else {
-		push(left);
-		callee_ptr = &left;
-		push(right);
-		_vcall(sighash___sub__, 1, sp);
-	}
-}
-void runner::op_mul() {
-	ensure_stack(2);
-	_pop2_int(left, right);
-
-	if (is_rkint(left) && is_rkint(right)) {
-		auto x = right.integer * left.integer;
-		if (left.integer != 0 && x / left.integer != right.integer)
-			throw_and_halt(new overflow_exception());
-		
-		left.integer = x;
-		push(left);
-	}
-	else {
-		push(left);
-		callee_ptr = &left;
-		push(right);
-		_vcall(sighash___mul__, 1, sp);
-	}
-}
-void runner::op_div() {
-	ensure_stack(2);
+    ensure_stack(2);
     _pop2_int(left, right);
 
-	if (is_rkint(left) && is_rkint(right)) {
-		if (right.integer == 0)
-			throw_and_halt(new divide_by_zero_exception());
+    if (is_rkint(left) && is_rkint(right)) {
+        left.integer -= right.integer;
+        push(left);
+    }
+    else {
+        push(left);
+        callee_ptr = &left;
+        push(right);
+        _vcall(sighash___sub__, 1, sp);
+    }
+}
+void runner::op_mul() {
+    ensure_stack(2);
+    _pop2_int(left, right);
 
-		left.integer /= right.integer;
-		push(left);
-	}
-	else {
-		push(left);
-		callee_ptr = &left;
-		push(right);
-		_vcall(sighash___div__, 1, sp);
-	}
+    if (is_rkint(left) && is_rkint(right)) {
+        auto x = right.integer * left.integer;
+        if (left.integer != 0 && x / left.integer != right.integer)
+            throw_and_halt(new overflow_exception());
+        
+        left.integer = x;
+        push(left);
+    }
+    else {
+        push(left);
+        callee_ptr = &left;
+        push(right);
+        _vcall(sighash___mul__, 1, sp);
+    }
+}
+void runner::op_div() {
+    ensure_stack(2);
+    _pop2_int(left, right);
+
+    if (is_rkint(left) && is_rkint(right)) {
+        if (right.integer == 0)
+            throw_and_halt(new divide_by_zero_exception());
+
+        left.integer /= right.integer;
+        push(left);
+    }
+    else {
+        push(left);
+        callee_ptr = &left;
+        push(right);
+        _vcall(sighash___div__, 1, sp);
+    }
 }
 void runner::op_newobj() {
     // [STACK-LAYOUT   |   OPERAND]
@@ -616,7 +616,7 @@ void runner::op_ret() {
     // [STACK-LAYOUT   |   OPERAND]
     /*  OP_RET
      */
-	ensure_stack(1);
+    ensure_stack(1);
     auto ret = pop();
     auto callframe = pop_callframe(*current_entry);
     pc = callframe.pc;
@@ -631,7 +631,7 @@ void runner::op_throw() {
     /*  exception(object)
      *  OP_THROW       
      */
-	ensure_stack(1);
+    ensure_stack(1);
     auto obj = pop();
     exception = (rkexception*)obj.objref;
 }
@@ -641,7 +641,7 @@ void runner::op_ldprop() {
     /*  THIS(object)
      *  OP_LDPROP          SIGHASH
      */
-	ensure_stack(1);
+    ensure_stack(1);
     auto obj = pop();
 
     if (obj.type != value_type::object)
@@ -655,7 +655,7 @@ void runner::op_stprop() {
      *  .THIS(object)
      *  OP_STPROP          SIGHASH
      */
-	ensure_stack(2);
+    ensure_stack(2);
     auto obj = pop();
     auto value = pop();
 
@@ -669,7 +669,7 @@ void runner::op_ldfld() {
     /*  TYPE
      *  OP_LDFLD           SIGHASH
      */
-	ensure_stack(1);
+    ensure_stack(1);
     auto type = pop();
     auto value = rk2obj(type, rktype*)->rtype
         .fields[inst.operand];
@@ -682,7 +682,7 @@ void runner::op_stfld() {
      *  VALUE
      *  OP_STFLD           SIGHASH
      */
-	ensure_stack(2);
+    ensure_stack(2);
     auto value = pop();
     auto type = pop();
 
@@ -820,16 +820,16 @@ void runner::programcall(int index, uint8_t params) {
 
     auto &entry = p.entries[index];
 
-	// Too many parameters were given to this call
+    // Too many parameters were given to this call
     if (params > entry.params &&
         !(entry.flags & rk_entry_va_args)) {
 
-		throw_and_halt(new rkexception(
-			L"Too many parameters. (max " +
-			std::to_wstring(entry.params) +
-			L")"));
+        throw_and_halt(new rkexception(
+            L"Too many parameters. (max " +
+            std::to_wstring(entry.params) +
+            L")"));
     }
-	// Callpadding
+    // Callpadding
     while (params < entry.params) {
         push(rkempty);
         params++;
@@ -877,10 +877,10 @@ void runner::_vcall(int sighash, uint8_t params, stack_provider &sp) {
     else {
         auto calleeobj = callee_ptr->objref;
 
-		if (calleeobj == nullptr) {
-			throw_and_halt(
-				new null_pointer_exception(hash_to_string(sighash)));
-		}
+        if (calleeobj == nullptr) {
+            throw_and_halt(
+                new null_pointer_exception(hash_to_string(sighash)));
+        }
 
         vtable = calleeobj->vtable;
     }
@@ -888,8 +888,8 @@ void runner::_vcall(int sighash, uint8_t params, stack_provider &sp) {
     auto _callinfo = vtable->find(sighash);
     if (_callinfo == vtable->end()) {
         throw_and_halt(
-			new method_not_found_exception(
-				hash_to_string(sighash)));
+            new method_not_found_exception(
+                hash_to_string(sighash)));
     }
     else {
         auto callinfo = (*_callinfo).second;

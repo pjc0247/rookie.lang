@@ -75,12 +75,12 @@ struct value {
         v.integer = n;
         return v;
     }
-	static value mkuinteger(unsigned int n) {
-		value v;
-		v.type = value_type::integer;
-		v.uinteger = n;
-		return v;
-	}
+    static value mkuinteger(unsigned int n) {
+        value v;
+        v.type = value_type::integer;
+        v.uinteger = n;
+        return v;
+    }
     static value mkdecimal(float f) {
         value v;
         v.type = value_type::decimal;
