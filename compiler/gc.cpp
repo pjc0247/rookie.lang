@@ -1,3 +1,5 @@
+// Modern GC also has its own memory pool
+// however our primary goal is a automated garbate collection for now.
 #include "stdafx.h"
 
 #include "runner.h"

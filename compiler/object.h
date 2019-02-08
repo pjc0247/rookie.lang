@@ -26,6 +26,8 @@ public:
     }
 
     virtual void gc_visit(gc_mark_func mark) {
+        // Implement this to mark non-(rookie)property objects.
+        // `libs/dictionary.cpp` could be a best example.
     }
 
 public:
