@@ -764,7 +764,7 @@ private:
             ((ident_node*)node->children[1])->ident == L"this") {
 
             if (current_method->attr & method_attr::method_static)
-                ctx.push_error(syntax_error(node, L"invalid this inside static method."));
+                ctx.push_error(syntax_error(node, L"Unexpected `this` inside static method."));
 
             emitter.emit(opcode::op_ldthis);
         }
@@ -824,7 +824,7 @@ private:
     }
     void emit_this(this_node *node) {
         if (current_method->attr & method_attr::method_static)
-            ctx.push_error(syntax_error(node, L"invalid this inside static method."));
+            ctx.push_error(syntax_error(node, L"Unexpected `this` inside static method."));
 
         emitter.emit(opcode::op_ldloc, 0);
     }
@@ -833,7 +833,7 @@ private:
             ((ident_node*)node->children[0])->ident == L"this") {
 
             if (current_method->attr & method_attr::method_static)
-                ctx.push_error(syntax_error(node, L"invalid this inside static method."));
+                ctx.push_error(syntax_error(node, L"Unexpected `this` inside static method."));
             emitter.emit(opcode::op_ldthis);
         }
         else

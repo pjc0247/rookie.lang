@@ -26,7 +26,7 @@
         b.type != value_type::integer) \
         _invalid_stackitem;
 
-#define _pop2_int(a, b) \
+#define pop2(a, b) \
     auto b = pop(); auto a = pop(); 
 
 #define throw_and_halt(e) \
@@ -277,24 +277,25 @@ void runner::run_entry(program_entry *_entry) {
         }
 
         if (inst.opcode == opcode::op_l) {
-            _pop2_int(left, right);
+            pop2(left, right);
             push(value::mkboolean(left.integer < right.integer));
         }
         else if (inst.opcode == opcode::op_g) {
-            _pop2_int(left, right);
+            pop2(left, right);
             push(value::mkboolean(left.integer > right.integer));
         }
         else if (inst.opcode == opcode::op_le) {
-            _pop2_int(left, right);
+            pop2(left, right);
             push(value::mkboolean(left.integer <= right.integer));
         }
         else if (inst.opcode == opcode::op_ge) {
-            _pop2_int(left, right);
+            pop2(left, right);
             push(value::mkboolean(left.integer >= right.integer));
         }
 
         // printf("ss stacksize: %d, bp: %d,\n", stack.size(), bp);
 
+        // There is an error during the previous execution.
         if (exception != nullptr) {
             goto error;
         }
@@ -317,7 +318,7 @@ void runner::op_eqtype() {
      *  OP_EQTYPE
      */
     ensure_stack(2);
-    _pop2_int(left, right);
+    pop2(left, right);
 
     auto type = get_type(left);
 
@@ -341,7 +342,7 @@ void runner::op_eq() {
      *  OP_EQ
      */
     ensure_stack(2);
-    _pop2_int(left, right);
+    pop2(left, right);
 
     if (left.type == right.type) {
         if (left.uinteger == right.uinteger)
@@ -365,7 +366,7 @@ void runner::op_neq() {
      *  OP_NEQ
      */
     ensure_stack(2);
-    _pop2_int(left, right);
+    pop2(left, right);
 
     if (left.type == right.type) {
         if (left.uinteger == right.uinteger)
@@ -455,7 +456,7 @@ void runner::op_add() {
 }
 void runner::op_sub() {
     ensure_stack(2);
-    _pop2_int(left, right);
+    pop2(left, right);
 
     if (is_rkint(left) && is_rkint(right)) {
         left.integer -= right.integer;
@@ -470,7 +471,7 @@ void runner::op_sub() {
 }
 void runner::op_mul() {
     ensure_stack(2);
-    _pop2_int(left, right);
+    pop2(left, right);
 
     if (is_rkint(left) && is_rkint(right)) {
         auto x = right.integer * left.integer;
@@ -489,7 +490,7 @@ void runner::op_mul() {
 }
 void runner::op_div() {
     ensure_stack(2);
-    _pop2_int(left, right);
+    pop2(left, right);
 
     if (is_rkint(left) && is_rkint(right)) {
         if (right.integer == 0)
