@@ -527,13 +527,13 @@ void runner::op_newobj() {
         objref->sighash = inst.operand;
         objref->name_ptr = type_data.name.c_str();
 
+        push(v);
         if (objref->vtable->find(sighash__ctor) !=
             objref->vtable->end()) {
             
-            callee_ptr = &v;
+            callee_ptr = &stack.back();
             _vcall(sighash__ctor, inst.call_params, sp);
         }
-        push(v);
 
         gc.add_object(objref);
     }
