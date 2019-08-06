@@ -5,7 +5,7 @@ rookie
 
 Rookie is a dynamic programming language with simple and readable syntax.
 
-<img src="docs/debug/dbger.jpg" width=400 />
+<img src="docs/debug/dbger.jpg" width=450 />
 
 __[ONLINE PLAYGROUND](https://pjc0247.github.io/try-rookie/)__<br>
 __[LANGUAGE DOCUMENTATION](https://rookielang.github.io)__
