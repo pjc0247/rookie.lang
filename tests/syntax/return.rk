@@ -1,0 +1,26 @@
+class ret_test {
+    @main
+    static def main () {
+        if (integer() == 1) puts ("PASS");
+        if (bool() == true) puts ("PASS");
+        if (str() == "aaaa") puts ("PASS");
+        if (ary() == [1,2,3]) puts ("PASS");
+        if (dic() == {a: 1, b: true}) puts ("PASS");
+    }
+
+    static def integer () {
+        return 1;
+    }
+    static def bool () {
+        return true;
+    }
+    static def str () {
+        return "aaaa";
+    }
+    static def ary () {
+        return [1,2,3];
+    }
+    static def dic () {
+        return {a: 1, b: true};
+    }
+}
