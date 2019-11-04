@@ -22,16 +22,20 @@ public:
     gc(runner &r);
     virtual ~gc();  
 
+    // Returns spinlock object for current GC.
     spinwait &lock();
 
     void add_object(object *objref);
     void remove_object(object *objref);
 
+    // Force performs garbage collection
     void collect();
 
     uint32_t object_count();
 
+    // Begins GC guard
     void begin_no_gc();
+    // Ends GC guard
     void end_no_gc();
 
 protected:
