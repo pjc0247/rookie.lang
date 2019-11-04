@@ -709,8 +709,10 @@ private:
         if (lookup.type == lookup_type::mtd_syscall)
             emitter.emit(opcode::op_syscall, callsite(node->args(), lookup.index));
         else {
-            if (lookup.method != nullptr &&
-                lookup.method->attr & method_attr::method_static) {
+            if (lookup.method == nullptr) {
+                ctx.push_error(undeclared_method_error(node->token(), node->ident_str()));
+            }
+            else if (lookup.method->attr & method_attr::method_static) {
 
                 emitter.emit_defer(opcode::op_call,
                     node->declaring_class()->ident_str() + L"::" + node->ident_str(),
