@@ -58,7 +58,7 @@ program p; // program you built
 p2wast().convert(p);
 ```
 
-Compling
+Run
 ----
 * __rookie__ requires C++17.
 
@@ -79,3 +79,7 @@ __Compilation Flags__
 * __RK_NO_IO__
   * Exclude Input/Output codes from build.
   
+
+LICENSE
+----
+* Can be used for all purpose without any kinds of annotation.
