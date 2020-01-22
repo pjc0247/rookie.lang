@@ -62,8 +62,10 @@ struct callframe {
     short pc;
     short bp;
     uint8_t params;
+    value  *callee_ptr;
 
-    callframe(short pc, short bp, uint8_t params, program_entry *entry) :
+    callframe(value *callee_ptr, short pc, short bp, uint8_t params, program_entry *entry) :
+        callee_ptr(callee_ptr),
         pc(pc), bp(bp), params(params), entry(entry) {
     }
 };

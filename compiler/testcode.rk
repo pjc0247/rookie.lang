@@ -1,18 +1,9 @@
-class foo {
-    def _ctor() {
-        puts (caller());
-        
-        bar();
-    }
-
-    def bar() {
-        puts (caller());
-    }
-}
-
 class default_param_test {
     @main
     static def main () {
-        foo.new();
+        default_param_test.new().fooq();
+    }
+
+	def foob () {
     }
 }

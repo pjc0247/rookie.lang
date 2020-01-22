@@ -15,7 +15,7 @@
 #define fs std::experimental::filesystem
 #else
 #include <experimental/filesystem>
-#define fs std::filesytem
+#define fs std::experimental::filesystem
 #endif
 
 // Copmpiles given string into a program.

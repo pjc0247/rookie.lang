@@ -5,7 +5,7 @@ SRCS_SYNTAX := $(wildcard ./compiler/syntax/*.cpp)
 
 native:
 	clang++ -O2 -stdlib=libc++ -std=c++17 $(SRCS) $(SRCS_SYNTAX) $(LIBS) -I. -Icompiler -Iincludes \
-		-v -lstdc++fs -o rookie -Wc++11-extensions 
+		-v -o rookie -D _DEBUG -Wc++11-extensions -lstdc++fs -lc++experimental
 
 all:
 	export EMCC_DEBUG=1

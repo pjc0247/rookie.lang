@@ -155,7 +155,8 @@ void runner::run_entry(program_entry *_entry) {
             push(rkfalse);
             break;
         case opcode::op_ldthis:
-            push(stack[bp - 1]);
+            push(*callee_ptr);
+            //push(stack[bp - 1]);
             break;
         case opcode::op_ldtype:
             push(value::mkobjref(typecache->table[inst.operand]));
@@ -526,14 +527,15 @@ void runner::op_newobj() {
         objref->vtable = &type_data.vtable;
         objref->sighash = inst.operand;
         objref->name_ptr = type_data.name.c_str();
-
-        push(v);
+        
         if (objref->vtable->find(sighash__ctor) !=
             objref->vtable->end()) {
-            
-            callee_ptr = &stack.back();
+        
+            callee_ptr = &v;
             _vcall(sighash__ctor, inst.call_params, sp);
         }
+        push(v);
+        callee_ptr = &stack.back();
 
         gc.add_object(objref);
     }
@@ -622,6 +624,7 @@ void runner::op_ret() {
     auto callframe = pop_callframe(*current_entry);
     pc = callframe.pc;
     bp = callframe.bp;
+    //callee_ptr = callframe.callee_ptr;
     current_entry = callframe.entry;
 
     push(ret);
@@ -966,7 +969,7 @@ void runner::replace_top(const value &v) {
 }
 
 void runner::push_callframe(program_entry &entry, uint8_t params) {
-    callstack.push_back(callframe(pc, bp, params, &entry));
+    callstack.push_back(callframe(callee_ptr, pc, bp, params, &entry));
 
     for (uint16_t i = 0; i < entry.locals - entry.params; i++)
         stack.push_back(value::empty());
