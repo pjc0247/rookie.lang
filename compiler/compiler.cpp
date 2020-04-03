@@ -24,11 +24,11 @@
 
 #include "compiler.h"
 
-// Exits compliation pipeline if there is an error
+// Exit compliation pipeline if there is an error
 #define halt_if_error(x) \
     if (ctx.errors.empty() == false) \
         return x;
-/// Executes validator immediatly
+/// Execute validator immediatly
 #define validator_pass(t) \
     do { \
         auto __##t = new t(); \
