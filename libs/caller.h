@@ -12,7 +12,7 @@ class rkcaller : public rkobject<rkcaller> {
 public:
     TYPENAME(L"caller")
 
-    static void import(binding &b) {
+    static void _import(binding &b) {
         auto type = type_builder(L"caller");
 
         method(type, L"name", &rkcaller::get_name);

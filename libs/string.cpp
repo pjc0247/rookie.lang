@@ -4,7 +4,7 @@
 
 #include "string.h"
 
-void rkstring::import(binding &b) {
+void rkstring::_import(binding &b) {
     auto type = type_builder(L"string");
 
     type.method(L"new", create_instance);

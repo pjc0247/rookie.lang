@@ -9,7 +9,7 @@ class rkjson : public rkobject<rkjson> {
 public:
     TYPENAME(L"json")
 
-    static void import(binding &b);
+    static void _import(binding &b);
 
     // AnyObject -> String
     static value stringify(value_cref obj);

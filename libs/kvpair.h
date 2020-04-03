@@ -11,7 +11,7 @@ class rkkvpair : public rkobject<rkkvpair> {
 public:
     TYPENAME(L"kvpair")
 
-    static void import(binding &b) {
+    static void _import(binding &b) {
         auto type = type_builder(L"kvpair");
 
         method(type, rk_id_getitem, &rkkvpair::get);

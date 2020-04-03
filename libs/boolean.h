@@ -10,7 +10,7 @@ class rkboolean : public rkobject<rkboolean> {
 public:
     TYPENAME(L"boolean")
 
-    static void import(binding &b) {
+    static void _import(binding &b) {
         auto type = type_builder(L"boolean");
 
         method(type, rk_id_tostring, &rkboolean::to_string);

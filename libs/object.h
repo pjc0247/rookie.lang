@@ -4,7 +4,7 @@
 
 class rkscriptobject : public rkobject<rkscriptobject> {
 public:
-    static void import(binding &b);
+    static void _import(binding &b);
 
     value all_properties();
     value set_property(const std::wstring &key, value_cref value);

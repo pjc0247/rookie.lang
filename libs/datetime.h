@@ -9,7 +9,7 @@ class rkdatetime : public rkobject<rkdatetime> {
 public:
     TYPENAME(L"datetime")
 
-    static void import(binding &b) {
+    static void _import(binding &b) {
         auto type = type_builder(L"datetime");
 
         static_method(type, L"now", now);

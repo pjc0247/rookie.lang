@@ -5,7 +5,7 @@
 
 #include "array.h"
 
-void rkarray::import(binding &b) {
+void rkarray::_import(binding &b) {
     auto type = type_builder(L"array");
 
     type.method(rk_id_new, create_array);

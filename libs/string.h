@@ -8,7 +8,7 @@ class rkstring : public rkobject<rkstring> {
 public:
     TYPENAME(L"string")
 
-    static void import(binding &b);
+    static void _import(binding &b);
 
     rkstring();
     rkstring(const std::wstring &str);

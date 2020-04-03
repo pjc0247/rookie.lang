@@ -7,7 +7,7 @@
 
 #include "object.h"
 
-void rkscriptobject::import(binding &b) {
+void rkscriptobject::_import(binding &b) {
     auto type = type_builder(L"object");
 
     type.method(rk_id_new, create_instance);

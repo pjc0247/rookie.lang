@@ -8,7 +8,7 @@ class rkinteger : public rkobject<rkinteger> {
 public:
     TYPENAME(L"integer")
 
-    static void import(binding &b) {
+    static void _import(binding &b) {
         auto type = type_builder(L"integer");
 
         method(type, rk_id_tostring, &rkinteger::to_string);

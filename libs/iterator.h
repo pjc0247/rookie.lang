@@ -11,7 +11,7 @@ class rkyield_iterator : public rkobject<rkyield_iterator> {
 public:
     TYPENAME(L"yield_iterator");
 
-    static void import(binding &b) {
+    static void _import(binding &b) {
         auto type = type_builder(L"yield_iterator");
 
         method(type, L"current", &rkyield_iterator::current);
@@ -36,7 +36,7 @@ class rkarray_iterator : public rkobject<rkarray_iterator> {
 public:
     TYPENAME(L"array_iterator");
 
-    static void import(binding &b) {
+    static void _import(binding &b) {
         auto type = type_builder(L"array_iterator");
 
         method(type, L"current", &rkarray_iterator::current);
@@ -66,7 +66,7 @@ class rkdictionary_iterator : public rkobject<rkdictionary_iterator> {
 public:
     TYPENAME(L"dictionary_iterator");
 
-    static void import(binding &b) {
+    static void _import(binding &b) {
         auto type = type_builder(L"dictionary_iterator");
 
         method(type, L"current", &rkdictionary_iterator::current);

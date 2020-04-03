@@ -8,7 +8,7 @@ class rkarray : public rkobject<rkarray> {
 public:
     TYPENAME(L"array")
 
-    static void import(binding &b);
+    static void _import(binding &b);
 
     rkarray();
     rkarray(uint32_t n);

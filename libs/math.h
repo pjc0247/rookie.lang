@@ -4,7 +4,7 @@
 
 class rkmath : public rkobject<rkmath> {
 public:
-    static void import(binding &b) {
+    static void _import(binding &b) {
         auto type = type_builder(L"math");
 
         static_method(type, L"abs", abs);

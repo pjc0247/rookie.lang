@@ -4,7 +4,7 @@
 
 #include "type.h"
 
-void rktype::import(binding &b) {
+void rktype::_import(binding &b) {
     auto type = type_builder(L"type");
 
     method(type, L"fields", &rktype::fields);

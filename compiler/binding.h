@@ -19,7 +19,7 @@ class rkstring;
 #define _rookie_library(name) \
     class name { \
     public: \
-        static void import(binding &b) {
+        static void _import(binding &b) {
 #define _end_rookie_library \
     } };
 #define _rookie_function(name, body) \
@@ -344,9 +344,9 @@ public:
     }
 
     template <typename T>
-    binding &import() {
+    binding &_import() {
         rklog("[import] %s\n", typeid(T).name());
-        T::import(*this);
+        T::_import(*this);
         return *this;
     }
 

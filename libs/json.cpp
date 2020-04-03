@@ -10,7 +10,7 @@
 
 using json = nlohmann::json;
 
-void rkjson::import(binding &b) {
+void rkjson::_import(binding &b) {
     auto type = type_builder(L"json");
 
     static_method(type, L"stringify", stringify);

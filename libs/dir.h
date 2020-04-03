@@ -17,7 +17,7 @@ class rkdir : public rkobject<rkdir> {
 public:
     TYPENAME(L"dir")
 
-    static void import(binding &b) {
+    static void _import(binding &b) {
         auto type = type_builder(L"dir");
 
         static_method(type, L"create", create);

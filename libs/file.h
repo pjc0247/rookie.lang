@@ -16,7 +16,7 @@ class rkfile : public rkobject<rkfile> {
 public:
     TYPENAME(L"file")
 
-    static void import(binding &b) {
+    static void _import(binding &b) {
         auto type = type_builder(L"file");
 
         static_method(type, L"read_text", read_text);

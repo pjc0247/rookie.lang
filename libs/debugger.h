@@ -10,7 +10,7 @@ class rkdebugger : public rkobject<rkdebugger> {
 public:
     TYPENAME(L"debugger")
 
-    static void import(binding &b) {
+    static void _import(binding &b) {
         auto type = type_builder(L"debugger");
 
         static_method(type, L"dumpstack", dumpstack);

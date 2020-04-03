@@ -26,27 +26,27 @@
 binding binding::default_binding() {
     binding b;
 
-    b.import<rkstdlib>();
-    b.import<rkarray>();
-    b.import<rkinteger>();
-    b.import<rkdictionary>();
-    b.import<rkstring>();
-    b.import<rkgc>();
-    b.import<rkdebugger>();
-    b.import<rkscriptobject>();
-    b.import<rkmath>();
-    b.import<rktype>();
-    b.import<rkdatetime>();
-    b.import<rkreflection>();
-    b.import<rkarray_iterator>();
-    b.import<rkdictionary_iterator>();
-    b.import<rkkvpair>();
-    b.import<rkfile>();
-    b.import<rkdir>();
-    b.import<rkboolean>();
-    b.import<rkjson>();
-    b.import<rkexception>();
-    b.import<rkcaller>();
+    b._import<rkstdlib>();
+    b._import<rkarray>();
+    b._import<rkinteger>();
+    b._import<rkdictionary>();
+    b._import<rkstring>();
+    b._import<rkgc>();
+    b._import<rkdebugger>();
+    b._import<rkscriptobject>();
+    b._import<rkmath>();
+    b._import<rktype>();
+    b._import<rkdatetime>();
+    b._import<rkreflection>();
+    b._import<rkarray_iterator>();
+    b._import<rkdictionary_iterator>();
+    b._import<rkkvpair>();
+    b._import<rkfile>();
+    b._import<rkdir>();
+    b._import<rkboolean>();
+    b._import<rkjson>();
+    b._import<rkexception>();
+    b._import<rkcaller>();
 
     return b;
 }

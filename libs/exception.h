@@ -11,7 +11,7 @@ class rkexception : public rkobject<rkexception> {
 public:
     TYPENAME(L"exception")
 
-    static void import(binding &b) {
+    static void _import(binding &b) {
         auto type = type_builder(L"exception");
 
         type.method(rk_id_new, create_object);

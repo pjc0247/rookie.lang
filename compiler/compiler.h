@@ -2,6 +2,8 @@
 
 #include <string>
 #include <vector>
+#include <memory>
+#include <stdexcept>
 
 #include "compilation.h"
 #include "ast/syntax_travler.h"

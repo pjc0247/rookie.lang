@@ -8,7 +8,7 @@ class rktype : public rkobject<rktype> {
 public:
     TYPENAME(L"type")
 
-    static void import(binding &b);
+    static void _import(binding &b);
 
     rktype(uint32_t sighash, runtime_typedata &rtype);
     

@@ -6,7 +6,7 @@ class rkgc : public rkobject<rkgc> {
 public:
     TYPENAME(L"gc")
 
-    static void import(binding &b) {
+    static void _import(binding &b) {
         auto type = type_builder(L"gc");
 
         static_method(type, L"object_count", object_count);

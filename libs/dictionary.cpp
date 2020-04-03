@@ -8,7 +8,7 @@
 
 #include "dictionary.h"
 
-void rkdictionary::import(binding &b) {
+void rkdictionary::_import(binding &b) {
     auto type = type_builder(L"dictionary");
 
     type.method(rk_id_new, create_dictionary);

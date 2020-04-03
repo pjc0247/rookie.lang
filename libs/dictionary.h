@@ -9,7 +9,7 @@ class rkdictionary : public rkobject<rkdictionary> {
 public:
     TYPENAME(L"dictionary")
 
-    static void import(binding &b);
+    static void _import(binding &b);
 
     rkdictionary();
     rkdictionary(int n);
