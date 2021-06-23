@@ -3,9 +3,9 @@
 #include <string>
 #include <vector>
 
+#include "syntax/syntax_node.h"
 #include "string_pool.h"
 #include "token.h"
-#include "syntax/syntax_node.h"
 #include "binding.h"
 #include "program.h"
 #include "errors.h"
